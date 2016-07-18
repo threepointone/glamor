@@ -1,6 +1,6 @@
 {
   "name": "@threepointone/react-css",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "inline css for react",
   "main": "lib/index.js",
   "jsnext:main": "es6/index.js",
@@ -31,6 +31,7 @@
   "license": "MIT",
   "repository": "",
   "keywords": [
-    "css", "react"
+    "css",
+    "react"
   ]
 }
