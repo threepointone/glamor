@@ -18,8 +18,10 @@ import { style, hover, focus, nthChild, media } from '@threepointone/react-css'
 <div {...style({ backgroundColor: 'blue' })}>
   looks like inline css, but gets converted/cached as a css rule
   <ul >
-    <li > one </li>
-    <li {...nthChild(2, {outline: '1px solid black'})}> two - has outline! </li>
+    <li> one </li>
+    <li {...nthChild(2, {outline: '1px solid black'})}>
+      two - has outline!
+    </li>
     <li> three </li>
   </ul>
   <a {...hover({ fontSize: 22 })} {...focus({ fontWeight: 'bold' })}>
@@ -60,6 +62,7 @@ todo
 - server side rendering
 - generate css files for webpack etc
 - typechecks (flow? runtime?)
+- font face detection for loading only when used
 
 
 profit, profit
