@@ -34,7 +34,6 @@ export function selector(type, id){
 }
 
 export function rule(type, style, id){
-  // console.log(type, style, id)
   return `${selector(type, id)}{ ${createMarkupForStyles(style)}} `
 }
 
@@ -56,7 +55,6 @@ export function media(expr, style){
       let newId = hash(expr+id)
 
       if(!cache[newId]){
-        console.log(rule(cache[id].type, cache[id].style, newId))
           sheet.insertRule(`@media ${expr} { ${ rule(cache[id].type, cache[id].style, newId) } }`, index++)
           cache[newId] = { expr, style, id: newId }
       }
@@ -66,7 +64,6 @@ export function media(expr, style){
 
       let id = objHash(expr, style)
       if(!cache[id]){
-        console.log(rule('___', style, id))
         sheet.insertRule(`@media ${expr} { ${ rule('___', style, id) } }`, index++)
         cache[id] = { expr, style, id }
       }
@@ -121,5 +118,3 @@ let elements = ['after', 'before', 'first-letter', 'first-line', 'selection',
 'backdrop', 'placeholder']
 elements.forEach(el => exports[camelize(el)] =
   (style, id) => add(`:${cls}`, style, id))
-
-// console.log(exports)
