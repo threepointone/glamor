@@ -1,0 +1,36 @@
+{
+  "name": "@threepointone/react-css",
+  "version": "1.0.0",
+  "description": "inline css for react",
+  "main": "lib/index.js",
+  "jsnext:main": "es6/index.js",
+  "files": [
+    "css",
+    "es6",
+    "lib",
+    "umd"
+  ],
+  "scripts": {
+    "build": "nwb build",
+    "clean": "nwb clean",
+    "start": "nwb serve",
+    "test": "nwb test",
+    "test:watch": "nwb test --server"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "15.x"
+  },
+  "devDependencies": {
+    "nwb": "0.11.x",
+    "react": "^15.2.1",
+    "react-dom": "^15.2.1"
+  },
+  "author": "Sunil Pai <threepointone@gmail.com>",
+  "homepage": "",
+  "license": "MIT",
+  "repository": "",
+  "keywords": [
+    "css", "react"
+  ]
+}
