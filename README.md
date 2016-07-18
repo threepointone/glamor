@@ -59,9 +59,10 @@ cons
 server side rendering
 ---
 
-this api is directly copied from aphrodite; render your component inside of a callback, and
-react-css will gather all the calls you used and return an object with html, css,
-and an object to rehydrate the lib's cache
+this api is mostly copied from [aphrodite](https://github.com/Khan/aphrodite);
+render your component inside of a callback, and react-css will gather all
+the calls you used and return an object with html, css, and an object
+to rehydrate the lib's cache
 
 ```jsx
 // on the server
@@ -96,7 +97,7 @@ ReactDOM.render(<App/>, document.getElementById('root'))
 todo
 ---
 
-- font face detection / pn-demand loading
+- font face detection / on-demand loading
 - generate css files for webpack etc
 - typechecks (flow? runtime?)
 - other frameworks?
