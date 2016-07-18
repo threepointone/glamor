@@ -11,5 +11,3 @@ let Demo = () =>
   </div>
 
 render(<Demo/>, document.querySelector('#demo'))
-
-// ...klass({})

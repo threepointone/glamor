@@ -3,10 +3,25 @@ import hash from './hash'
 import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations'
 
 let isBrowser = typeof window !== 'undefined'
-let styleTag = document.createElement('style')
-styleTag.id = '_pseudoclasses_'
-document.head.appendChild(styleTag)
-let sheet = document.styleSheets[document.styleSheets.length - 1]
+
+let sheet
+
+if(isBrowser){
+  let styleTag = document.createElement('style')
+  styleTag.id = '_classes_'
+  document.head.appendChild(styleTag)
+  sheet = document.styleSheets[document.styleSheets.length - 1]
+
+}
+else {
+  // todo - server side fill
+  sheet = {
+    rules: [],
+    deleteRule: () => {},
+    insertRule: () => {}
+  }
+}
+
 let index = 0
 let cache = {}
 
@@ -15,26 +30,48 @@ export function objHash(type, obj){
 }
 
 export function selector(type, id){
-  return `[data-pseudo-${type}="${id}"]${type ? `:${type}` : ''}`
+  return `[data-css-${simple(type)}="${id}"]${type !== '___' ? `:${type}` : ''}`
 }
 
-export function add(type, style, id = objHash(type, style)){
+export function rule(type, style, id){
+  // console.log(type, style, id)
+  return `${selector(type, id)}{ ${createMarkupForStyles(style)}} `
+}
+
+export function add(type = '___', style, id = objHash(type, style)){
   // register rule
   if(!cache[id]){
-    sheet.insertRule(`${selector(type, id)}{ ${createMarkupForStyles(style)}} `, index++)
-    cache[id] = [type, style]
+    sheet.insertRule(rule(type, style, id), index++)
+    cache[id] = { type, style, id }
   }
 
-  return {[`data-pseudo-${type}`]: id }
+  return {[`data-css-${simple(type)}`]: id }
 
 }
 
-export function media(expr, ...styles){
-    // o could be a style object or a {[data-*]} object
-    // find corresponding type/style
-    // add new rule
-    // return new prop
-    let id = o[Object.keys(o)[0]]
+export function media(expr, style){
+
+    if(cache[style[Object.keys(style)[0]]]){
+      let id = style[Object.keys(style)[0]]
+      let newId = hash(expr+id)
+
+      if(!cache[newId]){
+        console.log(rule(cache[id].type, cache[id].style, newId))
+          sheet.insertRule(`@media ${expr} { ${ rule(cache[id].type, cache[id].style, newId) } }`, index++)
+          cache[newId] = { expr, style, id: newId }
+      }
+      return {[`data-css-${simple(cache[id].type)}`]: newId }
+    }
+    else {
+
+      let id = objHash(expr, style)
+      if(!cache[id]){
+        console.log(rule('___', style, id))
+        sheet.insertRule(`@media ${expr} { ${ rule('___', style, id) } }`, index++)
+        cache[id] = { expr, style, id }
+      }
+      return {[`data-css-___`]: id }
+    }
 
 }
 
@@ -44,23 +81,25 @@ export function remove(o){
   // remove rule
 
   let id = o[Object.keys(o)[0]]
-  let i = sheet.rules.indexOf(x => x.selectorText === selector(cache[id][0], id))
+  let i = sheet.rules.indexOf(x => x.selectorText === selector(cache[id].type, id))
   sheet.deleteRule(i)
   delete cache[id]
+  index--
 
 }
 
 export function style(obj, id){
-  return add(undefined, style, id)
+  return add(undefined, obj, id)
 }
 
 
 // https://stackoverflow.com/questions/2970525/converting-any-string-into-camel-case
 function camelize(str) {
-  return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
-    if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
-    return index == 0 ? match.toLowerCase() : match.toUpperCase();
-  });
+  return str.replace(/(\-[a-z])/g, function($1){return $1.toUpperCase().replace('-','');});
+}
+
+function simple(str){
+    return str.replace(/[^a-zA-Z0-9\-_\$]/g, '')//only alphanumerics, _, -, $
 }
 
 
@@ -82,3 +121,5 @@ let elements = ['after', 'before', 'first-letter', 'first-line', 'selection',
 'backdrop', 'placeholder']
 elements.forEach(el => exports[camelize(el)] =
   (style, id) => add(`:${cls}`, style, id))
+
+// console.log(exports)
