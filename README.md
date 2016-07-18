@@ -7,7 +7,8 @@ yet another attempt at css-in-js for react et al
 This one uses the [CSSStyleSheet](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet)
 api to add/remove css rules from a stylesheet object, using a generated hash of the
 style description to index itself. This gives us some flexibility in generating
-and combining styles in a functional/react-y manner.
+and combining styles in a functional/react-y manner. Further, we internally use data-* attributes
+to annotate dom elements, leaving style/className untouched by our lib.
 
 ```jsx
 
