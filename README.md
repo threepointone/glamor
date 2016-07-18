@@ -63,7 +63,7 @@ todo
 - generate css files for webpack etc
 - typechecks (flow? runtime?)
 - font face detection for loading only when used
-
+- other frameworks?
 
 profit, profit
 ---
