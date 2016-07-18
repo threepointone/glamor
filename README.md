@@ -42,7 +42,7 @@ features
 - supports all the pseudo selectors/elements
 - and media queries
 - composes well
-- kicks in only on browser
+- server side rendering
 
 cons
 ---
@@ -56,14 +56,49 @@ cons
   `style` prop for styles that change over _many different_ values.
 - no tests/ real-world usage/ adoption
 
+server side rendering
+---
+
+this api is directly copied from aphrodite; render your component inside of a callback, and
+react-css will gather all the calls you used and return an object with html, css,
+and an object to rehydrate the lib's cache
+
+```jsx
+// on the server
+import { renderStatic } from '@threepointone/react-css'
+
+let { html, css, cache } = renderStatic(() =>
+  ReactDOMServer.renderToString(<App/>))
+
+// ... when rendering your html
+`<html>
+  <head>
+    <style id='_css_'>${css}</style>
+  </head>
+  <body>
+    <div id='root'>${html}</div>
+    <script>window._cssCache = ${JSON.stringify(cache)}</script>
+    <script src="./bundle.js"></script>
+  </body>
+</html>`
+
+// in your app startup
+
+import { rehydrate } from '@threepointone/react-css'
+
+rehydrate(window._cssCache)
+
+ReactDOM.render(<App/>, document.getElementById('root'))
+
+```
+
 
 todo
 ---
 
-- server side rendering
+- font face detection / pn-demand loading
 - generate css files for webpack etc
 - typechecks (flow? runtime?)
-- font face detection for loading only when used
 - other frameworks?
 
 profit, profit

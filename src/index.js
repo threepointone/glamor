@@ -8,20 +8,23 @@ let sheet
 
 if(isBrowser){
   let styleTag = document.createElement('style')
-  styleTag.id = '_classes_'
-  document.head.appendChild(styleTag)
+  styleTag.id = '_css_';
+  (document.head || document.getElementsByTagName('head')[0]).appendChild(styleTag)
   sheet = document.styleSheets[document.styleSheets.length - 1]
-
 }
 else {
   // todo - server side fill
   sheet = {
     rules: [],
-    deleteRule: () => {},
-    insertRule: () => {}
+    deleteRule: (index) => {
+      sheet.rules = [ ...sheet.rules.slice(0, index - 1), ...sheet.rules.slice(index + 1) ]
+    },
+    insertRule: (rule) => {
+      sheet.rules = [ ...sheet.rules.slice(0, index - 1), rule, ...sheet.rules.slice(index) ]
+    }
   }
 }
-
+// preload cache/index
 let index = 0
 let cache = {}
 
@@ -83,6 +86,30 @@ export function remove(o){
   delete cache[id]
   index--
 
+}
+
+export function flush(){
+  index = 0
+  cache = {}
+  while(sheet.rules.length>0){
+    sheet.deleteRule(sheet.rules.length -1)
+  }
+}
+
+export function renderStatic(fn){
+  // flush() // empty cache
+  let html = fn()
+  let c = cache, rules = [...sheet.rules], css = rules.join('\n')
+  flush()
+  return { html, cache: c, rules, css }
+
+}
+
+export function rehydrate(c){
+  // load up cache
+  flush()
+  cache = c
+  // assume css loaded separately
 }
 
 export function style(obj, id){
