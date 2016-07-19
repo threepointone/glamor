@@ -18,7 +18,7 @@ import { style, hover, focus, nthChild, media } from '@threepointone/react-css'
 
 <div {...style({ backgroundColor: 'blue' })}>
   looks like inline css, but gets converted/cached as a css rule
-  <ul >
+  <ul>
     <li> one </li>
     <li {...nthChild(2, {outline: '1px solid black'})}>
       two - has outline!
@@ -38,10 +38,14 @@ features
 ---
 
 - fairly small / efficient
+- lovely api, imo :)
+- reuses common declarations
 - _doesn't_ use `style`/`className` props
 - supports all the pseudo selectors/elements
 - and media queries
+- simulate pseudo classes in development
 - composes well
+- tests / coverage
 - server side rendering
 
 cons
@@ -54,7 +58,7 @@ cons
   I can't think of a simple way to expose it. Hopefully this is an edge case and doesn't
   affect many people. If so, the recommendation is to use use regular
   `style` prop for styles that change over _many different_ values.
-- no tests/ real-world usage/ adoption
+- no real-world usage/ adoption
 
 server side rendering
 ---
@@ -98,9 +102,12 @@ todo
 ---
 
 - font face detection / on-demand loading
-- generate css files for webpack etc
+- statically generate css files for webpack etc alá jsxstyle
+- hot loading support
 - typechecks (flow? runtime?)
 - other frameworks?
+- theming et al
+
 
 profit, profit
 ---

@@ -1,12 +1,12 @@
 import React from 'react'
 import { render } from 'react-dom'
 
-import { hover, focus } from '../../src'
+import { style, hover, focus } from '../../src'
 
 let Demo = () =>
   <div>
-    <h1 {...hover({backgroundColor: 'red'})}>
-      pseudoclasses Demo
+    <h1 {...style({backgroundColor: 'red'})}>
+      react-css demo
     </h1>
   </div>
 
