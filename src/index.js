@@ -149,7 +149,7 @@ export function renderStatic(fn, optimized = false){
     throw new Error('did you forget to return from renderToString?')
   }
   let rules = [...sheet.rules], css = rules.map(r => r.cssText).join('\n')
-  if(optimized){    
+  if(optimized){
     // parse out ids from html
     // reconstruct css/rules/cache to pass
 

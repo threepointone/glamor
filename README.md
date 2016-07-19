@@ -1,38 +1,18 @@
 # threepointone/react-css
 
-yet another attempt at css-in-js for react et al
+[work in progress, feedback appreciated]
+
+css for component systems
 
 `npm install @threepointone/react-css --save`
 
-This one uses the [CSSStyleSheet](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet)
-api to add/remove css rules from a stylesheet object, using a generated hash of the
-style description to index itself. This gives us some flexibility in generating
-and combining styles in a functional/react-y manner. Further, we internally use data-* attributes
-to annotate dom elements, leaving style/className untouched by our lib.
+motivation
+---
 
-```jsx
-
-import { style, hover, focus, nthChild, media } from '@threepointone/react-css'
-
-// ...
-
-<div {...style({ backgroundColor: 'blue' })}>
-  looks like inline css, but gets converted/cached as a css rule
-  <ul>
-    <li> one </li>
-    <li {...nthChild(2, {outline: '1px solid black'})}>
-      two - has outline!
-    </li>
-    <li> three </li>
-  </ul>
-  <a {...hover({ fontSize: 22 })} {...focus({ fontWeight: 'bold' })}>
-    compose with a spread operator
-  </a>
-  <div {...media('(min-width: 500px) and (orientation: landscape)', hover({ color: 'red' }))}>
-    media queries!
-  </div>
-</div>
-```
+This expands on ideas from @vjeux's [2014 css-in-js talk](https://speakerdeck.com/vjeux/react-css-in-js).
+We introduce an api to annotate arbitrary dom nodes with style definitions, processing/optimizing behind the scenes
+with the [CSSStyleSheet](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet)
+api for, um, the greater good.
 
 features
 ---
@@ -43,7 +23,7 @@ features
 - _doesn't_ use `style`/`className` props
 - supports all the pseudo classes/elements
 - and media queries
-- simulate pseudo classes in development
+- dev helper to simulate pseudo classes like `:hover`, etc
 - composes well
 - tests / coverage
 - server side rendering
@@ -51,10 +31,140 @@ features
 cons
 ---
 
-- no real-world usage/ adoption
+- no real-world usage / adoption yet
+
+compared to aphrodite / other css-in-js systems
+---
+- shares most of the common features across those libs
+  - server side rendering : react-css can generate minimal css for corresponding html, and
+  then bootstrap itself on the browser for fast startup.
+  - pseudo classes / elements : react-css supports all of them, with a consistent api.
+  - media queries : react-css supports these too, and combines well with the above.
+  - framework independent : as long as you can add attributes to dom nodes, you're good to go
+  - (todo) adding appropriate vendor specific prefixes to relevant css properties
+  - (todo) automatic global `@font-face` detection and insertion
+
+- styles are defined as 'rules', not 'stylesheets', and then indexed behind the scenes by
+  hashing themselves on `data-*` attributes. This lets you define styles 'inline' with elements
+  in a functional / reacty manner, yet globally optimize them as one unit. As such, a lot of the cruft around
+  classNames/stylesheets just goes away. If you feel the need for some structure,
+  we recommend using simple objects or components (alá jsxstyle) to organize/compose 'rules'.  
+
+- react-css comes with a `simulate()` dev helper to 'trigger' pseudo classes on
+specific elements. combined with hot-loading, the dx while editing styles is pretty nice.
+
+- (todo) styles can be statically analyzed and replaced with said data attributes,
+  generating a much more optimal css file / js bundle
+
+
+
+api
+---
+
+`style({...props})`
+
+defines a style with the given key-value pairs. returns an object (of shape `{'data-css-\_': <id>}`),
+to be added to a dom element's attributes. This is *not* the same as a dom element's `style`,
+and doesn't interfere with the element's `class`
+
+```jsx
+<div {...style({ backgroundColor: '#ccc', borderRadius: 10 })}>
+  <a {...style({ color: 'blue' })} href='github.com'>
+    click me
+  </a>
+</div>
+```
+
+---
+
+`<pseudoclass>({ ...props })`
+
+where _`<pseudoclass>`_ is one of `active`, `any`, `checked`, `default`, `disabled`,
+`empty`, `enabled`, `first`, `firstChild`, `firstOfType`, `fullscreen`,
+`focus`, `hover`, `indeterminate`, `inRange`, `invalid`, `lastChild`,
+`lastOfType`, `left`, `link`, `onlyChild`, `onlyOfType`, `optional`,
+`outOfRange`, `readOnly`, `readWrite`, `required`, `right`, `root`, `scope`,
+`target`, `valid`, `visited`
+
+defines a style for the given pseudoclass selector
+
+```jsx
+<div {...hover({ backgroundColor: '#ccc', display: 'block'})}>
+  <input
+    {...style({ color: 'gray', fontSize: 12 })}
+    {...focus({ color: 'black' })}
+    {...hover({ fontSize: 16 })}
+  />
+</div>
+```
+
+---
+
+`<pseudoclass>(param, { ...props })`
+
+where _`<pseudoclass>`_ is one of `dir`, `lang`, `not`, `nthChild`, `nthLastChild`,
+`nthLastOfType`, `nthOfType`
+
+like the above, but parameterized with a number / string
+
+```jsx
+dir('ltr', {...}) /* or */ dir('rtl', {...})
+lang('en', {...}) /* or */ lang('fr')  /* or */ lang('hi') /* etc... */
+not(/* selector */, {...})
+nthChild(2, {...}) /* or */ nthChild('3n-1', {...}) /* or */ nthChild('even', {...}) /* etc... */
+nthLastChild(/* expression */, {...})
+nthLastOfType(/* expression */, {...})
+nthOfType(/* expression */, {...})
+```
+
+---
+
+`<pseudoelement>(param, { ...props })`
+
+where _`<pseudoelement>`_ is one of `after`, `before`, `firstLetter`, `firstLine`, `selection`,
+`backdrop`, `placeholder`
+
+```jsx
+<div {...after({ content: '"boo!"' })}>...</div>
+// note the quotes for `content`'s value
+```
+
+---
+
+`media(rule, { ...props })`
+
+media queries!
+
+```jsx
+<div {...media('(min-width: 500px) and (orientation: landscape)', hover({ color: 'red' }))}>
+  resize away
+</div>
+```
+
+---
+
+`simulate(...pseudoclasses)`
+
+[todo]
+
+---
+
+`remove()`
+`flush()`
+
+[todo]
+
+composing / modularity
+---
+
+[todo]
 
 server side rendering
 ---
+
+`renderStatic(fn:html)`
+`renderStaticOptimized(fn:html)`
+`rehydrate(cache)`
 
 this api is mostly copied from [aphrodite](https://github.com/Khan/aphrodite);
 render your component inside of a callback, and react-css will gather all
@@ -62,9 +172,9 @@ the calls you used and return an object with html, css, and an object
 to rehydrate the lib's cache
 
 ```jsx
+
 // on the server
 import { renderStatic } from '@threepointone/react-css'
-
 let { html, css, cache } = renderStatic(() =>
   ReactDOMServer.renderToString(<App/>)) // or `renderToStaticMarkup`
 
@@ -81,11 +191,8 @@ let { html, css, cache } = renderStatic(() =>
 </html>`
 
 // when starting up your app
-
 import { rehydrate } from '@threepointone/react-css'
-
 rehydrate(window._cssCache)
-
 ReactDOM.render(<App/>, document.getElementById('root'))
 
 ```
@@ -99,11 +206,13 @@ html and include only the relevant used css / cache.
 todo
 ---
 
+- auto-vendor-prefixes
 - font face detection / on-demand loading
-- animation / keyframe generation
+- animation / keyframe / transform generation
 - error checking / typechecks (flow? runtime?)
 - compile time optimizations / statically generate css files alá jsxstyle
 - other frameworks?
+- non-dom? (!)
 - theming et al
 
 

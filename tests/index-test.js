@@ -1,8 +1,11 @@
 import expect from 'expect'
 import React from 'react'
-import {render, unmountComponentAtNode} from 'react-dom'
+import { render, unmountComponentAtNode } from 'react-dom'
 
-import { style, hover, nthChild, firstLetter, media, startSimulation, stopSimulation, simulate, rehydrate, flush } from 'src/'
+import { style, hover, nthChild, firstLetter, media,
+  startSimulation, stopSimulation, simulate,
+  rehydrate, remove, flush }
+from 'src/'
 
 function childStyle(node, p = null){
   return window.getComputedStyle(node.childNodes[0], p)
@@ -48,6 +51,9 @@ describe('react-css', () => {
     render(<div {...style({...{width: 100 }, ...{ height: 100 }} )} />, node, () => {
       expect(childStyle(node).height).toEqual('100px')
     })
+
+    // todo
+    // 3. merge(...styles)
   })
 
   it('reuses common styles', () => {
@@ -161,9 +167,9 @@ describe('react-css', () => {
   it('can rehydrate from serialized css/cache data', () => {
     let styleTag = document.createElement('style')
     if (styleTag.styleSheet) {
-        styleTag.styleSheet.cssText += '[data-css-_="16y7vsu"]{ color:red;}';
+        styleTag.styleSheet.cssText += '[data-css-_="16y7vsu"]{ color:red; }';
     } else {
-        styleTag.appendChild(document.createTextNode('[data-css-_="16y7vsu"]{ color:red;}'));
+        styleTag.appendChild(document.createTextNode('[data-css-_="16y7vsu"]{ color:red; }'));
     }
     document.head.appendChild(styleTag)
     node.innerHTML = '<div data-css-_="16y7vsu"></div>'
@@ -174,13 +180,14 @@ describe('react-css', () => {
     style({color: 'blue'})
 
     expect(document.styleSheets._css_.rules.length).toEqual(1)
-
-
-    // tag.innerText = ''
+    document.head.removeChild(styleTag)
 
   })
 
-  it('delete a rule from the stylesheet')
-
+  it('delete a rule from the stylesheet'
+  // , () => {
+  //
+  // }
+)
 
 })

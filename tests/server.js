@@ -6,7 +6,7 @@ import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
 
-// make a throwaway style object
+// make a throwaway style
 style({ color: 'wheat' })
 
 
@@ -26,5 +26,6 @@ style({ color: 'wheat' })
 
   expect(html).toEqual('<div data-css-_="16y7vsu"></div>')
   expect(css).toEqual('[data-css-_="16y7vsu"]{ color:red; } ')
+  expect(cache).toEqual({ '16y7vsu': { type: '_', style: { color: 'red' }, id: '16y7vsu' } })
 
 }
