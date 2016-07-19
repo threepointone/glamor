@@ -33,31 +33,6 @@ cons
 
 - no real-world usage / adoption yet
 
-compared to aphrodite / other css-in-js systems
----
-- shares most of the common features across those libs
-  - server side rendering : react-css can generate minimal css for corresponding html, and
-  then bootstrap itself on the browser for fast startup.
-  - pseudo classes / elements : react-css supports all of them, with a consistent api.
-  - media queries : react-css supports these too, and combines well with the above.
-  - framework independent : as long as you can add attributes to dom nodes, you're good to go
-  - (todo) adding appropriate vendor specific prefixes to relevant css properties
-  - (todo) automatic global `@font-face` detection and insertion
-
-- styles are defined as 'rules', not 'stylesheets', and then indexed behind the scenes by
-  hashing themselves on `data-*` attributes. This lets you define styles 'inline' with elements
-  in a functional / reacty manner, yet globally optimize them as one unit. As such, a lot of the cruft around
-  classNames/stylesheets just goes away. If you feel the need for some structure,
-  we recommend using simple objects or components (alá jsxstyle) to organize/compose 'rules'.  
-
-- react-css comes with a `simulate()` dev helper to 'trigger' pseudo classes on
-specific elements. combined with hot-loading, the dx while editing styles is pretty nice.
-
-- (todo) styles can be statically analyzed and replaced with said data attributes,
-  generating a much more optimal css file / js bundle
-
-
-
 api
 ---
 
@@ -201,6 +176,29 @@ caveat: the above will include all the css that's been generated in the app's li
 This should be fine in most cases. If you seem to be including too many unused styles,
 use `renderStaticOptimized` instead of `renderStatic`. This will parse the generated
 html and include only the relevant used css / cache.
+
+compared to aphrodite / other css-in-js systems
+---
+- shares most of the common features across those libs
+  - server side rendering : react-css can generate minimal css for corresponding html, and
+  then bootstrap itself on the browser for fast startup.
+  - pseudo classes / elements : react-css supports all of them, with a consistent api.
+  - media queries : react-css supports these too, and combines well with the above.
+  - framework independent : as long as you can add attributes to dom nodes, you're good to go
+  - (todo) adding appropriate vendor specific prefixes to relevant css properties
+  - (todo) automatic global `@font-face` detection and insertion
+
+- styles are defined as 'rules', not 'stylesheets', and then indexed behind the scenes by
+  hashing themselves on `data-*` attributes. This lets you define styles 'inline' with elements
+  in a functional / reacty manner, yet globally optimize them as one unit. As such, a lot of the cruft around
+  classNames/stylesheets just goes away. If you feel the need for some structure,
+  we recommend using simple objects or components (alá jsxstyle) to organize/compose 'rules'.  
+
+- react-css comes with a `simulate()` dev helper to 'trigger' pseudo classes on
+specific elements. combined with hot-loading, the dx while editing styles is pretty nice.
+
+- (todo) styles can be statically analyzed and replaced with said data attributes,
+  generating a much more optimal css file / js bundle
 
 
 todo
