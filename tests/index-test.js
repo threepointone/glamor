@@ -62,7 +62,7 @@ describe('react-css', () => {
     render(<div {...style({color: 'red'})} className='whatever' style={{color: 'blue'}}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')
       expect([...node.childNodes[0].classList]).toEqual(['whatever'])
-    })    
+    })
 
   })
 
@@ -161,11 +161,7 @@ describe('react-css', () => {
     node.innerHTML = '<div data-css-_="16y7vsu"></div>'
     expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
     rehydrate({ '16y7vsu': { id: '16y7vsu', style: { color: 'red' }, type: '_' }})
-    // then call style() with the same value and make sure it doesn't get overwritten
 
-    // expect(document.styleSheets._css_.rules.length).toEqual(1)
-    //
-    // expect(document.styleSheets._css_.rules.length).toEqual(1)
     style({color: 'red'})
     style({color: 'blue'})
 
