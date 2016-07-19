@@ -58,11 +58,12 @@ describe('react-css', () => {
       })
   })
 
-  it('doesn\'t touch style/className, respects precedence', () => {
+  it('doesn\'t touch style/className', () => {
     render(<div {...style({color: 'red'})} className='whatever' style={{color: 'blue'}}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')
       expect([...node.childNodes[0].classList]).toEqual(['whatever'])
-    })
+    })    
+
   })
 
   it('can style pseudo classes', () => {

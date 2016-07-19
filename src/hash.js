@@ -66,9 +66,3 @@ function Umul32(n, m) {
   let res = ((nlo * m) + (((nhi * m) & 0xffff) << 16)) | 0
   return res
 }
-
-function getBucket(str, buckets) {
-  let hash = doHash(str, str.length)
-  let bucket = hash % buckets
-  return bucket
-}
