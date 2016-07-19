@@ -37,7 +37,15 @@ describe('react-css', () => {
   })
 
   it('multiple styles can be combined', () => {
-    render(<div {...style({width: 100, height: 200 })} {...style({ height: 100 })} />, node, () => {
+    // 2 methods
+
+    // 1. when you don't expect key clashes and don't worry about precedence
+    render(<div {...style({width: 100 })} {...style({ height: 100 })} {...hover({height: 200})}/>, node, () => {
+      expect(childStyle(node).height).toEqual('100px')
+    })
+    // 2. when you need fine grained control over which keys get prcedence,
+    // manually merge your styles together
+    render(<div {...style({...{width: 100 }, ...{ height: 100 }} )} />, node, () => {
       expect(childStyle(node).height).toEqual('100px')
     })
   })

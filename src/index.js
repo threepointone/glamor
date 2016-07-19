@@ -54,12 +54,12 @@ else {
   // todo - server side fill - selectorText, etc
   sheet = {
     rules: [],
-    deleteRule: (index) => {
-      sheet.rules = [ ...sheet.rules.slice(0, index - 1), ...sheet.rules.slice(index + 1) ]
+    deleteRule: index => {
+      sheet.rules = [ ...sheet.rules.slice(0, index), ...sheet.rules.slice(index + 1) ]
     },
     insertRule: (rule, index) => {
       // should we include selectorText etc
-      sheet.rules = [ ...sheet.rules.slice(0, index - 1), {cssText: rule}, ...sheet.rules.slice(index) ]
+      sheet.rules = [ ...sheet.rules.slice(0, index), {cssText: rule}, ...sheet.rules.slice(index) ]
     }
   }
 }
@@ -82,8 +82,8 @@ export function selector(type, id){
 }
 
 export function rule(type, style, id){
-  let r = `${selector(type, id)}{ ${createMarkupForStyles(style)}} `
-  return r
+  return `${selector(type, id)}{ ${createMarkupForStyles(style)} } `
+
 }
 
 export function add(type = '_', style, id = objHash(type, style)){
@@ -94,7 +94,6 @@ export function add(type = '_', style, id = objHash(type, style)){
   }
 
   return {[`data-css-${simple(type)}`]: id }
-
 }
 
 export function media(expr, style){
@@ -149,13 +148,26 @@ export function renderStatic(fn, optimized = false){
   if(html === undefined){
     throw new Error('did you forget to return from renderToString?')
   }
-  let c = cache, rules = [...sheet.rules], css = rules.map(r => r.cssText).join('\n')
-  if(optimized){
+  let rules = [...sheet.rules], css = rules.map(r => r.cssText).join('\n')
+  if(optimized){    
     // parse out ids from html
     // reconstruct css/rules/cache to pass
 
+    let o = { html, cache:{}, rules: [] }
+    let regex = /data\-css\-[a-zA-Z0-9\-\_]+=\"([a-zA-Z0-9]+)\"/gm
+    let match, ids = []
+    while((match = regex.exec(html)) !== null) {
+      ids.push(match[1])
+    }
+    ids.forEach(id => {
+      o.cache[id] = cache[id]
+      o.rules.push({cssText: rule(cache[id].type, cache[id].style, id)})
+    })
+    o.css = o.rules.map(r => r.cssText).join('\n')
+    return o
+
   }
-  return { html, cache: c, rules, css }
+  return { html, cache, rules, css }
 
 }
 
