@@ -78,7 +78,7 @@ let { html, css, cache } = renderStatic(() =>
 // ... when rendering your html
 `<html>
   <head>
-    <style id='_css_'>${css}</style>
+    <style>${css}</style>
   </head>
   <body>
     <div id='root'>${html}</div>
@@ -102,9 +102,9 @@ todo
 ---
 
 - font face detection / on-demand loading
-- statically generate css files for webpack etc alá jsxstyle
 - hot loading support
 - typechecks (flow? runtime?)
+- compile time optimizations / statically generate css files alá jsxstyle
 - other frameworks?
 - theming et al
 
