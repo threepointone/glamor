@@ -168,7 +168,6 @@ export function rehydrate(c){
   // load up cache
   // flush()
   cache = {...cache, ...c}
-  index = Object.keys(cache).length - 1
   // assume css loaded separately
 }
 

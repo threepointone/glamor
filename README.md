@@ -103,7 +103,7 @@ todo
 
 - font face detection / on-demand loading
 - hot loading support
-- typechecks (flow? runtime?)
+- error checking / typechecks (flow? runtime?)
 - compile time optimizations / statically generate css files alá jsxstyle
 - other frameworks?
 - theming et al

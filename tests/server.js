@@ -18,11 +18,13 @@ style({ color: 'wheat' })
   expect(css).toEqual('[data-css-_="ruiioi"]{ color:wheat;} \n[data-css-_="16y7vsu"]{ color:red;} ')
   expect(cache).toEqual({ '16y7vsu': { id: '16y7vsu', style: { color: 'red' }, type: '_' }, ruiioi: { id: 'ruiioi', style: { color: 'wheat' }, type: '_' } })
 }
+
+// todo - optimized css 
 {
   let { html, css, cache } = renderStaticOptimized(() =>
     renderToStaticMarkup(<div {...style({color: 'red'})}/>))
 
   expect(html).toEqual('<div data-css-_="16y7vsu"></div>')
   expect(css).toEqual('[data-css-_="16y7vsu"]{ color:red;} ')
-  
+
 }
