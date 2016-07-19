@@ -41,7 +41,7 @@ features
 - lovely api, imo :)
 - reuses common declarations
 - _doesn't_ use `style`/`className` props
-- supports all the pseudo selectors/elements
+- supports all the pseudo classes/elements
 - and media queries
 - simulate pseudo classes in development
 - composes well
@@ -51,13 +51,6 @@ features
 cons
 ---
 
-- side-effecty, can lead to memory leaks with rapidly changing style objects
-  - since we generate/add css rules to the dom as soon they're computed, style
-  objects that change over _many different_ values will leave behind unused rules in the dom. while
-  there exists a function `remove` to remove rules based on the generated hash/refs,
-  I can't think of a simple way to expose it. Hopefully this is an edge case and doesn't
-  affect many people. If so, the recommendation is to use use regular
-  `style` prop for styles that change over _many different_ values.
 - no real-world usage/ adoption
 
 server side rendering
