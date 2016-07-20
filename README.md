@@ -117,7 +117,7 @@ media queries!
 
 `simulate(...pseudoclasses)`
 
-[hover](http://i.imgur.com/mW7J8kg.gifv)
+![hover](http://i.imgur.com/mW7J8kg.gifv)
 
 [todo]
 
