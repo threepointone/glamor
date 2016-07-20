@@ -91,7 +91,7 @@ nthOfType(/* expression */, {...})
 
 ---
 
-`<pseudoelement>(param, { ...props })`
+`<pseudoelement>({ ...props })`
 
 where _`<pseudoelement>`_ is one of `after`, `before`, `firstLetter`, `firstLine`, `selection`,
 `backdrop`, `placeholder`
