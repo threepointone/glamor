@@ -213,6 +213,7 @@ todo
 - compile time optimizations / statically generate css files alá jsxstyle
 - other frameworks?
 - non-dom? (!)
+- plugins 
 - theming et al
 
 
