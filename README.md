@@ -17,14 +17,11 @@ api for, um, the greater good.
 features
 ---
 
-- fairly small / efficient
-- lovely api, imo :)
-- reuses common declarations
+- fairly small / efficient, with a fluent api
 - _doesn't_ use `style`/`className` props
 - supports all the pseudo classes/elements
-- and media queries
+- supports media queries
 - dev helper to simulate pseudo classes like `:hover`, etc
-- composes well
 - tests / coverage
 - server side rendering
 
