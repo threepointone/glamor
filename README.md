@@ -10,15 +10,16 @@ motivation
 ---
 
 This expands on ideas from @vjeux's [2014 css-in-js talk](https://speakerdeck.com/vjeux/react-css-in-js).
-We introduce an api to annotate arbitrary dom nodes with style definitions, processing/optimizing behind the scenes
-with the [CSSStyleSheet](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet)
+We introduce an api to annotate arbitrary dom nodes with style definitions,
+processing/optimizing behind the scenes with the
+[CSSStyleSheet](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet)
 api for, um, the greater good.
 
 features
 ---
 
 - fairly small / efficient, with a fluent api
-- _doesn't_ use `style`/`className` props
+- framework independent
 - supports all the pseudo classes/elements
 - supports media queries
 - dev helper to simulate pseudo classes like `:hover`, etc
@@ -37,7 +38,7 @@ api
 
 defines a style with the given key-value pairs. returns an object (of shape `{'data-css-\_': <id>}`),
 to be added to a dom element's attributes. This is *not* the same as a dom element's `style`,
-and doesn't interfere with the element's `class`
+and doesn't interfere with the element's `className` / `class`
 
 ```jsx
 <div {...style({ backgroundColor: '#ccc', borderRadius: 10 })}>
@@ -65,8 +66,7 @@ defines a style for the given pseudoclass selector
   <input
     {...style({ color: 'gray', fontSize: 12 })}
     {...focus({ color: 'black' })}
-    {...hover({ fontSize: 16 })}
-  />
+    {...hover({ fontSize: 16 })} />
 </div>
 ```
 
@@ -119,7 +119,7 @@ media queries!
 
 ![hover](http://i.imgur.com/mW7J8kg.gif)
 
-[todo]
+in development, lets you trigger any pseudoclass on an element
 
 ---
 
@@ -203,6 +203,7 @@ specific elements. combined with hot-loading, the dx while editing styles is pre
 todo
 ---
 
+- merge rules cleanly 
 - auto-vendor-prefixes
 - font face detection / on-demand loading
 - animation / keyframe / transform generation
