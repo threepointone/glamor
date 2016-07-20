@@ -186,12 +186,13 @@ compared to aphrodite / other css-in-js systems
   - framework independent : as long as you can add attributes to dom nodes, you're good to go
   - (todo) adding appropriate vendor specific prefixes to relevant css properties
   - (todo) automatic global `@font-face` detection and insertion
+  - (todo) handle precedence via js alá aphrodite
 
 - styles are defined as 'rules', not 'stylesheets', and then indexed behind the scenes by
   hashing themselves on `data-*` attributes. This lets you define styles 'inline' with elements
   in a functional / reacty manner, yet globally optimize them as one unit. As such, a lot of the cruft around
   classNames/stylesheets just goes away. If you feel the need for some structure,
-  we recommend using simple objects or components (alá jsxstyle) to organize/compose 'rules'.  
+  we recommend using simple objects, components (alá jsxstyle), or (todo) the `stylesheet` dsl to organize/compose 'rules'.  
 
 - react-css comes with a `simulate()` dev helper to 'trigger' pseudo classes on
 specific elements. combined with hot-loading, the dx while editing styles is pretty nice.
@@ -203,7 +204,8 @@ specific elements. combined with hot-loading, the dx while editing styles is pre
 todo
 ---
 
-- merge rules cleanly 
+- merge rules cleanly
+- stylesheet construct
 - auto-vendor-prefixes
 - font face detection / on-demand loading
 - animation / keyframe / transform generation
