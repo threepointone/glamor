@@ -9,6 +9,6 @@
 
 // all those usages are targets
 
-export default function extract(src){
+export default function extract() {
 
 }

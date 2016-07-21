@@ -1,13 +1,18 @@
 import React from 'react'
 
-import { style, hover, focus, simulate, after } from '../../src'
+import { style, hover } from '../../src'
 
-export class App extends React.Component{
+let red = style({ backgroundColor: 'red' }),
+  blue = style({ backgroundColor: 'blue' })
+
+
+export class App extends React.Component {
   render() {
     return <div>
       This here is a link to
+      <div  {...red} {...blue} >sadasdasd</div>
       <a href='google.com'
-        {...hover({backgroundColor: 'red'})}
+        {...hover({ backgroundColor: 'red' })}
         // {...simulate('hover')}
       > google.com
       </a>

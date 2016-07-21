@@ -223,6 +223,8 @@ compared to aphrodite / other css-in-js systems
 
 - doesn't touch class/style attributes ([some implications](https://github.com/Khan/aphrodite/issues/25))
 
+- doesn't generate pretty classnames
+
 - styles are defined as 'rules', not 'stylesheets', and then indexed behind the scenes by
   hashing themselves on `data-*` attributes. This lets you define styles 'inline' with elements
   in a functional / reacty manner, yet globally optimize them as one unit. As such, a lot of the cruft around
@@ -248,7 +250,8 @@ todo
 - non-dom? (!)
 - plugins
 - flush unused rules?
--cache hashes with weakmaps
+- cache hashes with weakmaps
+- investigate batching stylesheet changes 
 - theming et al
 
 

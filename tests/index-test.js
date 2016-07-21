@@ -1,13 +1,13 @@
 import expect from 'expect'
-import React from 'react'
+import React from 'react' //eslint-disable-line
 import { render, unmountComponentAtNode } from 'react-dom'
 
 import { style, hover, nthChild, firstLetter, media,
   startSimulation, stopSimulation, simulate,
-  rehydrate, remove, flush }
+  rehydrate, flush }
 from 'src/'
 
-function childStyle(node, p = null){
+function childStyle(node, p = null) {
   return window.getComputedStyle(node.childNodes[0], p)
 }
 
@@ -33,7 +33,7 @@ describe('react-css', () => {
   })
 
   it('only adds a data attribute to the node', () => {
-    render(<div {...style({ backgroundColor: '#0f0'})}></div>, node, () => {
+    render(<div {...style({ backgroundColor: '#0f0' })}></div>, node, () => {
       expect(node.innerHTML).toEqual('<div data-reactroot="" data-css-_="1ipahuh"></div>')
       expect(childStyle(node).backgroundColor).toEqual('rgb(0, 255, 0)')
     })
@@ -43,12 +43,12 @@ describe('react-css', () => {
     // 2 methods
 
     // 1. when you don't expect key clashes and don't worry about precedence
-    render(<div {...style({width: 100 })} {...style({ height: 100 })} {...hover({height: 200})}/>, node, () => {
+    render(<div {...style({ width: 100 })} {...style({ height: 100 })} {...hover({ height: 200 })}/>, node, () => {
       expect(childStyle(node).height).toEqual('100px')
     })
     // 2. when you need fine grained control over which keys get prcedence,
     // manually merge your styles together
-    render(<div {...style({...{width: 100 }, ...{ height: 100 }} )} />, node, () => {
+    render(<div {...style({ ...{ width: 100 }, ...{ height: 100 } } )} />, node, () => {
       expect(childStyle(node).height).toEqual('100px')
     })
 
@@ -58,30 +58,30 @@ describe('react-css', () => {
 
   it('reuses common styles', () => {
     render(<div>
-        <div {...style({backgroundColor: 'blue'})}></div>
-        <div {...style({backgroundColor: 'red'})}></div>
-        <div {...style({backgroundColor: 'blue'})}></div>
+        <div {...style({ backgroundColor: 'blue' })}></div>
+        <div {...style({ backgroundColor: 'red' })}></div>
+        <div {...style({ backgroundColor: 'blue' })}></div>
       </div>, node, () => {
 
         // only 2 rules get added to the stylesheet
         expect(document.styleSheets._css_.rules.length).toEqual(2)
 
-        let [id0, id1, id2] = [0, 1, 2].map(i => node.childNodes[0].childNodes[i].getAttribute('data-css-_'))
+        let [ id0, id1, id2 ] = [ 0, 1, 2 ].map(i => node.childNodes[0].childNodes[i].getAttribute('data-css-_'))
         expect(id0).toEqual(id2) // first and third elements have the same hash
         expect(id0).toNotEqual(id1)   // not the second
       })
   })
 
   it('doesn\'t touch style/className', () => {
-    render(<div {...style({color: 'red'})} className='whatever' style={{color: 'blue'}}/>, node, () => {
+    render(<div {...style({ color: 'red' })} className='whatever' style={{ color: 'blue' }}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')
-      expect([...node.childNodes[0].classList]).toEqual(['whatever'])
+      expect([ ...node.childNodes[0].classList ]).toEqual([ 'whatever' ])
     })
 
   })
 
   it('can style pseudo classes', () => {
-    render(<div {...hover({color: 'red'})}/>, node, () => {
+    render(<div {...hover({ color: 'red' })}/>, node, () => {
       // console.log(childStyle(node, ':hover').getPropertyValue('color'))
       // ^ this doesn't work as I want
       expect(document.styleSheets._css_.rules[0].cssText)
@@ -102,15 +102,16 @@ describe('react-css', () => {
   })
 
   it('can style parameterized pseudo classes', () => {
-    let obj = nthChild(2, {color: 'red'})
+    let obj = nthChild(2, { color: 'red ' })
     render(<div>
         <div {...obj} />
         <div {...obj} />
         <div {...obj} />
         <div {...obj} />
       </div>, node, () => {
-        expect([0, 1, 2, 3].map(i => parseInt(window.getComputedStyle(node.childNodes[0].childNodes[i]).color.slice(4), 10)))
-          .toEqual([0, 255, 0, 0])
+        expect([ 0, 1, 2, 3 ].map(i =>
+          parseInt(window.getComputedStyle(node.childNodes[0].childNodes[i]).color.slice(4), 10)))
+          .toEqual([ 0, 255, 0, 0 ])
       })
   })
 
@@ -120,15 +121,15 @@ describe('react-css', () => {
         {...nthChild(2, { backgroundColor: 'rgba(255, 0, 0, 0)' })}
         {...simulate(':nth-child(2)')}
       />, node, () => {
-      expect(childStyle(node).backgroundColor).toEqual('rgba(255, 0, 0, 0)')
-      stopSimulation()
-    })
+        expect(childStyle(node).backgroundColor).toEqual('rgba(255, 0, 0, 0)')
+        stopSimulation()
+      })
     // you can use nthChild2 nth-child(2) :nth-child(2), whatever.
     // only if there exists a similar existing rule to match really would it work anyway
   })
 
   it('can style pseudo elements', () => {
-    render(<div {...firstLetter({color:'red'})} />, node, () => {
+    render(<div {...firstLetter({ color:'red' })} />, node, () => {
       expect(document.styleSheets._css_.rules[0].cssText)
         .toEqual('[data-css-firstLetter="19rst82"]::first-letter { color: red; }')
     })
@@ -136,7 +137,7 @@ describe('react-css', () => {
 
   it('can style media queries', () => {
     // we assume phantomjs/chrome/whatever has a width > 300px
-    render(<div {...media('(min-width: 300px)', {color: 'red'})}/>, node, () => {
+    render(<div {...media('(min-width: 300px)', { color: 'red' })}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
       expect(document.styleSheets._css_.rules[0].cssText)
         .toEqual('@media (min-width: 300px) { \n  [data-css-_="jmjadz"] { color: red; }\n}')
@@ -147,7 +148,7 @@ describe('react-css', () => {
 
   it('can target pseudo classes/elements inside media queries', () => {
     startSimulation()
-    render(<div {...media('(min-width: 300px)', hover({color: 'red'}))} {...simulate('hover')}/>, node, () => {
+    render(<div {...media('(min-width: 300px)', hover({ color: 'red' }))} {...simulate('hover')}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
       expect(document.styleSheets._css_.rules[1].cssText)
         .toEqual('@media (min-width: 300px) { \n  [data-css-hover="5o4wo0"]:hover, [data-css-hover="5o4wo0"][data-simulate-hover] { color: red; }\n}')
@@ -158,7 +159,14 @@ describe('react-css', () => {
 
   })
 
-  it('can merge rules')
+  it('can merge rules', () => {
+    let red = style({ backgroundColor: 'red' }),
+      blue = style({ backgroundColor: 'blue' })
+
+    render(<div {...blue} {...red}/>, node, () => {
+      expect(childStyle(node).backgroundColor).toEqual('rgb(255, 0, 0)')
+    })
+  })
 
   it('adds vendor prefixes')
   // on server side, add all?
@@ -175,17 +183,17 @@ describe('react-css', () => {
   it('can rehydrate from serialized css/cache data', () => {
     let styleTag = document.createElement('style')
     if (styleTag.styleSheet) {
-        styleTag.styleSheet.cssText += '[data-css-_="16y7vsu"]{ color:red; }';
+      styleTag.styleSheet.cssText += '[data-css-_="16y7vsu"]{ color:red; }'
     } else {
-        styleTag.appendChild(document.createTextNode('[data-css-_="16y7vsu"]{ color:red; }'));
+      styleTag.appendChild(document.createTextNode('[data-css-_="16y7vsu"]{ color:red; }'))
     }
     document.head.appendChild(styleTag)
     node.innerHTML = '<div data-css-_="16y7vsu"></div>'
     expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
-    rehydrate({ '16y7vsu': { id: '16y7vsu', style: { color: 'red' }, type: '_' }})
+    rehydrate({ '16y7vsu': { id: '16y7vsu', style: { color: 'red' }, type: '_' } })
 
-    style({color: 'red'})
-    style({color: 'blue'})
+    style({ color: 'red' })
+    style({ color: 'blue' })
 
     expect(document.styleSheets._css_.rules.length).toEqual(1)
     document.head.removeChild(styleTag)

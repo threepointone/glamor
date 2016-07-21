@@ -1,7 +1,7 @@
 import { style, renderStatic, renderStaticOptimized } from '../src'
 
 import expect from 'expect'
-import React from 'react'
+import React from 'react' // eslint-disable-line
 
 import { renderToStaticMarkup } from 'react-dom/server'
 
@@ -12,7 +12,7 @@ style({ color: 'wheat' })
 
 {
   let { html, css, cache } = renderStatic(()=>
-    renderToStaticMarkup(<div {...style({color: 'red'})}/>))
+    renderToStaticMarkup(<div {...style({ color: 'red' })}/>))
 
   expect(html).toEqual('<div data-css-_="16y7vsu"></div>')
   expect(css).toEqual('[data-css-_="ruiioi"]{ color:wheat; } \n[data-css-_="16y7vsu"]{ color:red; } ')
@@ -22,7 +22,7 @@ style({ color: 'wheat' })
 // todo - optimized css
 {
   let { html, css, cache } = renderStaticOptimized(() =>
-    renderToStaticMarkup(<div {...style({color: 'red'})}/>))
+    renderToStaticMarkup(<div {...style({ color: 'red' })}/>))
 
   expect(html).toEqual('<div data-css-_="16y7vsu"></div>')
   expect(css).toEqual('[data-css-_="16y7vsu"]{ color:red; } ')
