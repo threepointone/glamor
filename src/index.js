@@ -1,4 +1,5 @@
 import hash from './hash'
+import autoprefix from './autoprefix'
 
 import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations'
 
@@ -51,7 +52,6 @@ if(isBrowser){
   sheet = document.styleSheets._css_
 }
 else {
-  // todo - server side fill - selectorText, etc
   sheet = {
     rules: [],
     deleteRule: index => {
@@ -82,7 +82,7 @@ export function selector(type, id){
 }
 
 export function rule(type, style, id){
-  return `${selector(type, id)}{ ${createMarkupForStyles(style)} } `
+  return `${selector(type, id)}{ ${createMarkupForStyles(autoprefix(style))} } `
 
 }
 
@@ -96,7 +96,8 @@ export function add(type = '_', style, id = objHash(type, style)){
   return {[`data-css-${simple(type)}`]: id }
 }
 
-export function media(expr, style){
+export function media(expr, ...styles){
+  let style = styles[0]
 
     if(cache[style[Object.keys(style)[0]]]){
       let id = style[Object.keys(style)[0]]
@@ -143,7 +144,6 @@ export function flush(){
 }
 
 export function renderStatic(fn, optimized = false){
-  // todo - only pull specific rules
   let html = fn()
   if(html === undefined){
     throw new Error('did you forget to return from renderToString?')
@@ -168,7 +168,6 @@ export function renderStatic(fn, optimized = false){
 
   }
   return { html, cache, rules, css }
-
 }
 
 export function renderStaticOptimized(fn){
@@ -178,7 +177,6 @@ export function renderStaticOptimized(fn){
 
 export function rehydrate(c){
   // load up cache
-  // flush()
   cache = {...cache, ...c}
   // assume css loaded separately
 }
@@ -213,3 +211,12 @@ let elements = ['after', 'before', 'first-letter', 'first-line', 'selection',
 'backdrop', 'placeholder']
 elements.forEach(el => exports[simple(el)] =
   (style, id) => add(`:${el}`, style, id))
+
+export function merge(styles){
+  // pull out all actual styles
+  // partition by type
+  // create/add corresponding rules
+  // return mashup
+  console.error('not implemented')
+
+}

@@ -158,6 +158,14 @@ describe('react-css', () => {
 
   })
 
+  it('can merge rules')
+
+  it('adds vendor prefixes')
+  // on server side, add all?
+  // on client side, just the ones we need?
+  // how does this affect hashing etc?
+
+
   it('can simulate media queries')
 
   it('server side rendering', () => {
@@ -184,10 +192,6 @@ describe('react-css', () => {
 
   })
 
-  it('delete a rule from the stylesheet'
-  // , () => {
-  //
-  // }
-)
+  it('delete a rule from the stylesheet')
 
 })

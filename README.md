@@ -10,7 +10,7 @@ motivation
 ---
 
 This expands on ideas from @vjeux's [2014 css-in-js talk](https://speakerdeck.com/vjeux/react-css-in-js).
-We introduce an api to annotate arbitrary dom nodes with style definitions,
+We introduce an api to annotate arbitrary dom nodes with style definitions ("rules"),
 processing/optimizing behind the scenes with the
 [CSSStyleSheet](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet)
 api for, um, the greater good.
@@ -23,21 +23,23 @@ features
 - supports all the pseudo classes/elements
 - supports media queries
 - dev helper to simulate pseudo classes like `:hover`, etc
-- tests / coverage
 - server side rendering
+- tests / coverage
+
 
 cons
 ---
 
 - no real-world usage / adoption yet
+- changes across large ranges of values could cause a memory leak ([#1](https://github.com/threepointone/react-css/issues/1))
 
 api
 ---
 
-`style({...props})`
+`style(props)`
 
-defines a style with the given key-value pairs. returns an object (of shape `{'data-css-\_': <id>}`),
-to be added to a dom element's attributes. This is *not* the same as a dom element's `style`,
+defines a `rule` with the given key-value pairs. returns an object (of shape `{'data-css-_': <id>}`),
+to be added to an element's attributes. This is *not* the same as element's `style`,
 and doesn't interfere with the element's `className` / `class`
 
 ```jsx
@@ -50,16 +52,19 @@ and doesn't interfere with the element's `className` / `class`
 
 ---
 
-`<pseudoclass>({ ...props })`
+`<pseudo>(props)`
 
-where _`<pseudoclass>`_ is one of `active`, `any`, `checked`, `default`, `disabled`,
-`empty`, `enabled`, `first`, `firstChild`, `firstOfType`, `fullscreen`,
-`focus`, `hover`, `indeterminate`, `inRange`, `invalid`, `lastChild`,
-`lastOfType`, `left`, `link`, `onlyChild`, `onlyOfType`, `optional`,
-`outOfRange`, `readOnly`, `readWrite`, `required`, `right`, `root`, `scope`,
-`target`, `valid`, `visited`
+where `<pseudo>` is one of :
+```
+active      any           checked     default     disabled    empty
+enabled     first         firstChild  firstOfType fullscreen  focus
+hover       indeterminate inRange     invalid     lastChild   lastOfType
+left        link          onlyChild   onlyOfType  optional    outOfRange
+readOnly    readWrite     required    right root  scope       target
+valid       visited
+```
 
-defines a style for the given pseudoclass selector
+defines a `rule` for the given pseudoclass selector
 
 ```jsx
 <div {...hover({ backgroundColor: '#ccc', display: 'block'})}>
@@ -72,18 +77,20 @@ defines a style for the given pseudoclass selector
 
 ---
 
-`<pseudoclass>(param, { ...props })`
+`<pseudo>(param, props)`
 
-where _`<pseudoclass>`_ is one of `dir`, `lang`, `not`, `nthChild`, `nthLastChild`,
-`nthLastOfType`, `nthOfType`
+where `<pseudo>` is one of :
+```
+dir  lang  not  nthChild  nthLastChild  nthLastOfType  nthOfType
+```
 
 like the above, but parameterized with a number / string
 
 ```jsx
-dir('ltr', {...}) /* or */ dir('rtl', {...})
-lang('en', {...}) /* or */ lang('fr')  /* or */ lang('hi') /* etc... */
+dir('ltr', {...}), dir('rtl', {...})
+lang('en', {...}), lang('fr'), lang('hi') /* etc... */
 not(/* selector */, {...})
-nthChild(2, {...}) /* or */ nthChild('3n-1', {...}) /* or */ nthChild('even', {...}) /* etc... */
+nthChild(2, {...}), nthChild('3n-1', {...}), nthChild('even', {...}) /* etc... */
 nthLastChild(/* expression */, {...})
 nthLastOfType(/* expression */, {...})
 nthOfType(/* expression */, {...})
@@ -91,10 +98,14 @@ nthOfType(/* expression */, {...})
 
 ---
 
-`<pseudoelement>({ ...props })`
+`<pseudo>(props)`
 
-where _`<pseudoelement>`_ is one of `after`, `before`, `firstLetter`, `firstLine`, `selection`,
-`backdrop`, `placeholder`
+where `<pseudo>` is one of
+```
+after  before  firstLetter  firstLine  selection  backdrop  placeholder
+```
+
+similar to the above, but for pseudo elements.
 
 ```jsx
 <div {...after({ content: '"boo!"' })}>...</div>
@@ -103,7 +114,20 @@ where _`<pseudoelement>`_ is one of `after`, `before`, `firstLetter`, `firstLine
 
 ---
 
-`media(rule, { ...props })`
+`merge(...rules)`
+
+[todo]
+
+combine rules, with latter styles taking precedence over previous ones.
+
+```jsx
+merge(style(...), hover(...), hover(...))
+
+```
+
+---
+
+`media(query, ...rules)`
 
 media queries!
 
@@ -121,17 +145,17 @@ media queries!
 
 in development, lets you trigger any pseudoclass on an element
 
----
 
-`remove()`
-`flush()`
-
-[todo]
 
 composing / modularity
 ---
 
-[todo]
+while it's tempting to add some form of a `Stylesheet` construct, we'd
+rather defer to the developer's preference. In general, we recommed using
+simple objects, functions, and components to create abstractions.
+
+[todo - examples]
+
 
 server side rendering
 ---
@@ -146,29 +170,37 @@ the calls you used and return an object with html, css, and an object
 to rehydrate the lib's cache
 
 ```jsx
-
 // on the server
 import { renderStatic } from '@threepointone/react-css'
 let { html, css, cache } = renderStatic(() =>
   ReactDOMServer.renderToString(<App/>)) // or `renderToStaticMarkup`
-
-// when rendering your html
-`<html>
+```
+```html
+<!-- when rendering your html -->
+<html>
   <head>
     <style>${css}</style>
+    <!-- alternately, you'd save the css to a file
+      and include it here with
+    <link rel='stylesheet' href='path/to/css'/>
+     -->
   </head>
   <body>
     <div id='root'>${html}</div>
-    <script>window._cssCache = ${JSON.stringify(cache)}</script>
+    <script>
+      // optional!
+      window._css = ${JSON.stringify(cache)}
+    </script>
     <script src="bundle.js"></script>
   </body>
-</html>`
-
+</html>
+```
+```jsx
+// optional!
 // when starting up your app
 import { rehydrate } from '@threepointone/react-css'
-rehydrate(window._cssCache)
+rehydrate(window._css)
 ReactDOM.render(<App/>, document.getElementById('root'))
-
 ```
 
 caveat: the above will include all the css that's been generated in the app's lifetime.
@@ -178,21 +210,23 @@ html and include only the relevant used css / cache.
 
 compared to aphrodite / other css-in-js systems
 ---
+
 - shares most of the common features across those libs
-  - server side rendering : react-css can generate minimal css for corresponding html, and
+  - server side rendering : react-css can generate minimal css for given html, and
   then bootstrap itself on the browser for fast startup.
   - pseudo classes / elements : react-css supports all of them, with a consistent api.
   - media queries : react-css supports these too, and combines well with the above.
   - framework independent : as long as you can add attributes to dom nodes, you're good to go
   - (todo) adding appropriate vendor specific prefixes to relevant css properties
   - (todo) automatic global `@font-face` detection and insertion
-  - (todo) handle precedence via js alá aphrodite
+  - (todo) handle precedence order
+
+- doesn't touch class/style attributes ([some implications](https://github.com/Khan/aphrodite/issues/25))
 
 - styles are defined as 'rules', not 'stylesheets', and then indexed behind the scenes by
   hashing themselves on `data-*` attributes. This lets you define styles 'inline' with elements
   in a functional / reacty manner, yet globally optimize them as one unit. As such, a lot of the cruft around
-  classNames/stylesheets just goes away. If you feel the need for some structure,
-  we recommend using simple objects, components (alá jsxstyle), or (todo) the `stylesheet` dsl to organize/compose 'rules'.  
+  classNames/stylesheets just goes away.
 
 - react-css comes with a `simulate()` dev helper to 'trigger' pseudo classes on
 specific elements. combined with hot-loading, the dx while editing styles is pretty nice.
@@ -205,7 +239,6 @@ todo
 ---
 
 - merge rules cleanly
-- stylesheet construct
 - auto-vendor-prefixes
 - font face detection / on-demand loading
 - animation / keyframe / transform generation
@@ -213,7 +246,9 @@ todo
 - compile time optimizations / statically generate css files alá jsxstyle
 - other frameworks?
 - non-dom? (!)
-- plugins 
+- plugins
+- flush unused rules?
+-cache hashes with weakmaps
 - theming et al
 
 
