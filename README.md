@@ -233,8 +233,8 @@ compared to aphrodite / other css-in-js systems
 - react-css comes with a `simulate()` dev helper to 'trigger' pseudo classes on
 specific elements. combined with hot-loading, the dx while editing styles is pretty nice.
 
-- (todo) styles can be statically analyzed and replaced with said data attributes,
-  generating a much more optimal css file / js bundle
+- (todo) styles couldfurther be statically analyzed and replaced with said data attributes,
+  generating a much more optimal css file / js bundle ([#2](https://github.com/threepointone/react-css/issues/2))
 
 
 todo
@@ -251,7 +251,7 @@ todo
 - plugins
 - flush unused rules?
 - cache hashes with weakmaps
-- investigate batching stylesheet changes 
+- investigate batching stylesheet changes
 - theming et al
 
 
