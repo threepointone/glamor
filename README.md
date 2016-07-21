@@ -20,6 +20,7 @@ features
 
 - fairly small / efficient, with a fluent api
 - framework independent
+- adds vendor prefixes
 - supports all the pseudo classes/elements
 - supports media queries
 - dev helper to simulate pseudo classes like `:hover`, etc
@@ -30,6 +31,7 @@ features
 cons
 ---
 
+- no pretty class/attribute names 
 - no real-world usage / adoption yet
 - changes across large ranges of values could cause a memory leak ([#1](https://github.com/threepointone/react-css/issues/1))
 
@@ -217,7 +219,7 @@ compared to aphrodite / other css-in-js systems
   - pseudo classes / elements : react-css supports all of them, with a consistent api.
   - media queries : react-css supports these too, and combines well with the above.
   - framework independent : as long as you can add attributes to dom nodes, you're good to go
-  - (todo) adding appropriate vendor specific prefixes to relevant css properties
+  - adding appropriate vendor specific prefixes to relevant css properties
   - (todo) automatic global `@font-face` detection and insertion
   - (todo) handle precedence order
 
@@ -241,7 +243,6 @@ todo
 ---
 
 - merge rules cleanly
-- auto-vendor-prefixes
 - font face detection / on-demand loading
 - animation / keyframe / transform generation
 - error checking / typechecks (flow? runtime?)

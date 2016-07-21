@@ -3,25 +3,21 @@ import autoprefix from './autoprefix'
 
 import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations'
 
-
 let canSimulate = process.env.NODE_ENV === 'development'
-function simulation(bool) {
-  canSimulate = !!bool
-}
 
 export function startSimulation() {
-  return simulation(true)
+  canSimulate = true
 }
 
 export function stopSimulation() {
-  return simulation(false)
+  canSimulate = false
 }
 
 let warned1 = false, warned2 = false
 export function simulate(...pseudos) {
   if(!canSimulate) {
     if(!warned1) {
-      console.warn('can\'t simulate witout once calling simulation(true)') //eslint-disable-line no-console
+      console.warn('can\'t simulate without once calling startSimulation()') //eslint-disable-line no-console
       warned1 = true
     }
     if(process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== 'test' && !warned2) {
@@ -61,7 +57,7 @@ else {
   }
 }
 // preload cache/index
-let index = 0
+// let index = 0
 let cache = {}
 
 export function objHash(type, obj) {
@@ -84,7 +80,7 @@ export function rule(type, style, id) {
 export function add(type = '_', style, id = objHash(type, style)) {
   // register rule
   if(!cache[id]) {
-    sheet.insertRule(rule(type, style, id), index++)
+    sheet.insertRule(rule(type, style, id), sheet.rules.length)
     cache[id] = { type, style, id }
   }
 
@@ -99,7 +95,7 @@ export function media(expr, ...styles) {
     let newId = hash(expr+id).toString(36)
 
     if(!cache[newId]) {
-      sheet.insertRule(`@media ${expr} { ${ rule(cache[id].type, cache[id].style, newId) } }`, index++)
+      sheet.insertRule(`@media ${expr} { ${ rule(cache[id].type, cache[id].style, newId) } }`, sheet.rules.length)
       cache[newId] = { expr, style, id: newId }
     }
     return { [`data-css-${simple(cache[id].type)}`]: newId }
@@ -108,7 +104,7 @@ export function media(expr, ...styles) {
 
     let id = objHash(expr, style)
     if(!cache[id]) {
-      sheet.insertRule(`@media ${expr} { ${ rule('_', style, id) } }`, index++)
+      sheet.insertRule(`@media ${expr} { ${ rule('_', style, id) } }`, sheet.rules.length)
       cache[id] = { expr, style, id }
     }
     return { ['data-css-_']: id }
@@ -126,12 +122,12 @@ export function remove(o) {
   let i = sheet.rules.indexOf(x => x.selectorText === selector(cache[id].type, id))
   sheet.deleteRule(i)
   delete cache[id]
-  index--
+  // index--
 
 }
 
 export function flush() {
-  index = 0
+  // index = 0
   cache = {}
   while(sheet.rules.length>0) {
     sheet.deleteRule(sheet.rules.length -1)
@@ -212,6 +208,8 @@ export function merge(...styles) {
   // partition by type
   // create/add corresponding rules
   // return mashup
+  // styles
+
   console.error('not implemented')  //eslint-disable-line no-console
 
 }

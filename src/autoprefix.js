@@ -1,9 +1,12 @@
 // from https://github.com/petehunt/jsxstyle/blob/master/lib/autoprefix.js
+
+// todo - rewrite to be
 let assign = Object.assign
 
 export default function autoprefix(style) {
+  let toAdd = {}
   if (style.hasOwnProperty('userSelect')) {
-    assign(style, {
+    assign(toAdd, {
       WebkitUserSelect: style.userSelect,
       MozUserSelect: style.userSelect,
       msUserSelect: style.userSelect
@@ -11,7 +14,7 @@ export default function autoprefix(style) {
   }
 
   if (style.hasOwnProperty('transition')) {
-    assign(style, {
+    assign(toAdd, {
       WebkitTransition: style.transition,
       MozTransition: style.transition,
       msTransition: style.transition
@@ -19,7 +22,7 @@ export default function autoprefix(style) {
   }
 
   if (style.hasOwnProperty('boxShadow')) {
-    assign(style, {
+    assign(toAdd, {
       WebkitBoxShadow: style.boxShadow,
       MozBoxShadow: style.boxShadow,
       msBoxSelect: style.boxShadow
@@ -27,63 +30,63 @@ export default function autoprefix(style) {
   }
 
   if (style.hasOwnProperty('fontSmoothing')) {
-    assign(style, {
+    assign(toAdd, {
       WebkitFontSmoothing: style.fontSmoothing,
       MozOsxFontSmoothing: style.fontSmoothing === 'antialiased' ? 'grayscale' : undefined
     })
   }
 
   if (style.hasOwnProperty('flexDirection')) {
-    assign(style, {
+    assign(toAdd, {
       WebkitFlexDirection: style.flexDirection
     })
   }
 
   if (style.hasOwnProperty('flexWrap')) {
-    assign(style, {
+    assign(toAdd, {
       WebkitFlexWrap: style.flexWrap
     })
   }
 
   if (style.hasOwnProperty('alignItems')) {
-    assign(style, {
+    assign(toAdd, {
       WebkitAlignItems: style.alignItems
     })
   }
 
   if (style.hasOwnProperty('flexGrow')) {
-    assign(style, {
+    assign(toAdd, {
       WebkitFlexGrow: style.flexGrow
     })
   }
 
   if (style.hasOwnProperty('flexShrink')) {
-    assign(style, {
+    assign(toAdd, {
       WebkitFlexShrink: style.flexShrink
     })
   }
 
   if (style.hasOwnProperty('order')) {
-    assign(style, {
+    assign(toAdd, {
       WebkitOrder: style.order
     })
   }
 
   if (style.hasOwnProperty('justifyContent')) {
-    assign(style, {
+    assign(toAdd, {
       WebkitJustifyContent: style.justifyContent
     })
   }
 
   if (style.hasOwnProperty('flex')) {
-    assign(style, {
+    assign(toAdd, {
       WebkitFlex: style.flex
     })
   }
 
   if (style.display === 'flex') {
-    style.display = style.display + 'display:-webkit-flexdisplay:-ms-flexbox'
+    toAdd.display = style.display + 'display:-webkit-flexdisplay:-ms-flexbox'
   }
 
-  return style
+  return { ...style, ...toAdd }
 }

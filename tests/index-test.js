@@ -3,6 +3,7 @@ import React from 'react' //eslint-disable-line
 import { render, unmountComponentAtNode } from 'react-dom'
 
 import { style, hover, nthChild, firstLetter, media,
+  merge,
   startSimulation, stopSimulation, simulate,
   rehydrate, flush }
 from 'src/'
@@ -102,12 +103,12 @@ describe('react-css', () => {
   })
 
   it('can style parameterized pseudo classes', () => {
-    let obj = nthChild(2, { color: 'red ' })
+    let rule = nthChild(2, { color: 'red ' })
     render(<div>
-        <div {...obj} />
-        <div {...obj} />
-        <div {...obj} />
-        <div {...obj} />
+        <div {...rule} />
+        <div {...rule} />
+        <div {...rule} />
+        <div {...rule} />
       </div>, node, () => {
         expect([ 0, 1, 2, 3 ].map(i =>
           parseInt(window.getComputedStyle(node.childNodes[0].childNodes[i]).color.slice(4), 10)))
@@ -160,19 +161,30 @@ describe('react-css', () => {
   })
 
   it('can merge rules', () => {
-    let red = style({ backgroundColor: 'red' }),
-      blue = style({ backgroundColor: 'blue' })
+    startSimulation()
+    let red = style({ backgroundColor: 'red', color: 'yellow' }),
+      blue = style({ backgroundColor: 'blue' }),
+      hoverGn = hover({ color: 'green' })
 
-    render(<div {...blue} {...red}/>, node, () => {
+    render(<div {...merge(blue, red, hoverGn)} />, node, () => {
       expect(childStyle(node).backgroundColor).toEqual('rgb(255, 0, 0)')
     })
+    let sheetLength = document.styleSheets._css_.rules.length
+
+    render(<div {...merge(blue, red, hoverGn)} {...simulate('hover')}/>, node, () => {
+      expect(childStyle(node).color).toEqual('rgb(0, 255, 0)')
+      expect(document.styleSheets._css_.rules.length).toEqual(sheetLength)
+    })
+    stopSimulation()
   })
 
-  it('adds vendor prefixes')
-  // on server side, add all?
-  // on client side, just the ones we need?
-  // how does this affect hashing etc?
 
+  it('adds vendor prefixes', () => {
+    render(<div {...style({ color: 'red', transition: 'width 2s' })} />, node, () => {
+      expect(document.styleSheets._css_.rules[0].cssText)
+        .toEqual('[data-css-_="10v74ka"] { color: red; -webkit-transition: width 2s; transition: width 2s; }')
+    })
+  })
 
   it('can simulate media queries')
 
