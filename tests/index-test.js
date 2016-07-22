@@ -2,14 +2,24 @@ import expect from 'expect'
 import React from 'react' //eslint-disable-line
 import { render, unmountComponentAtNode } from 'react-dom'
 
-import { style, hover, nthChild, firstLetter, media,
-  merge,
+import { style, hover, nthChild, firstLetter, media, merge,
   startSimulation, stopSimulation, simulate,
   rehydrate, flush }
 from 'src/'
 
 function childStyle(node, p = null) {
   return window.getComputedStyle(node.childNodes[0], p)
+}
+
+function getDataAttributes(node) {
+  let d = {}, re_dataAttr = /^data\-(.+)$/;
+  [ ...node.attributes ].forEach(attr =>  {
+    if (re_dataAttr.test(attr.nodeName)) {
+      let key = attr.nodeName.match(re_dataAttr)[1]
+      d[key] = attr.nodeValue
+    }
+  })
+  return d
 }
 
 
@@ -35,7 +45,7 @@ describe('react-css', () => {
 
   it('only adds a data attribute to the node', () => {
     render(<div {...style({ backgroundColor: '#0f0' })}></div>, node, () => {
-      expect(node.innerHTML).toEqual('<div data-reactroot="" data-css-_="1ipahuh"></div>')
+      expect(node.innerHTML).toEqual('<div data-reactroot="" data-css-1ipahuh=""></div>')
       expect(childStyle(node).backgroundColor).toEqual('rgb(0, 255, 0)')
     })
   })
@@ -67,14 +77,14 @@ describe('react-css', () => {
         // only 2 rules get added to the stylesheet
         expect(document.styleSheets._css_.rules.length).toEqual(2)
 
-        let [ id0, id1, id2 ] = [ 0, 1, 2 ].map(i => node.childNodes[0].childNodes[i].getAttribute('data-css-_'))
+        let [ id0, id1, id2 ] = [ 0, 1, 2 ].map(i => getDataAttributes(node.childNodes[0].childNodes[i]))
         expect(id0).toEqual(id2) // first and third elements have the same hash
         expect(id0).toNotEqual(id1)   // not the second
       })
   })
 
   it('doesn\'t touch style/className', () => {
-    render(<div {...style({ color: 'red' })} className='whatever' style={{ color: 'blue' }}/>, node, () => {
+    render(<div {...style({ color: 'red' })} className="whatever" style={{ color: 'blue' }}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')
       expect([ ...node.childNodes[0].classList ]).toEqual([ 'whatever' ])
     })
@@ -86,7 +96,7 @@ describe('react-css', () => {
       // console.log(childStyle(node, ':hover').getPropertyValue('color'))
       // ^ this doesn't work as I want
       expect(document.styleSheets._css_.rules[0].cssText)
-        .toEqual('[data-css-hover="1w84cbc"]:hover { color: red; }')
+        .toEqual('[data-css-1w84cbc]:hover { color: red; }')
         // any ideas on a better test for this?
     })
   })
@@ -132,16 +142,16 @@ describe('react-css', () => {
   it('can style pseudo elements', () => {
     render(<div {...firstLetter({ color:'red' })} />, node, () => {
       expect(document.styleSheets._css_.rules[0].cssText)
-        .toEqual('[data-css-firstLetter="19rst82"]::first-letter { color: red; }')
+        .toEqual('[data-css-19rst82]::first-letter { color: red; }')
     })
   }) // how do I test this?
 
   it('can style media queries', () => {
     // we assume phantomjs/chrome/whatever has a width > 300px
-    render(<div {...media('(min-width: 300px)', { color: 'red' })}/>, node, () => {
+    render(<div {...media('(min-width: 300px)', style({ color: 'red' }))}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
-      expect(document.styleSheets._css_.rules[0].cssText)
-        .toEqual('@media (min-width: 300px) { \n  [data-css-_="jmjadz"] { color: red; }\n}')
+      expect(document.styleSheets._css_.rules[1].cssText)
+        .toEqual('@media (min-width: 300px) { \n  [data-css-ajnavo] { color: red; }\n}')
         // ugh
     })
 
@@ -152,7 +162,7 @@ describe('react-css', () => {
     render(<div {...media('(min-width: 300px)', hover({ color: 'red' }))} {...simulate('hover')}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
       expect(document.styleSheets._css_.rules[1].cssText)
-        .toEqual('@media (min-width: 300px) { \n  [data-css-hover="5o4wo0"]:hover, [data-css-hover="5o4wo0"][data-simulate-hover] { color: red; }\n}')
+        .toEqual('@media (min-width: 300px) { \n  [data-css-5o4wo0]:hover, [data-css-5o4wo0][data-simulate-hover] { color: red; }\n}')
       // ugh
       stopSimulation()
     })
@@ -182,7 +192,7 @@ describe('react-css', () => {
   it('adds vendor prefixes', () => {
     render(<div {...style({ color: 'red', transition: 'width 2s' })} />, node, () => {
       expect(document.styleSheets._css_.rules[0].cssText)
-        .toEqual('[data-css-_="10v74ka"] { color: red; -webkit-transition: width 2s; transition: width 2s; }')
+        .toEqual('[data-css-10v74ka] { color: red; -webkit-transition: width 2s; transition: width 2s; }')
     })
   })
 

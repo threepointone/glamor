@@ -64,50 +64,55 @@ export function objHash(type, obj) {
   return hash(type + Object.keys(obj).reduce((str, k) => str + k + obj[k], '')).toString(36)
 }
 
-export function selector(type, id) {
-  let s = `[data-css-${simple(type)}="${id}"]${type !== '_' ? `:${type}` : ''}`
-  if(type!=='_' && canSimulate) {
-    s = s + `, [data-css-${simple(type)}="${id}"][data-simulate-${simple(type)}]`
-  }
-  return s
+export function selector(id, ...types) {
+  return types.map(type => {
+    let s = `[data-css-${id}]${type !== '_' ? `:${type}` : ''}`
+    if(type!=='_' && canSimulate) {
+      s = s + `, [data-css-${id}][data-simulate-${simple(type)}]`
+    }
+    return s
+  }).join(', ')
+
 }
 
-export function rule(type, style, id) {
-  return `${selector(type, id)}{ ${createMarkupForStyles(autoprefix(style))} } `
+export function cssrule(type, style, id) {
+  return `${selector(id, type)}{ ${createMarkupForStyles(autoprefix(style))} } `
 
 }
 
 export function add(type = '_', style, id = objHash(type, style)) {
   // register rule
   if(!cache[id]) {
-    sheet.insertRule(rule(type, style, id), sheet.rules.length)
+    sheet.insertRule(cssrule(type, style, id), sheet.rules.length)
     cache[id] = { type, style, id }
   }
 
-  return { [`data-css-${simple(type)}`]: id }
+  return { [`data-css-${id}`]: '' }
 }
 
-export function media(expr, ...styles) {
-  let style = styles[0]
-
-  if(cache[style[Object.keys(style)[0]]]) {
-    let id = style[Object.keys(style)[0]]
+export function media(expr, style) {
+  // let style = styles[0]
+  let regex = /data\-css\-([a-zA-Z0-9\-\_]+)/
+  let id = regex.exec(Object.keys(style)[0])[1]
+  if(cache[id]) {
+    // let id = style[Object.keys(style)[0]]
     let newId = hash(expr+id).toString(36)
 
     if(!cache[newId]) {
-      sheet.insertRule(`@media ${expr} { ${ rule(cache[id].type, cache[id].style, newId) } }`, sheet.rules.length)
+
+      sheet.insertRule(`@media ${expr} { ${ cssrule(cache[id].type, cache[id].style, newId) } }`, sheet.rules.length)
       cache[newId] = { expr, style, id: newId }
     }
-    return { [`data-css-${simple(cache[id].type)}`]: newId }
+    return { [`data-css-${newId}`]: '' }
   }
   else {
 
-    let id = objHash(expr, style)
+    id = objHash(expr, style)
     if(!cache[id]) {
-      sheet.insertRule(`@media ${expr} { ${ rule('_', style, id) } }`, sheet.rules.length)
+      sheet.insertRule(`@media ${expr} { ${ cssrule('_', style, id) } }`, sheet.rules.length)
       cache[id] = { expr, style, id }
     }
-    return { ['data-css-_']: id }
+    return { [`data-css-${id}`]: '' }
   }
 
 }
@@ -119,7 +124,7 @@ export function remove(o) {
   console.error('this is not tested or anything yet! beware!') //eslint-disable-line no-console
 
   let id = o[Object.keys(o)[0]]
-  let i = sheet.rules.indexOf(x => x.selectorText === selector(cache[id].type, id))
+  let i = sheet.rules.indexOf(x => x.selectorText === selector(id, cache[id].type))
   sheet.deleteRule(i)
   delete cache[id]
   // index--
@@ -152,7 +157,7 @@ export function renderStatic(fn, optimized = false) {
     }
     ids.forEach(id => {
       o.cache[id] = cache[id]
-      o.rules.push({ cssText: rule(cache[id].type, cache[id].style, id) })
+      o.rules.push({ cssText: cssrule(cache[id].type, cache[id].style, id) })
     })
     o.css = o.rules.map(r => r.cssText).join('\n')
     return o
