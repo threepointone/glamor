@@ -2,7 +2,8 @@ import expect from 'expect'
 import React from 'react' //eslint-disable-line
 import { render, unmountComponentAtNode } from 'react-dom'
 
-import { style, hover, nthChild, firstLetter, media, merge,
+import { style, hover, nthChild, firstLetter, media, merge, multi, select,
+
   startSimulation, stopSimulation, simulate,
   rehydrate, flush }
 from 'src/'
@@ -146,6 +147,13 @@ describe('react-css', () => {
     })
   }) // how do I test this?
 
+  it('can add multiple pseudo classes on the same rule', () => {
+    render(<div {...multi('hover:active::after', { color:'red' })} />, node, () => {
+      expect(document.styleSheets._css_.rules[0].cssText)
+        .toEqual('[data-css-4jjrud]:hover:active::after { color: red; }')
+    })
+  })
+
   it('can style media queries', () => {
     // we assume phantomjs/chrome/whatever has a width > 300px
     render(<div {...media('(min-width: 300px)', style({ color: 'red' }))}/>, node, () => {
@@ -198,6 +206,20 @@ describe('react-css', () => {
 
   it('can simulate media queries')
 
+  it('has an escape hatch', () => {
+    render(<div {...select('.item', { color: 'red' }) }>
+      <span>this is fine</span>
+      <span className="item">this is red</span>
+    </div>, node, () => {
+      let top = node.childNodes[0]
+      let first = top.childNodes[0]
+      let second = top.childNodes[1]
+      expect(window.getComputedStyle(first).color).toEqual('rgb(0, 0, 0)')
+      expect(window.getComputedStyle(second).color).toEqual('rgb(255, 0, 0)')
+    })
+    // todo - test classnames, operators combos
+  })
+
   it('server side rendering', () => {
     // see tests/server.js
   })
@@ -223,5 +245,7 @@ describe('react-css', () => {
   })
 
   it('delete a rule from the stylesheet')
+
+
 
 })

@@ -1,19 +1,14 @@
 import React from 'react'
 
-import { hover, style, simulate } from '../../src'
+import { select, hover, style, simulate, add } from '../../src'
 
 
 export class App extends React.Component {
   render() {
-    return <div>
-      This here is a link to
-      <a href="google.com"
-        {...style({ color: 'green' })}
-        {...hover({ backgroundColor: 'red' })}
-
-        // {...simulate('hover')}
-      > google.com
-      </a>
-    </div>
+    return <ul {...select('li:nth-child(even)', { color: 'red' })}>
+      <li>one</li>
+      <li>two - red!</li>
+      <li>three</li>
+    </ul>
   }
 }

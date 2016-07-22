@@ -124,6 +124,18 @@ similar to the above, but for pseudo elements.
 
 ---
 
+`multi(pse:udos, props)`
+
+pass a ':' separated list of  pseudoclasses; for when you need to add
+multiple pseudoclasses to a rule.
+
+```jsx
+multi('hover:active', { color: 'red' })
+// corresponds to [data-css-1cb101e]:hover:active { color: red; }
+```
+
+---
+
 `merge(...rules)`
 
 combine rules, with latter styles taking precedence over previous ones.
@@ -138,6 +150,18 @@ combine rules, with latter styles taking precedence over previous ones.
 </div>
 
 ```
+`select(selector, props)`
+
+an escape hatch to define a css child selector to define styles on. should just
+work with classnames / operators.
+
+```jsx
+<ul {...select('li:nth-child(even)', { color: 'red' })}>
+  <li>one</li>
+  <li>two - red!</li>
+  <li>three</li>
+</ul>
+``` 
 
 ---
 
@@ -262,7 +286,6 @@ todo
 
 - font face detection / on-demand loading
 - animation / keyframe / transform generation
-- multiple psudo classes on same rule
 - error checking / typechecks (flow? runtime?)
 - plugins
 - other frameworks?

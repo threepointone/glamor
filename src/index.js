@@ -67,8 +67,8 @@ export function objHash(type, obj) {
 
 export function selector(id, type) {
   // id should exist
-
-  let s = `[data-css-${id}]${type !== '_' ? `:${type}` : ''}`
+  let suffix = type === '_' ? '' : type[0] === ' ' ? type : `:${type}`
+  let s = `[data-css-${id}]${suffix}`
   if(type!=='_' && canSimulate) {
     s = s + `, [data-css-${id}][data-simulate-${simple(type)}]`
   }
@@ -82,11 +82,20 @@ export function cssrule(type, style, id) {
 export function add(type = '_', style, id = objHash(type, style)) {
   // register rule
   if(!cache[id]) {
+    // remove previous rule if exists?
+    // useful for gc/named id situations?
+    // console.log(cssrule(type, style, id))
     sheet.insertRule(cssrule(type, style, id), sheet.rules.length)
     cache[id] = { type, style, id }
   }
 
   return { [`data-css-${id}`]: '' }
+}
+
+export const multi = add
+
+export function select(selector, style, id) {
+  return add(' ' + selector, style, id)
 }
 
 export function media(expr, style) {
@@ -165,13 +174,11 @@ export function renderStatic(fn, optimized = false) {
       ids.push(match[1])
     }
     ids.forEach(id => {
-
       o.cache[id] = cache[id]
 
       o.css+= sheet.rules
         .map(x => x.cssText)
         .filter(r => r.substring(0, 11 + id.length) === `[data-css-${id}]`).join('\n') + '\n'
-
     })
     return o
 
