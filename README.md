@@ -138,15 +138,18 @@ multi('hover:active', { color: 'red' })
 
 `select(selector, props)`
 
-an escape hatch to define a css child selector to define styles on. should just
+an escape hatch to define styles on children. should just
 work with classnames / operators.
 
 ```jsx
-<ul {...select('li:nth-child(even)', { color: 'red' })}>
-  <li>one</li>
-  <li>two - red!</li>
-  <li>three</li>
-</ul>
+<div {...select('ul li:nth-child(even)', { color: 'red' })}>
+  <ul>
+    <li>one</li>
+    <li>two - red!</li>
+    <li>three</li>
+  </ul>
+</div>
+
 ```
 
 ---

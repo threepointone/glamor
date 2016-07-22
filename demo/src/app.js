@@ -5,10 +5,12 @@ import { select, hover, style, simulate, add } from '../../src'
 
 export class App extends React.Component {
   render() {
-    return <ul {...select('li:nth-child(even)', { color: 'red' })}>
-      <li>one</li>
-      <li>two - red!</li>
-      <li>three</li>
-    </ul>
+    return <div {...select('ul li:nth-child(even)', { color: 'red' })}>
+      <ul>
+        <li>one</li>
+        <li>two - red!</li>
+        <li>three</li>
+      </ul>
+    </div>
   }
 }
