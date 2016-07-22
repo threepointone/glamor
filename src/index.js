@@ -26,7 +26,7 @@ export function simulate(...pseudos) {
     }
     return {}
   }
-  return pseudos.reduce((o, p) => (o[`data-simulate-${simple(p)}`] = true, o), {})
+  return pseudos.reduce((o, p) => (o[`data-simulate-${simple(p)}`] = '', o), {})
 }
 
 let isBrowser = typeof document !== 'undefined'
