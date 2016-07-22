@@ -172,17 +172,17 @@ describe('react-css', () => {
 
   it('can merge rules', () => {
     startSimulation()
-    let red = style({ backgroundColor: 'red', color: 'yellow' }),
-      blue = style({ backgroundColor: 'blue' }),
+    let blue = style({ backgroundColor: 'blue' }),
+      red = style({ backgroundColor: 'red', color: 'yellow' }),
       hoverGn = hover({ color: 'green' })
 
-    render(<div {...merge(blue, red, hoverGn)} />, node, () => {
-      expect(childStyle(node).backgroundColor).toEqual('rgb(255, 0, 0)')
+    render(<div {...merge(red, blue, hoverGn)} />, node, () => {
+      expect(childStyle(node).backgroundColor).toEqual('rgb(0, 0, 255)')
     })
     let sheetLength = document.styleSheets._css_.rules.length
 
-    render(<div {...merge(blue, red, hoverGn)} {...simulate('hover')}/>, node, () => {
-      expect(childStyle(node).color).toEqual('rgb(0, 255, 0)')
+    render(<div {...merge(red, blue, hoverGn)} {...simulate('hover')}/>, node, () => {
+      expect(childStyle(node).color).toEqual('rgb(0, 128, 0)')
       expect(document.styleSheets._css_.rules.length).toEqual(sheetLength)
     })
     stopSimulation()

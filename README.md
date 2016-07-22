@@ -6,6 +6,12 @@ css for component systems
 
 `npm install @threepointone/react-css --save`
 
+```jsx
+<div {...style({ color: 'red' })} {...hover({ color: 'pink' })}>
+  zomg
+</div>
+```
+
 motivation
 ---
 
@@ -40,7 +46,7 @@ api
 
 `style(props)`
 
-defines a `rule` with the given key-value pairs. returns an object (of shape `{'data-css-_': <id>}`),
+defines a `rule` with the given key-value pairs. returns an object (of shape `{'data-css-<id>': ''}`),
 to be added to an element's attributes. This is *not* the same as element's `style`,
 and doesn't interfere with the element's `className` / `class`
 
@@ -89,13 +95,13 @@ dir  lang  not  nthChild  nthLastChild  nthLastOfType  nthOfType
 like the above, but parameterized with a number / string
 
 ```jsx
-dir('ltr', {...}), dir('rtl', {...})
-lang('en', {...}), lang('fr'), lang('hi') /* etc... */
-not(/* selector */, {...})
-nthChild(2, {...}), nthChild('3n-1', {...}), nthChild('even', {...}) /* etc... */
-nthLastChild(/* expression */, {...})
-nthLastOfType(/* expression */, {...})
-nthOfType(/* expression */, {...})
+dir('ltr', props), dir('rtl', props)
+lang('en', props), lang('fr', props), lang('hi', props) /* etc... */
+not(/* selector */, props)
+nthChild(2, props), nthChild('3n-1', props), nthChild('even', props) /* etc... */
+nthLastChild(/* expression */, props)
+nthLastOfType(/* expression */, props)
+nthOfType(/* expression */, props)
 ```
 
 ---
@@ -110,7 +116,9 @@ after  before  firstLetter  firstLine  selection  backdrop  placeholder
 similar to the above, but for pseudo elements.
 
 ```jsx
-<div {...after({ content: '"boo!"' })}>...</div>
+<div {...before({ content: '"hello "' })}>
+  world!
+</div>
 // note the quotes for `content`'s value
 ```
 
@@ -118,12 +126,16 @@ similar to the above, but for pseudo elements.
 
 `merge(...rules)`
 
-[todo]
-
 combine rules, with latter styles taking precedence over previous ones.
 
 ```jsx
-merge(style(...), hover(...), hover(...))
+<div {...merge(
+    style(props),
+    hover(props),
+    { color: 'red' },
+    hover(props)) }>
+    mix it up!
+</div>
 
 ```
 
@@ -138,6 +150,10 @@ media queries!
   resize away
 </div>
 ```
+
+caveat: you cannot merge `media()` rules yet, but I think that makes sense.
+Instead, merge your rules before calling `media()`. For any complex logic
+around viewport attributes, use javascript.
 
 ---
 
@@ -154,7 +170,8 @@ composing / modularity
 
 while it's tempting to add some form of a `Stylesheet` construct, we'd
 rather defer to the developer's preference. In general, we recommed using
-simple objects, functions, and components to create abstractions.
+simple objects, functions, and components to create abstractions. You can
+also lean on `merge(...styles)` for combining rules.
 
 [todo - examples]
 
@@ -220,6 +237,7 @@ compared to aphrodite / other css-in-js systems
   - media queries : react-css supports these too, and combines well with the above.
   - framework independent : as long as you can add attributes to dom nodes, you're good to go
   - adding appropriate vendor specific prefixes to relevant css properties
+  - handles precedence order with (`merge(...styles)`)
   - (todo) automatic global `@font-face` detection and insertion
   - (todo) handle precedence order
 
@@ -242,7 +260,6 @@ specific elements. combined with hot-loading, the dx while editing styles is pre
 todo
 ---
 
-- merge rules cleanly
 - font face detection / on-demand loading
 - animation / keyframe / transform generation
 - error checking / typechecks (flow? runtime?)
@@ -251,7 +268,8 @@ todo
 - non-dom? (!)
 - plugins
 - flush unused rules?
-- cache hashes with weakmaps
+- multiple psudo classes on same rule
+- benchmarks (#3)
 - investigate batching stylesheet changes
 - theming et al
 

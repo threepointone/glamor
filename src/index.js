@@ -56,15 +56,18 @@ else {
     }
   }
 }
-// preload cache/index
-// let index = 0
+
 let cache = {}
 
 export function objHash(type, obj) {
+  // make sure type exists
+  // make sure obj is style-like?
   return hash(type + Object.keys(obj).reduce((str, k) => str + k + obj[k], '')).toString(36)
 }
 
 export function selector(id, type) {
+  // id should exist
+
   let s = `[data-css-${id}]${type !== '_' ? `:${type}` : ''}`
   if(type!=='_' && canSimulate) {
     s = s + `, [data-css-${id}][data-simulate-${simple(type)}]`
@@ -74,7 +77,6 @@ export function selector(id, type) {
 
 export function cssrule(type, style, id) {
   return `${selector(id, type)}{ ${createMarkupForStyles(autoprefix(style))} } `
-
 }
 
 export function add(type = '_', style, id = objHash(type, style)) {
@@ -88,43 +90,53 @@ export function add(type = '_', style, id = objHash(type, style)) {
 }
 
 export function media(expr, style) {
-  // let style = styles[0]
-  let regex = /data\-css\-([a-zA-Z0-9\-\_]+)/
-  let id = regex.exec(Object.keys(style)[0])[1]
-  if(cache[id]) {
-    // let id = style[Object.keys(style)[0]]
+  // test if valid media query
+
+  if(isMerged(style)) {
+    let rule = style
+    let id = idFor(rule)
+
+    let { bag } = cache[id]
+    let newId = hash(expr+id).toString(36)
+    if(!cache[newId]) {
+      Object.keys(bag).forEach(type => {
+        sheet.insertRule(`@media ${expr} { ${ cssrule(type, bag[type], newId) } }`, sheet.rules.length)
+      })
+      cache[newId] = { expr, rule, id: newId }
+    }
+    return { [`data-css-${newId}`]: '' }
+  }
+  else if(isRule(style)) { // rule
+    let id = idFor(style)
+    let rule = style
     let newId = hash(expr+id).toString(36)
 
     if(!cache[newId]) {
-
       sheet.insertRule(`@media ${expr} { ${ cssrule(cache[id].type, cache[id].style, newId) } }`, sheet.rules.length)
-      cache[newId] = { expr, style, id: newId }
+      cache[newId] = { expr, rule, id: newId }
     }
     return { [`data-css-${newId}`]: '' }
   }
   else {
 
-    id = objHash(expr, style)
+    let id = objHash(expr, style)
     if(!cache[id]) {
       sheet.insertRule(`@media ${expr} { ${ cssrule('_', style, id) } }`, sheet.rules.length)
       cache[id] = { expr, style, id }
     }
     return { [`data-css-${id}`]: '' }
   }
-
 }
-
 
 export function remove(o) {
   // todo
   // remove rule
-  console.error('this is not tested or anything yet! beware!') //eslint-disable-line no-console
+  throw new Error('this is not tested or anything yet! beware!') //eslint-disable-line no-console
 
-  let id = o[Object.keys(o)[0]]
-  let i = sheet.rules.indexOf(x => x.selectorText === selector(id, cache[id].type))
-  sheet.deleteRule(i)
-  delete cache[id]
-  // index--
+  // let id = o[Object.keys(o)[0]]
+  // let i = sheet.rules.indexOf(x => x.selectorText === selector(id, cache[id].type))
+  // sheet.deleteRule(i)
+  // delete cache[id]
 
 }
 
@@ -154,13 +166,24 @@ export function renderStatic(fn, optimized = false) {
     }
     ids.forEach(id => {
       o.cache[id] = cache[id]
-      o.rules.push({ cssText: cssrule(cache[id].type, cache[id].style, id) })
+      // todo - merged, media types
+      let r = {[`data-css-${id}`]: ''}
+      if(isMediaRule(r)){
+        throw new Error('not implemented for media queries yet')
+      }
+      else if(isMerged(r)){
+        throw new Error('not implemented for merged rules yet')
+      }
+      else if(isRule(r)){
+        o.rules.push({ cssText: cssrule(cache[id].type, cache[id].style, id) })
+      }
+
     })
     o.css = o.rules.map(r => r.cssText).join('\n')
     return o
 
   }
-  return { html, cache, rules, css }
+  return { html, cache, css }
 }
 
 export function renderStaticOptimized(fn) {
@@ -205,13 +228,71 @@ let elements = [ 'after', 'before', 'first-letter', 'first-line', 'selection',
 elements.forEach(el => exports[simple(el)] =
   (style, id) => add(`:${el}`, style, id))
 
-export function merge(...styles) {
-  // pull out all actual styles
-  // partition by type
-  // create/add corresponding rules
-  // return mashup
-  // styles
+function isMediaRule(rule){
 
-  console.error('not implemented')  //eslint-disable-line no-console
+}
 
+function isMerged(rule) {
+  try{
+    let id = idFor(rule)
+    return  id && cache[id] && cache[id].bag
+  }
+  catch(e) {
+    return false
+  }
+}
+
+function isRule(rule) {
+  try{
+    let id = idFor(rule)
+    return  id && cache[id]
+  }
+  catch(e) {
+    return false
+  }
+}
+
+export function merge(...rules) {
+  // todo - test for media rule
+  let styleBag = rules.reduce((o, rule) => {
+    if(isMerged(rule)) {
+      Object.keys(rule.bag).forEach(type => {
+        o[type] = { ...o[type] || {}, ...rule.bag[type] }
+      })
+    }
+    else if(isRule(rule)) {
+      let { type, style } = cache[idFor(rule)]
+      o[type] = { ...o[type] || {}, ...style }
+    }
+    else {
+      // plain
+      o._ = { ...o._ || {}, ...rule }
+    }
+    return o
+  }, {})
+
+  let id = hash(JSON.stringify(styleBag)).toString(36) // todo - predictable order
+  if(!cache[id]) {
+    cache[id] = { bag: styleBag, id }
+    Object.keys(styleBag).forEach(type => {
+      sheet.insertRule(cssrule(type, styleBag[type], id), sheet.rules.length)
+    })
+  }
+
+  return { [`data-css-${id}`]: '' }
+}
+
+function idFor(rule) {
+  // todo - weak map hash for this
+  if(Object.keys(rule).length !== 1) throw new Error('not a rule')
+  let regex = /data\-css\-([a-zA-Z0-9]+)/
+  let match = regex.exec(Object.keys(rule)[0])
+  if(!match) throw new Error('not a rule')
+  return match[1]
+}
+
+
+export function unused() {
+  // rules generated vs used
+  throw new Error('not implemented')
 }
