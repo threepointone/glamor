@@ -136,6 +136,21 @@ multi('hover:active', { color: 'red' })
 
 ---
 
+`select(selector, props)`
+
+an escape hatch to define a css child selector to define styles on. should just
+work with classnames / operators.
+
+```jsx
+<ul {...select('li:nth-child(even)', { color: 'red' })}>
+  <li>one</li>
+  <li>two - red!</li>
+  <li>three</li>
+</ul>
+```
+
+---
+
 `merge(...rules)`
 
 combine rules, with latter styles taking precedence over previous ones.
@@ -148,20 +163,7 @@ combine rules, with latter styles taking precedence over previous ones.
     hover(props)) }>
     mix it up!
 </div>
-
 ```
-`select(selector, props)`
-
-an escape hatch to define a css child selector to define styles on. should just
-work with classnames / operators.
-
-```jsx
-<ul {...select('li:nth-child(even)', { color: 'red' })}>
-  <li>one</li>
-  <li>two - red!</li>
-  <li>three</li>
-</ul>
-``` 
 
 ---
 
