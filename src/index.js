@@ -64,15 +64,12 @@ export function objHash(type, obj) {
   return hash(type + Object.keys(obj).reduce((str, k) => str + k + obj[k], '')).toString(36)
 }
 
-export function selector(id, ...types) {
-  return types.map(type => {
-    let s = `[data-css-${id}]${type !== '_' ? `:${type}` : ''}`
-    if(type!=='_' && canSimulate) {
-      s = s + `, [data-css-${id}][data-simulate-${simple(type)}]`
-    }
-    return s
-  }).join(', ')
-
+export function selector(id, type) {
+  let s = `[data-css-${id}]${type !== '_' ? `:${type}` : ''}`
+  if(type!=='_' && canSimulate) {
+    s = s + `, [data-css-${id}][data-simulate-${simple(type)}]`
+  }
+  return s
 }
 
 export function cssrule(type, style, id) {
@@ -150,7 +147,7 @@ export function renderStatic(fn, optimized = false) {
     // reconstruct css/rules/cache to pass
 
     let o = { html, cache:{}, rules: [] }
-    let regex = /data\-css\-[a-zA-Z0-9\-\_]+=\"([a-zA-Z0-9]+)\"/gm
+    let regex = /data\-css\-([a-zA-Z0-9]+)=\"\"/gm
     let match, ids = []
     while((match = regex.exec(html)) !== null) {
       ids.push(match[1])

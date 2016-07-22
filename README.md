@@ -31,7 +31,7 @@ features
 cons
 ---
 
-- no pretty class/attribute names 
+- no pretty class/attribute names
 - no real-world usage / adoption yet
 - changes across large ranges of values could cause a memory leak ([#1](https://github.com/threepointone/react-css/issues/1))
 
