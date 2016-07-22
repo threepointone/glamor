@@ -1,4 +1,5 @@
-import { style, renderStatic, renderStaticOptimized } from '../src'
+import { style, merge, hover,
+  renderStatic, renderStaticOptimized } from '../src'
 
 import expect from 'expect'
 import React from 'react' // eslint-disable-line
@@ -18,14 +19,17 @@ style({ color: 'wheat' })
   expect(css).toEqual('[data-css-ruiioi]{ color:wheat; } \n[data-css-16y7vsu]{ color:red; } ')
   expect(cache).toEqual({
     '16y7vsu': { id: '16y7vsu', style: { color: 'red' }, type: '_' },
-    ruiioi: { id: 'ruiioi', style: { color: 'wheat' }, type: '_' } })
+    ruiioi: { id: 'ruiioi', style: { color: 'wheat' }, type: '_' }
+  })
 }
 
 {
   let { html, css, cache } = renderStaticOptimized(() =>
-    renderToStaticMarkup(<div {...style({ color: 'red' })}/>))
+    renderToStaticMarkup(<div {...merge(style({ color: 'red' }), hover({ color: 'blue' }))}/>))
 
-  expect(html).toEqual('<div data-css-16y7vsu=""></div>')
-  expect(css).toEqual('[data-css-16y7vsu]{ color:red; } ')
-  expect(cache).toEqual({ '16y7vsu': { type: '_', style: { color: 'red' }, id: '16y7vsu' } })
+  expect(html).toEqual('<div data-css-x8bs5u=""></div>')
+  expect(css).toEqual('[data-css-x8bs5u]{ color:red; } \n[data-css-x8bs5u]:hover{ color:blue; } \n')
+  expect(cache).toEqual({
+    x8bs5u: { bag: { _: { color: 'red' }, hover: { color: 'blue' } }, id: 'x8bs5u' }
+  })
 }

@@ -158,28 +158,21 @@ export function renderStatic(fn, optimized = false) {
     // parse out ids from html
     // reconstruct css/rules/cache to pass
 
-    let o = { html, cache:{}, rules: [] }
+    let o = { html, cache:{}, css: '' }
     let regex = /data\-css\-([a-zA-Z0-9]+)=\"\"/gm
     let match, ids = []
     while((match = regex.exec(html)) !== null) {
       ids.push(match[1])
     }
     ids.forEach(id => {
+
       o.cache[id] = cache[id]
-      // todo - merged, media types
-      let r = {[`data-css-${id}`]: ''}
-      if(isMediaRule(r)){
-        throw new Error('not implemented for media queries yet')
-      }
-      else if(isMerged(r)){
-        throw new Error('not implemented for merged rules yet')
-      }
-      else if(isRule(r)){
-        o.rules.push({ cssText: cssrule(cache[id].type, cache[id].style, id) })
-      }
+
+      o.css+= sheet.rules
+        .map(x => x.cssText)
+        .filter(r => r.substring(0, 11 + id.length) === `[data-css-${id}]`).join('\n') + '\n'
 
     })
-    o.css = o.rules.map(r => r.cssText).join('\n')
     return o
 
   }
@@ -228,8 +221,14 @@ let elements = [ 'after', 'before', 'first-letter', 'first-line', 'selection',
 elements.forEach(el => exports[simple(el)] =
   (style, id) => add(`:${el}`, style, id))
 
-function isMediaRule(rule){
-
+function isMediaRule(rule) {
+  try{
+    let id = idFor(rule)
+    return  id && cache[id] && cache[id].expr
+  }
+  catch(e) {
+    return false
+  }
 }
 
 function isMerged(rule) {
