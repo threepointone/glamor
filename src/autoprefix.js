@@ -1,6 +1,5 @@
 // from https://github.com/petehunt/jsxstyle/blob/master/lib/autoprefix.js
 
-// todo - rewrite to be
 let assign = Object.assign
 
 export default function autoprefix(style) {

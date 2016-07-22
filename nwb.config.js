@@ -4,7 +4,7 @@ module.exports = {
     externals: {
       'react': 'React'
     },
-    global: '',
+    global: 'Restyle',
     jsNext: true,
     umd: true
   }

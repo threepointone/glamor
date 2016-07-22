@@ -262,13 +262,13 @@ todo
 
 - font face detection / on-demand loading
 - animation / keyframe / transform generation
+- multiple psudo classes on same rule
 - error checking / typechecks (flow? runtime?)
-- compile time optimizations / statically generate css files alá jsxstyle
+- plugins
 - other frameworks?
 - non-dom? (!)
-- plugins
 - flush unused rules?
-- multiple psudo classes on same rule
+- compile time optimizations / statically generate css files alá jsxstyle
 - benchmarks (#3)
 - investigate batching stylesheet changes
 - theming et al
