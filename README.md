@@ -37,7 +37,6 @@ features
 cons
 ---
 
-- no pretty class/attribute names yet - [#5](https://github.com/threepointone/react-css/issues/5)
 - no real-world usage / adoption yet
 - changes across large ranges of values could cause a memory leak ([#1](https://github.com/threepointone/react-css/issues/1))
 
@@ -314,7 +313,7 @@ here are some key differences -
 
 - in dev mode, you can simulate pseudo classes on elements by using the `simulate()` helper (or adding a `[data-simulate-<pseudo>]` attribute manually). very useful, especially when combined when hot-loading and/or editing directly in your browser devtools.
 - rules are hashed and indexed based on their styles; we then use a stylesheet as a key-value store to insert/remove individual rules + additional meta for `simulate`.
-- as such, it does **not** generate pretty classnames, but we're working on alternatives([#5](https://github.com/threepointone/react-css/issues/5))
+- as such, it does **not** generate pretty classnames, but instead generates debug labels in dev mode, clearly showing merges, pseudos, and media queries. This keeps the generated html small, but still good dx. (issue [#5](https://github.com/threepointone/react-css/issues/5))   
 - does **not** touch `class`/`style` attributes; instead we use `data-*` attributes and jsx attribute spread for a natural, fluent api ([some implications](https://github.com/Khan/aphrodite/issues/25)). This lets you define styles 'inline' in a functional / reacty manner, yet globally optimize as one unit.
 - this also keeps it framework-independent (though I still have to see how to use this in angular/ember templates. see - [#6](https://github.com/threepointone/react-css/issues/6))
 - (todo) styles could further be statically analyzed and replaced with said data attributes,
