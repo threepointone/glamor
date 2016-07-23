@@ -330,6 +330,7 @@ todo
 - error checking / typechecks (flow? runtime?)
 - plugins
 - other frameworks?
+- labels for merges 
 - refactor the hairball
 - non-dom? (!)
 - flush unused rules?

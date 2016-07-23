@@ -39,13 +39,42 @@ export function simulate(...pseudos) {
   return pseudos.reduce((o, p) => (o[`data-simulate-${simple(p)}`] = '', o), {})
 }
 
+function updateMediaQueryLabels() {
+  Object.keys(cache).forEach(id => {
+    let expr = cache[id].expr
+    if(expr && hasLabels && window.matchMedia) {
+      let els = document.querySelectorAll(`[data-css-${id}]`)
+      let match = window.matchMedia(expr).matches ? '✓': '✕'
+      let regex = /^(✓|✕|\*)mq/;
+
+      [ ...els ].map(el => el.setAttribute(`data-css-${id}`,
+        el.getAttribute(`data-css-${id}`).replace(regex, `${match}mq`)))
+    }
+  })
+}
+
 let isBrowser = typeof document !== 'undefined'
 
+let interval
+
+export function startMediaQueryLabelTracking(period = 2000) {
+  interval = setInterval(() => {
+    updateMediaQueryLabels()
+  }, period)
+}
+
+export function stopMediaQueryLabelTracking() {
+  clearInterval(interval)
+}
+if(isBrowser && process.env.NODE_ENV === 'development') {
+  startMediaQueryLabelTracking()
+}
+// todo - make sure hot loading isn't broken
+// todo - clearInterval on browser close
 let sheet
 
 if(isBrowser) {
   let styleTag = document.getElementById('_css_')
-
   if(!styleTag) {
     styleTag = document.createElement('style')
     styleTag.id = styleTag.id || '_css_'
@@ -126,7 +155,7 @@ export function media(expr, style) {
     }
     let labels = hasLabels ? Object.keys(bag).map(type => bag[type].label || ('^' + id + (type === '_' ? '' : `:${type}`))) : ''
 
-    return { [`data-css-${newId}`]: hasLabels ? `mq: [${labels.join(', ')}]` : '' }
+    return { [`data-css-${newId}`]: hasLabels ? `*mq [${labels.join(', ')}]` : '' }
   }
   else if(isRule(style)) { // rule
     let id = idFor(style)
@@ -137,7 +166,7 @@ export function media(expr, style) {
       sheet.insertRule(`@media ${expr} { ${ cssrule(cache[id].type, cache[id].style, newId) } }`, sheet.rules.length)
       cache[newId] = { expr, rule, id: newId }
     }
-    return { [`data-css-${newId}`]: hasLabels ? 'mq: ' + (cache[id].style.label || id) : '' }
+    return { [`data-css-${newId}`]: hasLabels ? '*mq ' + (cache[id].style.label || id) : '' }
   }
   else {
 
@@ -146,7 +175,7 @@ export function media(expr, style) {
       sheet.insertRule(`@media ${expr} { ${ cssrule('_', style, id) } }`, sheet.rules.length)
       cache[id] = { expr, style, id }
     }
-    return { [`data-css-${id}`]: hasLabels ? 'mq: ' + (style.label || '') : ''  }
+    return { [`data-css-${id}`]: hasLabels ? '*mq ' + (style.label || '') : ''  }
   }
 }
 
@@ -273,7 +302,7 @@ function isRule(rule) {
 
 export function merge(...rules) {
   // todo - test for media rule
-  // todo - remove label from merged style 
+  // todo - remove label from merged style
   let labels = []
   let styleBag = rules.reduce((o, rule) => {
     if(isMerged(rule)) {

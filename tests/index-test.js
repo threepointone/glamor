@@ -236,7 +236,7 @@ describe('react-css', () => {
         <li {...mq}>three</li>
       </ul>
     </div>, node, () => {
-      expect(node.innerHTML).toEqual('<div data-reactroot="" data-css-ci7afd="[red, blue:hover], `szlvmg:visited, {…}"><ul data-css-1oppo9="mylist"><li data-css-qh7ndu=":hover">one</li><li>two</li><li data-css-1r3ejfz="mq: [red, blue]">three</li></ul></div>')
+      expect(node.innerHTML).toEqual('<div data-reactroot="" data-css-ci7afd="[red, blue:hover], `szlvmg:visited, {…}"><ul data-css-1oppo9="mylist"><li data-css-qh7ndu=":hover">one</li><li>two</li><li data-css-1r3ejfz="*mq [red, blue]">three</li></ul></div>')
       noLabels()
     })
   })
