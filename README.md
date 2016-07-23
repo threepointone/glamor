@@ -126,7 +126,7 @@ similar to the above, but for pseudo elements.
 
 `multi(pse:udos, props)`
 
-pass a ':' separated list of  pseudoclasses; for when you need to add
+pass a `:`-separated list of  pseudoclasses; for when you need to add
 multiple pseudoclasses to a rule.
 
 ```jsx
@@ -224,9 +224,10 @@ let types = {
   'disabled': ''
 }
 
-let Button = ({ type, children, onClick }) =>
-  <button {...style(types[type])} onClick={onClick}>
-    {children}
+let Button = ({ type, children, onClick = ::console.log }) =>
+  <button {...style({ backgroundColor: types[type] })}
+    onClick={onClick}>
+      {children}
   </button>
 
 // and when rendering ...
@@ -245,10 +246,13 @@ let sheet = createSheet({
     }
   }
 })
+
 // and when rendering
 <div {...sheet.container}>
   ...etc...
 </div>
+
+// any other ideas? share!
 ```
 
 server side rendering
@@ -261,7 +265,7 @@ server side rendering
 this api is mostly copied from [aphrodite](https://github.com/Khan/aphrodite);
 render your component inside of a callback, and react-css will gather all
 the calls you used and return an object with html, css, and an object
-to rehydrate the lib's cache
+to rehydrate the lib's cache for fast startup
 
 ```jsx
 // on the server
@@ -302,35 +306,19 @@ This should be fine in most cases. If you seem to be including too many unused s
 use `renderStaticOptimized` instead of `renderStatic`. This will parse the generated
 html and include only the relevant used css / cache.
 
-compared to aphrodite / other css-in-js systems
+characteristics
 ---
 
-- shares most of the common features across those libs
-  - server side rendering : react-css can generate minimal css for given html, and
-  then bootstrap itself on the browser for fast startup.
-  - pseudo classes / elements : react-css supports all of them, with a consistent api.
-  - media queries : react-css supports these too, and combines well with the above.
-  - framework independent : as long as you can add attributes to dom nodes, you're good to go
-  - adding appropriate vendor specific prefixes to relevant css properties
-  - handles precedence order with (`merge(...styles)`)
-  - (todo) automatic global `@font-face` detection and insertion
-  - (todo) handle precedence order
+while react-css shares most common attributes of other inline style / css-in-js systems,
+here are some key differences -
 
-- doesn't touch class/style attributes ([some implications](https://github.com/Khan/aphrodite/issues/25))
-
-- doesn't generate pretty classnames
-
-- styles are defined as 'rules', not 'stylesheets', and then indexed behind the scenes by
-  hashing themselves on `data-*` attributes. This lets you define styles 'inline' with elements
-  in a functional / reacty manner, yet globally optimize them as one unit. As such, a lot of the cruft around
-  classNames/stylesheets just goes away.
-
-- react-css comes with a `simulate()` dev helper to 'trigger' pseudo classes on
-specific elements. combined with hot-loading, the dx while editing styles is pretty nice.
-
-- (todo) styles couldfurther be statically analyzed and replaced with said data attributes,
+- in dev mode, you can simulate pseudo classes on elements by using the `simulate()` helper (or adding a `[data-simulate-<pseudo>]` attribute manually). very useful, especially when combined when hot-loading and/or editing directly in your browser devtools.
+- rules are hashed and indexed based on their styles; we then use a stylesheet as a key-value store to insert/remove individual rules + additional meta for `simulate`.
+- as such, it does **not** generate pretty classnames([#5](https://github.com/threepointone/react-css/issues/5))
+- does **not** touch `class`/`style` attributes; instead we use `data-*` attributes and jsx attribute spread for a natural, fluent api ([some implications](https://github.com/Khan/aphrodite/issues/25)). This lets you define styles 'inline' in a functional / reacty manner, yet globally optimize as one unit.
+- this also keeps it framework-independent (though I still have to see how to use this in angular/ember templates. see - [#6](https://github.com/threepointone/react-css/issues/6))
+- (todo) styles could further be statically analyzed and replaced with said data attributes,
   generating a much more optimal css file / js bundle ([#2](https://github.com/threepointone/react-css/issues/2))
-
 
 todo
 ---
