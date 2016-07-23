@@ -13,6 +13,16 @@ export function stopSimulation() {
   canSimulate = false
 }
 
+let hasLabels = process.env.NODE_ENV === 'development'
+export function useLabels() {
+  hasLabels = true
+}
+
+export function noLabels() {
+  hasLabels = false
+}
+
+
 let warned1 = false, warned2 = false
 export function simulate(...pseudos) {
   if(!canSimulate) {
@@ -69,7 +79,7 @@ export function selector(id, type) {
   // id should exist
   let suffix = type === '_' ? '' : type[0] === ' ' ? type : `:${type}`
   let s = `[data-css-${id}]${suffix}`
-  if(type!=='_' && canSimulate) {
+  if(type !== '_' && canSimulate) {
     s = s + `, [data-css-${id}][data-simulate-${simple(type)}]`
   }
   return s
@@ -89,7 +99,7 @@ export function add(type = '_', style, id = objHash(type, style)) {
     cache[id] = { type, style, id }
   }
 
-  return { [`data-css-${id}`]: '' }
+  return { [`data-css-${id}`]: hasLabels ? style.label || (type !== '_' ? `:${type}`: '') : '' }
 }
 
 export const multi = add
@@ -107,13 +117,16 @@ export function media(expr, style) {
 
     let { bag } = cache[id]
     let newId = hash(expr+id).toString(36)
+
     if(!cache[newId]) {
       Object.keys(bag).forEach(type => {
         sheet.insertRule(`@media ${expr} { ${ cssrule(type, bag[type], newId) } }`, sheet.rules.length)
       })
       cache[newId] = { expr, rule, id: newId }
     }
-    return { [`data-css-${newId}`]: '' }
+    let labels = hasLabels ? Object.keys(bag).map(type => bag[type].label || ('^' + id + (type === '_' ? '' : `:${type}`))) : ''
+
+    return { [`data-css-${newId}`]: hasLabels ? `mq: [${labels.join(', ')}]` : '' }
   }
   else if(isRule(style)) { // rule
     let id = idFor(style)
@@ -124,7 +137,7 @@ export function media(expr, style) {
       sheet.insertRule(`@media ${expr} { ${ cssrule(cache[id].type, cache[id].style, newId) } }`, sheet.rules.length)
       cache[newId] = { expr, rule, id: newId }
     }
-    return { [`data-css-${newId}`]: '' }
+    return { [`data-css-${newId}`]: hasLabels ? 'mq: ' + (cache[id].style.label || id) : '' }
   }
   else {
 
@@ -133,7 +146,7 @@ export function media(expr, style) {
       sheet.insertRule(`@media ${expr} { ${ cssrule('_', style, id) } }`, sheet.rules.length)
       cache[id] = { expr, style, id }
     }
-    return { [`data-css-${id}`]: '' }
+    return { [`data-css-${id}`]: hasLabels ? 'mq: ' + (style.label || '') : ''  }
   }
 }
 
@@ -260,32 +273,40 @@ function isRule(rule) {
 
 export function merge(...rules) {
   // todo - test for media rule
+  // todo - remove label from merged style 
+  let labels = []
   let styleBag = rules.reduce((o, rule) => {
     if(isMerged(rule)) {
-      Object.keys(rule.bag).forEach(type => {
-        o[type] = { ...o[type] || {}, ...rule.bag[type] }
+      let { bag, label } = cache[idFor(rule)]
+      Object.keys(bag).forEach(type => {
+        o[type] = { ...o[type] || {}, ...bag[type] }
       })
+      hasLabels && labels.push('[' + label + ']')
     }
     else if(isRule(rule)) {
-      let { type, style } = cache[idFor(rule)]
+      let id = idFor(rule)
+      let { type, style } = cache[id]
       o[type] = { ...o[type] || {}, ...style }
+      hasLabels && labels.push((style.label || `\`${id}`) + `${type !== '_' ? `:${type}` : ''}`)
     }
     else {
       // plain
       o._ = { ...o._ || {}, ...rule }
+      hasLabels && labels.push('{…}')
     }
     return o
   }, {})
 
   let id = hash(JSON.stringify(styleBag)).toString(36) // todo - predictable order
+  let label = hasLabels ? `${labels.length ? labels.join(', ') : ''}` : ''
   if(!cache[id]) {
-    cache[id] = { bag: styleBag, id }
+    cache[id] = { bag: styleBag, id, label }
     Object.keys(styleBag).forEach(type => {
       sheet.insertRule(cssrule(type, styleBag[type], id), sheet.rules.length)
     })
   }
 
-  return { [`data-css-${id}`]: '' }
+  return { [`data-css-${id}`]: hasLabels ? label : '' }
 }
 
 function idFor(rule) {

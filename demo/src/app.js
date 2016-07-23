@@ -1,15 +1,21 @@
 import React from 'react'
 
-import { select, hover, style, simulate, add } from '../../src'
+import { merge, media, visited, select, hover, style, simulate, add } from '../../src'
 
+let red = style({ label: 'red', color: 'red' }),
+  hoverBlue = hover({ label: 'blue', color: 'blue' }),
+  text = merge(red, hoverBlue),
+  container = merge(text, visited({ fontWeight: 'bold' }),
+    { color: 'gray' }),
+  mq = media('(min-width: 500px)', text)
 
 export class App extends React.Component {
   render() {
-    return <div {...select('ul li:nth-child(even)', { color: 'red' })}>
-      <ul>
-        <li>one</li>
-        <li>two - red!</li>
-        <li>three</li>
+    return <div {...container}>
+      <ul {...style({ label: 'mylist' })}>
+        <li {...hover({ color: 'green' })}>one</li>
+        <li >two</li>
+        <li {...mq}>three</li>
       </ul>
     </div>
   }

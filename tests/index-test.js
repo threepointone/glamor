@@ -2,8 +2,8 @@ import expect from 'expect'
 import React from 'react' //eslint-disable-line
 import { render, unmountComponentAtNode } from 'react-dom'
 
-import { style, hover, nthChild, firstLetter, media, merge, multi, select,
-
+import { style, hover, nthChild, firstLetter, media, merge, multi, select, visited,
+  useLabels, noLabels,
   startSimulation, stopSimulation, simulate,
   rehydrate, flush }
 from 'src/'
@@ -219,6 +219,31 @@ describe('react-css', () => {
     })
     // todo - test classnames, operators combos
   })
+
+  it('generates debug labels', () => {
+    useLabels()
+    let red = style({ label: 'red', color: 'red' }),
+      hoverBlue = hover({ label: 'blue', color: 'blue' }),
+      text = merge(red, hoverBlue),
+      container = merge(text, visited({ fontWeight: 'bold' }),
+        { color: 'gray' }),
+      mq = media('(min-width: 500px)', text)
+
+    render(<div {...container}>
+      <ul {...style({ label: 'mylist' })}>
+        <li {...hover({ color: 'green' })}>one</li>
+        <li >two</li>
+        <li {...mq}>three</li>
+      </ul>
+    </div>, node, () => {
+      expect(node.innerHTML).toEqual('<div data-reactroot="" data-css-ci7afd="[red, blue:hover], `szlvmg:visited, {…}"><ul data-css-1oppo9="mylist"><li data-css-qh7ndu=":hover">one</li><li>two</li><li data-css-1r3ejfz="mq: [red, blue]">three</li></ul></div>')
+      noLabels()
+    })
+  })
+  // plain rules
+  // merged rules
+  // media query wrap / override?
+
 
   it('server side rendering', () => {
     // see tests/server.js
