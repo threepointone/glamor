@@ -1,5 +1,6 @@
-import { style, merge, hover,
+import { style, merge, hover, flush,
   renderStatic, renderStaticOptimized } from '../src'
+import jade from 'jade'
 
 import expect from 'expect'
 import React from 'react' // eslint-disable-line
@@ -30,6 +31,22 @@ style({ color: 'wheat' })
   expect(html).toEqual('<div data-css-x8bs5u=""></div>')
   expect(css).toEqual('[data-css-x8bs5u]{ color:red; } \n[data-css-x8bs5u]:hover{ color:blue; } \n')
   expect(cache).toEqual({
-    x8bs5u: { bag: { _: { color: 'red' }, hover: { color: 'blue' } }, id: 'x8bs5u' }
+    x8bs5u: { bag: { _: { color: 'red' }, hover: { color: 'blue' } }, id: 'x8bs5u', label: '' }
   })
+}
+
+flush()
+
+{
+  let { html, css } = renderStatic(() => {
+    return jade.render(`
+
+div&attributes(style({ color: 'blue' }))
+  | yay!
+
+
+`, { style })
+  })
+  expect(html).toEqual('<div data-css-po2wuq="">yay!</div>')
+  expect(css).toEqual('[data-css-po2wuq]{ color:blue; } ')
 }
