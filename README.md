@@ -51,11 +51,14 @@ and doesn't interfere with the element's `className` / `class`
 
 ```jsx
 <div {...style({ backgroundColor: '#ccc', borderRadius: 10 })}>
-  <a {...style({ color: 'blue' })} href='github.com'>
+  <a {...style({ label: 'blueText', color: 'blue' })} href='github.com'>
     click me
   </a>
 </div>
 ```
+
+protip - in dev mode, adding a `label` string prop will reflect its value in devtools.
+useful when debugging, and a good alternative to 'semantic' classnames.
 
 ---
 
