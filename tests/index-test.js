@@ -246,6 +246,4 @@ describe('react-css', () => {
 
   it('delete a rule from the stylesheet')
 
-
-
 })
