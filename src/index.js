@@ -178,9 +178,9 @@ export function media(expr, style) {
       })
       cache[newId] = { expr, rule, id: newId }
     }
-    let labels = hasLabels ? Object.keys(bag).map(type => bag[type].label || ('^' + id + (type === '_' ? '' : `:${type}`))) : ''
+    let label = hasLabels ? cache[id].label : '' //Object.keys(bag).map(type => bag[type].label || ('^' + id + (type === '_' ? '' : `:${type}`))) : ''
 
-    return { [`data-css-${newId}`]: hasLabels ? `*mq [${labels.join(', ')}]` : '' }
+    return { [`data-css-${newId}`]: hasLabels ? `*mq [${label}]` : '' }
   }
   else if(isRule(style)) { // rule
     let id = idFor(style)
@@ -338,8 +338,14 @@ function isRule(rule) {
 export function merge(...rules) {
   // todo - test for media rule
   // todo - remove label from merged style
-  let labels = []
+  let labels = [], mergeLabel
   let styleBag = rules.reduce((o, rule) => {
+    if(rule === rules[0] && typeof rule === 'string') {
+      mergeLabel = rule
+      // bail early
+      return o
+    }
+
     if(isMerged(rule)) {
       let { bag, label } = cache[idFor(rule)]
       Object.keys(bag).forEach(type => {
@@ -361,15 +367,15 @@ export function merge(...rules) {
     return o
   }, {})
 
-  let id = hash(JSON.stringify(styleBag)).toString(36) // todo - predictable order
-  let label = hasLabels ? `${labels.length ? labels.join(', ') : ''}` : ''
+  let id = hash(mergeLabel + JSON.stringify(styleBag)).toString(36) // todo - predictable order
+  let label = hasLabels ? `${mergeLabel ? mergeLabel + '= ' : ''}${labels.length ? labels.join(' + ') : ''}` : ''
   if(!cache[id]) {
     cache[id] = { bag: styleBag, id, label }
     Object.keys(styleBag).forEach(type => {
       insertSheetRule(cssrule(type, styleBag[type], id), sheet.rules.length)
     })
   }
-
+  // todo - bug - this doesn't update when merge label changes
   return { [`data-css-${id}`]: hasLabels ? label : '' }
 }
 
@@ -391,7 +397,7 @@ export function unused() {
 export function addFont(font) {
   if(Array.isArray(font)) {
     addFont(font[0])
-    return font[0].fontFamily + ' '  + font.slice(1).join(', ')// string version
+    return font[0].fontFamily + ' '  + font.slice(1).join(', ')// string version todo - multi
   }
   let id = hash(JSON.stringify(font))
   if(!cache[id]) {
