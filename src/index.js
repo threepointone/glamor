@@ -1,3 +1,32 @@
+// I know, the code's a mess. It'll get better.
+// Here's a doggo to calm you down.
+//
+//
+// ____,'`-,
+// _,--'   ,/::.;
+// ,-'       ,/::,' `---.___        ___,_
+// |       ,:';:/        ;'"`;"`--./ ,-^.;--.
+// |:     ,:';,'         '         `.   ;`   `-.
+// \:.,:::/;/ -:.                   `  | `     `-.
+// \:::,'//__.;  ,;  ,  ,  :.`-.   :. |  ;       :.
+// \,',';/O)^. :'  ;  :   '__` `  :::`.       .:' )
+// |,'  |\__,: ;      ;  '/O)`.   :::`;       ' ,'
+//  |`--''            \__,' , ::::(       ,'
+//  `    ,            `--' ,: :::,'\   ,-'
+//   | ,;         ,    ,::'  ,:::   |,'
+//   |,:        .(          ,:::|   `
+//   ::'_   _   ::         ,::/:|
+//  ,',' `-' \   `.      ,:::/,:|
+// | : _  _   |   '     ,::,' :::
+// | \ O`'O  ,',   ,    :,'   ;::
+//  \ `-'`--',:' ,' , ,,'      ::
+//   ``:.:.__   ',-','        ::'
+//           `--.__, ,::.         ::'
+//          |:  ::::.       ::'
+//          |:  ::::::    ,::'
+//
+
+
 import hash from './hash'
 import autoprefix from './autoprefix'
 
@@ -387,12 +416,6 @@ function idFor(rule) {
   let match = regex.exec(Object.keys(rule)[0])
   if(!match) throw new Error('not a rule')
   return match[1]
-}
-
-
-export function unused() {
-  // rules generated vs used
-  throw new Error('not implemented')
 }
 
 export function fontFace(font) {
