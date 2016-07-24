@@ -1,21 +1,17 @@
 import React from 'react'
 
-import { merge, media, visited, select, hover, style, simulate, addFont } from '../../src'
+import { merge, media, visited, select, hover, style, simulate, addFont, stopSimulation } from '../../src'
 
-// let x = addFont({
-//   fontFamily: 'xxyyzz',
-//   fontStyle: 'normal',
-//   fontWeight: 400,
-//   src: "url(https://fonts.gstatic.com/s/opensans/v13/K88pR3goAWT7BTt32Z01m4X0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2')"
-// })
-//
-// console.log(x)
+import { latin, greek, cyrillic } from './OpenSans'
+
+addFont(latin)
+// addFont(greek)
 
 export class App extends React.Component {
   render() {
     return <div {...media('(min-width: 500px)',
       merge( 'container',
-        style({ fontFamily: 'xxyyzz' }),
+        style({ fontFamily: '"Open Sans"' }),
         select('#xyz', { color: 'red', background: 'gray' }),
         select('#abc', { color: 'blue' }),
         select('.bold', { fontWeight: 'bold' }),

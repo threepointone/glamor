@@ -46,8 +46,7 @@ function updateMediaQueryLabels() {
       let els = document.querySelectorAll(`[data-css-${id}]`)
       let match = window.matchMedia(expr).matches ? '✓': '✕'
       let regex = /^(✓|✕|\*)mq/;
-
-      [ ...els ].map(el => el.setAttribute(`data-css-${id}`,
+      [ ...els ].forEach(el => el.setAttribute(`data-css-${id}`,
         el.getAttribute(`data-css-${id}`).replace(regex, `${match}mq`)))
     }
   })
@@ -395,15 +394,10 @@ export function unused() {
 }
 
 export function addFont(font) {
-  if(Array.isArray(font)) {
-    addFont(font[0])
-    return font[0].fontFamily + ' '  + font.slice(1).join(', ')// string version todo - multi
-  }
   let id = hash(JSON.stringify(font))
   if(!cache[id]) {
     cache[id] = { id, font }
     insertSheetRule(`@font-face { ${createMarkupForStyles(autoprefix(font))}}`, sheet.rules.length)
   }
-  return font[0].fontFamily
-  // add
+  return id
 }
