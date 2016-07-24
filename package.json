@@ -10,7 +10,7 @@
     "umd"
   ],
   "scripts": {
-    "start": "NODE_ENV=development beefy demo/src/index.js:bundle.js --index demo/index.html --quiet false",
+    "start": "NODE_ENV=development beefy demo/src/index.js:bundle.js --index demo/index.html --quiet false -- -p browserify-hmr",
     "build": "npm run clean && npm run build:lib && npm run build:es6 && npm run build:umd && npm run build:demo",
     "build:lib": "babel src -d lib --loose all",
     "build:es6": "",
@@ -34,6 +34,7 @@
     "babelify": "^7.3.0",
     "beefy": "^2.1.8",
     "browserify": "^13.0.1",
+    "browserify-hmr": "^0.3.1",
     "envify": "^3.4.1",
     "eslint": "^3.1.1",
     "eslint-config-rackt": "^1.1.1",
@@ -64,7 +65,8 @@
       "es2015",
       "stage-0",
       "react"
-    ]
+    ],
+    "plugins": ["react-hot-loader/babel"]
   },
   "eslintConfig": {
     "extends": [
@@ -76,5 +78,8 @@
       "babelify",
       "envify"
     ]
+  },
+  "dependencies": {
+    "react-hot-loader": "^3.0.0-beta.2"
   }
 }
