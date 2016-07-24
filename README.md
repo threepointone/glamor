@@ -379,7 +379,6 @@ todo
 - investigate batching stylesheet changes
 - theming et al
 - fix autoprefixer order bugs
-- bring back umd / es6 builds
 - bring back coverage
 
 profit, profit
