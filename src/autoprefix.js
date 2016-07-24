@@ -5,6 +5,18 @@ const assign = Object.assign
 export default function autoprefix(style) {
   const toAdd = {}
 
+  if (style.hasOwnProperty('animation')) {
+    assign(toAdd, {
+      WebkitAnimation: style.animation
+    })
+  }
+
+  if (style.hasOwnProperty('transform')) {
+    assign(toAdd, {
+      WebkitTransform: style.transform
+    })
+  }
+
   if (style.hasOwnProperty('userSelect')) {
     assign(toAdd, {
       WebkitUserSelect: style.userSelect,

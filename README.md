@@ -24,8 +24,9 @@ features
 - fairly small / efficient, with a fluent api
 - framework independent
 - adds vendor prefixes
-- supports all the pseudo classes/elements
-- supports media queries
+- supports all the pseudo :classes/::elements
+- supports `@media` queries
+- supports `@font-face` and '@keyframes'
 - dev helper to simulate pseudo classes like `:hover`, etc
 - server side rendering
 - tests / coverage
@@ -192,12 +193,12 @@ in development, lets you trigger any pseudoclass on an element
 
 ---
 
-`addFont(font)`
+`fontFace(font)`
 
-loads the given font-face into the document.
+loads the given font-face at most once into the document, returns the font family name
 
 ```jsx
-addFont({
+let family = fontFace({
   fontFamily: 'Open Sans',
   fontStyle: 'normal',
   fontWeight: 400,
@@ -205,12 +206,38 @@ addFont({
   unicodeRange: "U+0000-00FF, U+0131, ... U+E0FF, U+EFFD, U+F000"
 })
 // ...
-<div {...style({ fontFamily: 'Open Sans' })}>
+<div {...style({ fontFamily: family })}> //
   no serifs!
 </div>
 ```
 
 for anything more complicated, use something like [typography.js](https://kyleamathews.github.io/typography.js/)
+
+---
+
+`animation(keyframes)`
+
+a lighweight helper to add animation keyframes into the document
+
+```jsx
+let bounce = animation('bounce', { // optional name
+  '0%': { transform: 'scale(0.1)', opacity: 0 }
+  '60%': { transform: 'scale(1.2)', opacity: 1 }
+  '100%': { transform: 'scale(1)' }
+})
+// ...
+<div {...style({
+  animation: `${bounce} 2s`,
+  width: 50, height: 50,
+  backgroundColor: 'red'
+})}>
+  bounce!
+</div>
+```
+
+use sparingly! for granular control, use javascript and pencil and paper.
+
+---
 
 composing / modularity
 ---
@@ -346,12 +373,11 @@ todo
 - error checking / typechecks (flow? runtime?)
 - plugins
 - other frameworks?
-- labels for merges
 - refactor the hairball
 - non-dom? (!)
 - flush unused rules?
 - compile time optimizations / statically generate css files alá jsxstyle
-- benchmarks (#3)
+- benchmarks ([#3](https://github.com/threepointone/react-css/issues/3))
 - investigate batching stylesheet changes
 - theming et al
 - fix autoprefixer order bugs

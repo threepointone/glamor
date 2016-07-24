@@ -3,7 +3,7 @@ import React from 'react' //eslint-disable-line
 import { render, unmountComponentAtNode } from 'react-dom'
 
 import { style, hover, nthChild, firstLetter, media, merge, multi, select, visited,
-  addFont,
+  fontFace, animation,
   useLabels, noLabels,
   startSimulation, stopSimulation, simulate,
   rehydrate, flush }
@@ -254,17 +254,37 @@ describe('react-css', () => {
   // media query wrap / override?
 
   it('should be able to add fonts', () => {
+    // todo - doesn't look like unicode-range works
     const latin =  {
       fontFamily: 'Open Sans',
       fontStyle: 'normal',
       fontWeight: 400,
-      src: "local('Open Sans'), local('OpenSans'), url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format('woff2')",
-      unicodeRange: 'U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000'
+      src: "local('Open Sans'), local('OpenSans'), url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format('woff2')"
     }
 
-    addFont(latin)
+    let f = fontFace(latin)
     expect(document.styleSheets._css_.rules[0].cssText)
-      .toEqual("@font-face { font-family: 'Open Sans'; font-style: normal; font-weight: 400; src: local(Open Sans), local(OpenSans), url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format(woff2); unicode-range: ; }")
+      .toEqual("@font-face { font-family: 'Open Sans'; font-style: normal; font-weight: 400; src: local(Open Sans), local(OpenSans), url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format(woff2); }")
+    expect(f).toEqual('Open Sans')
+
+  })
+
+  it('can add animation keyframes', () => {
+    let animate = animation('bounce', {
+      '0%': {
+        transform: 'scale(0.1)',
+        opacity: 0
+      },
+      '60%': {
+        transform: 'scale(1.2)',
+        opacity: 1
+      },
+      '100%': {
+        transform: 'scale(1)'
+      }
+    })
+    expect(document.styleSheets._css_.rules[0].cssText).toEqual(`@-webkit-keyframes bounce_ma9xpz { \n  0% { opacity: 0; -webkit-transform: scale(0.1); }\n  60% { opacity: 1; -webkit-transform: scale(1.2); }\n  100% { -webkit-transform: scale(1); }\n}`)
+    expect(animate).toEqual('bounce_ma9xpz')
 
   })
 

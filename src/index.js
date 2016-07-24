@@ -252,6 +252,8 @@ export function renderStatic(fn, optimized = false) {
     ids.forEach(id => {
       o.cache[id] = cache[id]
 
+      // todo - fix the 0, 11 thing
+      // todo - add fonts / animations
       o.css+= sheet.rules
         .map(x => x.cssText)
         .filter(r => r.substring(0, 11 + id.length) === `[data-css-${id}]`).join('\n') + '\n'
@@ -393,11 +395,28 @@ export function unused() {
   throw new Error('not implemented')
 }
 
-export function addFont(font) {
+export function fontFace(font) {
   let id = hash(JSON.stringify(font))
   if(!cache[id]) {
-    cache[id] = { id, font }
+    cache[id] = { id, family: font.fontFamily, font }
     insertSheetRule(`@font-face { ${createMarkupForStyles(autoprefix(font))}}`, sheet.rules.length)
   }
-  return id
+  return font.fontFamily
+}
+
+export function animation(name, keyframes) {
+  if(typeof name !== 'string') {
+    keyframes = name
+    name = 'animate'
+  }
+  let id = hash(name + JSON.stringify(keyframes)).toString(36)
+  if(!cache[id]) {
+    cache[id] = { id, name, keyframes }
+    let inner = Object.keys(keyframes).map(kf => `${kf} { ${ createMarkupForStyles(autoprefix(keyframes[kf]))}}`).join('\n')
+
+    insertSheetRule(`@-webkit-keyframes ${name + '_' + id} { ${ inner }}`, sheet.rules.length)
+    insertSheetRule(`@keyframes ${name + '_' + id} { ${ inner }}`, sheet.rules.length)
+  }
+  return name + '_' + id
+
 }
