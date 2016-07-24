@@ -204,7 +204,7 @@ addFont({
   src: "local('Open Sans'), local('OpenSans'), url(https://fonts.gstatic.com/s/...ff2')",
   unicodeRange: "U+0000-00FF, U+0131, ... U+E0FF, U+EFFD, U+F000"
 })
-
+// ...
 <div {...style({ fontFamily: 'Open Sans' })}>
   no serifs!
 </div>
