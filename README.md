@@ -195,7 +195,19 @@ in development, lets you trigger any pseudoclass on an element
 `addFont(font)`
 
 loads the given font-face into the document.
+
 ```jsx
+addFont({
+  fontFamily: 'Open Sans',
+  fontStyle: 'normal',
+  fontWeight: 400,
+  src: "local('Open Sans'), local('OpenSans'), url(https://fonts.gstatic.com/s/...ff2')",
+  unicodeRange: "U+0000-00FF, U+0131, ... U+E0FF, U+EFFD, U+F000"
+})
+
+<div {...style({ fontFamily: 'Open Sans' })}>
+  no serifs!
+</div>
 ```
 
 for anything more complicated, use something like [typography.js](https://kyleamathews.github.io/typography.js/)
