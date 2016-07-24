@@ -3,21 +3,23 @@
   "version": "1.2.10",
   "description": "inline css for react",
   "main": "lib/index.js",
+  "jsnext:main": "es6/index.js",
   "files": [
-    "lib"
+    "lib",
+    "es6",
+    "umd"
   ],
   "scripts": {
-    "start": "NODE_ENV=development beefy demo/src/index.js:bundle.js --index demo/index.html --quiet false -- -p livereactload",
-    "build": "npm run clean && npm run build:lib && npm run build:demo",
-    "build:lib": "babel src -d lib",
+    "start": "NODE_ENV=development beefy demo/src/index.js:bundle.js --index demo/index.html --quiet false",
+    "build": "npm run clean && npm run build:lib && npm run build:es6 && npm run build:umd && npm run build:demo",
+    "build:lib": "babel src -d lib --loose all",
     "build:es6": "",
-    "build:umd": "",
+    "build:umd": "NODE_ENV=production browserify src/index.js -s RCSS -o umd/index.js",
     "build:demo": "browserify demo/src/index.js -o demo/bundle.js",
-    "clean": "rm -f demo/bundle.js && rm -rf lib",
+    "clean": "rm -f demo/bundle.js && rm -rf lib && rm -rf es6 && rm -rf umd",
     "test": "node ./node_modules/.bin/karma start --single-run",
     "test:watch": "node ./node_modules/.bin/karma start"
   },
-  "dependencies": {},
   "peerDependencies": {
     "react": "15.x"
   },
@@ -25,7 +27,6 @@
     "aphrodite": "^0.5.0",
     "babel-cli": "^6.11.4",
     "babel-eslint": "^6.1.2",
-    "babel-plugin-react-transform": "^2.0.2",
     "babel-polyfill": "^6.9.1",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.11.1",
@@ -45,11 +46,9 @@
     "karma-mocha": "^1.1.1",
     "karma-mocha-reporter": "^2.0.4",
     "karma-phantomjs-launcher": "^1.0.1",
-    "livereactload": "^2.2.4",
     "mocha": "^2.5.3",
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
-    "react-proxy": "^1.1.8",
     "watchify": "^3.7.0"
   },
   "author": "Sunil Pai <threepointone@gmail.com>",
@@ -65,26 +64,7 @@
       "es2015",
       "stage-0",
       "react"
-    ],
-    "env": {
-      "development": {
-        "plugins": [
-          [
-            "react-transform",
-            {
-              "transforms": [
-                {
-                  "transform": "livereactload/babel-transform",
-                  "imports": [
-                    "react"
-                  ]
-                }
-              ]
-            }
-          ]
-        ]
-      }
-    }
+    ]
   },
   "eslintConfig": {
     "extends": [

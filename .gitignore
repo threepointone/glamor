@@ -1,5 +1,5 @@
 /coverage
-/demo/dist
 /lib
 /node_modules
 npm-debug.log
+demo/bundle.js
