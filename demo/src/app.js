@@ -9,7 +9,7 @@ addFont(latin)
 
 export class App extends React.Component {
   render() {
-    return <div {...media('(min-width: 500px)',
+    return <div {...simulate('hover')} {...media('(min-width: 500px)',
       merge( 'container',
         hover({ fontFamily: '"Open Sans"' }),
         select('#xyz', { color: 'red', background: 'gray' }),
