@@ -51,6 +51,12 @@ describe('react-css', () => {
     })
   })
 
+  it('correctly handles display:flex', () => {
+    render(<div {...style({ display: 'flex' })}/>, node, () => {
+      expect(childStyle(node).display).toMatch(/flex/)
+    })
+  })
+
   it('multiple styles can be combined', () => {
     // 2 methods
 

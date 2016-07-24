@@ -1,9 +1,10 @@
 // from https://github.com/petehunt/jsxstyle/blob/master/lib/autoprefix.js
 
-let assign = Object.assign
+const assign = Object.assign
 
 export default function autoprefix(style) {
-  let toAdd = {}
+  const toAdd = {}
+
   if (style.hasOwnProperty('userSelect')) {
     assign(toAdd, {
       WebkitUserSelect: style.userSelect,
@@ -84,7 +85,7 @@ export default function autoprefix(style) {
   }
 
   if (style.display === 'flex') {
-    toAdd.display = style.display + 'display:-webkit-flexdisplay:-ms-flexbox'
+    toAdd.display = style.display + ';display:-webkit-flex;display:-ms-flexbox'
   }
 
   return { ...style, ...toAdd }
