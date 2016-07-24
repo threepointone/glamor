@@ -30,6 +30,7 @@ features
 - dev helper to simulate pseudo classes like `:hover`, etc
 - server side rendering
 - bring back umd / es6 builds
+- bring back coverage 
 - tests / coverage
 
 
