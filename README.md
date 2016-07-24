@@ -29,6 +29,7 @@ features
 - supports `@font-face` and `@keyframes`
 - dev helper to simulate pseudo classes like `:hover`, etc
 - server side rendering
+- bring back umd / es6 builds
 - tests / coverage
 
 

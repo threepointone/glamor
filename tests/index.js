@@ -1,3 +1,5 @@
+import 'babel-polyfill'
+
 import expect from 'expect'
 import React from 'react' //eslint-disable-line
 import { render, unmountComponentAtNode } from 'react-dom'
@@ -7,7 +9,7 @@ import { style, hover, nthChild, firstLetter, media, merge, multi, select, visit
   useLabels, noLabels,
   startSimulation, stopSimulation, simulate,
   rehydrate, flush }
-from 'src/'
+from '../src'
 
 function childStyle(node, p = null) {
   return window.getComputedStyle(node.childNodes[0], p)
