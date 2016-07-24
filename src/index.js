@@ -71,10 +71,10 @@ if(isBrowser && process.env.NODE_ENV === 'development') {
 }
 // todo - make sure hot loading isn't broken
 // todo - clearInterval on browser close
-let sheet
+let sheet, styleTag
 
-if(isBrowser) {
-  let styleTag = document.getElementById('_css_')
+function getStyleTag() {
+  styleTag = document.getElementById('_css_')
   if(!styleTag) {
     styleTag = document.createElement('style')
     styleTag.id = styleTag.id || '_css_'
@@ -82,6 +82,13 @@ if(isBrowser) {
     (document.head || document.getElementsByTagName('head')[0]).appendChild(styleTag)
   }
   sheet = [ ...document.styleSheets ].filter(sheet => sheet.ownerNode === styleTag)[0]
+  return styleTag
+}
+
+
+if(isBrowser) {
+  // init tag and sheet
+  getStyleTag()
 }
 else {
   sheet = {
@@ -93,6 +100,21 @@ else {
       // should we include selectorText etc
       sheet.rules = [ ...sheet.rules.slice(0, index), { cssText: rule }, ...sheet.rules.slice(index) ]
     }
+  }
+}
+
+function insertSheetRule(rule, index) {
+  if(styleTag && styleTag.styleSheet) {
+    sheet.styleSheet.cssText+= rule
+  }
+  else {
+    if(isBrowser) {
+      styleTag.appendChild(document.createTextNode(rule))
+    }
+    else{
+      sheet.insertRule(rule, index)
+    }
+
   }
 }
 
@@ -119,12 +141,15 @@ export function cssrule(type, style, id) {
 }
 
 export function add(type = '_', style, id = objHash(type, style)) {
+  // if fontFamily passed in -
+  // check if already inserted
+  // if not, do so
+  // convert to
   // register rule
   if(!cache[id]) {
     // remove previous rule if exists?
     // useful for gc/named id situations?
-    // console.log(cssrule(type, style, id))
-    sheet.insertRule(cssrule(type, style, id), sheet.rules.length)
+    insertSheetRule(cssrule(type, style, id), sheet.rules.length)
     cache[id] = { type, style, id }
   }
 
@@ -149,7 +174,7 @@ export function media(expr, style) {
 
     if(!cache[newId]) {
       Object.keys(bag).forEach(type => {
-        sheet.insertRule(`@media ${expr} { ${ cssrule(type, bag[type], newId) } }`, sheet.rules.length)
+        insertSheetRule(`@media ${expr} { ${ cssrule(type, bag[type], newId) } }`, sheet.rules.length)
       })
       cache[newId] = { expr, rule, id: newId }
     }
@@ -163,16 +188,16 @@ export function media(expr, style) {
     let newId = hash(expr+id).toString(36)
 
     if(!cache[newId]) {
-      sheet.insertRule(`@media ${expr} { ${ cssrule(cache[id].type, cache[id].style, newId) } }`, sheet.rules.length)
+      insertSheetRule(`@media ${expr} { ${ cssrule(cache[id].type, cache[id].style, newId) } }`, sheet.rules.length)
       cache[newId] = { expr, rule, id: newId }
     }
-    return { [`data-css-${newId}`]: hasLabels ? '*mq ' + (cache[id].style.label || id) : '' }
+    return { [`data-css-${newId}`]: hasLabels ? '*mq ' + (cache[id].style.label || ('`' + id)) : '' }
   }
   else {
 
     let id = objHash(expr, style)
     if(!cache[id]) {
-      sheet.insertRule(`@media ${expr} { ${ cssrule('_', style, id) } }`, sheet.rules.length)
+      insertSheetRule(`@media ${expr} { ${ cssrule('_', style, id) } }`, sheet.rules.length)
       cache[id] = { expr, style, id }
     }
     return { [`data-css-${id}`]: hasLabels ? '*mq ' + (style.label || '') : ''  }
@@ -194,9 +219,19 @@ export function remove(o) {
 export function flush() {
   // index = 0
   cache = {}
-  while(sheet.rules.length>0) {
-    sheet.deleteRule(sheet.rules.length -1)
+
+  if(isBrowser) {
+    styleTag && styleTag.parentNode.removeChild(styleTag)
+    styleTag = null
+    isBrowser && getStyleTag()
   }
+  else {
+    while(sheet.rules.length > 0) {
+      sheet.deleteRule(sheet.rules.length -1)
+    }
+  }
+
+
 }
 
 export function renderStatic(fn, optimized = false) {
@@ -331,7 +366,7 @@ export function merge(...rules) {
   if(!cache[id]) {
     cache[id] = { bag: styleBag, id, label }
     Object.keys(styleBag).forEach(type => {
-      sheet.insertRule(cssrule(type, styleBag[type], id), sheet.rules.length)
+      insertSheetRule(cssrule(type, styleBag[type], id), sheet.rules.length)
     })
   }
 
@@ -351,4 +386,18 @@ function idFor(rule) {
 export function unused() {
   // rules generated vs used
   throw new Error('not implemented')
+}
+
+export function addFont(font) {
+  if(Array.isArray(font)) {
+    addFont(font[0])
+    return font[0].fontFamily + ' '  + font.slice(1).join(', ')// string version
+  }
+  let id = hash(JSON.stringify(font))
+  if(!cache[id]) {
+    cache[id] = { id, font }
+    insertSheetRule(`@font-face { ${createMarkupForStyles(autoprefix(font))}}`, sheet.rules.length)
+  }
+  return font[0].fontFamily
+  // add
 }
