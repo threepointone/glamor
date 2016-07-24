@@ -190,7 +190,15 @@ around viewport attributes, use javascript.
 
 in development, lets you trigger any pseudoclass on an element
 
+---
 
+`addFont(font)`
+
+loads the given font-face into the document.
+```jsx
+```
+
+for anything more complicated, use something like [typography.js](https://kyleamathews.github.io/typography.js/)
 
 composing / modularity
 ---
@@ -322,7 +330,6 @@ here are some key differences -
 todo
 ---
 
-- font face detection / on-demand loading
 - animation / keyframe / transform generation
 - error checking / typechecks (flow? runtime?)
 - plugins
@@ -335,7 +342,7 @@ todo
 - benchmarks (#3)
 - investigate batching stylesheet changes
 - theming et al
-- fix autoprefixer order bugs 
+- fix autoprefixer order bugs
 
 profit, profit
 ---

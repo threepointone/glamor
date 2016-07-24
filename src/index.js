@@ -129,7 +129,7 @@ export function selector(id, type) {
   // id should exist
   let suffix = type === '_' ? '' : type[0] === ' ' ? type : `:${type}`
   let s = `[data-css-${id}]${suffix}`
-  if(type !== '_' && canSimulate) {
+  if(type !== '_' && canSimulate && ((classes.indexOf(type) >=0) || (elements.indexOf(type) >=0) )) {
     s = s + `, [data-css-${id}][data-simulate-${simple(type)}]`
   }
   return s

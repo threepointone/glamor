@@ -11,7 +11,7 @@ export class App extends React.Component {
   render() {
     return <div {...media('(min-width: 500px)',
       merge( 'container',
-        style({ fontFamily: '"Open Sans"' }),
+        hover({ fontFamily: '"Open Sans"' }),
         select('#xyz', { color: 'red', background: 'gray' }),
         select('#abc', { color: 'blue' }),
         select('.bold', { fontWeight: 'bold' }),
