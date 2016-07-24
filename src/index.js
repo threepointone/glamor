@@ -91,13 +91,13 @@ if(isBrowser) {
 }
 else {
   sheet = {
-    rules: [],
+    cssRules: [],
     deleteRule: index => {
-      sheet.rules = [ ...sheet.rules.slice(0, index), ...sheet.rules.slice(index + 1) ]
+      sheet.cssRules = [ ...sheet.cssRules.slice(0, index), ...sheet.cssRules.slice(index + 1) ]
     },
     insertRule: (rule, index) => {
       // should we include selectorText etc
-      sheet.rules = [ ...sheet.rules.slice(0, index), { cssText: rule }, ...sheet.rules.slice(index) ]
+      sheet.cssRules = [ ...sheet.cssRules.slice(0, index), { cssText: rule }, ...sheet.cssRules.slice(index) ]
     }
   }
 }
@@ -148,7 +148,7 @@ export function add(type = '_', style, id = objHash(type, style)) {
   if(!cache[id]) {
     // remove previous rule if exists?
     // useful for gc/named id situations?
-    insertSheetRule(cssrule(type, style, id), sheet.rules.length)
+    insertSheetRule(cssrule(type, style, id), sheet.cssRules.length)
     cache[id] = { type, style, id }
   }
 
@@ -173,7 +173,7 @@ export function media(expr, style) {
 
     if(!cache[newId]) {
       Object.keys(bag).forEach(type => {
-        insertSheetRule(`@media ${expr} { ${ cssrule(type, bag[type], newId) } }`, sheet.rules.length)
+        insertSheetRule(`@media ${expr} { ${ cssrule(type, bag[type], newId) } }`, sheet.cssRules.length)
       })
       cache[newId] = { expr, rule, id: newId }
     }
@@ -187,7 +187,7 @@ export function media(expr, style) {
     let newId = hash(expr+id).toString(36)
 
     if(!cache[newId]) {
-      insertSheetRule(`@media ${expr} { ${ cssrule(cache[id].type, cache[id].style, newId) } }`, sheet.rules.length)
+      insertSheetRule(`@media ${expr} { ${ cssrule(cache[id].type, cache[id].style, newId) } }`, sheet.cssRules.length)
       cache[newId] = { expr, rule, id: newId }
     }
     return { [`data-css-${newId}`]: hasLabels ? '*mq ' + (cache[id].style.label || ('`' + id)) : '' }
@@ -196,7 +196,7 @@ export function media(expr, style) {
 
     let id = objHash(expr, style)
     if(!cache[id]) {
-      insertSheetRule(`@media ${expr} { ${ cssrule('_', style, id) } }`, sheet.rules.length)
+      insertSheetRule(`@media ${expr} { ${ cssrule('_', style, id) } }`, sheet.cssRules.length)
       cache[id] = { expr, style, id }
     }
     return { [`data-css-${id}`]: hasLabels ? '*mq ' + (style.label || '') : ''  }
@@ -225,8 +225,8 @@ export function flush() {
     isBrowser && getStyleTag()
   }
   else {
-    while(sheet.rules.length > 0) {
-      sheet.deleteRule(sheet.rules.length -1)
+    while(sheet.cssRules.length > 0) {
+      sheet.deleteRule(sheet.cssRules.length -1)
     }
   }
 
@@ -238,7 +238,7 @@ export function renderStatic(fn, optimized = false) {
   if(html === undefined) {
     throw new Error('did you forget to return from renderToString?')
   }
-  let rules = [ ...sheet.rules ], css = rules.map(r => r.cssText).join('\n')
+  let rules = [ ...sheet.cssRules ], css = rules.map(r => r.cssText).join('\n')
   if(optimized) {
     // parse out ids from html
     // reconstruct css/rules/cache to pass
@@ -254,7 +254,7 @@ export function renderStatic(fn, optimized = false) {
 
       // todo - fix the 0, 11 thing
       // todo - add fonts / animations
-      o.css+= sheet.rules
+      o.css+= sheet.cssRules
         .map(x => x.cssText)
         .filter(r => r.substring(0, 11 + id.length) === `[data-css-${id}]`).join('\n') + '\n'
     })
@@ -373,7 +373,7 @@ export function merge(...rules) {
   if(!cache[id]) {
     cache[id] = { bag: styleBag, id, label }
     Object.keys(styleBag).forEach(type => {
-      insertSheetRule(cssrule(type, styleBag[type], id), sheet.rules.length)
+      insertSheetRule(cssrule(type, styleBag[type], id), sheet.cssRules.length)
     })
   }
   // todo - bug - this doesn't update when merge label changes
@@ -399,7 +399,7 @@ export function fontFace(font) {
   let id = hash(JSON.stringify(font))
   if(!cache[id]) {
     cache[id] = { id, family: font.fontFamily, font }
-    insertSheetRule(`@font-face { ${createMarkupForStyles(autoprefix(font))}}`, sheet.rules.length)
+    insertSheetRule(`@font-face { ${createMarkupForStyles(autoprefix(font))}}`, sheet.cssRules.length)
   }
   return font.fontFamily
 }
@@ -414,8 +414,8 @@ export function animation(name, keyframes) {
     cache[id] = { id, name, keyframes }
     let inner = Object.keys(keyframes).map(kf => `${kf} { ${ createMarkupForStyles(autoprefix(keyframes[kf]))}}`).join('\n')
 
-    insertSheetRule(`@-webkit-keyframes ${name + '_' + id} { ${ inner }}`, sheet.rules.length)
-    insertSheetRule(`@keyframes ${name + '_' + id} { ${ inner }}`, sheet.rules.length)
+    insertSheetRule(`@-webkit-keyframes ${name + '_' + id} { ${ inner }}`, sheet.cssRules.length)
+    insertSheetRule(`@keyframes ${name + '_' + id} { ${ inner }}`, sheet.cssRules.length)
   }
   return name + '_' + id
 

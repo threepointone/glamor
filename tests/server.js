@@ -28,10 +28,10 @@ style({ color: 'wheat' })
   let { html, css, cache } = renderStaticOptimized(() =>
     renderToStaticMarkup(<div {...merge(style({ color: 'red' }), hover({ color: 'blue' }))}/>))
 
-  expect(html).toEqual('<div data-css-x8bs5u=""></div>')
-  expect(css).toEqual('[data-css-x8bs5u]{ color:red; } \n[data-css-x8bs5u]:hover{ color:blue; } \n')
+  expect(html).toEqual('<div data-css-1d79yij=""></div>')
+  expect(css).toEqual('[data-css-1d79yij]{ color:red; } \n[data-css-1d79yij]:hover{ color:blue; } \n')
   expect(cache).toEqual({
-    x8bs5u: { bag: { _: { color: 'red' }, hover: { color: 'blue' } }, id: 'x8bs5u', label: '' }
+    '1d79yij': { bag: { _: { color: 'red' }, hover: { color: 'blue' } }, id: '1d79yij', label: '' }
   })
 }
 
