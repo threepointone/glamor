@@ -26,7 +26,7 @@ features
 - adds vendor prefixes
 - supports all the pseudo :classes/::elements
 - supports `@media` queries
-- supports `@font-face` and '@keyframes'
+- supports `@font-face` and `@keyframes`
 - dev helper to simulate pseudo classes like `:hover`, etc
 - server side rendering
 - tests / coverage
@@ -206,7 +206,7 @@ let family = fontFace({
   unicodeRange: "U+0000-00FF, U+0131, ... U+E0FF, U+EFFD, U+F000"
 })
 // ...
-<div {...style({ fontFamily: family })}> //
+<div {...style({ fontFamily: family })}>
   no serifs!
 </div>
 ```
@@ -217,7 +217,7 @@ for anything more complicated, use something like [typography.js](https://kyleam
 
 `animation(keyframes)`
 
-adds animation keyframes into the document, with an optional name. 
+adds animation keyframes into the document, with an optional name.
 
 ```jsx
 let bounce = animation('bounce', { // optional name
@@ -363,13 +363,11 @@ here are some key differences -
 - as such, it does **not** generate pretty classnames, but instead generates debug labels in dev mode, clearly showing merges, pseudos, and media queries. This keeps the generated html small, but still good dx. (issue [#5](https://github.com/threepointone/react-css/issues/5))
 - does **not** touch `class`/`style` attributes; instead we use `data-*` attributes and jsx attribute spread for a natural, fluent api ([some implications](https://github.com/Khan/aphrodite/issues/25)). This lets you define styles 'inline' in a functional / reacty manner, yet globally optimize as one unit.
 - this also keeps it framework-independent (though I still have to see how to use this in angular/ember templates. see - [#6](https://github.com/threepointone/react-css/issues/6))
-- (todo) styles could further be statically analyzed and replaced with said data attributes,
-  generating a much more optimal css file / js bundle ([#2](https://github.com/threepointone/react-css/issues/2))
+- (todo) opportunities for static optimizations ([#2](https://github.com/threepointone/react-css/issues/2))
 
 todo
 ---
 
-- animation / keyframe / transform generation
 - error checking / typechecks (flow? runtime?)
 - plugins
 - other frameworks?
