@@ -1,6 +1,6 @@
 {
   "name": "@threepointone/react-css",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "inline css for react",
   "main": "lib/index.js",
   "jsnext:main": "es6/index.js",
