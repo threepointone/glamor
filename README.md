@@ -217,7 +217,7 @@ for anything more complicated, use something like [typography.js](https://kyleam
 
 `animation(keyframes)`
 
-a lighweight helper to add animation keyframes into the document
+adds animation keyframes into the document, with an optional name. 
 
 ```jsx
 let bounce = animation('bounce', { // optional name
