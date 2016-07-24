@@ -16,10 +16,7 @@ motivation
 ---
 
 This expands on ideas from @vjeux's [2014 css-in-js talk](https://speakerdeck.com/vjeux/react-css-in-js).
-We introduce an api to annotate arbitrary dom nodes with style definitions ("rules"),
-processing/optimizing behind the scenes with the
-[CSSStyleSheet](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet)
-api for, um, the greater good.
+We introduce an api to annotate arbitrary dom nodes with style definitions ("rules") for, um, the greater good.
 
 features
 ---
@@ -330,7 +327,7 @@ todo
 - error checking / typechecks (flow? runtime?)
 - plugins
 - other frameworks?
-- labels for merges 
+- labels for merges
 - refactor the hairball
 - non-dom? (!)
 - flush unused rules?
