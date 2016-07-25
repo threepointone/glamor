@@ -4,8 +4,8 @@ module.exports = function(config) {
     browsers: ['PhantomJS'],
     reporters: ['mocha'],
     preprocessors: {
-      'tests/index.js': [ 'browserify' ]
+      'index.js': [ 'browserify' ]
     },
-    files: ['tests/index.js']
+    files: ['index.js']
   });
 };

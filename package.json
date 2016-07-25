@@ -8,13 +8,13 @@
     "umd"
   ],
   "scripts": {
-    "start": "NODE_ENV=development beefy demo/src/index.js:bundle.js --index demo/index.html -- -p browserify-hmr",
+    "start": "NODE_ENV=development beefy demo/src/index.js:bundle.js --index demo/index.html -- -p browserify-hmr -p errorify",
     "build": "npm run clean && npm run build:lib && npm run build:umd && npm run build:demo",
     "build:lib": "NODE_ENV=production babel src -d lib --loose all",
     "build:umd": "NODE_ENV=production mkdir umd && browserify src/index.js -s RCSS -o umd/index.js",
     "build:demo": "NODE_ENV=development browserify demo/src/index.js -o demo/bundle.js",
     "clean": "rm -f demo/bundle.js && rm -rf lib && rm -rf es6 && rm -rf umd",
-    "test": "node ./node_modules/.bin/karma start --single-run",
+    "test": "node ./node_modules/.bin/karma start tests/karma.conf.js --single-run",
     "test:watch": "node ./node_modules/.bin/karma start"
   },
   "peerDependencies": {
@@ -33,6 +33,7 @@
     "browserify": "^13.0.1",
     "browserify-hmr": "^0.3.1",
     "envify": "^3.4.1",
+    "errorify": "^0.3.1",
     "eslint": "^3.1.1",
     "eslint-config-rackt": "^1.1.1",
     "eslint-plugin-react": "^5.2.2",
@@ -65,10 +66,11 @@
     ],
     "env": {
       "development": {
-        "plugins": ["react-hot-loader/babel"]
+        "plugins": [
+          "react-hot-loader/babel"
+        ]
       }
     }
-
   },
   "eslintConfig": {
     "extends": [

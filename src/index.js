@@ -148,10 +148,10 @@ function insertSheetRule(rule, index) {
 
 let cache = {}
 
-export function objHash(type, obj) {
+export function styleHash(type, style) {
   // make sure type exists
   // make sure obj is style-like?
-  return hash(type + Object.keys(obj).reduce((str, k) => str + k + obj[k], '')).toString(36)
+  return hash(type + Object.keys(style).reduce((str, k) => str + k + style[k], '')).toString(36)
 }
 
 export function selector(id, type) {
@@ -168,7 +168,7 @@ export function cssrule(type, style, id) {
   return `${selector(id, type)}{ ${createMarkupForStyles(autoprefix(style))} } `
 }
 
-export function add(type = '_', style, id = objHash(type, style)) {
+export function add(type = '_', style, id = styleHash(type, style)) {
   // if fontFamily passed in -
   // check if already inserted
   // if not, do so
@@ -223,7 +223,7 @@ export function media(expr, style) {
   }
   else {
 
-    let id = objHash(expr, style)
+    let id = styleHash(expr, style)
     if(!cache[id]) {
       insertSheetRule(`@media ${expr} { ${ cssrule('_', style, id) } }`, sheet.cssRules.length)
       cache[id] = { expr, style, id }
