@@ -16,4 +16,4 @@ branches:
   only:
     - master
 
-script: npm run test
+script: USE_CLOUD=1 npm run test

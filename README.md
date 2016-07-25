@@ -368,6 +368,7 @@ here are some key differences -
 todo
 ---
 
+- use postcss/autoprefixer for vendor prefixes
 - error checking / typechecks (flow? runtime?)
 - plugins
 - other frameworks?
