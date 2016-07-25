@@ -29,7 +29,6 @@
 
 import hash from './hash'
 import autoprefix from './autoprefix'
-import { defonce } from 'ud'
 import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations'
 
 let canSimulate = process.env.NODE_ENV === 'development'
@@ -86,10 +85,8 @@ let isBrowser = typeof document !== 'undefined'
 let interval
 
 export function startMediaQueryLabelTracking(period = 2000) {
-  interval = defonce(module, () =>
-    setInterval(() => {
-      updateMediaQueryLabels()
-    }, period), 'interval')
+  interval = setInterval(() =>
+    updateMediaQueryLabels())
 }
 
 export function stopMediaQueryLabelTracking() {
@@ -147,7 +144,7 @@ function insertSheetRule(rule, index) {
   }
 }
 
-let cache = defonce(module, () => ({}), 'cache')
+let cache = {}
 
 export function styleHash(type, style) {
   // make sure type exists

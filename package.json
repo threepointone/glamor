@@ -52,7 +52,6 @@
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
     "react-hot-loader": "^3.0.0-beta.2",
-    "ud": "^3.0.1",
     "watchify": "^3.7.0"
   },
   "author": "Sunil Pai <threepointone@gmail.com>",
