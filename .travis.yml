@@ -9,11 +9,8 @@ cache:
     - node_modules
 
 before_install:
-  - npm install codecov.io coveralls
 
 after_success:
-  - cat ./coverage/lcov.info | ./node_modules/codecov.io/bin/codecov.io.js
-  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 
 branches:
   only:
