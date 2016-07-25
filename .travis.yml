@@ -15,3 +15,5 @@ after_success:
 branches:
   only:
     - master
+
+script: npm run test
