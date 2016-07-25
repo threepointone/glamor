@@ -1,5 +1,5 @@
 // let isCloud = process.env.USE_CLOUD
-let allBrowsers = process.env.ALL
+var allBrowsers = process.env.ALL
 
 module.exports = function(config) {
   config.set({
