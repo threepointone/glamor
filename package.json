@@ -9,9 +9,10 @@
   ],
   "scripts": {
     "start": "NODE_ENV=development beefy demo/src/index.js:bundle.js --index demo/index.html -- -p browserify-hmr -p errorify",
-    "build": "npm run clean && npm run build:lib && npm run build:umd && npm run build:demo",
+    "build": "npm run clean && npm run build:lib && mkdir umd && npm run build:umd && npm run build:demo",
     "build:lib": "NODE_ENV=production babel src -d lib --loose all",
-    "build:umd": "NODE_ENV=production mkdir umd && browserify src/index.js -s RCSS -o umd/index.js",
+    "build:umd": "NODE_ENV=production browserify src/index.js -s RCSS -o umd/index.js && npm run compress:umd",
+    "compress:umd": "NODE_ENV=production uglifyjs umd/index.js -mc -o umd/index.min.js",
     "build:demo": "NODE_ENV=development browserify demo/src/index.js -o demo/bundle.js",
     "clean": "rm -f demo/bundle.js && rm -rf lib && rm -rf es6 && rm -rf umd",
     "test": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js --single-run",
