@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { merge, media, keyframes, select, hover, style, simulate, fontFace } from '../../src'
+import { merge, media, keyframes, select, hover, style, simulate, fontFace } from '../src'
 
 import { latin, greek, cyrillic } from './OpenSans'
 

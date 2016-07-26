@@ -61,7 +61,7 @@ export function simulate(...pseudos) {
 
 /**** labels ****/
 // toggle for debug labels. 
-// shouldn't have to mess with this manually
+// shouldn't *have* to mess with this manually
 let hasLabels = isDev
 
 export function cssLabels(bool) {
@@ -244,7 +244,7 @@ export const checked = x => add('checked', x)
 export const disabled = x => add('disabled', x)
 export const empty = x => add('empty', x)
 export const enabled = x => add('enabled', x)
-export const _default = x => add('default', x)
+export const _default = x => add('default', x) // note '_default' name 
 export const first = x => add('first', x)
 export const firstChild = x => add('first-child', x)
 export const firstOfType = x => add('first-of-type', x)
@@ -353,6 +353,7 @@ export function merge(...rules) {
   let id = hash(mergeLabel + JSON.stringify(styleBag)).toString(36) // todo - predictable order
   // make a merged label
   let label = hasLabels ? `${mergeLabel ? mergeLabel + '= ' : ''}${labels.length ? labels.join(' + ') : ''}` : '' // yuck 
+  
   if(!cache[id]) {
     cache[id] = { bag: styleBag, id, label }
     Object.keys(styleBag).forEach(type => {
@@ -363,15 +364,21 @@ export function merge(...rules) {
   return { [`data-css-${id}`]: label }
 }
 
-
-export function media(expr, style) {
+// this one's for media queries 
+// they cannot be merged with other queries 
+// todo - we should test whether the query is valid and give dev feedback 
+// todo - mltiple rules 
+export function media(expr, ...rules) {
+  if (rules.length > 1) {
+    return media(expr, merge(rules))
+  }
+  let rule = rules[0]
   // test if valid media query
-  if(isRule(style)) {
-    let rule = style
+  if(isRule(rule)) {
+    // let rule = style
     let id = idFor(rule)
-    // todo - collect rules and put under one 
     
-    if(cache[id].bag) { // merged       
+    if(cache[id].bag) { // merged rule       
       let { bag } = cache[id]
       let newId = hash(expr+id).toString(36)
       let label = hasLabels ? `*mq [${cache[id].label}]` : ''
@@ -383,6 +390,7 @@ export function media(expr, style) {
       }      
 
       return { [`data-css-${newId}`]: label }
+      // easy 
     }
     else if(cache[id].expr) { // media rule
       throw new Error('cannot apply @media onto another media rule')
@@ -397,11 +405,12 @@ export function media(expr, style) {
       }
       
       return { [`data-css-${newId}`]: label }
+      // easier 
     }
   }
   
-  else {
-
+  else { // a plain style 
+    let style = rule 
     let newId = styleHash(expr, style)
     let label = hasLabels ? '*mq ' + (style.label || '') : ''
     if(!cache[newId]) {

@@ -176,7 +176,8 @@ combine rules, with latter styles taking precedence over previous ones.
 media queries!
 
 ```jsx
-<div {...media('(min-width: 500px) and (orientation: landscape)', hover({ color: 'red' }))}>
+<div {...media('(min-width: 500px) and (orientation: landscape)', 
+            { color: 'blue' }, hover({ color: 'red' }))}>
   resize away
 </div>
 ```
