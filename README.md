@@ -6,6 +6,12 @@ css for component systems
 
 `npm install @threepointone/react-css --save`
 
+or if you're interested in a plain script tag - 
+```html
+<script src='https://npmcdn.com/@threepointone/react-css/umd/index.min.js'></script>
+```
+
+usage looks like this 
 ```jsx
 <div {...style({ color: 'red' })} {...hover({ color: 'pink' })}>
   zomg
