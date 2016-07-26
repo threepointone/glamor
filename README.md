@@ -2,8 +2,6 @@
 
 ![build status](https://travis-ci.org/threepointone/react-css.svg)
 
-[work in progress, feedback appreciated]
-
 css for component systems
 
 `npm install @threepointone/react-css --save`
@@ -38,7 +36,8 @@ cons
 ---
 
 - no real-world usage / adoption yet
-- changes across large ranges of values could cause a memory leak ([#1](https://github.com/threepointone/react-css/issues/1))
+- no idea on performance characteristics, investigating
+- edge cases *could* cause consume excess memory ([#1](https://github.com/threepointone/react-css/issues/1))
 
 api
 ---
@@ -377,7 +376,6 @@ todo
 - error checking / typechecks (flow? runtime?)
 - plugins
 - other frameworks?
-- refactor the hairball
 - non-dom? (!)
 - flush unused rules?
 - compile time optimizations / statically generate css files alá jsxstyle
