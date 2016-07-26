@@ -370,7 +370,7 @@ export function merge(...rules) {
     })
   }
   // todo - bug - this doesn't update when merge label changes
-  return { [`data-css-${id}`]: hasLabels ? label : '' }
+  return { [`data-css-${id}`]: label }
 }
 
 
@@ -384,14 +384,13 @@ export function media(expr, style) {
     if(cache[id].bag) { // merged       
       let { bag } = cache[id]
       let newId = hash(expr+id).toString(36)
+      let label = hasLabels ? `*mq [${cache[id].label}]` : ''
 
       if(!cache[newId]) {
-        Object.keys(bag).forEach(type => {
-          appendSheetRule(`@media ${expr} { ${ cssrule(newId, type, bag[type]) } }`)
-        })
+        let cssRules = Object.keys(bag).map(type => cssrule(newId, type, bag[type]))
+        appendSheetRule(`@media ${expr} { ${ cssRules.join('\n') } }`)
         cache[newId] = { expr, rule, id: newId }
-      }
-      let label = hasLabels ? `*mq [${cache[id].label}]` : ''
+      }      
 
       return { [`data-css-${newId}`]: label }
     }
@@ -399,27 +398,27 @@ export function media(expr, style) {
       throw new Error('cannot apply @media onto another media rule')
     }
     else { // simple rule
-      let id = idFor(style)
-      let rule = style
       let newId = hash(expr+id).toString(36)
+      let label = hasLabels ? '*mq ' + (cache[id].style.label || ('`' + id)) : ''
 
       if(!cache[newId]) {
         appendSheetRule(`@media ${expr} { ${ cssrule(newId, cache[id].type, cache[id].style) } }`)
         cache[newId] = { expr, rule, id: newId }
       }
-      let label = hasLabels ? '*mq ' + (cache[id].style.label || ('`' + id)) : ''
+      
       return { [`data-css-${newId}`]: label }
     }
   }
   
   else {
 
-    let id = styleHash(expr, style)
-    if(!cache[id]) {
-      appendSheetRule(`@media ${expr} { ${ cssrule(id, '_', style) } }`)
-      cache[id] = { expr, style, id }
+    let newId = styleHash(expr, style)
+    let label = hasLabels ? '*mq ' + (style.label || '') : ''
+    if(!cache[newId]) {
+      appendSheetRule(`@media ${expr} { ${ cssrule(newId, '_', style) } }`)
+      cache[newId] = { expr, style, id: newId }
     }
-    return { [`data-css-${id}`]: hasLabels ? '*mq ' + (style.label || '') : ''  }
+    return { [`data-css-${newId}`]: label }
   }
 }
 
@@ -440,7 +439,9 @@ export function keyframes(name, kfs) {
   let id = hash(name + JSON.stringify(kfs)).toString(36)
   if(!cache[id]) {
     cache[id] = { id, name, kfs }
-    let inner = Object.keys(kfs).map(kf => `${kf} { ${ createMarkupForStyles(autoprefix(kfs[kf]))}}`).join('\n')
+    let inner = Object.keys(kfs).map(kf => 
+      `${kf} { ${ createMarkupForStyles(autoprefix(kfs[kf])) }}`
+    ).join('\n')
 
     appendSheetRule(`@-webkit-keyframes ${name + '_' + id} { ${ inner }}`)
     appendSheetRule(`@keyframes ${name + '_' + id} { ${ inner }}`)
