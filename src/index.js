@@ -115,7 +115,7 @@ export function trackMediaQueryLabels(bool = true, period = 2000) {
 
 // initialize global stylesheet
 
-let cache = {}, sheet, styleTag
+let cache = {}, styleSheet, styleTag
 
 function injectStyleSheet() {
   if(isBrowser) {
@@ -126,18 +126,18 @@ function injectStyleSheet() {
       styleTag.appendChild(document.createTextNode(''));
       (document.head || document.getElementsByTagName('head')[0]).appendChild(styleTag)
     }
-    sheet = [ ...document.styleSheets ].filter(x => x.ownerNode === styleTag)[0]  
+    styleSheet = [ ...document.styleSheets ].filter(x => x.ownerNode === styleTag)[0]  
   }
   else {
     // server side 'polyfill'
-    sheet  = { 
+    styleSheet  = { 
       cssRules: [],
       deleteRule: index => {
-        sheet.cssRules = [ ...sheet.cssRules.slice(0, index), ...sheet.cssRules.slice(index + 1) ]
+        styleSheet.cssRules = [ ...styleSheet.cssRules.slice(0, index), ...styleSheet.cssRules.slice(index + 1) ]
       },
       insertRule: (rule, index) => {
         // just enough 'spec compliance' to be able to extract the rules later  
-        sheet.cssRules = [ ...sheet.cssRules.slice(0, index), { cssText: rule }, ...sheet.cssRules.slice(index) ]
+        styleSheet.cssRules = [ ...styleSheet.cssRules.slice(0, index), { cssText: rule }, ...styleSheet.cssRules.slice(index) ]
       }
     }
   }  
@@ -153,14 +153,14 @@ if(isDev) {
 // adds a css rule to the sheet 
 function appendSheetRule(rule) { // todo - tests 
   if(styleTag && styleTag.styleSheet) {
-    sheet.styleSheet.cssText+= rule
+    styleTag.styleSheet.cssText+= rule
   }
   else {
     if(isBrowser) { // todo - would innerHTML be faster here? is that even a thing with styletags?
       styleTag.appendChild(document.createTextNode(rule))
     }
     else{
-      sheet.insertRule(rule, sheet.cssRules.length)
+      styleSheet.insertRule(rule, styleSheet.cssRules.length)
     }
   }
 }
@@ -174,10 +174,8 @@ export function flush() { // todo - tests
     isBrowser && injectStyleSheet()
   }
   else {
-    while(sheet.cssRules.length > 0) {
-      sheet.deleteRule(sheet.cssRules.length -1)
-      // can't i just whack the array instead? this seems unnecessary 
-    }
+    // simple on server 
+    styleSheet.cssRules = []
   }
 }
 
@@ -420,6 +418,7 @@ export function fontFace(font) {
   let id = hash(JSON.stringify(font)).toString(36)
   if(!cache[id]) {
     cache[id] = { id, family: font.fontFamily, font }
+    // todo - crossbrowser 
     appendSheetRule(`@font-face { ${createMarkupForStyles(autoprefix(font))}}`)
   }
   return font.fontFamily
@@ -437,6 +436,7 @@ export function keyframes(name, kfs) {
       `${kf} { ${ createMarkupForStyles(autoprefix(kfs[kf])) }}`
     ).join('\n')
 
+    // todo - crossbrowser 
     appendSheetRule(`@-webkit-keyframes ${name + '_' + id} { ${ inner }}`)
     appendSheetRule(`@keyframes ${name + '_' + id} { ${ inner }}`)
   }
@@ -451,7 +451,7 @@ export function renderStatic(fn, optimized = false) {
   if(html === undefined) {
     throw new Error('did you forget to return from renderToString?')
   }
-  let rules = [ ...sheet.cssRules ], css = rules.map(r => r.cssText).join('\n')
+  let rules = [ ...styleSheet.cssRules ], css = rules.map(r => r.cssText).join('\n')
   if(optimized) {
     // parse out ids from html
     // reconstruct css/rules/cache to pass
@@ -464,10 +464,9 @@ export function renderStatic(fn, optimized = false) {
     }
     ids.forEach(id => {
       o.cache[id] = cache[id]
-
-      // todo - fix the 0, 11 thing
+      
       // todo - add fonts / animations
-      o.css+= sheet.cssRules
+      o.css+= styleSheet.cssRules
         .map(x => x.cssText)
         .filter(r => new RegExp(`\\\[data\-css\-${id}\\\]`).test(r)).join('\n') + '\n'
     })
