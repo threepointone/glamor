@@ -1,8 +1,9 @@
+/* global describe, it, beforeEach, afterEach */
 import 'babel-polyfill'
-let isPhantom = navigator.userAgent.match(/Phantom/)
+let isPhantom = navigator.userAgent.match(/Phanto/)
 
 import expect from 'expect'
-import expectJSX from 'expect-jsx';
+import expectJSX from 'expect-jsx'
 
 expect.extend(expectJSX)
 
@@ -12,7 +13,7 @@ import { render, unmountComponentAtNode } from 'react-dom'
 import { style, hover, nthChild, firstLetter, media, merge, multi, select, visited,
   fontFace, animation,
   useLabels, noLabels,
-  startSimulation, stopSimulation, simulate,
+  simulations, simulate,
   rehydrate, flush }
 from '../src'
 
@@ -31,7 +32,7 @@ function getDataAttributes(node) {
   return d
 }
 
-function getSheet(){
+function getSheet() {
   return [ ...document.styleSheets ].filter(sheet => sheet.ownerNode === document.getElementById('_css_'))[0]
 }
 
@@ -122,11 +123,11 @@ describe('react-css', () => {
 
   it('can simulate pseudo classes', () => {
     // start simulation mode
-    startSimulation()
+    simulations(true)
     render(<div {...hover({ backgroundColor: 'rgb(255, 0, 0)' })} {...simulate('hover')}/>, node, () => {
       expect(childStyle(node).backgroundColor).toEqual('rgb(255, 0, 0)')
       // turn it off
-      stopSimulation()
+      simulations(false)
     })
 
   })
@@ -186,20 +187,20 @@ describe('react-css', () => {
   })
 
   it('can target pseudo classes/elements inside media queries', () => {
-    startSimulation()
+    simulations(true)
     render(<div {...media('(min-width: 300px)', hover({ color: 'red' }))} {...simulate('hover')}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
       expect(getSheet().cssRules[1].cssText.replace(/\s/g,''))
         .toEqual('@media (min-width: 300px) { \n  [data-css-5o4wo0]:hover, [data-css-5o4wo0][data-simulate-hover] { color: red; }\n}'.replace(/\s/g,''))
       // ugh
-      stopSimulation()
+      simulations(false)
     })
 
 
   })
 
   it('can merge rules', () => {
-    startSimulation()
+    simulations(true)
     let blue = style({ backgroundColor: 'blue' }),
       red = style({ backgroundColor: 'red', color: 'yellow' }),
       hoverGn = hover({ color: 'green' })
@@ -213,10 +214,8 @@ describe('react-css', () => {
       expect(childStyle(node).color).toEqual('rgb(0, 128, 0)')
       expect(getSheet().cssRules.length).toEqual(sheetLength)
     })
-    stopSimulation()
+    simulations(false)
   })
-
-
 
   it('can simulate media queries')
 
@@ -257,12 +256,13 @@ describe('react-css', () => {
         <li data-css-1nl2w09="*mq [red + blue:hover]">three</li>
       </ul>
     </div>)
+    noLabels()
 
   })
   // plain rules
   // merged rules
   // media query wrap / override?
-  if(isPhantom){
+  if(isPhantom) {
     it('adds vendor prefixes', () => {
       render(<div {...style({ color: 'red', transition: 'width 2s' })} />, node, () => {
         expect(getSheet().cssRules[0].cssText)

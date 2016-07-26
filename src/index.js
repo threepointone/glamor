@@ -33,13 +33,10 @@ import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations'
 
 let canSimulate = process.env.NODE_ENV === 'development'
 
-export function startSimulation() {
+export function simulations(bool = true) {
   canSimulate = true
 }
 
-export function stopSimulation() {
-  canSimulate = false
-}
 
 let hasLabels = process.env.NODE_ENV === 'development'
 export function useLabels() {
