@@ -318,24 +318,26 @@ export function merge(...rules) {
       // bail early
       return
     }
-    if(isRule(rule)) {
-      let id = idFor(rule)      
-      if(cache[id].bag) {
+    if(isRule(rule)) { // it's a rule!
+      let id = idFor(rule)  
+      if(cache[id].bag) { // merged rule 
         let { bag, label } = cache[idFor(rule)]
         Object.keys(bag).forEach(type => {
           styleBag[type] = { ...styleBag[type] || {}, ...bag[type] }
         })
         hasLabels && labels.push('[' + label + ']')
         return 
+        // that was fairly straightforward
       }
-      if(cache[id].expr) {
+      if(cache[id].expr) { // media rule
         throw new Error('cannot merge a media rule')
       }
-      else {
+      else {  // simple rule 
         let { type, style } = cache[id]
         styleBag[type] = { ...styleBag[type] || {}, ...style }
-        hasLabels && labels.push((style.label || `\`${id}`) + `${type !== '_' ? `:${type}` : ''}`)
+        hasLabels && labels.push((style.label || `\`${id}`) + `${type !== '_' ? `:${type}` : ''}`) // todo - match 'add()'s original label
         return 
+        // not too bad 
       }  
     }
     
@@ -349,14 +351,15 @@ export function merge(...rules) {
   // todo - remove label from merged styles? unclear. 
 
   let id = hash(mergeLabel + JSON.stringify(styleBag)).toString(36) // todo - predictable order
-  let label = hasLabels ? `${mergeLabel ? mergeLabel + '= ' : ''}${labels.length ? labels.join(' + ') : ''}` : ''
+  // make a merged label
+  let label = hasLabels ? `${mergeLabel ? mergeLabel + '= ' : ''}${labels.length ? labels.join(' + ') : ''}` : '' // yuck 
   if(!cache[id]) {
     cache[id] = { bag: styleBag, id, label }
     Object.keys(styleBag).forEach(type => {
       appendSheetRule(cssrule(id, type, styleBag[type]))
     })
   }
-  // todo - bug - this doesn't update when merge label changes
+  // todo - bug - this doesn't update when merge label changes on hot update 
   return { [`data-css-${id}`]: label }
 }
 
