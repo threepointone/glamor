@@ -1,4 +1,5 @@
 import { style, merge, hover, flush,
+  cssLabels, simulations,
   renderStatic, renderStaticOptimized } from '../src'
 import jade from 'jade'
 
@@ -7,12 +8,13 @@ import React from 'react' // eslint-disable-line
 
 import { renderToStaticMarkup } from 'react-dom/server'
 
-
 // make a throwaway style
 style({ color: 'wheat' })
 
 // basic 
 {
+  cssLabels(false)
+  simulations(false)
   let { html, css, cache } = renderStatic(()=>
     renderToStaticMarkup(<div {...style({ color: 'red' })}/>))
 
@@ -22,10 +24,14 @@ style({ color: 'wheat' })
     '16y7vsu': { id: '16y7vsu', style: { color: 'red' }, type: '_' },
     ruiioi: { id: 'ruiioi', style: { color: 'wheat' }, type: '_' }
   })
+  cssLabels(true)
+  simulations(true)
 }
 
 // optimized 
 {
+  cssLabels(false)
+  simulations(false)
   let { html, css, cache } = renderStaticOptimized(() =>
     renderToStaticMarkup(<div {...merge(style({ color: 'red' }), hover({ color: 'blue' }))}/>))
 
@@ -34,6 +40,8 @@ style({ color: 'wheat' })
   expect(cache).toEqual({
     '1d79yij': { bag: { _: { color: 'red' }, hover: { color: 'blue' } }, id: '1d79yij', label: '' }
   })
+  cssLabels(true)
+  simulations(true)
 }
 
 flush()
@@ -43,11 +51,8 @@ flush()
 {
   let { html, css } = renderStatic(() => {
     return jade.render(`
-
 div&attributes(style({ color: 'blue' }))
   | yay!
-
-
 `, { style })
   })
   expect(html).toEqual('<div data-css-po2wuq="">yay!</div>')
