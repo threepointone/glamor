@@ -46,9 +46,7 @@ function log(msg) { //eslint-disable-line no-unused-vars
 
 // lowercase, strip out special chars etc
 function simple(str) {
-  return str.replace(/(\-[a-z])/g,
-    $1 =>$1.toUpperCase().replace('-',''))
-    .replace(/[^a-zA-Z0-9\-_\$]/g, '')
+  return str.toLowerCase().replace(/[^a-z0-9]/g, '')    
 }
 
 /**** simulations  ****/
