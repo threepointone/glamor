@@ -1,4 +1,3 @@
-// let isCloud = process.env.USE_CLOUD
 var allBrowsers = process.env.ALL
 
 module.exports = function (config) {

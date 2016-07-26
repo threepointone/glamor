@@ -146,20 +146,18 @@ describe('react-css', () => {
       })
   })
 
-  it('can simulate parameterized pseudo classes')
-  // todo - must revist
-  // , () => {
-  //   startSimulation()
-  //   render(<div
-  //       {...nthChild(2, { backgroundColor: 'rgba(255, 0, 0, 0)' })}
-  //       {...simulate(':nth-child(2)')}
-  //     />, node, () => {
-  //       expect(childStyle(node).backgroundColor).toEqual('rgba(255, 0, 0, 0)')
-  //       stopSimulation()
-  //     })
-  //   // you can use nthChild2 nth-child(2) :nth-child(2), whatever.
-  //   // only if there exists a similar existing rule to match really would it work anyway
-  // })
+  it('can simulate parameterized pseudo classes', () => {
+    simulations(true)
+    render(<div
+        {...nthChild(2, { backgroundColor: 'rgba(255, 0, 0, 0)' })}
+        {...simulate(':nth-child(2)')}
+      />, node, () => {
+        expect(childStyle(node).backgroundColor).toEqual('rgba(255, 0, 0, 0)')
+        simulations(false)
+      })
+    // you can use nthChild2 nth-child(2) :nth-child(2), whatever.
+    // only if there exists a similar existing rule to match really would it work anyway
+  })
 
   it('can style pseudo elements', () => {
     render(<div {...firstLetter({ color:'red' })} />, node, () => {

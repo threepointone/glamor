@@ -66,7 +66,7 @@ useful when debugging, and a good alternative to 'semantic' classnames.
 
 where `<pseudo>` is one of :
 ```
-active      any           checked     default     disabled    empty
+active      any           checked     _default    disabled    empty
 enabled     first         firstChild  firstOfType fullscreen  focus
 hover       indeterminate inRange     invalid     lastChild   lastOfType
 left        link          onlyChild   onlyOfType  optional    outOfRange

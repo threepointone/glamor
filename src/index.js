@@ -159,7 +159,7 @@ function injectStyleSheet() {
   }  
 }
 
-
+// adds a css rule to the sheet 
 function appendSheetRule(rule) { // todo - tests 
   if(styleTag && styleTag.styleSheet) {
     sheet.styleSheet.cssText+= rule
@@ -185,6 +185,7 @@ export function flush() { // todo - tests
   else {
     while(sheet.cssRules.length > 0) {
       sheet.deleteRule(sheet.cssRules.length -1)
+      // can't i just whack the array instead? this seems unnecessary 
     }
   }
 }
@@ -213,12 +214,12 @@ export function styleHash(type, style) { // todo - default type = '_'. this chan
 
 export function selector(id, type) {
   // id should exist
-  let suffix = `[data-css-${id}]${(
-    type === '_' ? '' : 
+  let cssType = type === '_' ? '' : 
     type[0] === ' ' ? type : 
     `:${type}`
-    )}`
-  if(canSimulate && type !== '_' && ( classes::contains(type) || elements::contains(type) )) {
+  let suffix = `[data-css-${id}]${cssType}`
+
+  if(canSimulate && type !== '_' && cssType[0] === ':' ) {
     suffix+= `, [data-css-${id}][data-simulate-${simple(type)}]`
   }
   return suffix
@@ -286,34 +287,67 @@ export function add(type = '_', style) {
   return { [`data-css-${id}`]: label } // todo - type 
 }
 
+export function style(obj) {
+  return add(undefined, obj)
+}
+
 export const multi = add
 
 export function select(selector, style) {
   return add(' ' + selector, style)
 }
 
-export function style(obj) {
-  return add(undefined, obj)
-}
 
-let classes = [ 'active', 'any', 'checked'/*, 'default' */, 'disabled', 'empty', // todo - default
-'enabled', 'first', 'first-child', 'first-of-type', 'fullscreen', 'focus',
-'hover', 'indeterminate', 'in-range', 'invalid', 'last-child', 'last-of-type',
-'left', 'link', 'only-child', 'only-of-type', 'optional', 'out-of-range',
-'read-only', 'read-write', 'required', 'right', 'root', 'scope', 'target',
-'valid', 'visited' ]
-classes.forEach(cls => exports[simple(cls)] =
-  style => add(cls, style))
+// todo - autogenerate this by scraping MDN
+export const active = x => add('active', x)
+export const any = x => add('any', x)
+export const checked = x => add('checked', x)
+export const disabled = x => add('disabled', x)
+export const empty = x => add('empty', x)
+export const enabled = x => add('enabled', x)
+export const _default = x => add('default', x)
+export const first = x => add('first', x)
+export const firstChild = x => add('first-child', x)
+export const firstOfType = x => add('first-of-type', x)
+export const fullscreen = x => add('fullscreen', x)
+export const focus = x => add('focus', x)
+export const hover = x => add('hover', x)
+export const indeterminate = x => add('indeterminate', x)
+export const inRange = x => add('in-range', x)
+export const invalid = x => add('invalid', x)
+export const lastChild = x => add('last-child', x)
+export const lastOfType = x => add('last-of-type', x)
+export const left = x => add('left', x)
+export const link = x => add('link', x)
+export const onlyChild = x => add('only-child', x)
+export const onlyOfType = x => add('only-of-type', x)
+export const optional = x => add('optional', x)
+export const outOfRange = x => add('out-of-range', x)
+export const readOnly = x => add('read-only', x)
+export const readWrite = x => add('read-write', x)
+export const required = x => add('required', x)
+export const right = x => add('right', x)
+export const root = x => add('root', x)
+export const scope = x => add('scope', x)
+export const target = x => add('target', x)
+export const valid = x => add('valid', x)
+export const visited = x => add('visited', x)
 
-let parameterizedClasses = [ 'dir', 'lang', 'not', 'nth-child', 'nth-last-child',
-'nth-last-of-type', 'nth-of-type' ]
-parameterizedClasses.forEach(cls => exports[simple(cls)] =
-  (param, style) => add(`${cls}(${param})`, style))
+export const dir = (p, x) => add(`dir(${p})`, x)
+export const lang = (p, x) => add(`lang(${p})`, x)
+export const not = (p, x) => not(`not(${p})`, x)
+export const nthChild = (p, x) => add(`nth-child(${p})`, x)
+export const nthLastChild = (p, x) => add(`nth-last-child(${p})`, x)
+export const nthLastOfType = (p, x) => add(`nth-last-of-type(${p})`, x)
+export const nthOfType = (p, x) => add(`nth-of-type(${p})`, x)
 
-let elements = [ 'after', 'before', 'first-letter', 'first-line', 'selection',
-'backdrop', 'placeholder' ]
-elements.forEach(el => exports[simple(el)] =
-  style => add(`:${el}`, style))
+export const after = x => add(':after', x)
+export const before = x => add(':before', x)
+export const firstLetter = x => add(':first-letter', x)
+export const firstLine = x => add(':first-line', x)
+export const selection = x => add(':selection', x)
+export const backdrop = x => add(':backdrop', x)
+export const placeholder = x => add(':placeholder', x)
 
 export function merge(...rules) {
   // todo - test for media rule
