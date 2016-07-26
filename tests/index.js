@@ -1,6 +1,6 @@
 /* global describe, it, beforeEach, afterEach */
 import 'babel-polyfill'
-let isPhantom = navigator.userAgent.match(/Phanto/)
+let isPhantom = navigator.userAgent.match(/Phantom/)
 
 import expect from 'expect'
 import expectJSX from 'expect-jsx'
@@ -12,7 +12,7 @@ import { render, unmountComponentAtNode } from 'react-dom'
 
 import { style, hover, nthChild, firstLetter, media, merge, multi, select, visited,
   fontFace, animation,
-  useLabels, noLabels,
+  cssLabels,
   simulations, simulate,
   rehydrate, flush }
 from '../src'
@@ -234,7 +234,7 @@ describe('react-css', () => {
   })
 
   it('generates debug labels', () => {
-    useLabels()
+    cssLabels(true)
     let red = style({ label: 'red', color: 'red' }),
       hoverBlue = hover({ label: 'blue', color: 'blue' }),
       text = merge(red, hoverBlue),
@@ -256,7 +256,7 @@ describe('react-css', () => {
         <li data-css-1nl2w09="*mq [red + blue:hover]">three</li>
       </ul>
     </div>)
-    noLabels()
+    cssLabels(false)
 
   })
   // plain rules

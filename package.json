@@ -14,8 +14,8 @@
     "build:umd": "NODE_ENV=production mkdir umd && browserify src/index.js -s RCSS -o umd/index.js",
     "build:demo": "NODE_ENV=development browserify demo/src/index.js -o demo/bundle.js",
     "clean": "rm -f demo/bundle.js && rm -rf lib && rm -rf es6 && rm -rf umd",
-    "test": "node ./node_modules/.bin/karma start tests/karma.conf.js --single-run",
-    "test:watch": "node ./node_modules/.bin/karma start"
+    "test": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js --single-run",
+    "test:watch": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js"
   },
   "peerDependencies": {
     "react": "15.x"
@@ -53,6 +53,7 @@
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
     "react-hot-loader": "^3.0.0-beta.2",
+    "uglifyify": "^3.0.2",
     "watchify": "^3.7.0"
   },
   "author": "Sunil Pai <threepointone@gmail.com>",

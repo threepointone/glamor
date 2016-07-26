@@ -11,7 +11,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 // make a throwaway style
 style({ color: 'wheat' })
 
-
+// basic 
 {
   let { html, css, cache } = renderStatic(()=>
     renderToStaticMarkup(<div {...style({ color: 'red' })}/>))
@@ -24,6 +24,7 @@ style({ color: 'wheat' })
   })
 }
 
+// optimized 
 {
   let { html, css, cache } = renderStaticOptimized(() =>
     renderToStaticMarkup(<div {...merge(style({ color: 'red' }), hover({ color: 'blue' }))}/>))
@@ -37,6 +38,8 @@ style({ color: 'wheat' })
 
 flush()
 
+
+// jade
 {
   let { html, css } = renderStatic(() => {
     return jade.render(`
