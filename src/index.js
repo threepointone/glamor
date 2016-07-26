@@ -44,11 +44,6 @@ function log(msg) { //eslint-disable-line no-unused-vars
   return this
 }
 
-function contains(x) {
-  return this.indexOf(x) >= 0
-}
-
-
 // lowercase, strip out special chars etc
 function simple(str) {
   return str.replace(/(\-[a-z])/g,
@@ -91,8 +86,8 @@ export function cssLabels(bool) {
 
 /**** live media query labels ****/
 
-function updateMediaQueryLabels(ids) {
-  ids.forEach(id => {
+function updateMediaQueryLabels() {
+  Object.keys(cache).forEach(id => {
     let { expr } = cache[id]
     if(expr && hasLabels && window.matchMedia) {
       let els = document.querySelectorAll(`[data-css-${id}]`)
@@ -113,7 +108,7 @@ export function trackMediaQueryLabels(bool = true, period = 2000) {
       return 
     }
     interval = setInterval(() =>
-      updateMediaQueryLabels(Object.keys(cache)), period) // todo - cache ref 
+      updateMediaQueryLabels(), period) // todo - cache ref 
   }
   else {
     clearInterval(interval)
@@ -396,9 +391,9 @@ export function media(expr, style) {
         })
         cache[newId] = { expr, rule, id: newId }
       }
-      let label = hasLabels ? cache[id].label : ''
+      let label = hasLabels ? `*mq [${cache[id].label}]` : ''
 
-      return { [`data-css-${newId}`]: hasLabels ? `*mq [${label}]` : '' }
+      return { [`data-css-${newId}`]: label }
     }
     else if(cache[id].expr) { // media rule
       throw new Error('cannot apply @media onto another media rule')
@@ -429,7 +424,7 @@ export function media(expr, style) {
 }
 
 export function fontFace(font) {
-  let id = hash(JSON.stringify(font))
+  let id = hash(JSON.stringify(font)).toString(36)
   if(!cache[id]) {
     cache[id] = { id, family: font.fontFamily, font }
     appendSheetRule(`@font-face { ${createMarkupForStyles(autoprefix(font))}}`)
@@ -466,7 +461,7 @@ export function renderStatic(fn, optimized = false) {
     // parse out ids from html
     // reconstruct css/rules/cache to pass
 
-    let o = { html, cache:{}, css: '' }
+    let o = { html, cache: {}, css: '' }
     let regex = /data\-css\-([a-zA-Z0-9]+)=\"\"/gm
     let match, ids = []
     while((match = regex.exec(html)) !== null) {
