@@ -26,8 +26,6 @@
 //                |:  ::::::    ,::'
 //      
 
-// todo - move dev specific stuff to dev.js?
-
 
 import hash from './hash' 
 import autoprefix from './autoprefix'
@@ -106,7 +104,7 @@ export function trackMediaQueryLabels(bool = true, period = 2000) {
       return 
     }
     interval = setInterval(() =>
-      updateMediaQueryLabels(), period) // todo - cache ref 
+      updateMediaQueryLabels(), period) 
   }
   else {
     clearInterval(interval)
@@ -138,20 +136,18 @@ function injectStyleSheet() {
         sheet.cssRules = [ ...sheet.cssRules.slice(0, index), ...sheet.cssRules.slice(index + 1) ]
       },
       insertRule: (rule, index) => {
-        // todo - should we include selectorText etc
+        // just enough 'spec compliance' to be able to extract the rules later  
         sheet.cssRules = [ ...sheet.cssRules.slice(0, index), { cssText: rule }, ...sheet.cssRules.slice(index) ]
       }
     }
   }  
 }
 
-if(isBrowser) {
-  injectStyleSheet()
-  if(isDev) {
-    trackMediaQueryLabels(true)
-    // todo - make sure hot loading isn't broken
-    // todo - clearInterval on browser close
-  }
+injectStyleSheet()
+if(isDev) {
+  trackMediaQueryLabels(true)    
+  // todo - make sure hot loading isn't broken
+  // todo - clearInterval on browser close  
 }
 
 // adds a css rule to the sheet 
@@ -244,7 +240,7 @@ function isRule(rule) {
   }
 }
 
-// this is the base guy, the rest derive off him 
+// this is the base, the rest derive off this 
 export function add(type = '_', style) {
   let id = styleHash(type, style), label = ''
   if(!cache[id]) {
@@ -473,7 +469,7 @@ export function renderStatic(fn, optimized = false) {
       // todo - add fonts / animations
       o.css+= sheet.cssRules
         .map(x => x.cssText)
-        .filter(r => r.substring(0, 11 + id.length) === `[data-css-${id}]`).join('\n') + '\n'
+        .filter(r => new RegExp(`\\\[data\-css\-${id}\\\]`).test(r)).join('\n') + '\n'
     })
     return o
 
