@@ -27,14 +27,14 @@
 //
 
 
-import hash from './hash'
+import hash from './hash' 
 import autoprefix from './autoprefix'
 import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations'
 
 let canSimulate = process.env.NODE_ENV === 'development'
 
 export function simulations(bool = true) {
-  canSimulate = true
+  canSimulate = bool
 }
 
 
@@ -79,11 +79,13 @@ function updateMediaQueryLabels() {
 
 let isBrowser = typeof document !== 'undefined'
 
+
+
 let interval
 
 export function startMediaQueryLabelTracking(period = 2000) {
   interval = setInterval(() =>
-    updateMediaQueryLabels())
+    updateMediaQueryLabels(), period)
 }
 
 export function stopMediaQueryLabelTracking() {
