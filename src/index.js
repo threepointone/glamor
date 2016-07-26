@@ -241,27 +241,6 @@ function idFor(rule) {
   return match[1]
 }
 
-
-function isMediaRule(rule) {
-  try{
-    let id = idFor(rule)
-    return  id && cache[id] && cache[id].expr
-  }
-  catch(e) {
-    return false
-  }
-}
-
-function isMerged(rule) {
-  try{
-    let id = idFor(rule)
-    return  id && cache[id] && cache[id].bag
-  }
-  catch(e) {
-    return false
-  }
-}
-
 function isRule(rule) {
   try{
     let id = idFor(rule)
@@ -349,31 +328,36 @@ export const backdrop = x => add(':backdrop', x)
 export const placeholder = x => add(':placeholder', x)
 
 export function merge(...rules) {
-  // todo - test for media rule
-  // todo - remove label from merged style
+  // todo - remove label from merged style?
   let labels = [], mergeLabel, styleBag = {}
-  rules.forEach((rule) => {
-    if(rule === rules[0] && typeof rule === 'string') {
+  rules.forEach((rule, i) => {
+    if(i === 0 && typeof rule === 'string') {
       mergeLabel = rule
       // bail early
       return
     }
-
-    if(isMerged(rule)) {
-      let { bag, label } = cache[idFor(rule)]
-      Object.keys(bag).forEach(type => {
-        styleBag[type] = { ...styleBag[type] || {}, ...bag[type] }
-      })
-      hasLabels && labels.push('[' + label + ']')
-      return 
-    }
     if(isRule(rule)) {
-      let id = idFor(rule)
-      let { type, style } = cache[id]
-      styleBag[type] = { ...styleBag[type] || {}, ...style }
-      hasLabels && labels.push((style.label || `\`${id}`) + `${type !== '_' ? `:${type}` : ''}`)
-      return 
+      let id = idFor(rule)      
+      if(cache[id].bag) {
+        let { bag, label } = cache[idFor(rule)]
+        Object.keys(bag).forEach(type => {
+          styleBag[type] = { ...styleBag[type] || {}, ...bag[type] }
+        })
+        hasLabels && labels.push('[' + label + ']')
+        return 
+      }
+      if(cache[id].expr) {
+        throw new Error('cannot merge a media rule')
+      }
+      else {
+        let id = idFor(rule)
+        let { type, style } = cache[id]
+        styleBag[type] = { ...styleBag[type] || {}, ...style }
+        hasLabels && labels.push((style.label || `\`${id}`) + `${type !== '_' ? `:${type}` : ''}`)
+        return 
+      }  
     }
+    
     else {
       // plain
       styleBag._ = { ...styleBag._ || {}, ...rule }
@@ -397,35 +381,42 @@ export function merge(...rules) {
 
 export function media(expr, style) {
   // test if valid media query
-
-  if(isMerged(style)) {
+  if(isRule(style)) {
     let rule = style
     let id = idFor(rule)
+    // todo - collect rules and put under one 
+    
+    if(cache[id].bag) { // merged       
+      let { bag } = cache[id]
+      let newId = hash(expr+id).toString(36)
 
-    let { bag } = cache[id]
-    let newId = hash(expr+id).toString(36)
+      if(!cache[newId]) {
+        Object.keys(bag).forEach(type => {
+          appendSheetRule(`@media ${expr} { ${ cssrule(newId, type, bag[type]) } }`)
+        })
+        cache[newId] = { expr, rule, id: newId }
+      }
+      let label = hasLabels ? cache[id].label : ''
 
-    if(!cache[newId]) {
-      Object.keys(bag).forEach(type => {
-        appendSheetRule(`@media ${expr} { ${ cssrule(newId, type, bag[type]) } }`)
-      })
-      cache[newId] = { expr, rule, id: newId }
+      return { [`data-css-${newId}`]: hasLabels ? `*mq [${label}]` : '' }
     }
-    let label = hasLabels ? cache[id].label : '' //Object.keys(bag).map(type => bag[type].label || ('^' + id + (type === '_' ? '' : `:${type}`))) : ''
-
-    return { [`data-css-${newId}`]: hasLabels ? `*mq [${label}]` : '' }
-  }
-  else if(isRule(style)) { // rule
-    let id = idFor(style)
-    let rule = style
-    let newId = hash(expr+id).toString(36)
-
-    if(!cache[newId]) {
-      appendSheetRule(`@media ${expr} { ${ cssrule(newId, cache[id].type, cache[id].style) } }`)
-      cache[newId] = { expr, rule, id: newId }
+    else if(cache[id].expr) { // media rule
+      throw new Error('cannot apply @media onto another media rule')
     }
-    return { [`data-css-${newId}`]: hasLabels ? '*mq ' + (cache[id].style.label || ('`' + id)) : '' }
+    else { // simple rule
+      let id = idFor(style)
+      let rule = style
+      let newId = hash(expr+id).toString(36)
+
+      if(!cache[newId]) {
+        appendSheetRule(`@media ${expr} { ${ cssrule(newId, cache[id].type, cache[id].style) } }`)
+        cache[newId] = { expr, rule, id: newId }
+      }
+      let label = hasLabels ? '*mq ' + (cache[id].style.label || ('`' + id)) : ''
+      return { [`data-css-${newId}`]: label }
+    }
   }
+  
   else {
 
     let id = styleHash(expr, style)
