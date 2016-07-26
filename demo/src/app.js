@@ -1,13 +1,13 @@
 import React from 'react'
 
-import { merge, media, animation, visited, select, hover, style, simulate, fontFace } from '../../src'
+import { merge, media, keyframes, select, hover, style, simulate, fontFace } from '../../src'
 
 import { latin, greek, cyrillic } from './OpenSans'
 
 let font = fontFace(latin)
 // addFont(greek)
 
-let animate = animation('bounce', {
+let animate = keyframes('bounce', {
   '0%': {
     transform: 'scale(0.1)',
     opacity: 0

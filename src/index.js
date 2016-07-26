@@ -33,10 +33,10 @@ import hash from './hash'
 import autoprefix from './autoprefix'
 import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations'
 
-let isBrowser = typeof document !== 'undefined'
+const isBrowser = typeof document !== 'undefined'
 
-let isDev = (x => (x === 'development') || !x)(process.env.NODE_ENV)
-let isTest = process.env.NODE_ENV === 'test' 
+const isDev = (x => (x === 'development') || !x)(process.env.NODE_ENV)
+const isTest = process.env.NODE_ENV === 'test' 
 
 
 function log(msg) { //eslint-disable-line no-unused-vars
@@ -106,7 +106,7 @@ function updateMediaQueryLabels(ids) {
 
 let interval
 
-export function trackMediaQueryLabels(bool, period = 2000) {
+export function trackMediaQueryLabels(bool = true, period = 2000) {
   if(bool) {
     if(interval) {
       console.warn('already tracking labels, call trackMediaQueryLabels(false) to stop') // eslint-disable-line no-console 
@@ -122,13 +122,6 @@ export function trackMediaQueryLabels(bool, period = 2000) {
   
 }
 
-// kick it off 
-if(isBrowser && isDev) {
-  trackMediaQueryLabels()
-}
-// todo - make sure hot loading isn't broken
-// todo - clearInterval on browser close
-
 // initialize global stylesheet
 
 let cache = {}, sheet, styleTag
@@ -142,7 +135,7 @@ function injectStyleSheet() {
       styleTag.appendChild(document.createTextNode(''));
       (document.head || document.getElementsByTagName('head')[0]).appendChild(styleTag)
     }
-    sheet = [ ...document.styleSheets ].filter(sheet => sheet.ownerNode === styleTag)[0]  
+    sheet = [ ...document.styleSheets ].filter(x => x.ownerNode === styleTag)[0]  
   }
   else {
     // server side 'polyfill'
@@ -157,6 +150,15 @@ function injectStyleSheet() {
       }
     }
   }  
+}
+
+if(isBrowser) {
+  injectStyleSheet()
+  if(isDev) {
+    trackMediaQueryLabels(true)
+    // todo - make sure hot loading isn't broken
+    // todo - clearInterval on browser close
+  }
 }
 
 // adds a css rule to the sheet 
@@ -202,9 +204,6 @@ export function remove(o) {
 
 }
 
-if(isBrowser) {
-  injectStyleSheet()
-}
 
 export function styleHash(type, style) { // todo - default type = '_'. this changes all the hashes and will break tests, so do later 
   // make sure type exists
@@ -352,34 +351,36 @@ export const placeholder = x => add(':placeholder', x)
 export function merge(...rules) {
   // todo - test for media rule
   // todo - remove label from merged style
-  let labels = [], mergeLabel
-  let styleBag = rules.reduce((o, rule) => {
+  let labels = [], mergeLabel, styleBag = {}
+  rules.forEach((rule) => {
     if(rule === rules[0] && typeof rule === 'string') {
       mergeLabel = rule
       // bail early
-      return o
+      return
     }
 
     if(isMerged(rule)) {
       let { bag, label } = cache[idFor(rule)]
       Object.keys(bag).forEach(type => {
-        o[type] = { ...o[type] || {}, ...bag[type] }
+        styleBag[type] = { ...styleBag[type] || {}, ...bag[type] }
       })
       hasLabels && labels.push('[' + label + ']')
+      return 
     }
-    else if(isRule(rule)) {
+    if(isRule(rule)) {
       let id = idFor(rule)
       let { type, style } = cache[id]
-      o[type] = { ...o[type] || {}, ...style }
+      styleBag[type] = { ...styleBag[type] || {}, ...style }
       hasLabels && labels.push((style.label || `\`${id}`) + `${type !== '_' ? `:${type}` : ''}`)
+      return 
     }
     else {
       // plain
-      o._ = { ...o._ || {}, ...rule }
+      styleBag._ = { ...styleBag._ || {}, ...rule }
       hasLabels && labels.push('{…}')
     }
-    return o
-  }, {})
+    // return o
+  })
 
   let id = hash(mergeLabel + JSON.stringify(styleBag)).toString(36) // todo - predictable order
   let label = hasLabels ? `${mergeLabel ? mergeLabel + '= ' : ''}${labels.length ? labels.join(' + ') : ''}` : ''
@@ -445,15 +446,15 @@ export function fontFace(font) {
   return font.fontFamily
 }
 
-export function animation(name, keyframes) {
+export function keyframes(name, kfs) {
   if(typeof name !== 'string') {
-    keyframes = name
+    kfs = name
     name = 'animate'
   }
-  let id = hash(name + JSON.stringify(keyframes)).toString(36)
+  let id = hash(name + JSON.stringify(kfs)).toString(36)
   if(!cache[id]) {
-    cache[id] = { id, name, keyframes }
-    let inner = Object.keys(keyframes).map(kf => `${kf} { ${ createMarkupForStyles(autoprefix(keyframes[kf]))}}`).join('\n')
+    cache[id] = { id, name, kfs }
+    let inner = Object.keys(kfs).map(kf => `${kf} { ${ createMarkupForStyles(autoprefix(kfs[kf]))}}`).join('\n')
 
     appendSheetRule(`@-webkit-keyframes ${name + '_' + id} { ${ inner }}`)
     appendSheetRule(`@keyframes ${name + '_' + id} { ${ inner }}`)

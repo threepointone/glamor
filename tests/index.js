@@ -11,7 +11,7 @@ import React from 'react' //eslint-disable-line
 import { render, unmountComponentAtNode } from 'react-dom'
 
 import { style, hover, nthChild, firstLetter, media, merge, multi, select, visited,
-  fontFace, animation,
+  fontFace, keyframes,
   cssLabels,
   simulations, simulate,
   rehydrate, flush }
@@ -286,7 +286,7 @@ describe('react-css', () => {
     })
 
     it('can add animation keyframes', () => {
-      let animate = animation('bounce', {
+      let animate = keyframes('bounce', {
         '0%': {
           transform: 'scale(0.1)',
           opacity: 0
