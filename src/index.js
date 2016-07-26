@@ -17,7 +17,7 @@ function log(msg) { //eslint-disable-line no-unused-vars
   return this
 }
 
-// takes a string, converts to lowercase,  strip out special chars etc.
+// takes a string, converts to lowercase, strips out nonalphanumeric.
 function simple(str) {
   return str.toLowerCase().replace(/[^a-z0-9]/g, '')    
 }
@@ -191,7 +191,7 @@ function cssrule(id, type, ...styles) {
 // given a rule {data-css-id: ''}, checks if it's a valid, registered id
 // returns the id 
 function idFor(rule) {
-  // todo - weak map hash for this
+  // todo - weak map hash for this?
   if(Object.keys(rule).length !== 1) throw new Error('not a rule')
   let regex = /data\-css\-([a-zA-Z0-9]+)/
   let match = regex.exec(Object.keys(rule)[0])
@@ -319,7 +319,9 @@ export function merge(...rules) {
       return
     }
     if(isRule(rule)) { // it's a rule!
+      
       let id = idFor(rule)  
+      
       if(cache[id].bag) { // merged rule 
         let { bag, label } = cache[idFor(rule)]
         Object.keys(bag).forEach(type => {
@@ -329,10 +331,12 @@ export function merge(...rules) {
         return 
         // that was fairly straightforward
       }
+      
       if(cache[id].expr) { // media rule
         throw new Error('cannot merge a media rule')
       }
       else {  // simple rule 
+      
         let { type, style } = cache[id]
         styleBag[type] = { ...styleBag[type] || {}, ...style }
         hasLabels && labels.push((style.label || `\`${id}`) + `${type !== '_' ? `:${type}` : ''}`) // todo - match 'add()'s original label
@@ -360,7 +364,6 @@ export function merge(...rules) {
       appendSheetRule(cssrule(id, type, styleBag[type]))
     })
   }
-  // todo - bug - this doesn't update when merge label changes on hot update 
   return { [`data-css-${id}`]: label }
 }
 
@@ -370,12 +373,11 @@ export function merge(...rules) {
 // todo - mltiple rules 
 export function media(expr, ...rules) {
   if (rules.length > 1) {
-    return media(expr, merge(rules))
+    return media(expr, merge(...rules))
   }
   let rule = rules[0]
   // test if valid media query
   if(isRule(rule)) {
-    // let rule = style
     let id = idFor(rule)
     
     if(cache[id].bag) { // merged rule       

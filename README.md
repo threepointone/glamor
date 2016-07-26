@@ -270,7 +270,7 @@ let container = style({ color: THEME.primary }),
 let types = {
   'primary': 'blue',
   'secondary': 'gray',
-  'disabled': ''
+  'disabled': 'transparent'
 }
 
 let Button = ({ type, children, onClick = ::console.log }) =>
