@@ -1,6 +1,6 @@
 // first we import some helpers 
 import hash from './hash'  // hashes a string to something 'unique'
-import autoprefix from './autoprefix'   // adds vendor prefixes to styles 
+import prefixAll from 'inline-style-prefixer/static'   // adds vendor prefixes to styles 
 import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations' // converts a js style object to css markup
 
 // define some constants 
@@ -195,6 +195,20 @@ function styleHash(type, style) { // todo - default type = '_'. this changes all
   return hash(type + Object.keys(style).reduce((str, k) => str + k + style[k], '')).toString(36)
 }
 
+// helper to hack around isp's array format 
+function prefixes(style) {
+  return Object.keys(prefixAll(style)).reduce((o, k) => {
+    if (Array.isArray(style[k])) {
+      o[k] = style[k].join(`; ${k}: `)
+    }
+    else {
+      o[k] = style[k]
+    }
+    return o
+  }, {})
+}
+
+
 // generates a css selector for (id, type)
 function selector(id, type) {
   // id should exist
@@ -211,9 +225,10 @@ function selector(id, type) {
 
 // ... which is them used to generate css rules 
 function cssrule(id, type, ...styles) {
+
   return `${selector(id, type)}{ ${
     styles.map(style => 
-      createMarkupForStyles(autoprefix(style)))
+      createMarkupForStyles(prefixes(style)))
     .join('\n')    
   } } `
 }
@@ -505,7 +520,7 @@ export function fontFace(font) {
   if(!cache[id]) {
     cache[id] = { id, family: font.fontFamily, font }
     // todo - crossbrowser 
-    appendSheetRule(`@font-face { ${createMarkupForStyles(autoprefix(font))}}`)
+    appendSheetRule(`@font-face { ${createMarkupForStyles(font)}}`)
   }
   return font.fontFamily
 }
@@ -521,14 +536,12 @@ export function keyframes(name, kfs) {
   if(!cache[id]) {
     cache[id] = { id, name, kfs }
     let inner = Object.keys(kfs).map(kf => 
-      `${kf} { ${ createMarkupForStyles(autoprefix(kfs[kf])) }}`
-    ).join('\n')
+      `${kf} { ${ createMarkupForStyles(prefixes(kfs[kf])) }}`
+    ).join('\n');
 
-    // todo - crossbrowser 
-    appendSheetRule(`@-webkit-keyframes ${name + '_' + id} { ${ inner }}`)  
-    appendSheetRule(`@keyframes ${name + '_' + id} { ${ inner }}`)  
+    [ '-webkit-', '-moz-', '-o-', '' ].forEach(prefix =>
+      appendSheetRule(`@${ prefix }keyframes ${ name + '_' + id } { ${ inner }}`))
     
-    // appendSheetRule(`@keyframes ${name + '_' + id} { ${ inner }}`)
   }
   return name + '_' + id
 

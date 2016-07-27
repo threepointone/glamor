@@ -90,5 +90,8 @@
       "babelify",
       "envify"
     ]
+  },
+  "dependencies": {
+    "inline-style-prefixer": "^2.0.1"
   }
 }
