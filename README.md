@@ -27,7 +27,7 @@ We introduce an api to annotate arbitrary dom nodes with style definitions ("rul
 features
 ---
 
-- fairly small / efficient, with a fluent api
+- really small / fast / efficient, with a fluent api
 - framework independent
 - adds vendor prefixes
 - supports all the pseudo :classes/::elements
@@ -42,7 +42,6 @@ cons
 ---
 
 - no real-world usage / adoption yet
-- no idea on performance characteristics, investigating
 - edge cases *could* cause consume excess memory ([#1](https://github.com/threepointone/react-css/issues/1))
 
 api
@@ -372,8 +371,7 @@ here are some key differences -
 - this also keeps it framework-independent (though I still have to see how to use this in angular/ember templates. see - [#6](https://github.com/threepointone/react-css/issues/6))
 - provides an escape hatch (via `select()`)  to define 'real' css on children selectors; when used sparingly, this is great for prototyping, small components, learning, and porting over css codebases. 
 - in dev mode, you can simulate pseudo classes on elements by using the `simulate()` helper (or adding a `[data-simulate-<pseudo>]` attribute manually). very useful, especially when combined when hot-loading and/or editing directly in your browser devtools.
-
-- (todo) opportunities for static optimizations ([#2](https://github.com/threepointone/react-css/issues/2))
+- in production, we switch to a **much** faster method of appending styles to the document, able to add 10s of 1000s of rules in milliseconds. the caveat with this approach is that those styles will [not be editable in chrome/firefox devtools](https://bugs.chromium.org/p/chromium/issues/detail?id=387952) (which is fine, for prod?). advanced users may use `speedy(true/false)` to toggle this setting manually. 
 
 todo
 ---

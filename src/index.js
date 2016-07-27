@@ -110,16 +110,46 @@ function injectStyleSheet() {
 injectStyleSheet()
 /****************      TO THE MOOOOOOON     ****************/
 
+
+// a flag to use stylesheet.insertrule 
+// the big drawback here is that the css won't be editable in devtools
+let isSpeedy = !isDev && !isTest // only in prod mode does it make 'sense' 
+
+export function speedy(bool = true) {
+  // we don't let you change isSpeedy if you've already made a modification to the stylesheet
+  if(bool !== isSpeedy && Object.keys(cache).length !== 0) {
+    console.error('cannot change speedy setting after appending styles in a different mode')  //eslint-disable-line no-console
+    return 
+  }
+  isSpeedy = !!bool
+}
+
+
 // adds a css rule to the sheet. only used 'internally'. 
 function appendSheetRule(rule) { // todo - tests 
-  // more browser weirdness. I don't even know. 
+    
+  // more browser weirdness. I don't even know
   if(styleTag && styleTag.styleSheet) {
     styleTag.styleSheet.cssText+= rule
   }
   else {
-    if(isBrowser) { // todo - would innerHTML be faster here? is that even a thing with styletags?
-      // todo - would insertRule here be faster in production?
-      styleTag.appendChild(document.createTextNode(rule))
+    if(isBrowser) {       
+      if(isSpeedy && styleSheet.insertRule) {
+        // this weirdness for perf, and chrome's weird bug 
+        // https://stackoverflow.com/questions/20007992/chrome-suddenly-stopped-accepting-insertrule
+        try {          
+          styleSheet.insertRule(rule, styleSheet.cssRules.length)    
+        }
+        catch(e) {
+          if(isDev) {
+            // might need beter dx for this 
+            console.warn('whoops, illegal rule inserted', rule) //eslint-disable-line no-console
+          }          
+        }        
+      }
+      else{
+        styleTag.appendChild(document.createTextNode(rule))
+      }      
     }
     else{
       styleSheet.insertRule(rule, styleSheet.cssRules.length)
@@ -495,8 +525,10 @@ export function keyframes(name, kfs) {
     ).join('\n')
 
     // todo - crossbrowser 
-    appendSheetRule(`@-webkit-keyframes ${name + '_' + id} { ${ inner }}`)
-    appendSheetRule(`@keyframes ${name + '_' + id} { ${ inner }}`)
+    appendSheetRule(`@-webkit-keyframes ${name + '_' + id} { ${ inner }}`)  
+    appendSheetRule(`@keyframes ${name + '_' + id} { ${ inner }}`)  
+    
+    // appendSheetRule(`@keyframes ${name + '_' + id} { ${ inner }}`)
   }
   return name + '_' + id
 
@@ -547,3 +579,4 @@ export function rehydrate(c) {
   cache = { ...cache, ...c }
   // assume css loaded separately
 }
+
