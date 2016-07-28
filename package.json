@@ -55,6 +55,8 @@
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
     "react-hot-loader": "^3.0.0-beta.2",
+    "redbox-react": "^1.2.10",
+    "stats.js": "^0.16.0",
     "uglifyify": "^3.0.2",
     "watchify": "^3.7.0"
   },

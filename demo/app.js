@@ -1,44 +1,23 @@
 import React from 'react'
+function log(msg) { //eslint-disable-line no-unused-vars
+  console.log(msg || this) //eslint-disable-line no-console
+  return this
+}
 
-import { merge, media, keyframes, select, hover, style, simulate, fontFace } from '../src'
+function makeRandomColor() {
+  return '#'+Math.random().toString(16).substr(-6)
+}
 
-import { latin, greek, cyrillic } from './OpenSans'
+import { merge, media, keyframes, select, hover, style, simulate, fontFace, keyed } from '../src'
 
-let font = fontFace(latin)
-// addFont(greek)
-
-let animate = keyframes('bounce', {
-  '0%': {
-    transform: 'scale(0.1)',
-    opacity: 0
-  },
-  '60%': {
-    transform: 'scale(1.2)',
-    opacity: 1
-  },
-  '100%': {
-    transform: 'scale(1)'
-  }
-})
-
+// throwaway 
+keyed('something', { color: 'red' })
 
 export class App extends React.Component {
   render() {
-    return <div {...simulate('hover')} {...media('(min-width: 500px)',
-      merge( 'container',
-        hover({ fontFamily: font }),
-        select('#xyz', { color: 'red', background: 'gray' }),
-        select('#abc', { color: 'blue' }),
-        select('.bold', { fontWeight: 'bold' }),
-        select('.big', { fontSize: 20 })
-    ))}>
-      <div {...style({
-        animation: `${animate} 2s`
-      })}>
-        <div id="abc" className="bold big">blue</div>
-        <div id="xyz">red!</div>
-      </div>
+    return <div {...keyed('ele', { backgroundColor: 'red' })} onClick={() => keyed('ele', { backgroundColor: makeRandomColor() })}>
+      something
     </div>
-
-  }
+    
+  } 
 }

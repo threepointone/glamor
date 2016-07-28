@@ -159,6 +159,26 @@ an escape hatch to define styles on children. use sparingly!
 
 ---
 
+(advanced) `keyed(key, style)`
+
+creates a rule with 'key' as id instead of generating a hash. overwrites said rule when called again with same key 
+
+```jsx
+// let's say you render 
+<div {...keyed('mykey', { color: 'red' })}/>
+
+//and then later (anywhere, no reassignment required )
+keyed('mykey', { color: 'blue' })
+keyed('mykey', { color: 'green' })
+keyed('mykey', { color: 'yellow' })
+
+// the div is now yellow!
+```
+
+todo - pseudo selectors 
+
+---
+
 `merge(...rules)`
 
 combine rules, with latter styles taking precedence over previous ones.
@@ -376,8 +396,8 @@ here are some key differences -
 todo
 ---
 
-- use postcss/autoprefixer for vendor prefixes
 - error checking / typechecks (flow? runtime?)
+- ie8 compat for insertRule/deleteRule
 - plugins
 - other frameworks?
 - non-dom? (!)

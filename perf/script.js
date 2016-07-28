@@ -24,8 +24,8 @@
 
 // let arr = Array.from({ length: 10000 })
 
-function makeRandomColor(){
-  return '#'+Math.random().toString(16).substr(-6);
+function makeRandomColor() {
+  return '#'+Math.random().toString(16).substr(-6)
 }
  
 

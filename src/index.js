@@ -134,7 +134,7 @@ function appendSheetRule(rule) { // todo - tests
   }
   else {
     if(isBrowser) {       
-      if(isSpeedy && styleSheet.insertRule) {
+      if(isSpeedy && styleSheet.insertRule) {        
         // this weirdness for perf, and chrome's weird bug 
         // https://stackoverflow.com/questions/20007992/chrome-suddenly-stopped-accepting-insertrule
         try {          
@@ -149,23 +149,36 @@ function appendSheetRule(rule) { // todo - tests
       }
       else{
         styleTag.appendChild(document.createTextNode(rule))
+        styleSheet = [ ...document.styleSheets ].filter(x => x.ownerNode === styleTag)[0]
       }      
     }
     else{
+      // server side is pretty simple 
       styleSheet.insertRule(rule, styleSheet.cssRules.length)
     }
   }
 }
 
+function indexOf(id, type) {
+  // weird bug, stylesheet isn't the same object after inserting 
+  let rules = [ ...styleSheet.cssRules ].map(x => x.cssText)
+  let selectorText = selector(id, type)
+  for(let i =0; i < rules.length; i++) {
+    if(rules[i].indexOf(selectorText) === 0) {
+      return i
+    }
+  }
+}
 
 // clears out the cache and empties the stylesheet
 // best for tests, though there might be some value for SSR. 
 export function flush() { // todo - tests 
   cache = {}
-
+  // todo backward compat (styleTag.styleSheet.cssText?)
   if(isBrowser) {
     styleTag && styleTag.parentNode.removeChild(styleTag)
     styleTag = null
+    // todo - look for remnants in document.styleSheets
     injectStyleSheet()
   }
   else {
@@ -256,10 +269,27 @@ function isRule(rule) {
 }
 
 // a generic rule creator/insertor 
-export function add(type = '_', style) {
-  let id = styleHash(type, style), // generate a hash based on type/style, use this to 'id' the rule everywhere 
+export function add(type = '_', style, key) {
+  let id = key || styleHash(type, style), // generate a hash based on type/style, use this to 'id' the rule everywhere 
     label = ''
-  if(!cache[id]) {
+
+  if(!cache[id] || key) {
+    if(key) {
+      let index = indexOf(id, type)
+      if(index >=0) {
+        //remove rule
+        if(isSpeedy || !isBrowser) {
+          styleSheet.deleteRule(index)    
+        }
+        else {           
+          styleTag.removeChild(styleTag.childNodes[index + 1]) // the +1 to account for the blank node we added
+          // reassign stylesheet, because firefox is weird 
+          styleSheet = [ ...document.styleSheets ].filter(x => x.ownerNode === styleTag)[0]
+        }
+      }
+    }
+
+    // todo - if key exists, remove previous rule? 
     // add rule to sheet, update cache. easy!
     appendSheetRule(cssrule(id, type, style))
     cache[id] = { type, style, id }
@@ -346,6 +376,24 @@ export const multi = add
 export function select(selector, style) {
   return add(' ' + selector, style)
 }
+
+// unique feature 
+// use for advanced perf/animations/whatnot 
+// instead of overwriting, it replaces the rule in the stylesheet
+export function keyed(key, type, style) {
+  // todo - accept a style/rule? unlcear. 
+  if(typeof key !== 'string') {
+    throw new Error('whoops, did you forget a key?')
+  }
+  if(!style && typeof type === 'object') {
+    style = type 
+    type = undefined 
+  }
+  // should be able to pass a merged rule etc too 
+  // maybe ...styles as well?
+  return add(type, style, key)
+}
+
 
 // we define a function to 'merge' styles together.
 // backstory - because of a browser quirk, multiple styles are applied in the order they're 

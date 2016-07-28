@@ -10,7 +10,8 @@ expect.extend(expectJSX)
 import React from 'react' //eslint-disable-line
 import { render, unmountComponentAtNode } from 'react-dom'
 
-import { style, hover, nthChild, firstLetter, media, merge, multi, select, visited,
+import { style, hover, nthChild, firstLetter, media, merge, multi, select, visited, 
+  keyed,
   fontFace, keyframes,
   cssLabels,
   simulations, simulate,
@@ -199,6 +200,22 @@ describe('react-css', () => {
 
   })
 
+  it('can have keyed rules, which overwrite their values when redefined', () => {
+    let x = keyed('x', { color: 'red' })
+    // render it 
+    render(<div {...x}/>, node, () => {
+      expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
+      // now change it a couple of times 
+      // no need to reasign!!!
+      keyed('x', { color: 'green' })
+      keyed('x', { color: 'blue' })
+      // wtf
+      expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')
+      expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')
+      expect(getSheet().cssRules.length).toEqual(1)
+    })
+  })
+
   it('can merge rules', () => {
     simulations(true)
     let blue = style({ backgroundColor: 'blue' }),
@@ -217,6 +234,7 @@ describe('react-css', () => {
     simulations(false)
   })
 
+  // how to test media queries?
   it('can simulate media queries')
 
   it('has an escape hatch', () => {
@@ -262,6 +280,7 @@ describe('react-css', () => {
   // plain rules
   // merged rules
   // media query wrap / override?
+  
   if(isPhantom) {
     it('adds vendor prefixes', () => {
       render(<div {...style({ color: 'red', transition: 'width 2s' })} />, node, () => {
@@ -333,5 +352,7 @@ describe('react-css', () => {
   })
 
   it('delete a rule from the stylesheet')
+  
+  
 
 })
