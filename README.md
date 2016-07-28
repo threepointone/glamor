@@ -342,7 +342,7 @@ to rehydrate the lib's cache for fast startup
 
 ```jsx
 // on the server
-import { renderStatic } from '@glamor'
+import { renderStatic } from 'glamor'
 let { html, css, cache } = renderStatic(() =>
   ReactDOMServer.renderToString(<App/>)) // or `renderToStaticMarkup`
 ```
@@ -369,7 +369,7 @@ let { html, css, cache } = renderStatic(() =>
 ```jsx
 // optional!
 // when starting up your app
-import { rehydrate } from '@glamor'
+import { rehydrate } from 'glamor'
 rehydrate(window._css)
 ReactDOM.render(<App/>, document.getElementById('root'))
 ```
