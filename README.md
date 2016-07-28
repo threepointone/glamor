@@ -1,14 +1,14 @@
-# threepointone/react-css
+# glamor
 
 ![build status](https://travis-ci.org/threepointone/react-css.svg)
 
 css for component systems
 
-`npm install @threepointone/react-css --save`
+`npm install @glamor --save`
 
 or if you're interested in a plain script tag - 
 ```html
-<script src='https://npmcdn.com/@threepointone/react-css/umd/index.min.js'></script>
+<script src='https://npmcdn.com/glamor/umd/index.min.js'></script>
 ```
 
 usage looks like this 
@@ -42,7 +42,7 @@ cons
 ---
 
 - no real-world usage / adoption yet
-- edge cases *could* cause consume excess memory ([#1](https://github.com/threepointone/react-css/issues/1))
+- edge cases *could* cause consume excess memory ([#1](https://github.com/threepointone/glamor/issues/1))
 
 api
 ---
@@ -342,7 +342,7 @@ to rehydrate the lib's cache for fast startup
 
 ```jsx
 // on the server
-import { renderStatic } from '@threepointone/react-css'
+import { renderStatic } from '@glamor'
 let { html, css, cache } = renderStatic(() =>
   ReactDOMServer.renderToString(<App/>)) // or `renderToStaticMarkup`
 ```
@@ -369,7 +369,7 @@ let { html, css, cache } = renderStatic(() =>
 ```jsx
 // optional!
 // when starting up your app
-import { rehydrate } from '@threepointone/react-css'
+import { rehydrate } from '@glamor'
 rehydrate(window._css)
 ReactDOM.render(<App/>, document.getElementById('root'))
 ```
@@ -386,9 +386,9 @@ while react-css shares most common attributes of other inline style / css-in-js 
 here are some key differences -
 
 - rules are hashed and indexed based on their styles; we then use a stylesheet as a key-value store to insert/remove individual rules + additional meta for `simulate`.
-- as such, it does **not** generate pretty classnames, but instead generates debug labels in dev mode, clearly showing merges, pseudos, and media queries. This keeps the generated html small, but still good dx. (issue [#5](https://github.com/threepointone/react-css/issues/5))
+- as such, it does **not** generate pretty classnames, but instead generates debug labels in dev mode, clearly showing merges, pseudos, and media queries. This keeps the generated html small, but still good dx. (issue [#5](https://github.com/threepointone/glamor/issues/5))
 - does **not** touch `class`/`style` attributes; instead we use `data-*` attributes and jsx attribute spread for a natural, fluent api ([some implications](https://github.com/Khan/aphrodite/issues/25)). This lets you define styles 'inline' in a functional / reacty manner, yet globally optimize as one unit.
-- this also keeps it framework-independent (though I still have to see how to use this in angular/ember templates. see - [#6](https://github.com/threepointone/react-css/issues/6))
+- this also keeps it framework-independent (though I still have to see how to use this in angular/ember templates. see - [#6](https://github.com/threepointone/glamor/issues/6))
 - provides an escape hatch (via `select()`)  to define 'real' css on children selectors; when used sparingly, this is great for prototyping, small components, learning, and porting over css codebases. 
 - in dev mode, you can simulate pseudo classes on elements by using the `simulate()` helper (or adding a `[data-simulate-<pseudo>]` attribute manually). very useful, especially when combined when hot-loading and/or editing directly in your browser devtools.
 - in production, we switch to a **much** faster method of appending styles to the document, able to add 10s of 1000s of rules in milliseconds. the caveat with this approach is that those styles will [not be editable in chrome/firefox devtools](https://bugs.chromium.org/p/chromium/issues/detail?id=387952) (which is fine, for prod?). advanced users may use `speedy(true/false)` to toggle this setting manually. 
@@ -403,7 +403,7 @@ todo
 - non-dom? (!)
 - flush unused rules?
 - compile time optimizations / statically generate css files alá jsxstyle
-- benchmarks ([#3](https://github.com/threepointone/react-css/issues/3))
+- benchmarks ([#3](https://github.com/threepointone/glamor/issues/3))
 - investigate batching stylesheet changes
 - theming et al
 - fix autoprefixer order bugs

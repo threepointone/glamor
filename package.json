@@ -1,7 +1,7 @@
 {
-  "name": "@threepointone/react-css",
+  "name": "glamor",
   "version": "1.4.0",
-  "description": "inline css for react",
+  "description": "inline css for component systems",
   "main": "lib/index.js",
   "files": [
     "lib",
@@ -11,7 +11,7 @@
     "start": "NODE_ENV=development beefy demo/index.js:bundle.js --index demo/index.html -- -p browserify-hmr -p errorify",
     "build": "npm run clean && npm run build:lib && mkdir umd && npm run build:umd && npm run build:demo",
     "build:lib": "NODE_ENV=production babel src -d lib --loose all",
-    "build:umd": "NODE_ENV=production browserify src/index.js -s RCSS -o umd/index.js && npm run compress:umd",
+    "build:umd": "NODE_ENV=production browserify src/index.js -s Glamor -o umd/index.js && npm run compress:umd",
     "compress:umd": "NODE_ENV=production uglifyjs umd/index.js -mc -o umd/index.min.js",
     "build:demo": "NODE_ENV=development browserify demo/index.js -o demo/bundle.js",
     "clean": "rm -f demo/bundle.js && rm -rf lib && rm -rf es6 && rm -rf umd",
@@ -65,8 +65,7 @@
   "license": "MIT",
   "repository": "",
   "keywords": [
-    "css",
-    "react"
+    "css", "inline"
   ],
   "babel": {
     "presets": [

@@ -1,4 +1,4 @@
-// let LIB = @threepointone/react-css
+// let LIB = glamor
 // let FNS = hover, active, ...
 // look for all imports from LIB
 // look for all require(LIB)
