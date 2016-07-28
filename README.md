@@ -159,9 +159,9 @@ an escape hatch to define styles on children. use sparingly!
 
 ---
 
-(advanced) `keyed(key, style)`
+(experimental!) `keyed(key, style)`
 
-creates a rule with 'key' as id instead of generating a hash. overwrites said rule when called again with same key 
+creates a rule with 'key' as id instead of generating a hash. overwrites said rule when called again with same key. 
 
 ```jsx
 // let's say you render 
@@ -175,7 +175,7 @@ keyed('mykey', { color: 'yellow' })
 // the div is now yellow!
 ```
 
-todo - pseudo selectors 
+todo - pseudoclasses et al
 
 ---
 

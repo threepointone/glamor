@@ -280,7 +280,7 @@ describe('react-css', () => {
   // plain rules
   // merged rules
   // media query wrap / override?
-  
+
   if(isPhantom) {
     it('adds vendor prefixes', () => {
       render(<div {...style({ color: 'red', transition: 'width 2s' })} />, node, () => {

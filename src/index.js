@@ -1,6 +1,10 @@
 // first we import some helpers 
 import hash from './hash'  // hashes a string to something 'unique'
-import prefixAll from 'inline-style-prefixer/static'   // adds vendor prefixes to styles 
+import autoprefix from './autoprefix'
+// yurgh must get back to this 
+// import prefixAll from 'inline-style-prefixer/static'   // adds vendor prefixes to styles 
+// import  Prefix  from 'inline-style-prefixer'
+// let prefixer = new Prefix({ userAgent: navigator.userAgent })
 import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations' // converts a js style object to css markup
 
 // define some constants 
@@ -73,7 +77,8 @@ export function cssLabels(bool) {
 // these here are our main 'mutable' references
 let cache = {}, // stores all the registered styles. most important, for such a small name.  
   styleTag, // reference to the <style> tag, if in browser 
-  styleSheet // reference to the styleSheet object, either native on browser / polyfilled on server 
+  styleSheet, // reference to the styleSheet object, either native on browser / polyfilled on server 
+  keyIndices = {} // avoid scanning when inserting rules 
   
 
 function injectStyleSheet() {
@@ -124,9 +129,23 @@ export function speedy(bool = true) {
   isSpeedy = !!bool
 }
 
+function inlineInsertRule(rule, index = styleSheet.cssRules.length) {
+  // this weirdness for perf, and chrome's weird bug 
+  // https://stackoverflow.com/questions/20007992/chrome-suddenly-stopped-accepting-insertrule
+
+  try {          
+    styleSheet.insertRule(rule, index)    
+  }
+  catch(e) {
+    if(isDev) {
+      // might need beter dx for this 
+      console.warn('whoops, illegal rule inserted', rule) //eslint-disable-line no-console
+    }          
+  }          
+}
 
 // adds a css rule to the sheet. only used 'internally'. 
-function appendSheetRule(rule) { // todo - tests 
+function appendSheetRule(rule, index) { // todo - tests 
     
   // more browser weirdness. I don't even know
   if(styleTag && styleTag.styleSheet) {
@@ -135,37 +154,20 @@ function appendSheetRule(rule) { // todo - tests
   else {
     if(isBrowser) {       
       if(isSpeedy && styleSheet.insertRule) {        
-        // this weirdness for perf, and chrome's weird bug 
-        // https://stackoverflow.com/questions/20007992/chrome-suddenly-stopped-accepting-insertrule
-        try {          
-          styleSheet.insertRule(rule, styleSheet.cssRules.length)    
-        }
-        catch(e) {
-          if(isDev) {
-            // might need beter dx for this 
-            console.warn('whoops, illegal rule inserted', rule) //eslint-disable-line no-console
-          }          
-        }        
+        inlineInsertRule(rule, index)
       }
       else{
         styleTag.appendChild(document.createTextNode(rule))
-        styleSheet = [ ...document.styleSheets ].filter(x => x.ownerNode === styleTag)[0]
+        // todo - more efficent here please 
+        if(!isSpeedy) {
+          // sighhh
+          styleSheet = [ ...document.styleSheets ].filter(x => x.ownerNode === styleTag)[0]  
+        }      
       }      
     }
     else{
       // server side is pretty simple 
       styleSheet.insertRule(rule, styleSheet.cssRules.length)
-    }
-  }
-}
-
-function indexOf(id, type) {
-  // weird bug, stylesheet isn't the same object after inserting 
-  let rules = [ ...styleSheet.cssRules ].map(x => x.cssText)
-  let selectorText = selector(id, type)
-  for(let i =0; i < rules.length; i++) {
-    if(rules[i].indexOf(selectorText) === 0) {
-      return i
     }
   }
 }
@@ -210,15 +212,7 @@ function styleHash(type, style) { // todo - default type = '_'. this changes all
 
 // helper to hack around isp's array format 
 function prefixes(style) {
-  return Object.keys(prefixAll(style)).reduce((o, k) => {
-    if (Array.isArray(style[k])) {
-      o[k] = style[k].join(`; ${k}: `)
-    }
-    else {
-      o[k] = style[k]
-    }
-    return o
-  }, {})
+  return autoprefix(style)
 }
 
 
@@ -237,12 +231,10 @@ function selector(id, type) {
 }
 
 // ... which is them used to generate css rules 
-function cssrule(id, type, ...styles) {
+function cssrule(id, type, style) {
 
   return `${selector(id, type)}{ ${
-    styles.map(style => 
-      createMarkupForStyles(prefixes(style)))
-    .join('\n')    
+    createMarkupForStyles(prefixes(style))
   } } `
 }
 
@@ -271,27 +263,34 @@ function isRule(rule) {
 // a generic rule creator/insertor 
 export function add(type = '_', style, key) {
   let id = key || styleHash(type, style), // generate a hash based on type/style, use this to 'id' the rule everywhere 
-    label = ''
+    label = '', keyIndex = -1
 
   if(!cache[id] || key) {
     if(key) {
-      let index = indexOf(id, type)
-      if(index >=0) {
+      // if the key already exists, delete it 
+      keyIndex = keyIndices[key]
+      if(keyIndex >=0) {
         //remove rule
         if(isSpeedy || !isBrowser) {
-          styleSheet.deleteRule(index)    
+          styleSheet.deleteRule(keyIndex)
         }
         else {           
-          styleTag.removeChild(styleTag.childNodes[index + 1]) // the +1 to account for the blank node we added
+          styleTag.removeChild(styleTag.childNodes[keyIndex + 1]) // the +1 to account for the blank node we added
           // reassign stylesheet, because firefox is weird 
           styleSheet = [ ...document.styleSheets ].filter(x => x.ownerNode === styleTag)[0]
         }
       }
     }
-
-    // todo - if key exists, remove previous rule? 
+    
     // add rule to sheet, update cache. easy!
-    appendSheetRule(cssrule(id, type, style))
+    if(key) {
+      appendSheetRule(cssrule(id, type, style), keyIndex)  
+      keyIndices[key] = keyIndex || styleSheet.cssRules.length - 1
+    }
+    else {
+      appendSheetRule(cssrule(id, type, style))
+    }
+    
     cache[id] = { type, style, id }
   }
   if(hasLabels) {
