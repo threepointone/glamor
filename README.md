@@ -4,7 +4,7 @@
 
 css for component systems
 
-`npm install @glamor --save`
+`npm install glamor --save`
 
 or if you're interested in a plain script tag - 
 ```html
