@@ -248,8 +248,8 @@ adds animation keyframes into the document, with an optional name.
 
 ```jsx
 let bounce = keyframes('bounce', { // optional name
-  '0%': { transform: 'scale(0.1)', opacity: 0 }
-  '60%': { transform: 'scale(1.2)', opacity: 1 }
+  '0%': { transform: 'scale(0.1)', opacity: 0 },
+  '60%': { transform: 'scale(1.2)', opacity: 1 },
   '100%': { transform: 'scale(1)' }
 })
 // ...
