@@ -1,6 +1,6 @@
 # glamor
 
-![build status](https://travis-ci.org/threepointone/react-css.svg)
+![build status](https://travis-ci.org/threepointone/glamor.svg)
 
 css for component systems
 
