@@ -336,7 +336,7 @@ server side rendering
 `rehydrate(cache)`
 
 this api is mostly copied from [aphrodite](https://github.com/Khan/aphrodite);
-render your component inside of a callback, and react-css will gather all
+render your component inside of a callback, and glamor will gather all
 the calls you used and return an object with html, css, and an object
 to rehydrate the lib's cache for fast startup
 
@@ -382,7 +382,7 @@ html and include only the relevant used css / cache.
 characteristics
 ---
 
-while react-css shares most common attributes of other inline style / css-in-js systems,
+while glamor shares most common attributes of other inline style / css-in-js systems,
 here are some key differences -
 
 - rules are hashed and indexed based on their styles; we then use a stylesheet as a key-value store to insert/remove individual rules + additional meta for `simulate`.
