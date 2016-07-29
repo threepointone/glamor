@@ -238,7 +238,7 @@ describe('react-css', () => {
   it('can simulate media queries')
 
   it('has an escape hatch', () => {
-    render(<div {...select('.item', { color: 'red' }) }>
+    render(<div {...select(' .item', { color: 'red' }) }>
       <span>this is fine</span>
       <span className="item">this is red</span>
     </div>, node, () => {

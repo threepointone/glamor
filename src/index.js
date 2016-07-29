@@ -189,7 +189,7 @@ export function flush() { // todo - tests
   }
 }
 
-export function remove(o) {
+export function remove() {
   // todo
   // remove rule
   throw new Error('this is not tested or anything yet! beware!') //eslint-disable-line no-console
@@ -219,12 +219,13 @@ function prefixes(style) {
 // generates a css selector for (id, type)
 function selector(id, type) {
   // id should exist
+  let isFullSelector = type && type[0] === '$'
   let cssType = type === '_' ? '' : 
-    type[0] === ' ' ? type : 
+    type[0] === '$' ? type.slice(1) : 
     `:${type}`
   let suffix = `[data-css-${id}]${cssType}`
 
-  if(canSimulate && type !== '_' && cssType[0] === ':' ) {
+  if(canSimulate && type !== '_' && !isFullSelector && cssType[0] === ':') {
     suffix+= `, [data-css-${id}][data-simulate-${simple(type)}]`
   }
   return suffix
@@ -232,7 +233,6 @@ function selector(id, type) {
 
 // ... which is them used to generate css rules 
 function cssrule(id, type, style) {
-
   return `${selector(id, type)}{ ${
     createMarkupForStyles(prefixes(style))
   } } `
@@ -373,7 +373,7 @@ export const multi = add
 // https://twitter.com/threepointone/status/756585907877273600
 // https://twitter.com/threepointone/status/756986938033254400
 export function select(selector, style) {
-  return add(' ' + selector, style)
+  return add('$' + selector, style) // signalling ahead that this is a plain selector 
 }
 
 // unique feature 
