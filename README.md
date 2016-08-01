@@ -158,7 +158,7 @@ directly to the css rule, letting you define 'whatever' you want. use sparingly!
 ```
 
 (nb: don't forget to add a space for fully child selectors. 
-eg - `select(' .item', {...})`)
+eg - `select(' .item', {...})`. also, `simulate()` does not work on these yet.)
 
 ---
 

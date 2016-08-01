@@ -349,7 +349,7 @@ export const visited = x => add('visited', x)
 // parameterized pseudoclasses
 export const dir = (p, x) => add(`dir(${p})`, x)
 export const lang = (p, x) => add(`lang(${p})`, x)
-export const not = (p, x) => not(`not(${p})`, x)
+export const not = (p, x) => add(`not(${p})`, x)
 export const nthChild = (p, x) => add(`nth-child(${p})`, x)
 export const nthLastChild = (p, x) => add(`nth-last-child(${p})`, x)
 export const nthLastOfType = (p, x) => add(`nth-last-of-type(${p})`, x)
