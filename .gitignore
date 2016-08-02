@@ -5,3 +5,4 @@ npm-debug.log
 demo/bundle.js
 umd/*
 demo/node_modules
+sandbox.js

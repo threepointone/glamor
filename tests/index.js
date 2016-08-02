@@ -327,6 +327,9 @@ describe('react-css', () => {
     })
   }
 
+  it('can generate css from rules')
+  it('can generate html attributes from rules')
+
   it('server side rendering', () => {
     // see tests/server.js
   })

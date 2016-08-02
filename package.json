@@ -26,7 +26,6 @@
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
     "babelify": "^7.3.0",
-    "beefy": "^2.1.8",
     "browserify": "^13.0.1",
     "browserify-derequire": "^0.9.4",
     "envify": "^3.4.1",

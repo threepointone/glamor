@@ -1,3 +1,9 @@
+WARNING : WORK IN PROGRESS
+---
+
+
+
+
 // a comparison of techniques for using css&html vs glamor&react 
 
 apply a style to a single element 

@@ -599,6 +599,32 @@ export function keyframes(name, kfs) {
 
 }
 
+/*** helpers for web components ***/
+// https://github.com/threepointone/glamor/issues/16
+
+export function cssFor(...rules) {
+  let ids = rules.reduce((o, r) => (o[idFor(r)] = true, o), {})
+  let css = [ ...styleSheet.cssRules ].map(({ cssText }) => {
+    let regex = /\[data\-css\-([a-zA-Z0-9]+)\]/gm
+    let match = regex.exec(cssText)
+    
+    if(match && ids[match[1]]) {
+      return cssText
+    }
+  }).join('\n')
+  return css 
+}
+
+export function attribsFor(...rules) {
+  let htmlAttributes = rules.map(rule => {
+    idFor(rule) // throwaway check for rule 
+    let key = Object.keys(rule)[0], value = rule[key]
+    return `${key}="${value || ''}"`  
+  }).join(' ')
+  
+  return htmlAttributes
+}
+
 /**** serverside stuff ****/
 
 // the api's copied from aphrodite, with 1 key difference 
@@ -625,7 +651,7 @@ export function renderStatic(fn, optimized = false) {
       o.cache[id] = cache[id]
       
       // todo - add fonts / animations
-      o.css+= styleSheet.cssRules
+      o.css+= rules
         .map(x => x.cssText)
         .filter(r => new RegExp(`\\\[data\-css\-${id}\\\]`).test(r)).join('\n') + '\n'
     })
