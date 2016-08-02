@@ -1,11 +1,16 @@
 // first we import some helpers 
 import hash from './hash'  // hashes a string to something 'unique'
+
 import autoprefix from './autoprefix'
 // yurgh must get back to this 
 // import prefixAll from 'inline-style-prefixer/static'   // adds vendor prefixes to styles 
 // import  Prefix  from 'inline-style-prefixer'
 // let prefixer = new Prefix({ userAgent: navigator.userAgent })
-import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations' // converts a js style object to css markup
+
+
+// we've used browserify to extract react's CSSPropertyOperations module and it's deps into ./CSSPropertyOperations 
+import { createMarkupForStyles } from './CSSPropertyOperations' // converts a js style object to css markup
+// todo - rewrite this yourself, save a kb or two 
 
 // define some constants 
 const isBrowser = typeof document !== 'undefined' 

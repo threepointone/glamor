@@ -8,22 +8,17 @@
     "umd"
   ],
   "scripts": {
-    "start": "NODE_ENV=development beefy demo/index.js:bundle.js --index demo/index.html -- -p browserify-hmr -p errorify",
-    "build": "npm run clean && npm run build:lib && mkdir umd && npm run build:umd && npm run build:demo",
+    "build": "npm run clean && npm run build:cssops && npm run build:lib && npm run build:es6 && mkdir umd && npm run build:umd",
+    "build:cssops": "echo 'module.exports = require(\"react/lib/CSSPropertyOperations\");' | browserify - -p browserify-derequire -s CSSOps -o src/CSSPropertyOperations.js",
     "build:lib": "NODE_ENV=production babel src -d lib --loose all",
+    "build:es6": "echo 'es6 build not implemented'",
     "build:umd": "NODE_ENV=production browserify src/index.js -s Glamor -o umd/index.js && npm run compress:umd",
     "compress:umd": "NODE_ENV=production uglifyjs umd/index.js -mc -o umd/index.min.js",
-    "build:demo": "NODE_ENV=development browserify demo/index.js -o demo/bundle.js",
-    "clean": "rm -f demo/bundle.js && rm -rf lib && rm -rf es6 && rm -rf umd",
+    "clean": "rm -rf lib && rm -rf es6 && rm -rf umd && rm src/CSSPropertyOperations.js ",
     "test": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js --single-run",
-    "test:watch": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js",
-    "perf": "NODE_ENV=production beefy perf/script.js:bundle.js --index perf/index.html -- -p errorify"
-  },
-  "peerDependencies": {
-    "react": "15.x"
+    "test:watch": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js"
   },
   "devDependencies": {
-    "aphrodite": "^0.5.0",
     "babel-cli": "^6.11.4",
     "babel-eslint": "^6.1.2",
     "babel-polyfill": "^6.9.1",
@@ -33,9 +28,8 @@
     "babelify": "^7.3.0",
     "beefy": "^2.1.8",
     "browserify": "^13.0.1",
-    "browserify-hmr": "^0.3.1",
+    "browserify-derequire": "^0.9.4",
     "envify": "^3.4.1",
-    "errorify": "^0.3.1",
     "eslint": "^3.1.1",
     "eslint-config-rackt": "^1.1.1",
     "eslint-plugin-react": "^5.2.2",
@@ -54,10 +48,6 @@
     "mocha": "^2.5.3",
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
-    "react-hot-loader": "^3.0.0-beta.2",
-    "redbox-react": "^1.2.10",
-    "stats.js": "^0.16.0",
-    "uglifyify": "^3.0.2",
     "watchify": "^3.7.0"
   },
   "author": "Sunil Pai <threepointone@gmail.com>",
@@ -73,14 +63,7 @@
       "es2015",
       "stage-0",
       "react"
-    ],
-    "env": {
-      "development": {
-        "plugins": [
-          "react-hot-loader/babel"
-        ]
-      }
-    }
+    ]
   },
   "eslintConfig": {
     "extends": [
@@ -92,8 +75,5 @@
       "babelify",
       "envify"
     ]
-  },
-  "dependencies": {
-    "inline-style-prefixer": "^2.0.1"
   }
 }

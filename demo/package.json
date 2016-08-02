@@ -1,0 +1,42 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_ENV=development beefy index.js:bundle.js --index index.html -- -p browserify-hmr -p errorify",
+    "perf": "NODE_ENV=production beefy perf/script.js:bundle.js --index perf/index.html -- -p errorify"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "beefy": "^2.1.8",
+    "browserify-hmr": "^0.3.1",
+    "errorify": "^0.3.1",
+    "redbox-react": "^1.2.10",
+    "stats.js": "^0.16.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-0",
+      "react"
+    ],
+    "env": {
+      "development": {
+        "plugins": [
+          "react-hot-loader/babel"
+        ]
+      }
+    }
+  },
+  "browserify": {
+    "transform": [
+      "babelify",
+      "envify"
+    ]
+  },
+  "dependencies": {
+    "react-hot-loader": "^3.0.0-beta.2"
+  }
+}
