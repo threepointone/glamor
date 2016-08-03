@@ -9,14 +9,15 @@
   ],
   "scripts": {
     "build": "npm run clean && npm run build:cssops && npm run build:lib && npm run build:es6 && mkdir umd && npm run build:umd",
-    "build:cssops": "echo 'module.exports = require(\"react/lib/CSSPropertyOperations\");' | browserify - -p browserify-derequire -s CSSOps -o src/CSSPropertyOperations.js -t babelify -t envify",
-    "build:lib": "NODE_ENV=production babel src -d lib --loose all",
+    "build:cssops": "echo 'module.exports = require(\"react/lib/CSSPropertyOperations\");' | browserify - -p browserify-derequire -s CSSOps -o src/CSSPropertyOperations.js -t [ babelify --presets [ es2015 stage-0 react ] ] -t envify",
+    "build:lib": "NODE_ENV=production babel src -d lib --loose all --presets es2015,stage-0,react",
     "build:es6": "echo 'es6 build not implemented'",
-    "build:umd": "NODE_ENV=production browserify src/index.js -s Glamor -o umd/index.js -t babelify -t envify && npm run compress:umd",
+    "build:umd": "NODE_ENV=production browserify src/index.js -s Glamor -o umd/index.js -t [ babelify --presets [ es2015 stage-0 react ] ] -t envify && npm run compress:umd",
     "compress:umd": "NODE_ENV=production uglifyjs umd/index.js -mc -o umd/index.min.js",
-    "clean": "rm -rf lib && rm -rf es6 && rm -rf umd && rm src/CSSPropertyOperations.js ",
+    "clean": "rm -rf lib && rm -rf es6 && rm -rf umd && rm src/CSSPropertyOperations.js",
     "test": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js --single-run",
-    "test:watch": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js"
+    "test:watch": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js",
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "babel-cli": "^6.11.4",
@@ -56,14 +57,7 @@
   "keywords": [
     "css",
     "inline"
-  ],
-  "babel": {
-    "presets": [
-      "es2015",
-      "stage-0",
-      "react"
-    ]
-  },
+  ],  
   "eslintConfig": {
     "extends": [
       "rackt"
