@@ -8,6 +8,9 @@ module.exports = function (config) {
     preprocessors: {
       'index.js': [ 'browserify' ]
     },
-    files: [ 'index.js' ]
+    files: [ 'index.js' ],
+    browserify: {
+      transform: [ 'babelify', 'envify' ]
+    }
   })
 }

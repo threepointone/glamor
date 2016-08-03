@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=development beefy index.js:bundle.js --index index.html -- -p browserify-hmr -p errorify",
-    "perf": "NODE_ENV=production beefy perf/script.js:bundle.js --index perf/index.html -- -p errorify"
+    "start": "NODE_ENV=development beefy index.js:bundle.js --index index.html -- -p browserify-hmr -p errorify -t babelify -t envify ",
+    "perf": "NODE_ENV=production beefy perf/script.js:bundle.js --index perf/index.html -- -p errorify -t babelify -t envify "
   },
   "author": "",
   "license": "ISC",
@@ -29,12 +29,6 @@
         ]
       }
     }
-  },
-  "browserify": {
-    "transform": [
-      "babelify",
-      "envify"
-    ]
   },
   "dependencies": {
     "react-hot-loader": "^3.0.0-beta.2"

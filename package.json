@@ -9,10 +9,10 @@
   ],
   "scripts": {
     "build": "npm run clean && npm run build:cssops && npm run build:lib && npm run build:es6 && mkdir umd && npm run build:umd",
-    "build:cssops": "echo 'module.exports = require(\"react/lib/CSSPropertyOperations\");' | browserify - -p browserify-derequire -s CSSOps -o src/CSSPropertyOperations.js",
+    "build:cssops": "echo 'module.exports = require(\"react/lib/CSSPropertyOperations\");' | browserify - -p browserify-derequire -s CSSOps -o src/CSSPropertyOperations.js -t babelify -t envify",
     "build:lib": "NODE_ENV=production babel src -d lib --loose all",
     "build:es6": "echo 'es6 build not implemented'",
-    "build:umd": "NODE_ENV=production browserify src/index.js -s Glamor -o umd/index.js && npm run compress:umd",
+    "build:umd": "NODE_ENV=production browserify src/index.js -s Glamor -o umd/index.js -t babelify -t envify && npm run compress:umd",
     "compress:umd": "NODE_ENV=production uglifyjs umd/index.js -mc -o umd/index.min.js",
     "clean": "rm -rf lib && rm -rf es6 && rm -rf umd && rm src/CSSPropertyOperations.js ",
     "test": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js --single-run",
@@ -67,12 +67,6 @@
   "eslintConfig": {
     "extends": [
       "rackt"
-    ]
-  },
-  "browserify": {
-    "transform": [
-      "babelify",
-      "envify"
     ]
   }
 }
