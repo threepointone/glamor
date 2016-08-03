@@ -1,6 +1,6 @@
 {
   "name": "glamor",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "description": "inline css for component systems",
   "main": "lib/index.js",
   "files": [
@@ -57,7 +57,7 @@
   "keywords": [
     "css",
     "inline"
-  ],  
+  ],
   "eslintConfig": {
     "extends": [
       "rackt"
