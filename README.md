@@ -388,11 +388,8 @@ characteristics
 while glamor shares most common attributes of other inline style / css-in-js systems,
 here are some key differences -
 
-- rules are hashed and indexed based on their styles; we then use a stylesheet as a key-value store to insert/remove individual rules + additional meta for `simulate`.
-- as such, it does **not** generate pretty classnames, but instead generates debug labels in dev mode, clearly showing merges, pseudos, and media queries. This keeps the generated html small, but still good dx. (issue [#5](https://github.com/threepointone/glamor/issues/5))
-- does **not** touch `class`/`style` attributes; instead we use `data-*` attributes and jsx attribute spread for a natural, fluent api ([some implications](https://github.com/Khan/aphrodite/issues/25)). This lets you define styles 'inline' in a functional / reacty manner, yet globally optimize as one unit.
-- this also keeps it framework-independent (though I still have to see how to use this in angular/ember templates. see - [#6](https://github.com/threepointone/glamor/issues/6))
-- provides an escape hatch (via `select()`)  to define 'real' css on children selectors; when used sparingly, this is great for prototyping, small components, learning, and porting over css codebases. 
+- as such, it does **not** generate pretty classnames, but instead generates debug labels in dev mode. (issue [#5](https://github.com/threepointone/glamor/issues/5))
+- does **not** touch `class`/`style` attributes; instead we use `data-*` attributes and jsx attribute spread ([some implications](https://github.com/Khan/aphrodite/issues/25)). This lets you define styles 'inline', yet globally optimize as one unit.
 - in dev mode, you can simulate pseudo classes on elements by using the `simulate()` helper (or adding a `[data-simulate-<pseudo>]` attribute manually). very useful, especially when combined when hot-loading and/or editing directly in your browser devtools.
 - in production, we switch to a **much** faster method of appending styles to the document, able to add 10s of 1000s of rules in milliseconds. the caveat with this approach is that those styles will [not be editable in chrome/firefox devtools](https://bugs.chromium.org/p/chromium/issues/detail?id=387952) (which is fine, for prod?). advanced users may use `speedy(true/false)` to toggle this setting manually. 
 
