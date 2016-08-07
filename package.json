@@ -1,6 +1,6 @@
 {
   "name": "glamor",
-  "version": "2.2.7-alpha",
+  "version": "2.2.7-alpha2",
   "description": "inline css for component systems",
   "main": "lib/index.js",
   "files": [
