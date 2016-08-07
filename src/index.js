@@ -252,7 +252,7 @@ function cssrule(id, type, style) {
 
 // given a rule {data-css-id: ''}, checks if it's a valid, registered id
 // returns the id 
-function idFor(rule) {
+export function idFor(rule) {
   // todo - weak map hash for this?
   if(Object.keys(rule).length !== 1) throw new Error('not a rule')
   let regex = /data\-css\-([a-zA-Z0-9]+)/
@@ -652,19 +652,6 @@ export function keyframes(name, kfs) {
 
 /*** helpers for web components ***/
 // https://github.com/threepointone/glamor/issues/16
-
-export function cssFor(...rules) {
-  let ids = rules.reduce((o, r) => (o[idFor(r)] = true, o), {})
-  let css = [ ...styleSheet.cssRules ].map(({ cssText }) => {
-    let regex = /\[data\-css\-([a-zA-Z0-9]+)\]/gm
-    let match = regex.exec(cssText)
-    
-    if(match && ids[match[1]]) {
-      return cssText
-    }
-  }).join('\n')
-  return css 
-}
 
 export function cssFor(...rules) {
   let ids = rules.reduce((o, r) => (o[idFor(r)] = true, o), {})
