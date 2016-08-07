@@ -405,8 +405,6 @@ export function keyed(key, type, style) {
   return add(type, style, key)
 }
 
-
-
 // we define a function to 'merge' styles together.
 // backstory - because of a browser quirk, multiple styles are applied in the order they're 
 // defined the stylesheet, not in the order of application 
