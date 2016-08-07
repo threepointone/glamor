@@ -224,13 +224,20 @@ function prefixes(style) {
 // generates a css selector for (id, type)
 function selector(id, type) {
   // id should exist
-  let isFullSelector = type && type[0] === '$'
+  let isFullSelector = type && type[0] === '$' 
   let cssType = type === '_' ? '' : 
     type[0] === '$' ? type.slice(1) : 
     `:${type}`
-  let suffix = `[data-css-${id}]${cssType}`
+  let suffix 
 
-  if(canSimulate && type !== '_' && !isFullSelector && cssType[0] === ':') {
+  if(isFullSelector) {
+    suffix = cssType.split(',').map(x => `[data-css-${id}]${x}`).join(',')
+  }
+  else {
+    suffix = `[data-css-${id}]${cssType}`  
+  }
+  
+  if(canSimulate && type !== '_' && !isFullSelector && cssType[0] === ':') { // todo - work with pseudo selector  on full selector at least 
     suffix+= `, [data-css-${id}][data-simulate-${simple(type)}]`
   }
   return suffix
@@ -303,7 +310,7 @@ export function add(type = '_', style, key) {
     label = style.label || (type !== '_' ? `:${type}`: '')
   }
 
-  return { [`data-css-${id}`]: label } // todo - type 
+  return { [`data-css-${id}`]: label } 
 }
 
 // with those in place, we can now define user-friendly functions for 
@@ -399,6 +406,7 @@ export function keyed(key, type, style) {
 }
 
 
+
 // we define a function to 'merge' styles together.
 // backstory - because of a browser quirk, multiple styles are applied in the order they're 
 // defined the stylesheet, not in the order of application 
@@ -407,7 +415,7 @@ export function keyed(key, type, style) {
 // with latter styles gaining precedence over former ones 
 export function merge(...rules) {
   
-  let labels = [], mergeLabel, styleBag = {}
+  let labels = [], mergeLabel, styleBag = {}, mediaBag = {}
   rules.forEach((rule, i) => {
     // optionally send a string as first argumnet to 'label' this merged rule  
     if(i === 0 && typeof rule === 'string') {
@@ -420,17 +428,55 @@ export function merge(...rules) {
       let id = idFor(rule)  
       
       if(cache[id].bag) { // merged rule 
-        let { bag, label } = cache[idFor(rule)]
+        let { bag, label, media } = cache[id]
         Object.keys(bag).forEach(type => {
           styleBag[type] = { ...styleBag[type] || {}, ...bag[type] }
         })
+        // if there's a media bag, merge those in 
+        if(media) {
+          Object.keys(media).forEach(expr => {
+            mediaBag[expr] = mediaBag[expr] || {}
+            Object.keys(media[expr]).forEach(type => {
+              // mediaBag[expr][type] = mediaBag[expr][type] || {}
+              mediaBag[expr][type] = { ...mediaBag[expr][type] || {}, ...media[expr][type] }
+            })
+          })
+        }
+
         hasLabels && labels.push('[' + label + ']')
         return 
         // that was fairly straightforward
       }
       
       if(cache[id].expr) { // media rule
-        throw new Error('cannot merge a media rule')
+        let { expr, label, rule, style } = cache[id]
+        mediaBag[expr] = mediaBag[expr] || { bag: {} }
+        if(rule) {
+          let iid = idFor(rule)
+          if(cache[iid].bag) {
+            // if merged rule, merge it's bag into stylebag 
+            // we won't expect a mediabag in this merged rule, because it would have thrown in media (phew)
+
+            let { bag } = cache[iid]
+            Object.keys(bag).forEach(type => {
+              mediaBag[expr].bag[type] = { ...mediaBag[expr].bag[type] || {}, ...bag[type] }  
+            }) 
+          }
+          else {
+            let { type, style } = cache[iid]  
+            mediaBag[expr].bag[type] = { ...mediaBag[expr].bag[type] || {}, ...style }  
+          }  
+        }
+        else {
+          mediaBag[expr].bag._ =  { ...mediaBag[expr].bag._ || {}, ...style }
+        }
+        
+        
+        // mediaBag[expr].push(rule)
+        hasLabels && labels.push(label)
+        return
+
+        // throw new Error('cannot merge a media rule')
       }
       else {  // simple rule 
       
@@ -451,14 +497,18 @@ export function merge(...rules) {
 
   // todo - remove label from merged styles? unclear. 
 
-  let id = hash(mergeLabel + JSON.stringify(styleBag)).toString(36) // todo - predictable order
+  let id = hash(mergeLabel + JSON.stringify(mediaBag) + JSON.stringify(styleBag)).toString(36) // todo - predictable order
   // make a merged label
   let label = hasLabels ? `${mergeLabel ? mergeLabel + '= ' : ''}${labels.length ? labels.join(' + ') : ''}` : '' // yuck 
   
   if(!cache[id]) {
-    cache[id] = { bag: styleBag, id, label }
-    Object.keys(styleBag).forEach(type => {
+    cache[id] = { bag: styleBag, id, label, ...(Object.keys(mediaBag) > 0 ? { media: mediaBag } : {}) }
+    Object.keys(styleBag).forEach(type => {      
       appendSheetRule(cssrule(id, type, styleBag[type]))
+    })
+    Object.keys(mediaBag).forEach(expr => {
+      let css = Object.keys(mediaBag[expr]).map(type => cssrule(id, type, mediaBag[expr][type])).join('\n')
+      appendSheetRule(`@media ${expr} { ${ css } }`)
     })
   }
   return { [`data-css-${id}`]: label }
@@ -467,17 +517,20 @@ export function merge(...rules) {
 // this one's for media queries 
 // they cannot be merged with other queries 
 // todo - we should test whether the query is valid and give dev feedback 
-// todo - mltiple rules 
 export function media(expr, ...rules) {
   if (rules.length > 1) {
     return media(expr, merge(...rules))
-  }
+  } // todo - iterate yourself instead 
   let rule = rules[0]
   // test if valid media query
   if(isRule(rule)) {
     let id = idFor(rule)
     
     if(cache[id].bag) { // merged rule       
+      // todo - test if any media rules in this merged rule, throw if so 
+      if(cache[id].media) {
+        throw new Error('cannot apply a media rule onto another')
+      }
       let { bag } = cache[id]
       let newId = hash(expr+id).toString(36)
       let label = hasLabels ? `*mq [${cache[id].label}]` : ''
@@ -485,14 +538,14 @@ export function media(expr, ...rules) {
       if(!cache[newId]) {
         let cssRules = Object.keys(bag).map(type => cssrule(newId, type, bag[type]))
         appendSheetRule(`@media ${expr} { ${ cssRules.join('\n') } }`)
-        cache[newId] = { expr, rule, id: newId }
+        cache[newId] = { expr, rule, id: newId, label }
       }      
 
       return { [`data-css-${newId}`]: label }
       // easy 
     }
     else if(cache[id].expr) { // media rule
-      throw new Error('cannot apply @media onto another media rule')
+      throw new Error('cannot apply a media rule onto another')
     }
     else { // simple rule
       let newId = hash(expr+id).toString(36)
@@ -500,7 +553,7 @@ export function media(expr, ...rules) {
 
       if(!cache[newId]) {
         appendSheetRule(`@media ${expr} { ${ cssrule(newId, cache[id].type, cache[id].style) } }`)
-        cache[newId] = { expr, rule, id: newId }
+        cache[newId] = { expr, rule, id: newId, label }
       }
       
       return { [`data-css-${newId}`]: label }
@@ -514,7 +567,7 @@ export function media(expr, ...rules) {
     let label = hasLabels ? '*mq ' + (style.label || '') : ''
     if(!cache[newId]) {
       appendSheetRule(`@media ${expr} { ${ cssrule(newId, '_', style) } }`)
-      cache[newId] = { expr, style, id: newId }
+      cache[newId] = { expr, style, id: newId, label }
     }
     return { [`data-css-${newId}`]: label }
   }
@@ -601,6 +654,19 @@ export function keyframes(name, kfs) {
 
 /*** helpers for web components ***/
 // https://github.com/threepointone/glamor/issues/16
+
+export function cssFor(...rules) {
+  let ids = rules.reduce((o, r) => (o[idFor(r)] = true, o), {})
+  let css = [ ...styleSheet.cssRules ].map(({ cssText }) => {
+    let regex = /\[data\-css\-([a-zA-Z0-9]+)\]/gm
+    let match = regex.exec(cssText)
+    
+    if(match && ids[match[1]]) {
+      return cssText
+    }
+  }).join('\n')
+  return css 
+}
 
 export function cssFor(...rules) {
   let ids = rules.reduce((o, r) => (o[idFor(r)] = true, o), {})

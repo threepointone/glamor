@@ -267,11 +267,11 @@ describe('react-css', () => {
         <li {...mq}>three</li>
       </ul>
     </div>
-    expect(el).toEqual(<div data-css-959am3="[red + blue:hover] + `szlvmg:visited + {…}">
+    expect(el).toEqual(<div data-css-1ge1o1y="[red + blue:hover] + `szlvmg:visited + {…}">
       <ul data-css-1oppo9="mylist">
         <li data-css-qh7ndu=":hover">one</li>
         <li >two</li>
-        <li data-css-1nl2w09="*mq [red + blue:hover]">three</li>
+        <li data-css-suws9l="*mq [red + blue:hover]">three</li>
       </ul>
     </div>)
     cssLabels(false)
