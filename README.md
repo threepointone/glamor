@@ -269,6 +269,33 @@ use sparingly! for granular control, use javascript and pencil and paper.
 
 ---
 
+`cssFor(...rules)`
+
+a helper to extract the css for given rules. useful for debugging, and [webcomponents](https://github.com/threepointone/glamor/issues/16)
+
+```jsx
+let red = style({ color: 'red' })
+let blue = style({ border: 'blue' })
+console.log(cssFor(red, blue))
+
+/* 
+[data-css-16y7vsu]{ color:red; } 
+[data-css-1el9v42]{ border:blue; } 
+*/
+```
+
+`attribsFor(...rules)`
+
+another helper for webcomponents, this generates the attributes to be included when constructing an element's html 
+
+```jsx
+// continued from above 
+console.log(attribsFor(red, blue))
+/*
+data-css-16y7vsu="" data-css-1el9v42=""
+*/
+```
+
 composing / modularity
 ---
 
