@@ -71,7 +71,7 @@ export function simulate(...pseudos) {
 /**** labels ****/
 // toggle for debug labels. 
 // shouldn't *have* to mess with this manually
-let hasLabels = isDev
+let hasLabels = false // isDev
 
 export function cssLabels(bool) {
   hasLabels = !!bool
@@ -448,7 +448,7 @@ export function merge(...rules) {
       
       if(cache[id].expr) { // media rule
         let { expr, label, rule, style } = cache[id]
-        mediaBag[expr] = mediaBag[expr] || { bag: {} }
+        mediaBag[expr] = mediaBag[expr] || { }
         if(rule) {
           let iid = idFor(rule)
           if(cache[iid].bag) {
@@ -457,16 +457,16 @@ export function merge(...rules) {
 
             let { bag } = cache[iid]
             Object.keys(bag).forEach(type => {
-              mediaBag[expr].bag[type] = { ...mediaBag[expr].bag[type] || {}, ...bag[type] }  
+              mediaBag[expr][type] = { ...mediaBag[expr][type] || {}, ...bag[type] }  
             }) 
           }
           else {
             let { type, style } = cache[iid]  
-            mediaBag[expr].bag[type] = { ...mediaBag[expr].bag[type] || {}, ...style }  
+            mediaBag[expr][type] = { ...mediaBag[expr][type] || {}, ...style }  
           }  
         }
         else {
-          mediaBag[expr].bag._ =  { ...mediaBag[expr].bag._ || {}, ...style }
+          mediaBag[expr]._ =  { ...mediaBag[expr]._ || {}, ...style }
         }
         
         
@@ -504,6 +504,7 @@ export function merge(...rules) {
     Object.keys(styleBag).forEach(type => {      
       appendSheetRule(cssrule(id, type, styleBag[type]))
     })
+    
     Object.keys(mediaBag).forEach(expr => {
       let css = Object.keys(mediaBag[expr]).map(type => cssrule(id, type, mediaBag[expr][type])).join('\n')
       appendSheetRule(`@media ${expr} { ${ css } }`)
