@@ -1,3 +1,6 @@
+import { appendSheetRule } from './index.js'
+
+
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 
 /**
@@ -6,19 +9,19 @@
  *    user zoom.
  */
 
-html {
+appendSheetRule(`html {
   font-family: sans-serif; /* 1 */
   -ms-text-size-adjust: 100%; /* 2 */
   -webkit-text-size-adjust: 100%; /* 2 */
-}
+}`)
 
 /**
  * Remove default margin.
  */
 
-body {
+appendSheetRule(`body {
   margin: 0;
-}
+}`)
 
 /* HTML5 display definitions
    ========================================================================== */
@@ -30,7 +33,7 @@ body {
  * Correct `block` display not defined for `main` in IE 11.
  */
 
-article,
+appendSheetRule(`article,
 aside,
 details,
 figcaption,
@@ -44,40 +47,40 @@ nav,
 section,
 summary {
   display: block;
-}
+}`)
 
 /**
  * 1. Correct `inline-block` display not defined in IE 8/9.
  * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
  */
 
-audio,
+appendSheetRule(`audio,
 canvas,
 progress,
 video {
   display: inline-block; /* 1 */
   vertical-align: baseline; /* 2 */
-}
+}`)
 
 /**
  * Prevent modern browsers from displaying `audio` without controls.
  * Remove excess height in iOS 5 devices.
  */
 
-audio:not([controls]) {
+appendSheetRule(`audio:not([controls]) {
   display: none;
   height: 0;
-}
+}`)
 
 /**
  * Address `[hidden]` styling not present in IE 8/9/10.
  * Hide the `template` element in IE 8/9/11, Safari, and Firefox < 22.
  */
 
-[hidden],
+appendSheetRule(`[hidden],
 template {
   display: none;
-}
+}`)
 
 /* Links
    ========================================================================== */
@@ -86,18 +89,18 @@ template {
  * Remove the gray background color from active links in IE 10.
  */
 
-a {
+appendSheetRule(`a {
   background-color: transparent;
-}
+}`)
 
 /**
  * Improve readability when focused and also mouse hovered in all browsers.
  */
 
-a:active,
+appendSheetRule(`a:active,
 a:hover {
   outline: 0;
-}
+}`)
 
 /* Text-level semantics
    ========================================================================== */
@@ -106,73 +109,74 @@ a:hover {
  * Address styling not present in IE 8/9/10/11, Safari, and Chrome.
  */
 
-abbr[title] {
+appendSheetRule(`abbr[title] {
   border-bottom: 1px dotted;
-}
+}`)
 
 /**
  * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
  */
 
-b,
+appendSheetRule(`b,
 strong {
   font-weight: bold;
-}
+}`)
 
 /**
  * Address styling not present in Safari and Chrome.
  */
 
-dfn {
+appendSheetRule(`dfn {
   font-style: italic;
-}
+}`)
 
 /**
  * Address variable `h1` font-size and margin within `section` and `article`
  * contexts in Firefox 4+, Safari, and Chrome.
  */
 
-h1 {
+
+appendSheetRule(`h1 {
   font-size: 2em;
   margin: 0.67em 0;
-}
+}`)
 
 /**
  * Address styling not present in IE 8/9.
  */
 
-mark {
+appendSheetRule(`mark {
   background: #ff0;
   color: #000;
-}
+}`)
 
 /**
  * Address inconsistent and variable font size in all browsers.
  */
 
-small {
+appendSheetRule(`small {
   font-size: 80%;
-}
+}`)
 
 /**
  * Prevent `sub` and `sup` affecting `line-height` in all browsers.
  */
 
-sub,
+appendSheetRule(`sub,
 sup {
   font-size: 75%;
   line-height: 0;
   position: relative;
   vertical-align: baseline;
-}
+}`)
 
-sup {
+appendSheetRule(`sup {
   top: -0.5em;
-}
+}`)
 
-sub {
+appendSheetRule(`sub {
   bottom: -0.25em;
-}
+}`)
 
 /* Embedded content
    ========================================================================== */
@@ -181,17 +185,17 @@ sub {
  * Remove border when inside `a` element in IE 8/9/10.
  */
 
-img {
+appendSheetRule(`img {
   border: 0;
-}
+}`)
 
 /**
  * Correct overflow not hidden in IE 9/10/11.
  */
 
-svg:not(:root) {
+appendSheetRule(`svg:not(:root) {
   overflow: hidden;
-}
+}`)
 
 /* Grouping content
    ========================================================================== */
@@ -200,39 +204,39 @@ svg:not(:root) {
  * Address margin not present in IE 8/9 and Safari.
  */
 
-figure {
+appendSheetRule(`figure {
   margin: 1em 40px;
-}
+}`)
 
 /**
  * Address differences between Firefox and other browsers.
  */
 
-hr {
+appendSheetRule(`hr {
   -moz-box-sizing: content-box;
   box-sizing: content-box;
   height: 0;
-}
+}`)
 
 /**
  * Contain overflow in all browsers.
  */
 
-pre {
+appendSheetRule(`pre {
   overflow: auto;
-}
+}`)
 
 /**
  * Address odd `em`-unit font size rendering in all browsers.
  */
 
-code,
+appendSheetRule(`code,
 kbd,
 pre,
 samp {
   font-family: monospace, monospace;
   font-size: 1em;
-}
+}`)
 
 /* Forms
    ========================================================================== */
@@ -249,7 +253,7 @@ samp {
  * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
  */
 
-button,
+appendSheetRule(`button,
 input,
 optgroup,
 select,
@@ -257,15 +261,15 @@ textarea {
   color: inherit; /* 1 */
   font: inherit; /* 2 */
   margin: 0; /* 3 */
-}
+}`)
 
 /**
  * Address `overflow` set to `hidden` in IE 8/9/10/11.
  */
 
-button {
+appendSheetRule(`button {
   overflow: visible;
-}
+}`)
 
 /**
  * Address inconsistent `text-transform` inheritance for `button` and `select`.
@@ -274,10 +278,10 @@ button {
  * Correct `select` style inheritance in Firefox.
  */
 
-button,
+appendSheetRule(`button,
 select {
   text-transform: none;
-}
+}`)
 
 /**
  * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
@@ -287,41 +291,41 @@ select {
  *    `input` and others.
  */
 
-button,
+appendSheetRule(`button,
 html input[type="button"], /* 1 */
 input[type="reset"],
 input[type="submit"] {
   -webkit-appearance: button; /* 2 */
   cursor: pointer; /* 3 */
-}
+}`)
 
 /**
  * Re-set default cursor for disabled elements.
  */
 
-button[disabled],
+appendSheetRule(`button[disabled],
 html input[disabled] {
   cursor: default;
-}
+}`)
 
 /**
  * Remove inner padding and border in Firefox 4+.
  */
 
-button::-moz-focus-inner,
+appendSheetRule(`button::-moz-focus-inner,
 input::-moz-focus-inner {
   border: 0;
   padding: 0;
-}
+}`)
 
 /**
  * Address Firefox 4+ setting `line-height` on `input` using `!important` in
  * the UA stylesheet.
  */
 
-input {
+appendSheetRule(`input {
   line-height: normal;
-}
+}`)
 
 /**
  * It's recommended that you don't attempt to style these elements.
@@ -331,11 +335,11 @@ input {
  * 2. Remove excess padding in IE 8/9/10.
  */
 
-input[type="checkbox"],
+appendSheetRule(`input[type="checkbox"],
 input[type="radio"] {
   box-sizing: border-box; /* 1 */
   padding: 0; /* 2 */
-}
+}`)
 
 /**
  * Fix the cursor style for Chrome's increment/decrement buttons. For certain
@@ -343,10 +347,10 @@ input[type="radio"] {
  * decrement button to change from `default` to `text`.
  */
 
-input[type="number"]::-webkit-inner-spin-button,
+appendSheetRule(`input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   height: auto;
-}
+}`)
 
 /**
  * 1. Address `appearance` set to `searchfield` in Safari and Chrome.
@@ -354,12 +358,12 @@ input[type="number"]::-webkit-outer-spin-button {
  *    (include `-moz` to future-proof).
  */
 
-input[type="search"] {
+appendSheetRule(`input[type="search"] {
   -webkit-appearance: textfield; /* 1 */
   -moz-box-sizing: content-box;
   -webkit-box-sizing: content-box; /* 2 */
   box-sizing: content-box;
-}
+}`)
 
 /**
  * Remove inner padding and search cancel button in Safari and Chrome on OS X.
@@ -367,47 +371,47 @@ input[type="search"] {
  * padding (and `textfield` appearance).
  */
 
-input[type="search"]::-webkit-search-cancel-button,
+appendSheetRule(`input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-decoration {
   -webkit-appearance: none;
-}
+}`)
 
 /**
  * Define consistent border, margin, and padding.
  */
 
-fieldset {
+appendSheetRule(`fieldset {
   border: 1px solid #c0c0c0;
   margin: 0 2px;
   padding: 0.35em 0.625em 0.75em;
-}
+}`)
 
 /**
  * 1. Correct `color` not being inherited in IE 8/9/10/11.
  * 2. Remove padding so people aren't caught out if they zero out fieldsets.
  */
 
-legend {
+appendSheetRule(`legend {
   border: 0; /* 1 */
   padding: 0; /* 2 */
-}
+}`)
 
 /**
  * Remove default vertical scrollbar in IE 8/9/10/11.
  */
 
-textarea {
+appendSheetRule(`textarea {
   overflow: auto;
-}
+}`)
 
 /**
  * Don't inherit the `font-weight` (applied by a rule above).
  * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
  */
 
-optgroup {
+appendSheetRule(`optgroup {
   font-weight: bold;
-}
+}`)
 
 /* Tables
    ========================================================================== */
@@ -416,12 +420,12 @@ optgroup {
  * Remove most spacing between table cells.
  */
 
-table {
+appendSheetRule(`table {
   border-collapse: collapse;
   border-spacing: 0;
-}
+}`)
 
-td,
+appendSheetRule(`td,
 th {
   padding: 0;
-}
+}`)

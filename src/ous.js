@@ -1,12 +1,9 @@
-import { style, media, merge, firstChild, after, select, hover, idFor, cssLabels } from './index.js'
+import { style, media, merge, firstChild, after, select, hover, idFor, appendSheetRule } from './index.js'
 
 function log() {
   console.log(this) // eslint-disable-line
   return this
 }
-
-cssLabels(false)
-
 
 export const container = merge(
   {
@@ -103,15 +100,18 @@ export const half = offset => columns('half', offset)
 export const oneThird = offset => columns('oneThird', offset)
 export const twoThirds = offset => columns('twoThirds', offset)
 
-export const html = style({
-  fontSize: '62.5%'
-})
+
+appendSheetRule('html { font-size: 62.5% }')
+
 
 export const button = style({ label: 'button' })
 export const primary = style({ label: 'primary' })
 
+export const labelBody = style({ label: 'labelBody' })
+
 const buttonId = `[data-css-${idFor(button)}]`
 const primaryId = `[data-css-${idFor(primary)}]`
+const labelBodyId = `[data-css-${idFor(labelBody)}]`
 
 
 export const base = merge(
@@ -154,7 +154,7 @@ export const base = merge(
   }),
 
   // buttons 
-  select(` button, input[type="submit"], input[type="reset", input[type="button"]], ${buttonId}`, {
+  select(` button, input[type="submit"], input[type="reset"], input[type="button"], ${buttonId}`, {
     display: 'inline-block',
     height: 38,
     padding: '0 30px',
@@ -162,7 +162,7 @@ export const base = merge(
     textAlign: 'center',
     fontSize: 11,
     fontWeight: 600,
-    lineHeight: 38,
+    lineHeight: '38px',
     letterSpacing: '.1rem',
     textTransform: 'uppercase',
     textDecoration: 'none',
@@ -233,7 +233,7 @@ export const base = merge(
   select(' input[type="checkbox"], input[type="radio"]', {
     display: 'inline'
   }),
-  select(' label > .label-body', {
+  select(` label > ${labelBodyId}`, {
     display: 'inline-block',
     marginLeft: '.5rem',
     fontWeight: 'normal'
@@ -311,3 +311,20 @@ export const base = merge(
 )
 
 // utilities 
+export const fullWidth = style({
+  width: '100%',
+  boxSizing: 'border-box'
+})
+
+export const maxFullWidth = style({
+  maxWidth: '100%',
+  boxSizing: 'border-box'
+})
+
+export const pullRight = style({
+  float: 'right'
+})
+
+export const pullLeft = style({
+  float: 'left'
+})

@@ -36,6 +36,7 @@ features
 - dev helper to simulate pseudo classes like `:hover`, etc
 - server side rendering
 - tests / coverage
+- **new!** - glamorous - a port of [the skeleton css framework](getskeleton.com)
 
 
 cons
@@ -208,10 +209,6 @@ media queries!
   resize away
 </div>
 ```
-
-caveat: you cannot merge `media()` rules yet, but I think that makes sense.
-Instead, merge your rules before calling `media()`. For any complex logic
-around viewport attributes, use javascript.
 
 ---
 
@@ -423,6 +420,7 @@ here are some key differences -
 todo
 ---
 
+- glamorous documentation
 - error checking / typechecks (flow? runtime?)
 - ie8 compat for insertRule/deleteRule
 - plugins

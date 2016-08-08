@@ -150,7 +150,7 @@ function inlineInsertRule(rule, index = styleSheet.cssRules.length) {
 }
 
 // adds a css rule to the sheet. only used 'internally'. 
-function appendSheetRule(rule, index) { // todo - tests 
+export function appendSheetRule(rule, index) { // todo - tests 
     
   // more browser weirdness. I don't even know
   if(styleTag && styleTag.styleSheet) {
@@ -412,7 +412,6 @@ export function keyed(key, type, style) {
 // instead, use merge() to merge styles,
 // with latter styles gaining precedence over former ones 
 export function merge(...rules) {
-  
   let labels = [], mergeLabel, styleBag = {}, mediaBag = {}
   rules.forEach((rule, i) => {
     // optionally send a string as first argumnet to 'label' this merged rule  
@@ -426,6 +425,7 @@ export function merge(...rules) {
       let id = idFor(rule)  
       
       if(cache[id].bag) { // merged rule 
+
         let { bag, label, media } = cache[id]
         Object.keys(bag).forEach(type => {
           styleBag[type] = { ...styleBag[type] || {}, ...bag[type] }
@@ -440,6 +440,7 @@ export function merge(...rules) {
             })
           })
         }
+
 
         hasLabels && labels.push('[' + label + ']')
         return 
@@ -500,13 +501,14 @@ export function merge(...rules) {
   let label = hasLabels ? `${mergeLabel ? mergeLabel + '= ' : ''}${labels.length ? labels.join(' + ') : ''}` : '' // yuck 
   
   if(!cache[id]) {
-    cache[id] = { bag: styleBag, id, label, ...(Object.keys(mediaBag) > 0 ? { media: mediaBag } : {}) }
+    cache[id] = { bag: styleBag, id, label, ...(Object.keys(mediaBag).length > 0 ? { media: mediaBag } : {}) }
     Object.keys(styleBag).forEach(type => {      
       appendSheetRule(cssrule(id, type, styleBag[type]))
     })
     
     Object.keys(mediaBag).forEach(expr => {
       let css = Object.keys(mediaBag[expr]).map(type => cssrule(id, type, mediaBag[expr][type])).join('\n')
+
       appendSheetRule(`@media ${expr} { ${ css } }`)
     })
   }
