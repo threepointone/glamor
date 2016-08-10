@@ -6,6 +6,7 @@
   "files": [
     "lib",
     "umd",
+    "react.js",
     "ous.js",
     "reset.js"
   ],
