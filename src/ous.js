@@ -5,6 +5,8 @@ function log() {
   return this
 }
 
+appendSheetRule('html { font-size: 62.5% }')
+
 export const container = merge(
   {
     position: 'relative',
@@ -101,7 +103,7 @@ export const oneThird = offset => columns('oneThird', offset)
 export const twoThirds = offset => columns('twoThirds', offset)
 
 
-appendSheetRule('html { font-size: 62.5% }')
+
 
 
 export const button = style({ label: 'button' })
@@ -173,8 +175,10 @@ export const base = merge(
     cursor: 'pointer',
     boxSizing: 'border-box'
   }),
-  select(` ${buttonId}:hover, button:hover, input[type="submit"]:hover, input[type="reset"]:hover, input[type="button"]:hover, 
-    ${buttonId}:focus, button:focus, input[type="submit"]:focus, input[type="reset"]:focus, input[type="button"]:focus`, {
+  select(` ${buttonId}:hover, button:hover, input[type="submit"]:hover, 
+    input[type="reset"]:hover, input[type="button"]:hover, 
+    ${buttonId}:focus, button:focus, input[type="submit"]:focus, 
+    input[type="reset"]:focus, input[type="button"]:focus`, {
       color: '#333',
       borderColor: '#888',
       outline: 0  
@@ -328,3 +332,11 @@ export const pullRight = style({
 export const pullLeft = style({
   float: 'left'
 })
+
+export const clearfix = style({
+  content: '""',
+  display: 'table',
+  clear: 'both'  
+})
+
+

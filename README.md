@@ -33,17 +33,20 @@ features
 - supports all the pseudo :classes/::elements
 - supports `@media` queries
 - supports `@font-face` and `@keyframes`
+- escape hatches for global and child selectors 
 - dev helper to simulate pseudo classes like `:hover`, etc
 - server side rendering
 - tests / coverage
-- **new!** - glamorous - a port of [the skeleton css framework](getskeleton.com)
+- **new!** - glamor/reset - includes a css reset
+- **new!** - glamor/ous - a port of [the skeleton css framework](getskeleton.com)
+- **new!** - glamor/react - react integration, à la jsxstyle
 
 
 cons
 ---
 
 - no real-world usage / adoption yet
-- edge cases *could* cause consume excess memory ([#1](https://github.com/threepointone/glamor/issues/1))
+- edge cases *could* consume excess memory ([#1](https://github.com/threepointone/glamor/issues/1))
 
 api
 ---
