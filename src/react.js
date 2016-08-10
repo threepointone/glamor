@@ -21,20 +21,20 @@ const STYLE_PROP_NAMES = Object.keys(document.createElement('div').style).reduce
 }, {})
 
 const splitStyles = (combinedProps) => {
-  const props = {}, gStyle = {}, style = {}
+  const props = {}, gStyle = [], style = {}
   Object.keys(combinedProps).forEach((key) => {
     if (STYLE_PROP_NAMES[key])
       style[key] = combinedProps[key]
     else if (pseudos[key] >= 0) {
-      Object.assign(gStyle, glamor[key](combinedProps[key]))
-    }
-    else if (parameterizedPseudos[key]) {
-      Object.assign(gStyle, glamor[key](...combinedProps[key]))
+      gStyle.push(glamor[key](combinedProps[key]))
+    }    
+    else if (parameterizedPseudos[key] || (key === 'media') || (key === 'select')) {
+      gStyle.push(glamor[key](...combinedProps[key]))
     }
     else
       props[key] = combinedProps[key]
   })
-  return { ...glamor.style(style), ...gStyle, ...props }
+  return { ...glamor.style(style), ...gStyle.length > 0 ? glamor.merge(...gStyle) : {}, ...props }
 }
 
 export class Block extends React.Component {

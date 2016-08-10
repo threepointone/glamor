@@ -2,7 +2,7 @@ import React from 'react'
 
 import '../src/reset' // css reset!
 
-import { Block } from './jsxstyle'
+import { Block } from '../src/react'
 
 // import { base } from '../src/ous'
 
@@ -16,16 +16,18 @@ function log() {
   return this
 }
 
-
 export class App extends React.Component {
   render() {
     return <Block 
       color="red" // inline styles!
       border="1px solid yellow"
       hover={{ color: 'blue' }} // pseudoclasses!
-      style={{ color: 'green' }} // style prop!
+      media={[ '(min-width: 500px)', { color: 'yellow' } ]}
+      select={[ ' a', { color: 'gray' } ]}
+      onClick={() => console.log('sup dawg')}                   // eslint-disable-line
       > 
         woohoo
+        <a> say whaaaat </a>
     </Block>
   }
 }
