@@ -93,7 +93,9 @@ function injectStyleSheet() {
     styleTag = document.getElementById('_css_')
     if(!styleTag) {
       styleTag = document.createElement('style')
+      styleTag.type = 'text/css'
       styleTag.id = styleTag.id || '_css_'
+      styleTag.setAttribute('id', '_css_')
       styleTag.appendChild(document.createTextNode(''));
       (document.head || document.getElementsByTagName('head')[0]).appendChild(styleTag)
     }
@@ -228,19 +230,24 @@ function selector(id, type) {
   let cssType = type === '_' ? '' : 
     type[0] === '$' ? type.slice(1) : 
     `:${type}`
-  let suffix 
+  let result 
+
 
   if(isFullSelector) {
-    suffix = cssType.split(',').map(x => `[data-css-${id}]${x}`).join(',')
+    // todo - do we need the weird chrome bug fix here too?
+    result = cssType.split(',').map(x => `[data-css-${id}]${x}`).join(',')
   }
   else {
-    suffix = `[data-css-${id}]${cssType}`  
+    result = `[data-css-${id}]${cssType}`  
   }
+
+  // https://github.com/threepointone/glamor/issues/20
+  result = result.replace(':hover', ':hover:nth-child(n)')
   
   if(canSimulate && type !== '_' && !isFullSelector && cssType[0] === ':') { // todo - work with pseudo selector  on full selector at least 
-    suffix+= `, [data-css-${id}][data-simulate-${simple(type)}]`
+    result+= `, [data-css-${id}][data-simulate-${simple(type)}]`
   }
-  return suffix
+  return result
 }
 
 // ... which is them used to generate css rules 
@@ -299,7 +306,7 @@ export function add(type = '_', style, key) {
       appendSheetRule(cssrule(id, type, style), keyIndex)  
       keyIndices[key] = keyIndex || styleSheet.cssRules.length - 1
     }
-    else {
+    else {      
       appendSheetRule(cssrule(id, type, style))
     }
     

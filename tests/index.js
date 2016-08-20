@@ -117,7 +117,7 @@ describe('react-css', () => {
       // console.log(childStyle(node, ':hover').getPropertyValue('color'))
       // ^ this doesn't work as I want
       expect(getSheet().cssRules[0].cssText)
-        .toEqual('[data-css-1w84cbc]:hover { color: red; }')
+        .toEqual('[data-css-1w84cbc]:hover:nth-child(n) { color: red; }')
         // any ideas on a better test for this?
     })
   })
@@ -172,7 +172,7 @@ describe('react-css', () => {
   it('can add multiple pseudo classes on the same rule', () => {
     render(<div {...multi('hover:active::after', { color:'red' })} />, node, () => {
       expect(getSheet().cssRules[0].cssText)
-        .toEqual('[data-css-4jjrud]:hover:active::after { color: red; }')
+        .toEqual('[data-css-4jjrud]:hover:nth-child(n):active::after { color: red; }')
     })
   })
 
@@ -192,7 +192,7 @@ describe('react-css', () => {
     render(<div {...media('(min-width: 300px)', hover({ color: 'red' }))} {...simulate('hover')}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
       expect(getSheet().cssRules[1].cssText.replace(/\s/g,''))
-        .toEqual('@media (min-width: 300px) { \n  [data-css-5o4wo0]:hover, [data-css-5o4wo0][data-simulate-hover] { color: red; }\n}'.replace(/\s/g,''))
+        .toEqual('@media (min-width: 300px) { \n  [data-css-5o4wo0]:hover:nth-child(n), [data-css-5o4wo0][data-simulate-hover] { color: red; }\n}'.replace(/\s/g,''))
       // ugh
       simulations(false)
     })

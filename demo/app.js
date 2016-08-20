@@ -1,15 +1,15 @@
 import React from 'react'
 
-import '../src/reset' // css reset!
+// import '../src/reset' // css reset!
 
-import { Block } from '../src/react'
+// import { Block } from '../src/react'
 
 // import { base } from '../src/ous'
 
 // import { fullWidth } from '../src/ous'
 
 
-// import { style, merge } from '../src'
+import { style, merge, hover, after } from '../src'
 
 function log() {
   console.log(this) // eslint-disable-line
@@ -18,17 +18,10 @@ function log() {
 
 export class App extends React.Component {
   render() {
-    return <Block 
-      color="red" // inline styles!
-      border="1px solid yellow"
-      hover={{ color: 'blue' }} // pseudoclasses!
-      media={[ '(min-width: 500px)', { color: 'yellow' } ]}
-      select={[ ' a', { color: 'gray' } ]}
-      onClick={() => console.log('sup dawg')}                   // eslint-disable-line
-      > 
-        woohoo
-        <a> say whaaaat </a>
-    </Block>
+    return <div>            
+      <div{...hover({ backgroundColor: 'red' })}>say what</div>      
+      <div>hello! </div>
+    </div>
   }
 }
 
@@ -45,7 +38,7 @@ export class App extends React.Component {
 //     return <div {...container} >
 //       {/* columns should be the immediate child of a .row */}
 //       <div {...row}>
-//         <div {...columns(1)}> One </div>
+//         <div {...columns(1)} {...hover({ color: 'red' })}> One </div>
 //         <div {...columns(11)}> Eleven </div>
 //       </div>
       
@@ -214,8 +207,6 @@ export class App extends React.Component {
 //           </tr>
 //         </tbody>
 //       </table>
-//     </div>
+//     // </div>
 //   }
 // }
-
-
