@@ -16,8 +16,11 @@ import { style, hover, nthChild, firstLetter, media, merge, compose, multi, sele
   cssLabels,
   simulations, simulate,
   cssFor, attribsFor, idFor,
+  presets,
   rehydrate, flush }
 from '../src'
+
+import { View } from '../src/react'
 
 function childStyle(node, p = null) {
   return window.getComputedStyle(node.childNodes[0], p)
@@ -375,5 +378,32 @@ describe('glamor', () => {
   })
 
   it('delete a rule from the stylesheet')
+
+  it('exposes a View component', () => {
+    render(<View color="red"
+      backgroundColor="#ccc"
+      hover={{ color: 'blue' }} 
+      select={[ ' li', { textDecoration: 'underline' } ]}
+      media={[ presets.mobile, { color: 'green' } ]}
+      style={{ outline: '1px solid black' }}
+      className="myView"
+      onClick={() => console.log('whutwhut')} // eslint-disable-line no-console
+
+    />, node, () => {
+      expect([ ...getSheet().cssRules ].map(x => x.cssText).join('\n')).toEqual(
+`[data-css-qlhh8p]:hover:nth-child(n) { color: blue; }
+[data-css-g5ds2d] li { text-decoration: underline; }
+@media (min-width: 400px) { 
+  [data-css-1rbt3bj] { color: green; }
+}
+[data-css-d6gtia] { color: red; background-color: rgb(204, 204, 204); }
+[data-css-d6gtia]:hover:nth-child(n) { color: blue; }
+[data-css-d6gtia] li { text-decoration: underline; }
+@media (min-width: 400px) { 
+  [data-css-d6gtia] { color: green; }
+}`)  
+    })
+  })
   
 })
+

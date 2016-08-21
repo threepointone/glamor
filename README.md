@@ -213,8 +213,18 @@ media queries!
 </div>
 ```
 
+also included are some presets 
 
+`presets.mobile` - `(min-width: 400px)`
+`presets.phablet` - `(min-width: 550px)`
+`presets.tablet` - `(min-width: 750px)`
+`presets.desktop` - `(min-width: 1000px)`
+`presets.hd` - `(min-width: 1200px)`
 
+and use as -
+```jsx
+media(presets.tablet, {...})
+```
 
 ---
 
@@ -302,7 +312,7 @@ a full port of [the skeleton css framework](http://getskeleton.com/)
 
 ---
 
-react integration
+react integration (experimental)
 
 heavily inspired by [jsxstyle](https://github.com/petehunt/jsxstyle/)
 
@@ -314,6 +324,7 @@ import { View } from 'glamor/react'
 <View 
   color='red'   // regular style properties 
   backgroundColor='#ccc'
+  css={{ outline: '1px solid black' }} // or a style object
   hover={{ color: 'blue' }} // pseudo classes
   select={[' li:nth-child(3)', { textDecoration: 'underline' }]} // arbitrary selectors
   media={[ '(min-width: 400px)', {
@@ -322,9 +333,10 @@ import { View } from 'glamor/react'
   } ]} // media queries
   compose={[...]}  // add as many more rules 
   component='ul' // use any tag/component
-  style={{ border: '1px solid green' }} // 'inline' style
-  onClick={() => alert('what what!')} // event handlers, other props work fine 
-  className='mylist' // combine with aphrodite/css modules/etc as you please 
+  style={{ border: '1px solid green' }} // 'inline' style  
+  className='mylist' // combine with aphrodite/css modules/etc 
+  onClick={() => alert('what what!')} // event handlers
+  props={{ disabled: true }} // pass props to the underlying element
 >
   <li>one</li>
   <li>two</li>
