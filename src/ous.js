@@ -103,9 +103,6 @@ export const oneThird = offset => columns('oneThird', offset)
 export const twoThirds = offset => columns('twoThirds', offset)
 
 
-
-
-
 export const button = style({ label: 'button' })
 export const primary = style({ label: 'primary' })
 

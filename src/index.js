@@ -232,7 +232,6 @@ function selector(id, type) {
     `:${type}`
   let result 
 
-
   if(isFullSelector) {
     // todo - do we need the weird chrome bug fix here too?
     result = cssType.split(',').map(x => `[data-css-${id}]${x}`).join(',')
@@ -242,7 +241,7 @@ function selector(id, type) {
   }
 
   // https://github.com/threepointone/glamor/issues/20
-  result = result.replace(':hover', ':hover:nth-child(n)')
+  result = result.replace(/\:hover/g, ':hover:nth-child(n)')
   
   if(canSimulate && type !== '_' && !isFullSelector && cssType[0] === ':') { // todo - work with pseudo selector  on full selector at least 
     result+= `, [data-css-${id}][data-simulate-${simple(type)}]`
@@ -525,6 +524,8 @@ export function merge(...rules) {
   return { [`data-css-${id}`]: label }
 }
 
+export const compose = merge 
+
 // this one's for media queries 
 // they cannot be merged with other queries 
 // todo - we should test whether the query is valid and give dev feedback 
@@ -675,7 +676,7 @@ export function cssFor(...rules) {
     if(match && ids[match[1]]) {
       return cssText
     }
-  }).join('\n')
+  }).filter(x => !!x).join('\n')
   return css 
 }
 

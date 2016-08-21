@@ -10,11 +10,12 @@ expect.extend(expectJSX)
 import React from 'react' //eslint-disable-line
 import { render, unmountComponentAtNode } from 'react-dom'
 
-import { style, hover, nthChild, firstLetter, media, merge, multi, select, visited, 
+import { style, hover, nthChild, firstLetter, media, merge, compose, multi, select, visited, 
   keyed,
   fontFace, keyframes,
   cssLabels,
   simulations, simulate,
+  cssFor, attribsFor, idFor,
   rehydrate, flush }
 from '../src'
 
@@ -38,7 +39,7 @@ function getSheet() {
 }
 
 
-describe('react-css', () => {
+describe('glamor', () => {
   let node
   beforeEach(() => {
     node = document.createElement('div')
@@ -327,8 +328,27 @@ describe('react-css', () => {
     })
   }
 
-  it('can generate css from rules')
-  it('can generate html attributes from rules')
+  it('can generate css from rules', () => {
+    let red = style({ color: 'red' }),
+      blue = hover({ color: 'blue' }),
+      merged = compose(red, blue)
+
+    expect(cssFor(red, merged)).toEqual('[data-css-16y7vsu] { color: red; }\n[data-css-1exzfjk] { color: red; }\n[data-css-1exzfjk]:hover:nth-child(n) { color: blue; }')
+  })
+
+  it('can generate html attributes from rules', () => {
+    let red = style({ color: 'red' }),
+      blue = hover({ color: 'blue' }),
+      merged = compose(red, blue)
+
+    expect(attribsFor(red, merged)).toEqual('data-css-16y7vsu="" data-css-1exzfjk=""')    
+  })
+
+  it('can extract an id from a rule', () => {
+    let red = style({ color: 'red' })
+
+    expect(idFor(red)).toEqual('16y7vsu')      
+  })
 
   it('server side rendering', () => {
     // see tests/server.js
@@ -356,6 +376,4 @@ describe('react-css', () => {
 
   it('delete a rule from the stylesheet')
   
-  
-
 })

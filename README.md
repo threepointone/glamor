@@ -134,7 +134,7 @@ similar to the above, but for pseudo elements.
 
 ---
 
-`multi(pse:udos, props)` - DEPRECATED (in favor of `select()`)
+`multi(pse:udos, props)` - DEPRECATED (in favor of `select(:ps)`)
 
 pass a `:`-separated list of  pseudoclasses; for when you need to add
 multiple pseudoclasses to a rule.
@@ -148,7 +148,7 @@ multi('hover:active', { color: 'red' })
 
 `select(selector, props)`
 
-an escape hatch to define styles on children. your selector is appended 
+an escape hatch to define styles for arbitrary css selectors. your selector is appended 
 directly to the css rule, letting you define 'whatever' you want. use sparingly!
 
 ```jsx
@@ -186,12 +186,12 @@ todo - pseudoclasses et al
 
 ---
 
-`merge(...rules)`
+`compose(...rules)` / `merge(...rules)`
 
 combine rules, with latter styles taking precedence over previous ones.
 
 ```jsx
-<div {...merge(
+<div {...compose(
     style(props),
     hover(props),
     { color: 'red' },
@@ -272,6 +272,72 @@ use sparingly! for granular control, use javascript and pencil and paper.
 
 ---
 
+`appendSheetRule(css)`
+
+append a raw css rule to the stylesheet. the ultimate escape hatch.
+
+```jsx
+appendSheetRule(`body {
+  margin: 0;
+}`)
+```
+
+---
+
+`glamor/reset`
+
+includes and applies a css reset to your page 
+
+```jsx
+import 'glamor/reset'
+```
+
+---
+
+`glamor/ous`
+
+a full port of [the skeleton css framework](http://getskeleton.com/)
+
+[TODO docs]
+
+---
+
+react integration
+
+heavily inspired by [jsxstyle](https://github.com/petehunt/jsxstyle/)
+
+```jsx
+import { View } from 'glamor/react'
+
+// ...
+
+<View 
+  color='red'   // regular style properties 
+  backgroundColor='#ccc'
+  hover={{ color: 'blue' }} // pseudo classes
+  select={[' li:nth-child(3)', { textDecoration: 'underline' }]} // arbitrary selectors
+  media={[ '(min-width: 400px)', {
+    width: '85%',
+    padding: 0
+  } ]} // media queries
+  compose={[...]}  // add as many more rules as you want
+  component='ul' // use any tag/component that you want 
+  style={{ border: '1px solid green' }} // 'inline' style
+  onClick={() => alert('what what!')} // event handlers, other props work fine 
+  className='mylist' // combine with aphrodite/css modules/etc as you please 
+>
+  <li>one</li>
+  <li>two</li>
+  <li>three</li>
+  <li>four</li>
+</View>
+
+// also available - Block, InlineBlock, Flex, Row, Column
+
+```
+
+---
+
 `cssFor(...rules)`
 
 a helper to extract the css for given rules. useful for debugging, and [webcomponents](https://github.com/threepointone/glamor/issues/16)
@@ -305,12 +371,12 @@ composing / modularity
 while it's tempting to add some form of a `Stylesheet` construct, we'd
 rather defer to the developer's preference. In general, we recommed using
 simple objects, functions, and components to create abstractions. You can
-also lean on `merge(...styles)` for combining rules. Some examples -
+also lean on `compose(...styles)` for combining rules. Some examples -
 
 ```jsx
 // name your rules with vars/consts/whatevs
 let container = style({ color: THEME.primary }),
-  item = merge({ backgroundColor: '#ccc' }, hover({ backgroundColor: 'white' })),
+  item = compose({ backgroundColor: '#ccc' }, hover({ backgroundColor: 'white' })),
   selected = style({ fontWeight: 'bold' })
 }
 // ...and when rendering
