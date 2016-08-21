@@ -385,7 +385,10 @@ export const placeholder = x => add(':placeholder', x)
 
 // when you need multiple pseudoclasses in a single selector
 // eg x:hover:visited for when hovering over visited elements 
-export const multi = add
+export const multi = (selector, style) => {
+  console.warn(`multi is deprecated, use select(':${selector}', {...}) instead`) // eslint-disable-line no-console
+  return add(selector, style)
+}
 
 // unique feature 
 // when you need to define 'real' css (whatever that may be)

@@ -134,7 +134,7 @@ similar to the above, but for pseudo elements.
 
 ---
 
-`multi(pse:udos, props)`
+`multi(pse:udos, props)` - DEPRECATED (in favor of `select()`)
 
 pass a `:`-separated list of  pseudoclasses; for when you need to add
 multiple pseudoclasses to a rule.
