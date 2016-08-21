@@ -320,8 +320,8 @@ import { View } from 'glamor/react'
     width: '85%',
     padding: 0
   } ]} // media queries
-  compose={[...]}  // add as many more rules as you want
-  component='ul' // use any tag/component that you want 
+  compose={[...]}  // add as many more rules 
+  component='ul' // use any tag/component
   style={{ border: '1px solid green' }} // 'inline' style
   onClick={() => alert('what what!')} // event handlers, other props work fine 
   className='mylist' // combine with aphrodite/css modules/etc as you please 
