@@ -14,7 +14,7 @@ export const createElement = (tag, { css, ...props }, children) => {
 let overrideIndex = 0
 
 export const override = () => {
-  let key = `glamor-override-${overrideIndex++}`
+  let key = `data-glamor-override-${overrideIndex++}`
   return {
     name: key,
     Override: class Override extends React.Component {
@@ -25,6 +25,7 @@ export const override = () => {
         [key]: PropTypes.arrayOf(PropTypes.object)  
       }
       getChildContext() {
+        // todo - make sure these are rules 
         return {
           [key]: [ ...Object.keys(this.props).map(x => ({ [x]: this.props[x] })), 
           ...this.context[key] || [] ]
