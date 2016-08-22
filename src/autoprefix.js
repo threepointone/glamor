@@ -2,13 +2,11 @@
 
 const assign = Object.assign
 
-export default function autoprefix(style) {
-  // const style = {}
-
+export default function autoprefix(style) {  
   if (style.hasOwnProperty('animation')) {
-    assign(style, {
-      WebkitAnimation: style.animation
-    })
+    // assign(style, {
+    //   WebkitAnimation: style.animation
+    // })
   }
 
   if (style.hasOwnProperty('transform')) {

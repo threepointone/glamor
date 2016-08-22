@@ -5,15 +5,16 @@ function stylesToRule(o) {
   let _style = {}, _rules = []
   Object.keys(o).forEach(key => {
     if(key.charAt(0) === ':') {
-      if(key.charAt(1) === ':') {
+      if(key.charAt(1) === ':') {        
         _rules.push(glamor[key.slice(2)](o[key]))
       }
       else {
+
         _rules.push(glamor[key.slice(1)](o[key]))  
       }
       // todo - parameterized pseudos           
     }
-    if(/^\@media/.exec(key)) {
+    else if(/^\@media/.exec(key)) {
       _rules.push(glamor.media(key.substring(6), stylesToRule(o[key])))    
     }
     else {
@@ -21,7 +22,7 @@ function stylesToRule(o) {
     }
     
   })  
-  return glamor.merge(_style, ..._rules)
+  return glamor.merge(_style || {}, ..._rules)
 }
 
 export const StyleSheet = {
@@ -37,16 +38,15 @@ export const StyleSheet = {
 
 export function css(...rules) {
   return rules.filter(x => !!x).join(' ')
-  // return just data-css-<id> string. we then expect createElement to catch it and transform into attribs 
 }
 
 export function createElement(tag, props = {}, children) {
   let styles = ((props || {}).className || '')
     .split(' ')
     .filter(x => /^data\-css\-/.exec(x))
-    .reduce((o, x) => (o[x] = '', o), {})
+    .map(x => ({ [x] : '' }))
 
-  return React.createElement(tag, { ...props, ...styles }, children)
+  return React.createElement(tag, { ...props, ... styles.length > 0 ? glamor.merge(...styles) : {} }, children)
 
 }
 

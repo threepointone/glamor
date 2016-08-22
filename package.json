@@ -57,6 +57,9 @@
     "uglify-js": "^2.7.0",
     "watchify": "^3.7.0"
   },
+  "peerDependencies": {
+    "react": "*"
+  },
   "author": "Sunil Pai <threepointone@gmail.com>",
   "homepage": "",
   "license": "MIT",
