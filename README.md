@@ -39,7 +39,8 @@ features
 - tests / coverage
 - **new!** - glamor/reset - includes a css reset
 - **new!** - glamor/ous - a port of [the skeleton css framework](getskeleton.com)
-- **new!** - glamor/react - react integration, à la jsxstyle
+- **new!** - glamor/jsxstyle - react integration, à la jsxstyle
+- **new!** - glamor/react - helpers for overrides, and inline 'css' prop
 
 
 cons
@@ -312,9 +313,9 @@ a full port of [the skeleton css framework](http://getskeleton.com/)
 
 ---
 
-react integration (experimental)
+(experimental) [jsxstyle](https://github.com/petehunt/jsxstyle/) api
 
-heavily inspired by [jsxstyle](https://github.com/petehunt/jsxstyle/)
+`View`
 
 ```jsx
 import { View } from 'glamor/react'
@@ -347,6 +348,29 @@ import { View } from 'glamor/react'
 // also available - Block, InlineBlock, Flex, Row, Column
 
 ```
+
+react helpers
+
+`createElement()`
+
+an alternative to React.createElement that accepts a `css` prop
+
+```jsx
+import { createElement } from 'glamor/react'            
+/** @jsx createElement */
+
+// ...
+
+<div css={hover({ color: 'red' })}>
+  what what
+</div>
+```
+
+`override()`
+
+a solution for overriding styles on child elements 
+
+[TODO docs]
 
 ---
 
@@ -496,28 +520,24 @@ characteristics
 while glamor shares most common attributes of other inline style / css-in-js systems,
 here are some key differences -
 
-- as such, it does **not** generate pretty classnames, but instead generates debug labels in dev mode. (issue [#5](https://github.com/threepointone/glamor/issues/5))
-- does **not** touch `class`/`style` attributes; instead we use `data-*` attributes and jsx attribute spread ([some implications](https://github.com/Khan/aphrodite/issues/25)). This lets you define styles 'inline', yet globally optimize as one unit.
+- it does **not** touch `class`/`style` attributes, neither does it **not** generate pretty classnames; instead we use `data-*` attributes and jsx attribute spread ([some implications](https://github.com/Khan/aphrodite/issues/25)). This lets you define styles 'inline', yet globally optimize as one unit.
 - in dev mode, you can simulate pseudo classes on elements by using the `simulate()` helper (or adding a `[data-simulate-<pseudo>]` attribute manually). very useful, especially when combined when hot-loading and/or editing directly in your browser devtools.
 - in production, we switch to a **much** faster method of appending styles to the document, able to add 10s of 1000s of rules in milliseconds. the caveat with this approach is that those styles will [not be editable in chrome/firefox devtools](https://bugs.chromium.org/p/chromium/issues/detail?id=387952) (which is fine, for prod?). advanced users may use `speedy(true/false)` to toggle this setting manually. 
 
 todo
 ---
 
+- aphrodite polyfill
+- remove code for labels 
 - glamorous documentation
 - error checking / typechecks (flow? runtime?)
 - ie8 compat for insertRule/deleteRule
 - plugins
-- other frameworks?
-- non-dom? (!)
-- flush unused rules?
 - compile time optimizations / statically generate css files alá jsxstyle
 - benchmarks ([#3](https://github.com/threepointone/glamor/issues/3))
-- investigate batching stylesheet changes
 - theming et al
 - fix autoprefixer order bugs
 - bring back coverage
-- optimize same styles with different labels
 
 profit, profit
 ---

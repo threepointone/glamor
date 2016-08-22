@@ -1,29 +1,73 @@
-import React from 'react'
-
 // import '../src/reset' // css reset!
-
-// import { Block } from '../src/react'
-
 // import { base } from '../src/ous'
-
 // import { fullWidth } from '../src/ous'
 
-
-import { style, merge, hover, after } from '../src'
-
 function log() {
-  console.log(this) // eslint-disable-line
+  console.log(this) 
   return this
+}
+
+
+import React from 'react'
+
+import { override } from '../src/react'            // eslint-disable-line
+
+// import { hover } from '../src'
+
+// export class App extends React.Component {
+//   render() {
+//     return <div css={hover({ color: 'red' })}>
+//       what what
+//     </div>
+//   }
+// }
+
+let buttonStyle = override()
+
+@buttonStyle.base({ backgroundColor: 'blue' })  
+// optional defaults
+class Button extends React.Component {                                            //eslint-disable-line
+  render() {
+    return <button {...this.props[buttonStyle.name]}>
+      {this.props.children}
+    </button>
+  }
+}
+
+@buttonStyle.add({ color: 'white' })
+// can do cumulative overrides! 
+// the 'higher' components get higher precedence 
+class ButtonGroup extends React.Component {                           //eslint-disable-line
+  render() {
+    return <div>
+      <Button>one</Button>
+      <Button>two</Button>
+      <Button>two</Button>
+    </div>
+  }
+}
+
+// can also pass a function if based on props
+@buttonStyle.add(props => ({ fontSize: 20 }))                        //eslint-disable-line
+class InlineForm extends React.Component {                            //eslint-disable-line
+  render() {
+    return <div>
+      <Button>one</Button>
+      <Button>two</Button>
+    </div>
+  }
 }
 
 export class App extends React.Component {
   render() {
     return <div>            
-      <div{...hover({ backgroundColor: 'red' })}>say what</div>      
-      <div>hello! </div>
+      <ButtonGroup/>
+      <InlineForm/>
     </div>
   }
 }
+
+
 
 // import { container, row, columns, half, oneThird, twoThirds } from '../src/ous'
 

@@ -9,7 +9,7 @@ import autoprefix from './autoprefix'
 
 
 // we've used browserify to extract react's CSSPropertyOperations module and it's deps into ./CSSPropertyOperations 
-import { createMarkupForStyles } from './CSSPropertyOperations' // converts a js style object to css markup
+import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations' // converts a js style object to css markup
 // todo - rewrite this yourself, save a kb or two 
 
 // define some constants 
