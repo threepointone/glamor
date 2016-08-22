@@ -374,6 +374,27 @@ a solution for overriding styles on child elements
 
 ---
 
+aphrodite (!!!)
+
+a 'polyfill' for aphrodite stylesheets. 
+
+```jsx
+import { StyleSheet, css, createElement } from 'glamor/aphrodite'
+/** @jsx createElement */
+
+let styles = StyleSheet.create({
+  red: { color: 'red' },
+  hoverBlue: {
+    ':hover': { color: 'blue' }
+  }
+})
+
+// ...
+<div className={css(styles.red, style.hoverBlue)}>
+  this is red, and turns blue on hover
+</div>  
+---
+
 `cssFor(...rules)`
 
 a helper to extract the css for given rules. useful for debugging, and [webcomponents](https://github.com/threepointone/glamor/issues/16)
