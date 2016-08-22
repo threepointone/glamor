@@ -1,29 +1,34 @@
 import * as glamor from './index.js'
-export const Stylesheet = {
-  create(spec) {
-    
-    let entries = Object.keys(spec).map(name => {
-      let _style = {}, _rules = []
-      Object.keys(spec[name]).forEach(key => {
+import React from 'react'
 
-        if(key.charAt(0) === ':') {
-          if(key.charAt(1) === ':') {
-            _rules.push(glamor[key.slice(2)](spec[key]))
-          }
-          else {
-            _rules.push(glamor[key.slice(1)](spec[key]))  
-          }
-          // todo - parameterized pseudos           
-        }
-        if(/^\@media/.exec(key)) {
-          _rules.push(glamor.media(key.substring(6, key.indexOf('{') - 1)))    
-        }
-        else {
-          _style[key] = spec[name][key]
-        }
-        
-      })
-      return [ name, glamor.idFor(glamor.merge(_style, ..._rules)) ]
+function stylesToRule(o) {
+  let _style = {}, _rules = []
+  Object.keys(o).forEach(key => {
+    if(key.charAt(0) === ':') {
+      if(key.charAt(1) === ':') {
+        _rules.push(glamor[key.slice(2)](o[key]))
+      }
+      else {
+        _rules.push(glamor[key.slice(1)](o[key]))  
+      }
+      // todo - parameterized pseudos           
+    }
+    if(/^\@media/.exec(key)) {
+      _rules.push(glamor.media(key.substring(6), stylesToRule(o[key])))    
+    }
+    else {
+      _style[key] = o[key]
+    }
+    
+  })  
+  return glamor.merge(_style, ..._rules)
+}
+
+export const StyleSheet = {
+  create(spec) {    
+    let entries = Object.keys(spec).map(name => {
+      let rule = stylesToRule(spec[name])
+      return [ name, `data-css-${glamor.idFor(rule)}` ]
     })
 
     return entries.reduce((o, [ name, val ]) => (o[name] = val, o), {})
@@ -33,6 +38,16 @@ export const Stylesheet = {
 export function css(...rules) {
   return rules.filter(x => !!x).join(' ')
   // return just data-css-<id> string. we then expect createElement to catch it and transform into attribs 
+}
+
+export function createElement(tag, props = {}, children) {
+  let styles = ((props || {}).className || '')
+    .split(' ')
+    .filter(x => /^data\-css\-/.exec(x))
+    .reduce((o, x) => (o[x] = '', o), {})
+
+  return React.createElement(tag, { ...props, ...styles }, children)
+
 }
 
 // todo - animations 

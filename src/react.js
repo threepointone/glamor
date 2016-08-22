@@ -6,7 +6,7 @@ export const createElement = (tag, { css, ...props }, children) => {
     return React.createElement(tag, { 
       ...props, 
       ...isRule(css) ? css : style(css) 
-    }, children )
+    }, children)
   }
   return React.createElement(tag, props, children )
 }
