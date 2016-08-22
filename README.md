@@ -393,6 +393,8 @@ let styles = StyleSheet.create({
 <div className={css(styles.red, style.hoverBlue)}>
   this is red, and turns blue on hover
 </div>  
+```
+
 ---
 
 `cssFor(...rules)`
