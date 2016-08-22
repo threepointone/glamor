@@ -20,7 +20,7 @@ import { style, hover, nthChild, firstLetter, media, merge, compose, multi, sele
   rehydrate, flush }
 from '../src'
 
-import { View } from '../src/react'
+import { View } from '../src/jsxstyle'
 
 function childStyle(node, p = null) {
   return window.getComputedStyle(node.childNodes[0], p)
