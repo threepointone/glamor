@@ -397,6 +397,8 @@ export function select(selector, style) {
   return add('$' + selector, style) // signalling ahead that this is a plain selector 
 }
 
+export const $ = select
+
 // unique feature 
 // use for advanced perf/animations/whatnot 
 // instead of overwriting, it replaces the rule in the stylesheet

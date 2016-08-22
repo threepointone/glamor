@@ -147,13 +147,13 @@ multi('hover:active', { color: 'red' })
 
 ---
 
-`select(selector, props)`
+`select(selector, props)` / `$(selector, props)`
 
 an escape hatch to define styles for arbitrary css selectors. your selector is appended 
 directly to the css rule, letting you define 'whatever' you want. use sparingly!
 
 ```jsx
-<div {...select(':hover ul li:nth-child(even)', { color: 'red' })}>
+<div {...$(':hover ul li:nth-child(even)', { color: 'red' })}>
   <ul>
     <li>one</li>
     <li>two - red!</li>
@@ -162,8 +162,8 @@ directly to the css rule, letting you define 'whatever' you want. use sparingly!
 </div>
 ```
 
-(nb: don't forget to add a space for fully child selectors. 
-eg - `select(' .item', {...})`. also, `simulate()` does not work on these yet.)
+(nb1: don't forget to add a leading space for 'child' selectors. eg - `$(' .item', {...})`. 
+(nb2: `simulate()` does not work on these selectors yet.)
 
 ---
 
