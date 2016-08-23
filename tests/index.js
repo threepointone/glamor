@@ -10,14 +10,16 @@ expect.extend(expectJSX)
 import React from 'react' //eslint-disable-line
 import { render, unmountComponentAtNode } from 'react-dom'
 
-import { style, hover, nthChild, firstLetter, media, merge, compose, multi, select, visited, 
+import { style, hover, nthChild, firstLetter, media, merge, compose,  select, visited, 
   fontFace, keyframes,
   cssLabels,
   simulations, simulate,
   cssFor, attribsFor, idFor,
   presets,
-  rehydrate, flush }
+  flush }
 from '../src'
+
+import { rehydrate } from '../src/server'
 
 import { View } from '../src/jsxstyle'
 
@@ -172,13 +174,7 @@ describe('glamor', () => {
     })
   }) // how do I test this?
 
-  it('can add multiple pseudo classes on the same rule', () => {
-    render(<div {...multi('hover:active::after', { color:'red' })} />, node, () => {
-      expect(getSheet().cssRules[0].cssText)
-        .toEqual('[data-css-4jjrud]:hover:nth-child(n):active::after { color: red; }')
-    })
-  })
-
+  
   it('can style media queries', () => {
     // we assume phantomjs/chrome/whatever has a width > 300px
     render(<div {...media('(min-width: 300px)', style({ color: 'red' }))}/>, node, () => {

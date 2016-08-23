@@ -1,30 +1,39 @@
-// first we import some helpers 
-import hash from './hash'  // hashes a string to something 'unique'
+/**** stylesheet ****/
 
-import autoprefixFn from './autoprefix'
-let autoprefix = autoprefixFn(true) // add vendor prefixes 
-// helper to hack around isp's array format 
-function prefixes(style) {
-  return autoprefix(style)
-}
+import { StyleSheet } from './sheet.js'
+// these here are our main 'mutable' references
+export const styleSheet = new StyleSheet({ name: '_css_' }) // stores all the registered styles. most important, for such a small name.  
+  // styleSheet.sheet // reference to the styleSheet object, either native on browser / polyfilled on server 
+  // styleSheet.inject() // adds the sheet to the page 
 
-// for the umd build, we'll used browserify to extract react's 
-// CSSPropertyOperations module and it's deps into ./CSSPropertyOperations 
-import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations' // converts a js style object to css markup
+styleSheet.cache = {} // hang on some state on to this instance 
+
+// /**************** LIFTOFF IN 3... 2... 1... ****************/
+styleSheet.inject()
+// /****************      TO THE MOOOOOOON     ****************/
+
+/**** stylesheet ****/
+
 
 // define some constants 
 const isBrowser = typeof document !== 'undefined' 
 const isDev = (x => (x === 'development') || !x)(process.env.NODE_ENV)
 const isTest = process.env.NODE_ENV === 'test' 
 
+// import some helpers 
+import hash from './hash'  // hashes a string to something 'unique'
 
-// a useful utility for quickly tapping objects. use with the :: operator 
-// {x: 1}::log()
-// [5, 12, 90]::log().filter(x => x%5)::log()
-function log(msg) { //eslint-disable-line no-unused-vars
-  console.log(msg || this) //eslint-disable-line no-console
-  return this
+import autoprefixFn from './autoprefix'
+let autoprefix = autoprefixFn(true) // add vendor prefixes 
+// helper to hack around isp's array format 
+function prefixes(style) {
+  // todo - fallbacks / array format
+  return autoprefix(style)
 }
+
+// for the umd build, we'll used browserify to extract react's 
+// CSSPropertyOperations module and it's deps into ./CSSPropertyOperations 
+import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations' // converts a js style object to css markup
 
 // takes a string, converts to lowercase, strips out nonalphanumeric.
 function simple(str) {
@@ -76,22 +85,6 @@ let hasLabels = isDev
 export function cssLabels(bool) {
   hasLabels = !!bool
 }
-
-/**** stylesheet ****/
-
-import { StyleSheet } from './sheet.js'
-// these here are our main 'mutable' references
-export const styleSheet = new StyleSheet({ name: '_css_' }) // stores all the registered styles. most important, for such a small name.  
-  // styleSheet.tag, // reference to the <style> tag, if in browser 
-  // styleSheet.sheet // reference to the styleSheet object, either native on browser / polyfilled on server 
-  // styleSheet.inject() // adds the sheet to the page 
-
-styleSheet.cache = {} // hang on some state on to this instance 
-
-// /**************** LIFTOFF IN 3... 2... 1... ****************/
-styleSheet.inject()
-// /****************      TO THE MOOOOOOON     ****************/
-
 
 // // clears out the cache and empties the stylesheet
 // best for tests, though there might be some value for SSR. 
@@ -379,14 +372,8 @@ export function backdrop(x) {
   return add(':backdrop', x) 
 }
 export function placeholder(x) {
+  // todo - webkit placeholder
   return add(':placeholder', x) 
-}
-
-// when you need multiple pseudoclasses in a single selector
-// eg x:hover:visited for when hovering over visited elements 
-export function multi(selector, style) {
-  console.warn(`multi is deprecated, use select(':${selector}', {...}) instead`) // eslint-disable-line no-console
-  return add(selector, style)
 }
 
 // unique feature 
@@ -397,6 +384,7 @@ export function select(selector, style) {
   return add('$' + selector, style) // signalling ahead that this is a plain selector 
 }
 
+// alias. bringin' back jquery
 export const $ = select
 
 export function parent(selector, style) {
@@ -687,3 +675,11 @@ export function attribsFor(...rules) {
   return htmlAttributes
 }
 
+
+// a useful utility for quickly tapping objects. use with the :: operator 
+// {x: 1}::log()
+// [5, 12, 90]::log().filter(x => x%5)::log()
+function log(msg) { //eslint-disable-line no-unused-vars
+  console.log(msg || this) //eslint-disable-line no-console
+  return this
+}

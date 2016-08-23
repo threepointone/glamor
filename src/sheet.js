@@ -4,17 +4,19 @@ const isBrowser = typeof document !== 'undefined'
 const isDev = (x => (x === 'development') || !x)(process.env.NODE_ENV)
 const isTest = process.env.NODE_ENV === 'test' 
 
+let tagCounter = 0
+
 export class StyleSheet {
-  constructor({ name = '_css_', speedy = !isDev && !isTest }) {
+  constructor({ name = '_css_' + tagCounter++, speedy = !isDev && !isTest }) {
+    this.id = tagCounter
     this.name = name 
     this.speedy = speedy // the big drawback here is that the css won't be editable in devtools
     this.sheet = undefined
-    this.tag = undefined 
-    this.injected = false 
+    this.tag = undefined     
   }
   inject() {
     if(this.injected) {
-      return console.error('already injected stylesheet!') //eslint-disable-line no-console
+      throw new Error('already injected stylesheet!') //eslint-disable-line no-console
     }
     if(isBrowser) {
       // this section is just weird alchemy I found online off many sources 
@@ -24,7 +26,7 @@ export class StyleSheet {
         let tag = document.createElement('style')
         
         tag.type = 'text/css'
-        tag.id = this.name || '_css_'
+        tag.id = this.name
         tag.setAttribute('id', this.name)
         tag.appendChild(document.createTextNode(''));
         (document.head || document.getElementsByTagName('head')[0]).appendChild(tag)
@@ -46,7 +48,8 @@ export class StyleSheet {
           this.sheet.cssRules = [ ...this.sheet.cssRules.slice(0, index), { cssText: rule }, ...this.sheet.cssRules.slice(index) ]
         }
       }
-    }  
+    } 
+    this.injected = true
   }
   _insert(rule, index = this.sheet.cssRules.length) {
     // this weirdness for perf, and chrome's weird bug 
@@ -100,6 +103,7 @@ export class StyleSheet {
       // simpler on server 
       this.sheet.cssRules = []
     }
+    this.injected = false
   }
   remove(i) {
     throw new Error('this is not tested or anything yet! beware!') //eslint-disable-line no-console
