@@ -35,11 +35,11 @@ features
 - supports `@font-face` and `@keyframes`
 - escape hatches for global and child selectors 
 - dev helper to simulate pseudo classes like `:hover`, etc
-- server side rendering
+- server side / static rendering
 - tests / coverage
-- **new!** - glamor/reset - includes a css reset
-- **new!** - glamor/utils - a port of [postcss-utilities](https://github.com/ismamz/postcss-utilities)
+- **new!** - glamor/reset - insert a css reset
 - **new!** - glamor/ous - a port of [the skeleton css framework](getskeleton.com)
+- **new!** - glamor/utils - a port of [postcss-utilities](https://github.com/ismamz/postcss-utilities)
 - **new!** - glamor/react - helpers for overrides, and inline 'css' prop for dom elements 
 - **new!** - glamor/jsxstyle - react integration, à la jsxstyle
 - **new!** - glamor/aphrodite - polyfill for [aphrodite](https://github.com/Khan/aphrodite)

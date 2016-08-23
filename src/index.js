@@ -113,14 +113,13 @@ function selector(id, type) {
   // id should exist
   let isFullSelector = type && type[0] === '$' 
   let isParentSelector = type && type[0] === '%'
-  let cssType = type === '_' ? '' : 
-    type[0] === '$' ? type.slice(1) : 
-    type[0] === '%' ? type.slice(1) :
-    `:${type}`
+  let cssType = type === '_' ? '' :  // plain style object
+    isFullSelector ? type.slice(1) : // via select()
+    isParentSelector ? type.slice(1) : // via parent()
+    `:${type}` // pseudo
   let result 
 
-  if(isFullSelector) {
-    // todo - do we need the weird chrome bug fix here too?
+  if(isFullSelector) {    
     result = cssType.split(',').map(x => `[data-css-${id}]${x}`).join(',')
   }
   else if (isParentSelector) {
@@ -133,7 +132,7 @@ function selector(id, type) {
   // https://github.com/threepointone/glamor/issues/20
   result = result.replace(/\:hover/g, ':hover:nth-child(n)')  
   
-  if(canSimulate && type !== '_' && !isFullSelector && !isParentSelector && cssType[0] === ':') { // todo - work with pseudo selector  on full selector at least 
+  if(canSimulate && type !== '_' && !isFullSelector && !isParentSelector && cssType[0] === ':') { // todo - work with pseudo selector on full selector at least 
     result+= `, [data-css-${id}][data-simulate-${simple(type)}]`
   }
   return result

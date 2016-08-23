@@ -3,7 +3,7 @@
 // no-hover 
 // no-js 
 
-import { after, before, style, merge, select } from './src'
+import { after, style, merge, select } from './src'
 
 export function aspectRatio(width = 16, height = 9) {
   const t = (typeof this !== 'function') ? style : this

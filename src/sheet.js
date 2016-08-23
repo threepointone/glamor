@@ -1,3 +1,22 @@
+// high performance StyleSheet for css-in-js systems 
+// features -
+// uses insertRule in production for *much* faster performance
+// 'polyfills' on server side in memory 
+
+
+// usage
+// let styleSheet = new StyleSheet({ name /* optional*/, speedy = true/false })
+
+// styleSheet.inject() 
+// 'injects' the stylesheet into the page (or into memory if on server)
+
+// styleSheet.insert('#box { border: 1px solid red; }')
+// appends a css rule to the stylesheet 
+// optionally pass an `index`
+
+// styleSheet.flush() 
+// empties the stylesheet of all its contents
+
 /**** stylesheet ****/
 
 const isBrowser = typeof document !== 'undefined' 
