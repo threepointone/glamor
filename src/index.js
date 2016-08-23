@@ -678,7 +678,7 @@ export function attribsFor(...rules) {
 // a useful utility for quickly tapping objects. use with the :: operator 
 // {x: 1}::log()
 // [5, 12, 90]::log().filter(x => x%5)::log()
-function log(msg) { //eslint-disable-line no-unused-vars
+export function log(msg) { //eslint-disable-line no-unused-vars
   console.log(msg || this) //eslint-disable-line no-console
   return this
 }

@@ -20,7 +20,9 @@ styleSheet.inject()
 styleSheet.insert('#box { border: 1px solid red; }' [, index]) 
 // inserts a css rule into the stylesheet 
 
-styleSheet.sheet.cssRules // arrayLike collection of css rules 
+styleSheet.sheet.cssRules 
+// array-like collection of css rules 
+// use for server side rendering, etc 
 
 styesheet.remove(index)
 // remove rule at position `index`
@@ -109,7 +111,9 @@ export class StyleSheet {
           this._insert(rule, index)
         }
         else{
-          this.tag.appendChild(document.createTextNode(rule))
+          let refNode = this.tag.childNodes[index] // not index - 1 as expected, because we have a blank leading node 
+          refNode.parentNode.insertBefore(document.createTextNode(rule), refNode.nextSibling)
+
           // todo - more efficent here please 
           if(!this.speedy) {
             // sighhh
