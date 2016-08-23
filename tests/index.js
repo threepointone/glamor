@@ -11,7 +11,6 @@ import React from 'react' //eslint-disable-line
 import { render, unmountComponentAtNode } from 'react-dom'
 
 import { style, hover, nthChild, firstLetter, media, merge, compose, multi, select, visited, 
-  keyed,
   fontFace, keyframes,
   cssLabels,
   simulations, simulate,
@@ -203,23 +202,7 @@ describe('glamor', () => {
 
 
   })
-
-  it('can have keyed rules, which overwrite their values when redefined', () => {
-    let x = keyed('x', { color: 'red' })
-    // render it 
-    render(<div {...x}/>, node, () => {
-      expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
-      // now change it a couple of times 
-      // no need to reasign!!!
-      keyed('x', { color: 'green' })
-      keyed('x', { color: 'blue' })
-      // wtf
-      expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')
-      expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')
-      expect(getSheet().cssRules.length).toEqual(1)
-    })
-  })
-
+  
   it('can merge rules', () => {
     simulations(true)
     let blue = style({ backgroundColor: 'blue' }),
@@ -271,11 +254,12 @@ describe('glamor', () => {
         <li {...mq}>three</li>
       </ul>
     </div>
-    expect(el).toEqual(<div data-css-1ge1o1y="[red + blue:hover] + `szlvmg:visited + {…}">
+    
+    expect(el).toEqual(<div data-css-1ge1o1y="[red + blue] + * + {:}">
       <ul data-css-1oppo9="mylist">
-        <li data-css-qh7ndu=":hover">one</li>
+        <li data-css-qh7ndu="">one</li>
         <li >two</li>
-        <li data-css-suws9l="*mq [red + blue:hover]">three</li>
+        <li data-css-suws9l="*mq [red + blue]">three</li>
       </ul>
     </div>)
     cssLabels(false)

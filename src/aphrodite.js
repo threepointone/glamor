@@ -1,4 +1,7 @@
 import * as glamor from './index.js'
+// switch off labels, they're lost anyway  
+glamor.cssLabels(false)
+
 import React from 'react'
 
 function stylesToRule(o) {

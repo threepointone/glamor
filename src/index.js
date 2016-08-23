@@ -3,10 +3,6 @@ import hash from './hash'  // hashes a string to something 'unique'
 
 import autoprefixFn from './autoprefix'
 let autoprefix = autoprefixFn(true)
-// yurgh must get back to this 
-// import prefixAll from 'inline-style-prefixer/static'   // adds vendor prefixes to styles 
-// import  Prefix  from 'inline-style-prefixer'
-// let prefixer = new Prefix({ userAgent: navigator.userAgent })
 
 
 // we've used browserify to extract react's CSSPropertyOperations module and it's deps into ./CSSPropertyOperations 
@@ -72,7 +68,7 @@ export function simulate(...pseudos) {
 /**** labels ****/
 // toggle for debug labels. 
 // shouldn't *have* to mess with this manually
-let hasLabels = false // isDev
+let hasLabels = isDev
 
 export function cssLabels(bool) {
   hasLabels = !!bool
@@ -83,8 +79,7 @@ export function cssLabels(bool) {
 // these here are our main 'mutable' references
 let cache = {}, // stores all the registered styles. most important, for such a small name.  
   styleTag, // reference to the <style> tag, if in browser 
-  styleSheet, // reference to the styleSheet object, either native on browser / polyfilled on server 
-  keyIndices = {} // avoid scanning when inserting rules 
+  styleSheet // reference to the styleSheet object, either native on browser / polyfilled on server 
   
 
 function injectStyleSheet() {
@@ -228,8 +223,10 @@ function prefixes(style) {
 function selector(id, type) {
   // id should exist
   let isFullSelector = type && type[0] === '$' 
+  let isParentSelector = type && type[0] === '%'
   let cssType = type === '_' ? '' : 
     type[0] === '$' ? type.slice(1) : 
+    type[0] === '%' ? type.slice(1) :
     `:${type}`
   let result 
 
@@ -237,14 +234,17 @@ function selector(id, type) {
     // todo - do we need the weird chrome bug fix here too?
     result = cssType.split(',').map(x => `[data-css-${id}]${x}`).join(',')
   }
+  else if (isParentSelector) {
+    result = cssType.split(',').map(x => `${x}[data-css-${id}]`).join(',')
+  }
   else {
     result = `[data-css-${id}]${cssType}`  
   }
 
   // https://github.com/threepointone/glamor/issues/20
-  result = result.replace(/\:hover/g, ':hover:nth-child(n)')
+  result = result.replace(/\:hover/g, ':hover:nth-child(n)')  
   
-  if(canSimulate && type !== '_' && !isFullSelector && cssType[0] === ':') { // todo - work with pseudo selector  on full selector at least 
+  if(canSimulate && type !== '_' && !isFullSelector && !isParentSelector && cssType[0] === ':') { // todo - work with pseudo selector  on full selector at least 
     result+= `, [data-css-${id}][data-simulate-${simple(type)}]`
   }
   return result
@@ -280,41 +280,18 @@ function isRule(rule) {
 }
 
 // a generic rule creator/insertor 
-export function add(type = '_', style, key) {
-  let id = key || styleHash(type, style), // generate a hash based on type/style, use this to 'id' the rule everywhere 
-    label = '', keyIndex = -1
+export function add(type = '_', style) {
+  let id = styleHash(type, style), // generate a hash based on type/style, use this to 'id' the rule everywhere 
+    label = ''
 
-  if(!cache[id] || key) {
-    if(key) {
-      // if the key already exists, delete it 
-      keyIndex = keyIndices[key]
-      if(keyIndex >=0) {
-        //remove rule
-        if(isSpeedy || !isBrowser) {
-          styleSheet.deleteRule(keyIndex)
-        }
-        else {           
-          styleTag.removeChild(styleTag.childNodes[keyIndex + 1]) // the +1 to account for the blank node we added
-          // reassign stylesheet, because firefox is weird 
-          styleSheet = [ ...document.styleSheets ].filter(x => x.ownerNode === styleTag)[0]
-        }
-      }
-    }
-    
-    // add rule to sheet, update cache. easy!
-    if(key) {
-      appendSheetRule(cssrule(id, type, style), keyIndex)  
-      keyIndices[key] = keyIndex || styleSheet.cssRules.length - 1
-    }
-    else {      
-      appendSheetRule(cssrule(id, type, style))
-    }
-    
+
+  if(!cache[id]) {    
+    appendSheetRule(cssrule(id, type, style))    
     cache[id] = { type, style, id }
   }
   if(hasLabels) {
     // adds a debug label 
-    label = style.label || (type !== '_' ? `:${type}`: '')
+    label = style.label || label
   }
 
   return { [`data-css-${id}`]: label } 
@@ -400,22 +377,10 @@ export function select(selector, style) {
 
 export const $ = select
 
-// unique feature 
-// use for advanced perf/animations/whatnot 
-// instead of overwriting, it replaces the rule in the stylesheet
-export function keyed(key, type, style) {
-  // todo - accept a style/rule? unlcear. 
-  if(typeof key !== 'string') {
-    throw new Error('whoops, did you forget a key?')
-  }
-  if(!style && typeof type === 'object') {
-    style = type 
-    type = undefined 
-  }
-  // should be able to pass a merged rule etc too 
-  // maybe ...styles as well?
-  return add(type, style, key)
+export function parent(selector, style) {
+  return add('%' + selector, style)
 }
+
 
 // we define a function to 'merge' styles together.
 // backstory - because of a browser quirk, multiple styles are applied in the order they're 
@@ -454,7 +419,7 @@ export function merge(...rules) {
         }
 
 
-        hasLabels && labels.push('[' + label + ']')
+        hasLabels && labels.push('[' + (label || '*') + ']')
         return 
         // that was fairly straightforward
       }
@@ -493,7 +458,7 @@ export function merge(...rules) {
       
         let { type, style } = cache[id]
         styleBag[type] = { ...styleBag[type] || {}, ...style }
-        hasLabels && labels.push((style.label || `\`${id}`) + `${type !== '_' ? `:${type}` : ''}`) // todo - match 'add()'s original label
+        hasLabels && labels.push(style.label || '*') // todo - match 'add()'s original label
         return 
         // not too bad 
       }  
@@ -502,7 +467,7 @@ export function merge(...rules) {
     else {
       // plain style 
       styleBag._ = { ...styleBag._ || {}, ...rule }
-      hasLabels && labels.push('{…}')
+      hasLabels && labels.push('{:}')
     }
   })
 
@@ -564,7 +529,7 @@ export function media(expr, ...rules) {
     }
     else { // simple rule
       let newId = hash(expr+id).toString(36)
-      let label = hasLabels ? '*mq ' + (cache[id].style.label || ('`' + id)) : ''
+      let label = hasLabels ? '*mq ' + (cache[id].style.label || '*') : ''
 
       if(!cache[newId]) {
         appendSheetRule(`@media ${expr} { ${ cssrule(newId, cache[id].type, cache[id].style) } }`)
@@ -579,7 +544,7 @@ export function media(expr, ...rules) {
   else { // a plain style 
     let style = rule 
     let newId = styleHash(expr, style)
-    let label = hasLabels ? '*mq ' + (style.label || '') : ''
+    let label = hasLabels ? '*mq ' + (style.label || '*') : ''
     if(!cache[newId]) {
       appendSheetRule(`@media ${expr} { ${ cssrule(newId, '_', style) } }`)
       cache[newId] = { expr, style, id: newId, label }

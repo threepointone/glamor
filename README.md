@@ -38,6 +38,7 @@ features
 - server side rendering
 - tests / coverage
 - **new!** - glamor/reset - includes a css reset
+- **new!** - glamor/utils - a port of [postcss-utilities](https://github.com/ismamz/postcss-utilities)
 - **new!** - glamor/ous - a port of [the skeleton css framework](getskeleton.com)
 - **new!** - glamor/react - helpers for overrides, and inline 'css' prop for dom elements 
 - **new!** - glamor/jsxstyle - react integration, à la jsxstyle
@@ -166,26 +167,6 @@ directly to the css rule, letting you define 'whatever' you want. use sparingly!
 
 (nb1: don't forget to add a leading space for 'child' selectors. eg - `$(' .item', {...})`. 
 (nb2: `simulate()` does not work on these selectors yet.)
-
----
-
-(experimental!) `keyed(key, style)`
-
-creates a rule with 'key' as id instead of generating a hash. overwrites said rule when called again with same key. 
-
-```jsx
-// let's say you render 
-<div {...keyed('mykey', { color: 'red' })}/>
-
-//and then later (anywhere, no reassignment required )
-keyed('mykey', { color: 'blue' })
-keyed('mykey', { color: 'green' })
-keyed('mykey', { color: 'yellow' })
-
-// the div is now yellow!
-```
-
-todo - pseudoclasses et al
 
 ---
 
@@ -552,15 +533,15 @@ here are some key differences -
 todo
 ---
 
-- remove code for labels 
-- glamorous documentation
+- fallback values 
+- parent()
+- alternatives for - cssnext, stylelint, cssnano
 - error checking / typechecks (flow? runtime?)
 - ie8 compat for insertRule/deleteRule
 - plugins
 - compile time optimizations / statically generate css files alá jsxstyle
 - benchmarks ([#3](https://github.com/threepointone/glamor/issues/3))
 - theming et al
-- fix autoprefixer order bugs
 - bring back coverage
 
 profit, profit

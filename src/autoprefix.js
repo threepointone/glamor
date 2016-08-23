@@ -11,6 +11,10 @@ function includes(obj, search) {
   return obj.indexOf(search) !== -1
 }
 
+function values(obj) {
+  return Object.keys(obj).map(function (key) {return obj[key] })
+}
+
 let webkitPrefix = 'Webkit'
 let mozPrefix = 'Moz'
 let msPrefix = 'ms'
@@ -81,7 +85,7 @@ let neededCssValues = {
   flex: webkitMs
 }
 
-let clientPrefix = (function vendorPrefix() {
+let clientPrefix = (() => {
   if(typeof navigator === 'undefined') { //in server rendering
     return allPrefixes //also default when not passing true to 'all vendors' explicitly
   }
@@ -98,6 +102,7 @@ let clientPrefix = (function vendorPrefix() {
 
 function checkAndAddPrefix(styleObj, key, val, allVendors) {
   let oldFlex = true
+  
   function valueWithPrefix(cssVal, prefix) {
     return includes(val, cssVal) && (allVendors || includes(clientPrefix, prefix)) ?
         val.replace(cssVal, [ '', prefix.toLowerCase(), cssVal ].join('-')) : null
@@ -115,9 +120,9 @@ function checkAndAddPrefix(styleObj, key, val, allVendors) {
 
   function composePrefixedValues(objOfPrefixedValues) {
     let composed =
-        Object.values(objOfPrefixedValues)
-            .filter(str=> str !== null)
-            .map(str=> key + ':' + str)
+        values(objOfPrefixedValues)
+            .filter(str => str !== null)
+            .map(str => key + ':' + str)
             .join(';')
 
     if(composed) { styleObj[key] = styleObj[key] + ';' + composed }
@@ -142,10 +147,12 @@ function checkAndAddPrefix(styleObj, key, val, allVendors) {
   }
 
 
-  let allPrefixedCssValues = Object.keys(neededCssValues).filter( c => c !== 'flex').reduce(function (o, c) {
-    o[c] = createObjectOfValuesWithPrefixes(c)
-    return o
-  }, {})
+  let allPrefixedCssValues = Object.keys(neededCssValues)
+      .filter( c => c !== 'flex')
+      .reduce((o, c) => {
+        o[c] = createObjectOfValuesWithPrefixes(c)
+        return o
+      }, {})
   /*
    example allPrefixedCssValues = {
    calc: {
@@ -229,26 +236,21 @@ function checkAndAddPrefix(styleObj, key, val, allVendors) {
 
 
 function autoPrefixer(obj, allVendors) {
-  Object.keys(obj).forEach( (key) => {
-    let val = obj[key]
-    if (typeof val === 'object') {
-      autoPrefixer(val, allVendors)  //recursion for nested objects
-    } else {
-      obj = checkAndAddPrefix(obj, key, val, allVendors)
-    }
-  })
+  Object.keys(obj).forEach(key => 
+    obj = checkAndAddPrefix({ ...obj }, key, obj[key], allVendors)
+  )
   return obj
 }
 
 export default function gate(objOrBool, optionalBoolean = false) {
 
   if (typeof objOrBool === 'boolean') {
-    return function (obj) {
-      return autoPrefixer(obj, objOrBool)
-    }
+    return obj => autoPrefixer(obj, objOrBool)
   }
   if (!objOrBool) {
     return {}
   }
-  else {return autoPrefixer(objOrBool, optionalBoolean) } // default: don't include all browsers
+  else {
+    return autoPrefixer(objOrBool, optionalBoolean) 
+  } // default: don't include all browsers
 }
