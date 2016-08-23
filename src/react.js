@@ -81,3 +81,30 @@ export const override = () => {
     }
   }
 }
+
+export function vars(value = {}) {
+  return function (Target) {
+    return class Theme extends React.Component {
+      static childContextTypes = {
+        glamorCssVars: PropTypes.object
+      }
+      static contextTypes = {
+        glamorCssVars: PropTypes.object  
+      }
+      getChildContext() {
+        return { 
+          glamorCssVars: { 
+            ...this.context.glamorCssVars, 
+            ...typeof value === 'function' ? value(this.props) : value 
+          }
+        }
+      }
+      render() {
+        return React.createElement(Target, 
+          { ...this.props, vars: this.context.glamorCssVars }, 
+          this.props.children
+        )
+      }
+    }
+  }
+}

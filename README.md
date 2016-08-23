@@ -13,6 +13,8 @@ or if you're interested in a plain script tag -
 
 usage looks like this 
 ```jsx
+import { style, hover } from 'glamor'
+// ...
 <div {...style({ color: 'red' })} {...hover({ color: 'pink' })}>
   zomg
 </div>
@@ -40,7 +42,7 @@ features
 - **new!** - glamor/reset - insert a css reset
 - **new!** - glamor/ous - a port of [the skeleton css framework](getskeleton.com)
 - **new!** - glamor/utils - a port of [postcss-utilities](https://github.com/ismamz/postcss-utilities)
-- **new!** - glamor/react - helpers for overrides, and inline 'css' prop for dom elements 
+- **new!** - glamor/react - helpers for overrides, 'css' prop, `vars` support
 - **new!** - glamor/jsxstyle - react integration, à la jsxstyle
 - **new!** - glamor/aphrodite - polyfill for [aphrodite](https://github.com/Khan/aphrodite)
 
@@ -301,7 +303,7 @@ a full port of [the skeleton css framework](http://getskeleton.com/)
 `View`
 
 ```jsx
-import { View } from 'glamor/react'
+import { View } from 'glamor/jsxstyle'
 
 // ...
 
@@ -347,6 +349,45 @@ import { createElement } from 'glamor/react'
 <div css={hover({ color: 'red' })}>
   what what
 </div>
+```
+
+`@vars()`
+
+a decorator for css vars, inherited as they're applied deeper in the tree. 
+
+```jsx
+
+@vars()
+class Button extends React.Component {                                      
+  render() { // use available vars
+    let { bgColor = 'gray', color ='white' } = this.props.vars // add defaults
+    return <button {...style({ backgroundColor: bgColor, color })}>
+      {this.props.children}
+    </button>
+  }
+}
+
+@vars({ bgColor: 'blue' }) // override / 'inherit' 
+class ButtonGroup extends React.Component {                                       
+  render() {
+    return <div>
+      <Button>one</Button>  
+      <Button>two</Button>
+    </div>  
+  }
+}
+
+@vars({ bgColor: 'green' }) // green buttons in this branch
+class LoginForm extends React.Component { 
+  render() {
+    return <div>
+      <input value='ooga'/>
+      <Button>login</Button>
+    </div>  
+  }
+}
+
+
 ```
 
 `override()`
