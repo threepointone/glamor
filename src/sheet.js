@@ -5,6 +5,11 @@
 
 
 // usage
+// import StyleSheet from 'glamor/lib/sheet'
+// let styleSheet = new StyleSheet()
+
+// OR 
+// pass a custom name/id for tag, and enable disable insertRule manually 
 // let styleSheet = new StyleSheet({ name /* optional*/, speedy = true/false })
 
 // styleSheet.inject() 
@@ -12,7 +17,6 @@
 
 // styleSheet.insert('#box { border: 1px solid red; }')
 // appends a css rule to the stylesheet 
-// optionally pass an `index`
 
 // styleSheet.flush() 
 // empties the stylesheet of all its contents
