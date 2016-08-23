@@ -133,7 +133,6 @@ export class StyleSheet {
       this.tag && this.tag.parentNode.removeChild(this.tag)
       this.tag = null
       // todo - look for remnants in document.styleSheets
-      // this.inject()
     }
     else {
       // simpler on server 
