@@ -10,17 +10,24 @@ import StyleSheet from 'glamor/lib/sheet'
 let styleSheet = new StyleSheet()
 
 OR 
+
 // pass a custom name/id for tag, and toggle insertRule manually 
 let styleSheet = new StyleSheet({ name, speedy = true/false })
 
 styleSheet.inject() 
 // 'injects' the stylesheet into the page (or into memory if on server)
 
-styleSheet.insert('#box { border: 1px solid red; }')
-// appends a css rule to the stylesheet 
+styleSheet.insert('#box { border: 1px solid red; }' [, index]) 
+// inserts a css rule into the stylesheet 
+
+styleSheet.sheet.cssRules // arrayLike collection of css rules 
+
+styesheet.remove(index)
+// remove rule at position `index`
 
 styleSheet.flush() 
 // empties the stylesheet of all its contents
+
 
 */
 
@@ -68,7 +75,7 @@ export class StyleSheet {
         deleteRule: index => {
           this.sheet.cssRules = [ ...this.sheet.cssRules.slice(0, index), ...this.sheet.cssRules.slice(index + 1) ]
         },
-        insertRule: (rule, index) => {
+        insertRule: (rule, index = this.sheet.cssRules.length) => {
           // enough 'spec compliance' to be able to extract the rules later  
           // in other words, just the cssText field 
           this.sheet.cssRules = [ ...this.sheet.cssRules.slice(0, index), { cssText: rule }, ...this.sheet.cssRules.slice(index) ]
@@ -113,7 +120,7 @@ export class StyleSheet {
       }
       else{
         // server side is pretty simple 
-        this.sheet.insertRule(rule, this.sheet.cssRules.length)
+        this.sheet.insertRule(rule, index)
       }
     }
   }
@@ -132,6 +139,14 @@ export class StyleSheet {
     this.injected = false
   }
   remove(i) {
-    throw new Error('this is not tested or anything yet! beware!') //eslint-disable-line no-console
+    // todo - tests
+    if(this.speedy || !isBrowser) {
+      this.sheet.deleteRule(i)
+    }
+    else {           
+      this.tag.removeChild(this.stag.childNodes[i + 1]) // the +1 to account for the blank node we added
+      // reassign stylesheet, because firefox is weird 
+      this.sheet = [ ...document.styleSheets ].filter(x => x.ownerNode === this.tag)[0]
+    }
   }
 }
