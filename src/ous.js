@@ -1,11 +1,11 @@
-import { style, media, merge, firstChild, after, select, hover, idFor, appendSheetRule } from './index.js'
+import { style, media, merge, firstChild, after, select, hover, idFor, insertRule } from './index.js'
 
 function log() {
   console.log(this) // eslint-disable-line
   return this
 }
 
-appendSheetRule('html { font-size: 62.5% }')
+insertRule('html { font-size: 62.5% }')
 
 export const container = merge(
   {

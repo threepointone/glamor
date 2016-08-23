@@ -266,12 +266,12 @@ use sparingly! for granular control, use javascript and pencil and paper.
 
 ---
 
-`appendSheetRule(css)`
+`insertRule(css)`
 
 append a raw css rule to the stylesheet. the ultimate escape hatch.
 
 ```jsx
-appendSheetRule(`body {
+insertRule(`body {
   margin: 0;
 }`)
 ```
@@ -483,7 +483,7 @@ to rehydrate the lib's cache for fast startup
 
 ```jsx
 // on the server
-import { renderStatic } from 'glamor'
+import { renderStatic } from 'glamor/server'
 let { html, css, cache } = renderStatic(() =>
   ReactDOMServer.renderToString(<App/>)) // or `renderToStaticMarkup`
 ```

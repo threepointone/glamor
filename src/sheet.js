@@ -1,0 +1,107 @@
+/**** stylesheet ****/
+
+const isBrowser = typeof document !== 'undefined' 
+const isDev = (x => (x === 'development') || !x)(process.env.NODE_ENV)
+const isTest = process.env.NODE_ENV === 'test' 
+
+export class StyleSheet {
+  constructor({ name = '_css_', speedy = !isDev && !isTest }) {
+    this.name = name 
+    this.speedy = speedy // the big drawback here is that the css won't be editable in devtools
+    this.sheet = undefined
+    this.tag = undefined 
+    this.injected = false 
+  }
+  inject() {
+    if(this.injected) {
+      return console.error('already injected stylesheet!') //eslint-disable-line no-console
+    }
+    if(isBrowser) {
+      // this section is just weird alchemy I found online off many sources 
+      // it checks to see if the tag exists; creates an empty one if not 
+      this.tag = document.getElementById(this.name)
+      if(!this.tag) {
+        let tag = document.createElement('style')
+        
+        tag.type = 'text/css'
+        tag.id = this.name || '_css_'
+        tag.setAttribute('id', this.name)
+        tag.appendChild(document.createTextNode(''));
+        (document.head || document.getElementsByTagName('head')[0]).appendChild(tag)
+        this.tag = tag
+      }
+      // this weirdness brought to you by firefox 
+      this.sheet = [ ...document.styleSheets ].filter(x => x.ownerNode === this.tag)[0]  
+    }
+    else {
+      // server side 'polyfill'. just enough behavior to be useful.
+      this.sheet  = { 
+        cssRules: [],
+        deleteRule: index => {
+          this.sheet.cssRules = [ ...this.sheet.cssRules.slice(0, index), ...this.sheet.cssRules.slice(index + 1) ]
+        },
+        insertRule: (rule, index) => {
+          // enough 'spec compliance' to be able to extract the rules later  
+          // in other words, just the cssText field 
+          this.sheet.cssRules = [ ...this.sheet.cssRules.slice(0, index), { cssText: rule }, ...this.sheet.cssRules.slice(index) ]
+        }
+      }
+    }  
+  }
+  _insert(rule, index = this.sheet.cssRules.length) {
+    // this weirdness for perf, and chrome's weird bug 
+    // https://stackoverflow.com/questions/20007992/chrome-suddenly-stopped-accepting-insertrule
+
+    try {          
+      this.sheet.insertRule(rule, index)    
+    }
+    catch(e) {
+      if(isDev) {
+        // might need beter dx for this 
+        console.warn('whoops, illegal rule inserted', rule) //eslint-disable-line no-console
+      }          
+    }          
+
+  }
+  insert(rule, index) {
+    // more browser weirdness. I don't even know
+    if(this.tag && this.tag.styleSheet) {
+      this.tag.styleSheet.cssText+= rule
+    }
+    else {
+      if(isBrowser) {       
+        if(this.speedy && this.sheet.insertRule) {        
+          this._insert(rule, index)
+        }
+        else{
+          this.tag.appendChild(document.createTextNode(rule))
+          // todo - more efficent here please 
+          if(!this.speedy) {
+            // sighhh
+            this.sheet = [ ...document.styleSheets ].filter(x => x.ownerNode === this.tag)[0]  
+          }      
+        }      
+      }
+      else{
+        // server side is pretty simple 
+        this.sheet.insertRule(rule, this.sheet.cssRules.length)
+      }
+    }
+  }
+  flush() {
+    // todo backward compat (styleTag.styleSheet.cssText?)
+    if(isBrowser) {
+      this.tag && this.tag.parentNode.removeChild(this.tag)
+      this.tag = null
+      // todo - look for remnants in document.styleSheets
+      // this.inject()
+    }
+    else {
+      // simpler on server 
+      this.sheet.cssRules = []
+    }
+  }
+  remove(i) {
+    throw new Error('this is not tested or anything yet! beware!') //eslint-disable-line no-console
+  }
+}

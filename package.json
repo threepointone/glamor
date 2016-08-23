@@ -6,10 +6,13 @@
   "files": [
     "lib",
     "umd",
+    "aphrodite.js",
     "jsxstyle.js",
     "react.js",
     "ous.js",
-    "reset.js"
+    "reset.js",
+    "utils.js",
+    "server.js"
   ],
   "scripts": {
     "build": "npm run clean && npm run build:cssops && npm run build:lib && npm run build:es6 && mkdir umd && npm run build:umd",

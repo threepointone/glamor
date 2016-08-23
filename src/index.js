@@ -2,12 +2,15 @@
 import hash from './hash'  // hashes a string to something 'unique'
 
 import autoprefixFn from './autoprefix'
-let autoprefix = autoprefixFn(true)
+let autoprefix = autoprefixFn(true) // add vendor prefixes 
+// helper to hack around isp's array format 
+function prefixes(style) {
+  return autoprefix(style)
+}
 
-
-// we've used browserify to extract react's CSSPropertyOperations module and it's deps into ./CSSPropertyOperations 
+// for the umd build, we'll used browserify to extract react's 
+// CSSPropertyOperations module and it's deps into ./CSSPropertyOperations 
 import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations' // converts a js style object to css markup
-// todo - rewrite this yourself, save a kb or two 
 
 // define some constants 
 const isBrowser = typeof document !== 'undefined' 
@@ -76,132 +79,31 @@ export function cssLabels(bool) {
 
 /**** stylesheet ****/
 
+import { StyleSheet } from './sheet.js'
 // these here are our main 'mutable' references
-let cache = {}, // stores all the registered styles. most important, for such a small name.  
-  styleTag, // reference to the <style> tag, if in browser 
-  styleSheet // reference to the styleSheet object, either native on browser / polyfilled on server 
-  
+export const styleSheet = new StyleSheet({ name: '_css_' }) // stores all the registered styles. most important, for such a small name.  
+  // styleSheet.tag, // reference to the <style> tag, if in browser 
+  // styleSheet.sheet // reference to the styleSheet object, either native on browser / polyfilled on server 
+  // styleSheet.inject() // adds the sheet to the page 
 
-function injectStyleSheet() {
-  if(isBrowser) {
-    // this section is just weird alchemy I found online off many sources 
-    // it checks to see if the tag exists; creates an empty one if not 
-    styleTag = document.getElementById('_css_')
-    if(!styleTag) {
-      styleTag = document.createElement('style')
-      styleTag.type = 'text/css'
-      styleTag.id = styleTag.id || '_css_'
-      styleTag.setAttribute('id', '_css_')
-      styleTag.appendChild(document.createTextNode(''));
-      (document.head || document.getElementsByTagName('head')[0]).appendChild(styleTag)
-    }
-    // this weirdness brought to you by firefox 
-    styleSheet = [ ...document.styleSheets ].filter(x => x.ownerNode === styleTag)[0]  
-  }
-  else {
-    // server side 'polyfill'. just enough behavior to be useful.
-    styleSheet  = { 
-      cssRules: [],
-      deleteRule: index => {
-        styleSheet.cssRules = [ ...styleSheet.cssRules.slice(0, index), ...styleSheet.cssRules.slice(index + 1) ]
-      },
-      insertRule: (rule, index) => {
-        // enough 'spec compliance' to be able to extract the rules later  
-        // in other words, just the cssText field 
-        styleSheet.cssRules = [ ...styleSheet.cssRules.slice(0, index), { cssText: rule }, ...styleSheet.cssRules.slice(index) ]
-      }
-    }
-  }  
-}
+styleSheet.cache = {} // hang on some state on to this instance 
 
-/**************** LIFTOFF IN 3... 2... 1... ****************/
-injectStyleSheet()
-/****************      TO THE MOOOOOOON     ****************/
+// /**************** LIFTOFF IN 3... 2... 1... ****************/
+styleSheet.inject()
+// /****************      TO THE MOOOOOOON     ****************/
 
 
-// a flag to use stylesheet.insertrule 
-// the big drawback here is that the css won't be editable in devtools
-let isSpeedy = !isDev && !isTest // only in prod mode does it make 'sense' 
-
-export function speedy(bool = true) {
-  // we don't let you change isSpeedy if you've already made a modification to the stylesheet
-  if(bool !== isSpeedy && Object.keys(cache).length !== 0) {
-    console.error('cannot change speedy setting after appending styles in a different mode')  //eslint-disable-line no-console
-    return 
-  }
-  isSpeedy = !!bool
-}
-
-function inlineInsertRule(rule, index = styleSheet.cssRules.length) {
-  // this weirdness for perf, and chrome's weird bug 
-  // https://stackoverflow.com/questions/20007992/chrome-suddenly-stopped-accepting-insertrule
-
-  try {          
-    styleSheet.insertRule(rule, index)    
-  }
-  catch(e) {
-    if(isDev) {
-      // might need beter dx for this 
-      console.warn('whoops, illegal rule inserted', rule) //eslint-disable-line no-console
-    }          
-  }          
-}
-
-// adds a css rule to the sheet. only used 'internally'. 
-export function appendSheetRule(rule, index) { // todo - tests 
-    
-  // more browser weirdness. I don't even know
-  if(styleTag && styleTag.styleSheet) {
-    styleTag.styleSheet.cssText+= rule
-  }
-  else {
-    if(isBrowser) {       
-      if(isSpeedy && styleSheet.insertRule) {        
-        inlineInsertRule(rule, index)
-      }
-      else{
-        styleTag.appendChild(document.createTextNode(rule))
-        // todo - more efficent here please 
-        if(!isSpeedy) {
-          // sighhh
-          styleSheet = [ ...document.styleSheets ].filter(x => x.ownerNode === styleTag)[0]  
-        }      
-      }      
-    }
-    else{
-      // server side is pretty simple 
-      styleSheet.insertRule(rule, styleSheet.cssRules.length)
-    }
-  }
-}
-
-// clears out the cache and empties the stylesheet
+// // clears out the cache and empties the stylesheet
 // best for tests, though there might be some value for SSR. 
 export function flush() { // todo - tests 
-  cache = {}
-  // todo backward compat (styleTag.styleSheet.cssText?)
-  if(isBrowser) {
-    styleTag && styleTag.parentNode.removeChild(styleTag)
-    styleTag = null
-    // todo - look for remnants in document.styleSheets
-    injectStyleSheet()
-  }
-  else {
-    // simpler on server 
-    styleSheet.cssRules = []
-  }
+  styleSheet.cache = {}  
+  styleSheet.flush()
+  styleSheet.inject()
 }
 
-export function remove() {
-  // todo
-  // remove rule
-  throw new Error('this is not tested or anything yet! beware!') //eslint-disable-line no-console
-
-  // let id = o[Object.keys(o)[0]]
-  // let i = sheet.rules.indexOf(x => x.selectorText === selector(id, cache[id].type))
-  // sheet.deleteRule(i)
-  // delete cache[id]
-
+// escape hatchhhhhhh
+export function insertRule(css, index) {
+  styleSheet.insert(css, index)
 }
 
 // now, some functions to help deal with styles / rules 
@@ -212,12 +114,6 @@ function styleHash(type, style) { // todo - default type = '_'. this changes all
   // make sure obj is style-like?
   return hash(type + Object.keys(style).reduce((str, k) => str + k + style[k], '')).toString(36)
 }
-
-// helper to hack around isp's array format 
-function prefixes(style) {
-  return autoprefix(style)
-}
-
 
 // generates a css selector for (id, type)
 function selector(id, type) {
@@ -272,7 +168,7 @@ export function idFor(rule) {
 function isRule(rule) {
   try{
     let id = idFor(rule)
-    return  id && cache[id]
+    return  id && styleSheet.cache[id]
   }
   catch(e) {
     return false
@@ -284,10 +180,9 @@ export function add(type = '_', style) {
   let id = styleHash(type, style), // generate a hash based on type/style, use this to 'id' the rule everywhere 
     label = ''
 
-
-  if(!cache[id]) {    
-    appendSheetRule(cssrule(id, type, style))    
-    cache[id] = { type, style, id }
+  if(!styleSheet.cache[id]) {    
+    styleSheet.insert(cssrule(id, type, style))    
+    styleSheet.cache[id] = { type, style, id }
   }
   if(hasLabels) {
     // adds a debug label 
@@ -308,61 +203,188 @@ export function style(obj) {
 
 // alllllll the pseudoclasses
 // todo - autogenerate this by scraping MDN
-export const active = x => add('active', x)
-export const any = x => add('any', x)
-export const checked = x => add('checked', x)
-export const disabled = x => add('disabled', x)
-export const empty = x => add('empty', x)
-export const enabled = x => add('enabled', x)
-export const _default = x => add('default', x) // note '_default' name 
-export const first = x => add('first', x)
-export const firstChild = x => add('first-child', x)
-export const firstOfType = x => add('first-of-type', x)
-export const fullscreen = x => add('fullscreen', x)
-export const focus = x => add('focus', x)
-export const hover = x => add('hover', x)
-export const indeterminate = x => add('indeterminate', x)
-export const inRange = x => add('in-range', x)
-export const invalid = x => add('invalid', x)
-export const lastChild = x => add('last-child', x)
-export const lastOfType = x => add('last-of-type', x)
-export const left = x => add('left', x)
-export const link = x => add('link', x)
-export const onlyChild = x => add('only-child', x)
-export const onlyOfType = x => add('only-of-type', x)
-export const optional = x => add('optional', x)
-export const outOfRange = x => add('out-of-range', x)
-export const readOnly = x => add('read-only', x)
-export const readWrite = x => add('read-write', x)
-export const required = x => add('required', x)
-export const right = x => add('right', x)
-export const root = x => add('root', x)
-export const scope = x => add('scope', x)
-export const target = x => add('target', x)
-export const valid = x => add('valid', x)
-export const visited = x => add('visited', x)
+export function active(x) { 
+  return add('active', x) 
+}
+
+export function any(x) { 
+  return add('any', x) 
+}
+
+export function checked(x) { 
+  return add('checked', x) 
+}
+
+export function disabled(x) { 
+  return add('disabled', x) 
+}
+
+export function empty(x) { 
+  return add('empty', x) 
+}
+
+export function enabled(x) { 
+  return add('enabled', x) 
+}
+
+export function _default(x) { 
+  return add('default', x) // note '_default' name  
+}
+
+export function first(x) { 
+  return add('first', x) 
+}
+
+export function firstChild(x) { 
+  return add('first-child', x) 
+}
+
+export function firstOfType(x) { 
+  return add('first-of-type', x) 
+}
+
+export function fullscreen(x) { 
+  return add('fullscreen', x) 
+}
+
+export function focus(x) { 
+  return add('focus', x) 
+}
+
+export function hover(x) { 
+  return add('hover', x) 
+}
+
+export function indeterminate(x) { 
+  return add('indeterminate', x) 
+}
+
+export function inRange(x) { 
+  return add('in-range', x) 
+}
+
+export function invalid(x) { 
+  return add('invalid', x) 
+}
+
+export function lastChild(x) { 
+  return add('last-child', x) 
+}
+
+export function lastOfType(x) { 
+  return add('last-of-type', x) 
+}
+
+export function left(x) { 
+  return add('left', x) 
+}
+
+export function link(x) { 
+  return add('link', x) 
+}
+
+export function onlyChild(x) { 
+  return add('only-child', x) 
+}
+
+export function onlyOfType(x) { 
+  return add('only-of-type', x) 
+}
+
+export function optional(x) { 
+  return add('optional', x) 
+}
+
+export function outOfRange(x) { 
+  return add('out-of-range', x) 
+}
+
+export function readOnly(x) { 
+  return add('read-only', x) 
+}
+
+export function readWrite(x) { 
+  return add('read-write', x) 
+}
+
+export function required(x) { 
+  return add('required', x) 
+}
+
+export function right(x) { 
+  return add('right', x) 
+}
+
+export function root(x) { 
+  return add('root', x) 
+}
+
+export function scope(x) { 
+  return add('scope', x) 
+}
+
+export function target(x) { 
+  return add('target', x) 
+}
+
+export function valid(x) { 
+  return add('valid', x) 
+}
+
+export function visited(x) { 
+  return add('visited', x) 
+}
+
 
 // parameterized pseudoclasses
-export const dir = (p, x) => add(`dir(${p})`, x)
-export const lang = (p, x) => add(`lang(${p})`, x)
-export const not = (p, x) => add(`not(${p})`, x)
-export const nthChild = (p, x) => add(`nth-child(${p})`, x)
-export const nthLastChild = (p, x) => add(`nth-last-child(${p})`, x)
-export const nthLastOfType = (p, x) => add(`nth-last-of-type(${p})`, x)
-export const nthOfType = (p, x) => add(`nth-of-type(${p})`, x)
+export function dir(p, x) { 
+  return add(`dir(${p})`, x)
+}
+export function lang(p, x) { 
+  return add(`lang(${p})`, x)
+}
+export function not(p, x) { 
+  return add(`not(${p})`, x)
+}
+export function nthChild(p, x) { 
+  return add(`nth-child(${p})`, x)
+}
+export function nthLastChild(p, x) { 
+  return add(`nth-last-child(${p})`, x)
+}
+export function nthLastOfType(p, x) { 
+  return add(`nth-last-of-type(${p})`, x)
+}
+export function nthOfType(p, x) { 
+  return add(`nth-of-type(${p})`, x)
+}
 
 // pseudoelements
-export const after = x => add(':after', x)
-export const before = x => add(':before', x)
-export const firstLetter = x => add(':first-letter', x)
-export const firstLine = x => add(':first-line', x)
-export const selection = x => add(':selection', x)
-export const backdrop = x => add(':backdrop', x)
-export const placeholder = x => add(':placeholder', x)
+export function after(x) {
+  return add(':after', x) 
+}
+export function before(x) {
+  return add(':before', x) 
+}
+export function firstLetter(x) {
+  return add(':first-letter', x) 
+}
+export function firstLine(x) {
+  return add(':first-line', x) 
+}
+export function selection(x) {
+  return add(':selection', x) 
+}
+export function backdrop(x) {
+  return add(':backdrop', x) 
+}
+export function placeholder(x) {
+  return add(':placeholder', x) 
+}
 
 // when you need multiple pseudoclasses in a single selector
 // eg x:hover:visited for when hovering over visited elements 
-export const multi = (selector, style) => {
+export function multi(selector, style) {
   console.warn(`multi is deprecated, use select(':${selector}', {...}) instead`) // eslint-disable-line no-console
   return add(selector, style)
 }
@@ -401,9 +423,9 @@ export function merge(...rules) {
       
       let id = idFor(rule)  
       
-      if(cache[id].bag) { // merged rule 
+      if(styleSheet.cache[id].bag) { // merged rule 
 
-        let { bag, label, media } = cache[id]
+        let { bag, label, media } = styleSheet.cache[id]
         Object.keys(bag).forEach(type => {
           styleBag[type] = { ...styleBag[type] || {}, ...bag[type] }
         })
@@ -424,22 +446,22 @@ export function merge(...rules) {
         // that was fairly straightforward
       }
       
-      if(cache[id].expr) { // media rule
-        let { expr, label, rule, style } = cache[id]
+      if(styleSheet.cache[id].expr) { // media rule
+        let { expr, label, rule, style } = styleSheet.cache[id]
         mediaBag[expr] = mediaBag[expr] || { }
         if(rule) {
           let iid = idFor(rule)
-          if(cache[iid].bag) {
+          if(styleSheet.cache[iid].bag) {
             // if merged rule, merge it's bag into stylebag 
             // we won't expect a mediabag in this merged rule, because it would have thrown in media (phew)
 
-            let { bag } = cache[iid]
+            let { bag } = styleSheet.cache[iid]
             Object.keys(bag).forEach(type => {
               mediaBag[expr][type] = { ...mediaBag[expr][type] || {}, ...bag[type] }  
             }) 
           }
           else {
-            let { type, style } = cache[iid]  
+            let { type, style } = styleSheet.cache[iid]  
             mediaBag[expr][type] = { ...mediaBag[expr][type] || {}, ...style }  
           }  
         }
@@ -456,7 +478,7 @@ export function merge(...rules) {
       }
       else {  // simple rule 
       
-        let { type, style } = cache[id]
+        let { type, style } = styleSheet.cache[id]
         styleBag[type] = { ...styleBag[type] || {}, ...style }
         hasLabels && labels.push(style.label || '*') // todo - match 'add()'s original label
         return 
@@ -477,16 +499,16 @@ export function merge(...rules) {
   // make a merged label
   let label = hasLabels ? `${mergeLabel ? mergeLabel + '= ' : ''}${labels.length ? labels.join(' + ') : ''}` : '' // yuck 
   
-  if(!cache[id]) {
-    cache[id] = { bag: styleBag, id, label, ...(Object.keys(mediaBag).length > 0 ? { media: mediaBag } : {}) }
+  if(!styleSheet.cache[id]) {
+    styleSheet.cache[id] = { bag: styleBag, id, label, ...(Object.keys(mediaBag).length > 0 ? { media: mediaBag } : {}) }
     Object.keys(styleBag).forEach(type => {      
-      appendSheetRule(cssrule(id, type, styleBag[type]))
+      styleSheet.insert(cssrule(id, type, styleBag[type]))
     })
     
     Object.keys(mediaBag).forEach(expr => {
       let css = Object.keys(mediaBag[expr]).map(type => cssrule(id, type, mediaBag[expr][type])).join('\n')
 
-      appendSheetRule(`@media ${expr} { ${ css } }`)
+      styleSheet.insert(`@media ${expr} { ${ css } }`)
     })
   }
   return { [`data-css-${id}`]: label }
@@ -506,34 +528,34 @@ export function media(expr, ...rules) {
   if(isRule(rule)) {
     let id = idFor(rule)
     
-    if(cache[id].bag) { // merged rule       
+    if(styleSheet.cache[id].bag) { // merged rule       
       // todo - test if any media rules in this merged rule, throw if so 
-      if(cache[id].media) {
+      if(styleSheet.cache[id].media) {
         throw new Error('cannot apply a media rule onto another')
       }
-      let { bag } = cache[id]
+      let { bag } = styleSheet.cache[id]
       let newId = hash(expr+id).toString(36)
-      let label = hasLabels ? `*mq [${cache[id].label}]` : ''
+      let label = hasLabels ? `*mq [${styleSheet.cache[id].label}]` : ''
 
-      if(!cache[newId]) {
+      if(!styleSheet.cache[newId]) {
         let cssRules = Object.keys(bag).map(type => cssrule(newId, type, bag[type]))
-        appendSheetRule(`@media ${expr} { ${ cssRules.join('\n') } }`)
-        cache[newId] = { expr, rule, id: newId, label }
+        styleSheet.insert(`@media ${expr} { ${ cssRules.join('\n') } }`)
+        styleSheet.cache[newId] = { expr, rule, id: newId, label }
       }      
 
       return { [`data-css-${newId}`]: label }
       // easy 
     }
-    else if(cache[id].expr) { // media rule
+    else if(styleSheet.cache[id].expr) { // media rule
       throw new Error('cannot apply a media rule onto another')
     }
     else { // simple rule
       let newId = hash(expr+id).toString(36)
-      let label = hasLabels ? '*mq ' + (cache[id].style.label || '*') : ''
+      let label = hasLabels ? '*mq ' + (styleSheet.cache[id].style.label || '*') : ''
 
-      if(!cache[newId]) {
-        appendSheetRule(`@media ${expr} { ${ cssrule(newId, cache[id].type, cache[id].style) } }`)
-        cache[newId] = { expr, rule, id: newId, label }
+      if(!styleSheet.cache[newId]) {
+        styleSheet.insert(`@media ${expr} { ${ cssrule(newId, styleSheet.cache[id].type, styleSheet.cache[id].style) } }`)
+        styleSheet.cache[newId] = { expr, rule, id: newId, label }
       }
       
       return { [`data-css-${newId}`]: label }
@@ -545,9 +567,9 @@ export function media(expr, ...rules) {
     let style = rule 
     let newId = styleHash(expr, style)
     let label = hasLabels ? '*mq ' + (style.label || '*') : ''
-    if(!cache[newId]) {
-      appendSheetRule(`@media ${expr} { ${ cssrule(newId, '_', style) } }`)
-      cache[newId] = { expr, style, id: newId, label }
+    if(!styleSheet.cache[newId]) {
+      styleSheet.insert(`@media ${expr} { ${ cssrule(newId, '_', style) } }`)
+      styleSheet.cache[newId] = { expr, style, id: newId, label }
     }
     return { [`data-css-${newId}`]: label }
   }
@@ -567,8 +589,8 @@ export const presets = {
 // cycle through the cache, and for every media query
 // find matching elements and update the label 
 function updateMediaQueryLabels() {
-  Object.keys(cache).forEach(id => {
-    let { expr } = cache[id]
+  Object.keys(styleSheet.cache).forEach(id => {
+    let { expr } = styleSheet.cache[id]
     if(expr && hasLabels && window.matchMedia) {
       let els = document.querySelectorAll(`[data-css-${id}]`)
       let match = window.matchMedia(expr).matches ? '✓': '✕'
@@ -609,10 +631,10 @@ if(isDev && isBrowser) {
 // use a fancier lib if you need moar power
 export function fontFace(font) {
   let id = hash(JSON.stringify(font)).toString(36)
-  if(!cache[id]) {
-    cache[id] = { id, family: font.fontFamily, font }
+  if(!styleSheet.cache[id]) {
+    styleSheet.cache[id] = { id, family: font.fontFamily, font }
     // todo - crossbrowser 
-    appendSheetRule(`@font-face { ${createMarkupForStyles(font)}}`)
+    styleSheet.insert(`@font-face { ${createMarkupForStyles(font)}}`)
   }
   return font.fontFamily
 }
@@ -625,14 +647,14 @@ export function keyframes(name, kfs) {
     name = 'animate'
   }
   let id = hash(name + JSON.stringify(kfs)).toString(36)
-  if(!cache[id]) {
-    cache[id] = { id, name, kfs }
+  if(!styleSheet.cache[id]) {
+    styleSheet.cache[id] = { id, name, kfs }
     let inner = Object.keys(kfs).map(kf => 
       `${kf} { ${ createMarkupForStyles(prefixes(kfs[kf])) }}`
     ).join('\n');
 
     [ '-webkit-', '-moz-', '-o-', '' ].forEach(prefix =>
-      appendSheetRule(`@${ prefix }keyframes ${ name + '_' + id } { ${ inner }}`))
+      styleSheet.insert(`@${ prefix }keyframes ${ name + '_' + id } { ${ inner }}`))
     
   }
   return name + '_' + id
@@ -644,7 +666,7 @@ export function keyframes(name, kfs) {
 
 export function cssFor(...rules) {
   let ids = rules.reduce((o, r) => (o[idFor(r)] = true, o), {})
-  let css = [ ...styleSheet.cssRules ].map(({ cssText }) => {
+  let css = [ ...styleSheet.sheet.cssRules ].map(({ cssText }) => {
     let regex = /\[data\-css\-([a-zA-Z0-9]+)\]/gm
     let match = regex.exec(cssText)
     
@@ -663,51 +685,5 @@ export function attribsFor(...rules) {
   }).join(' ')
   
   return htmlAttributes
-}
-
-/**** serverside stuff ****/
-
-// the api's copied from aphrodite, with 1 key difference 
-// we include *all* the css generated by the app 
-// to optimize to only include generated styles on the pages 
-// use renderStaticOptimized
-export function renderStatic(fn, optimized = false) {
-  let html = fn()
-  if(html === undefined) {
-    throw new Error('did you forget to return from renderToString?')
-  }
-  let rules = [ ...styleSheet.cssRules ], css = rules.map(r => r.cssText).join('\n')
-  if(optimized) {
-    // parse out ids from html
-    // reconstruct css/rules/cache to pass
-
-    let o = { html, cache: {}, css: '' }
-    let regex = /data\-css\-([a-zA-Z0-9]+)=/gm
-    let match, ids = []
-    while((match = regex.exec(html)) !== null) {
-      ids.push(match[1])
-    }
-    ids.forEach(id => {
-      o.cache[id] = cache[id]
-      
-      // todo - add fonts / animations
-      o.css+= rules
-        .map(x => x.cssText)
-        .filter(r => new RegExp(`\\\[data\-css\-${id}\\\]`).test(r)).join('\n') + '\n'
-    })
-    return o
-
-  }
-  return { html, cache, css }
-}
-
-export function renderStaticOptimized(fn) {
-  return renderStatic(fn, true)
-}
-
-export function rehydrate(c) {
-  // load up cache
-  cache = { ...cache, ...c }
-  // assume css loaded separately
 }
 
