@@ -1,25 +1,28 @@
-// high performance StyleSheet for css-in-js systems 
-// features -
-// uses insertRule in production for *much* faster performance
-// 'polyfills' on server side in memory 
+/* 
 
+high performance StyleSheet for css-in-js systems 
+
+- uses `insertRule` in production for *much* faster performance
+- 'polyfills' on server side in memory 
 
 // usage
-// import StyleSheet from 'glamor/lib/sheet'
-// let styleSheet = new StyleSheet()
+import StyleSheet from 'glamor/lib/sheet'
+let styleSheet = new StyleSheet()
 
-// OR 
-// pass a custom name/id for tag, and enable disable insertRule manually 
-// let styleSheet = new StyleSheet({ name /* optional*/, speedy = true/false })
+OR 
+// pass a custom name/id for tag, and toggle insertRule manually 
+let styleSheet = new StyleSheet({ name, speedy = true/false })
 
-// styleSheet.inject() 
+styleSheet.inject() 
 // 'injects' the stylesheet into the page (or into memory if on server)
 
-// styleSheet.insert('#box { border: 1px solid red; }')
+styleSheet.insert('#box { border: 1px solid red; }')
 // appends a css rule to the stylesheet 
 
-// styleSheet.flush() 
+styleSheet.flush() 
 // empties the stylesheet of all its contents
+
+*/
 
 /**** stylesheet ****/
 
