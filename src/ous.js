@@ -108,9 +108,9 @@ export const primary = style({ label: 'primary' })
 
 export const labelBody = style({ label: 'labelBody' })
 
-const buttonId = `[data-css-${idFor(button)}]`
-const primaryId = `[data-css-${idFor(primary)}]`
-const labelBodyId = `[data-css-${idFor(labelBody)}]`
+const buttonId = Object.keys(button)[0] //`[data-css-${idFor(button)}]`
+const primaryId = Object.keys(primary)[0] //`[data-css-${idFor(primary)}]`
+const labelBodyId = Object.keys(labelBody)[0] //`[data-css-${idFor(labelBody)}]`
 
 
 export const base = merge(

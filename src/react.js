@@ -5,7 +5,9 @@ export const createElement = (tag, { css, ...props }, children) => {
   if(typeof tag === 'string' && css) {
     return React.createElement(tag, { 
       ...props, 
-      ...isRule(css) ? css : style(css) 
+      ...Array.isArray(css) ? merge(...css) : 
+        isRule(css) ? css : 
+        style(css) 
     }, children)
   }
   return React.createElement(tag, props, children )

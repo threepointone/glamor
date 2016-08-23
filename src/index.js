@@ -1,7 +1,8 @@
 // first we import some helpers 
 import hash from './hash'  // hashes a string to something 'unique'
 
-import autoprefix from './autoprefix'
+import autoprefixFn from './autoprefix'
+let autoprefix = autoprefixFn(true)
 // yurgh must get back to this 
 // import prefixAll from 'inline-style-prefixer/static'   // adds vendor prefixes to styles 
 // import  Prefix  from 'inline-style-prefixer'

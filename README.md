@@ -39,8 +39,10 @@ features
 - tests / coverage
 - **new!** - glamor/reset - includes a css reset
 - **new!** - glamor/ous - a port of [the skeleton css framework](getskeleton.com)
+- **new!** - glamor/react - helpers for overrides, and inline 'css' prop for dom elements 
 - **new!** - glamor/jsxstyle - react integration, à la jsxstyle
-- **new!** - glamor/react - helpers for overrides, and inline 'css' prop
+- **new!** - glamor/aphrodite - polyfill for [aphrodite](https://github.com/Khan/aphrodite)
+
 
 
 cons
@@ -550,7 +552,6 @@ here are some key differences -
 todo
 ---
 
-- aphrodite polyfill
 - remove code for labels 
 - glamorous documentation
 - error checking / typechecks (flow? runtime?)
