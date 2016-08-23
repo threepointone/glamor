@@ -41,7 +41,6 @@ let tagCounter = 0
 
 export class StyleSheet {
   constructor({ name = '_css_' + tagCounter++, speedy = !isDev && !isTest }) {
-    this.id = tagCounter
     this.name = name 
     this.speedy = speedy // the big drawback here is that the css won't be editable in devtools
     this.sheet = undefined
@@ -84,7 +83,7 @@ export class StyleSheet {
     } 
     this.injected = true
   }
-  _insert(rule, index = this.sheet.cssRules.length) {
+  _insert(rule, index) {
     // this weirdness for perf, and chrome's weird bug 
     // https://stackoverflow.com/questions/20007992/chrome-suddenly-stopped-accepting-insertrule
 
@@ -99,7 +98,7 @@ export class StyleSheet {
     }          
 
   }
-  insert(rule, index) {
+  insert(rule, index = this.sheet.cssRules.length) {
     // more browser weirdness. I don't even know
     if(this.tag && this.tag.styleSheet) {
       this.tag.styleSheet.cssText+= rule
