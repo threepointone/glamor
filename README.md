@@ -297,13 +297,13 @@ plugins.inject(({ selector, style, ...rest }) => {
     }
     return { selector, style, ...rest }
 })
-
 ```
+
+plugins for vendor prefixes and array fallbacks are included by default 
 
 also -
 - `plugins.[media|keyframes|fontFace].inject(...fns)`
 - `.remove(fn), .clear()`
-
 ---
 
 `glamor/reset`
@@ -601,9 +601,9 @@ todo
 ---
 
 - alternatives for - cssnext, stylelint, cssnano
+- refactor `merge` / `media` functions 
 - error checking / typechecks (flow? runtime?)
 - ie8 compat for insertRule/deleteRule
-- plugins
 - compile time optimizations / statically generate css files alá jsxstyle
 - benchmarks ([#3](https://github.com/threepointone/glamor/issues/3))
 - theming et al

@@ -242,7 +242,7 @@ function autoPrefixer(obj, allVendors) {
   return obj
 }
 
-export default function gate(objOrBool, optionalBoolean = false) {
+function gate(objOrBool, optionalBoolean = false) {
 
   if (typeof objOrBool === 'boolean') {
     return obj => autoPrefixer(obj, objOrBool)
@@ -254,3 +254,5 @@ export default function gate(objOrBool, optionalBoolean = false) {
     return autoPrefixer(objOrBool, optionalBoolean) 
   } // default: don't include all browsers
 }
+
+export const autoprefix = gate(true)

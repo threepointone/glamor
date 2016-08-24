@@ -23,23 +23,6 @@ const isTest = process.env.NODE_ENV === 'test'
 // import some helpers 
 import hash from './hash'  // hashes a string to something 'unique'
 
-import autoprefixFn from './autoprefix'
-let autoprefix = autoprefixFn(true) // add vendor prefixes 
-// helper to hack around isp's array format 
-
-function fallbackPlugin({ style, ...rest }) {
-  let flattened = Object.keys(style).reduce((o, key) => {
-    o[key] = Array.isArray(style[key]) ? style[key].join(`; ${key}: `): style[key]
-    return o 
-  }, {})
-  // todo - 
-  // flatten arrays which haven't been flattened yet 
-  return { style: flattened, ...rest }
-}
-
-function prefixerPlugin({ style, ...rest }) {
-  return ({ style: autoprefix(style), ...rest })
-}
 
 // for the umd build, we'll used browserify to extract react's 
 // CSSPropertyOperations module and it's deps into ./CSSPropertyOperations 
@@ -55,36 +38,38 @@ function simple(str) {
 
 class Plugins {
   constructor(...initial) {
-    this.plugins = initial
+    this.fns = initial || []
   }
   plugins = []
   inject(...fns) {
     fns.forEach(fn => {
-      if(this.plugins.indexOf(fn) >= 0) {
+      if(this.fns.indexOf(fn) >= 0) {
         if(isDev) {
           console.warn('adding the same plugin again, ignoring') //eslint-disable-line no-console
         }
       }
       else {
-        this.plugins.push(fn)
+        this.fns = [ fn, ...this.fns ]
       }    
     })  
   }
   remove(fn) {
-    this.plugins = this.plugins.filter(x => x !== fn)  
+    this.fns = this.fns.filter(x => x !== fn)  
   }
   clear() {
-    this.plugins = []
+    this.fns = []
   }
   apply(o) {
-    return this.plugins.reduce((o, fn) => fn(o), o)  
+    return this.fns.reduce((o, fn) => fn(o), o)  
   }
 }
 
-export const plugins = new Plugins(prefixerPlugin, fallbackPlugin)
+import { prefixes, fallbacks } from './plugins' // we include these by default 
+
+export const plugins = new Plugins(prefixes, fallbacks)
 plugins.media = new Plugins() // neat! media, font-face, keyframes
 plugins.fontFace = new Plugins()
-plugins.keyframes = new Plugins()
+plugins.keyframes = new Plugins(prefixes)
 //////
 
 /**** simulations  ****/
@@ -701,9 +686,10 @@ export function keyframes(name, kfs) {
   let id = hash(name + JSON.stringify(kfs)).toString(36)
   if(!styleSheet.cache[id]) {
     styleSheet.cache[id] = { id, name, kfs }
-    let inner = Object.keys(kfs).map(kf => 
-      `${kf} { ${ createMarkupForStyles(autoprefix(kfs[kf])) }}`
-    ).join('\n');
+    let inner = Object.keys(kfs).map(kf => {
+      let result = plugins.keyframes.apply({ id, name: kf, style: kfs[kf] })
+      return `${result.name} { ${ createMarkupForStyles(result.style) }}`
+    }).join('\n');
 
     [ '-webkit-', '-moz-', '-o-', '' ].forEach(prefix =>
       styleSheet.insert(`@${ prefix }keyframes ${ name + '_' + id } { ${ inner }}`))

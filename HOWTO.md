@@ -60,6 +60,9 @@ apply styles to child selectors
 1. select(classes)
 2. context-override
 
+sibling relationship
+---
+
 
 apply media queries
 ---
@@ -85,7 +88,16 @@ server side / static rendering
 make a grid 
 ---
 
+css-vars
+---
 
+
+extend the syntax
+---
+
+
+fallback values
+---
 
 
 

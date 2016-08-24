@@ -1,7 +1,6 @@
 // import { color } from './color'
 import { media } from './index'
 
-
 // @vars and modules solve 
 // custom properties: var, set, apply
 // custom media queries
@@ -9,10 +8,11 @@ import { media } from './index'
 // nesting is solved with select() + compose()
 
 // media query ranges 
-export function mediaQuery(expr, ...styles) {
+export function mediaQuery({ expr, ...rest }) {
+  /\swidth\s\/>\=\s[A-Za-z0-9]/
   // rewrite expr
   // call media
-  return media(expr, ...styles)
+  return media(expr, ...rest)
 }
 
 // font-variant 
@@ -115,3 +115,4 @@ export function matches(selectors, x) {
 // :: fallback to : for ie8
 // initial for any value (?)
 // rem fallback to px
+
