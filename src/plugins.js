@@ -2,6 +2,34 @@ import { autoprefix } from './autoprefix'
 // let autoprefix = autoprefixFn(true) // add vendor prefixes 
 // helper to hack around isp's array format 
 
+export class PluginSet {
+  constructor(...initial) {
+    this.fns = initial || []
+  }
+  inject(...fns) {
+    fns.forEach(fn => {
+      if(this.fns.indexOf(fn) >= 0) {
+        if(isDev) {
+          console.warn('adding the same plugin again, ignoring') //eslint-disable-line no-console
+        }
+      }
+      else {
+        this.fns = [ fn, ...this.fns ]
+      }    
+    })  
+  }
+  remove(fn) {
+    this.fns = this.fns.filter(x => x !== fn)  
+  }
+  clear() {
+    this.fns = []
+  }
+  apply(o) {
+    return this.fns.reduce((o, fn) => fn(o), o)  
+  }
+}
+
+
 export function fallbacks(node) {
   let hasArray = Object.keys(node.style).map(x => Array.isArray(node.style[x])).indexOf(true) >= 0
   if(hasArray) {

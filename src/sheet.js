@@ -8,20 +8,28 @@ high performance StyleSheet for css-in-js systems
 
 
 // usage
+
 import StyleSheet from 'glamor/lib/sheet'
-let styleSheet = new StyleSheet({ name:optional })
+let styleSheet = new StyleSheet({ 
+  name: 'mySheet', // optional
+  length: 30000 // defaults to 4000 for IE9, 65000 otherwise 
+})
 
 styleSheet.inject() 
+
 // 'injects' the stylesheet into the page (or into memory if on server)
 
 styleSheet.insert('#box { border: 1px solid red; }') 
+
 // appends a css rule into the stylesheet 
 
 styleSheet.rules()
+
 // array of css rules 
 // use for server side rendering, etc 
 
 styleSheet.flush() 
+
 // empties the stylesheet of all its contents
 
 
@@ -72,11 +80,7 @@ export class StyleSheet {
     }
     if(isBrowser) {
       // this section is just weird alchemy I found online off many sources 
-      // it checks to see if the tag exists; creates an empty one if not 
-      // this.tags[0] = document.getElementById(this.name + this.ctr)
-      if(!this.tags[0]) {        
-        this.tags[0] = makeStyleTag(this.name + this.ctr)        
-      }
+      this.tags[0] = makeStyleTag(this.name + this.ctr)        
       // this weirdness brought to you by firefox 
       this.sheet = sheetForTag(this.tags[0]) 
     } 
@@ -135,6 +139,10 @@ export class StyleSheet {
       }
     }
     this.ctr++
+    if(this.ctr % this.length === 0) {
+      this.tags.push(makeStyleTag(this.name + Math.round(this.ctr / this.length)))
+      this.sheet = sheetForTag(this.tags::last())
+    }
     // if ctr at border 
     // add new tag 
     // reassign sheet 

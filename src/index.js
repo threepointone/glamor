@@ -1,17 +1,22 @@
-/**** stylesheet ****/
-
 import { StyleSheet } from './sheet.js'
+import { PluginSet, prefixes, fallbacks } from './plugins' // we include these by default 
+import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations' // converts a js style object to css markup
+// for the umd build, we'll used browserify to extract react's 
+// CSSPropertyOperations module and it's deps into ./CSSPropertyOperations 
+
 // these here are our main 'mutable' references
-export const styleSheet = new StyleSheet({ name: '_css_' }) // stores all the registered styles. most important, for such a small name.  
-  // styleSheet.rules() // reference to the css rules, either native on browser / polyfilled on server 
-  // styleSheet.inject() // adds the sheet to the page 
+export const styleSheet = new StyleSheet({ name: '_css_', length: 20, speedy: true }) // stores all the registered styles. most important, for such a small name.  
 
 styleSheet.cache = {} // hang on some state on to this instance 
 
-// /**************** LIFTOFF IN 3... 2... 1... ****************/
-styleSheet.inject()
-// /****************      TO THE MOOOOOOON     ****************/
+export const plugins = styleSheet.plugins = new PluginSet(fallbacks, prefixes)
+plugins.media = new PluginSet() // neat! media, font-face, keyframes
+plugins.fontFace = new PluginSet()
+plugins.keyframes = new PluginSet(prefixes)
 
+// /**************** LIFTOFF IN 3... 2... 1... ****************/
+                        styleSheet.inject()                     //eslint-disable-line indent
+// /****************      TO THE MOOOOOOON     ****************/
 
 // define some constants 
 const isBrowser = typeof document !== 'undefined' 
@@ -22,52 +27,10 @@ const isTest = process.env.NODE_ENV === 'test'
 import hash from './hash'  // hashes a string to something 'unique'
 
 
-// for the umd build, we'll used browserify to extract react's 
-// CSSPropertyOperations module and it's deps into ./CSSPropertyOperations 
-import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations' // converts a js style object to css markup
-
 // takes a string, converts to lowercase, strips out nonalphanumeric.
 function simple(str) {
   return str.toLowerCase().replace(/[^a-z0-9]/g, '')    
 }
-
-
-// plugins
-
-class PluginSet {
-  constructor(...initial) {
-    this.fns = initial || []
-  }
-  inject(...fns) {
-    fns.forEach(fn => {
-      if(this.fns.indexOf(fn) >= 0) {
-        if(isDev) {
-          console.warn('adding the same plugin again, ignoring') //eslint-disable-line no-console
-        }
-      }
-      else {
-        this.fns = [ fn, ...this.fns ]
-      }    
-    })  
-  }
-  remove(fn) {
-    this.fns = this.fns.filter(x => x !== fn)  
-  }
-  clear() {
-    this.fns = []
-  }
-  apply(o) {
-    return this.fns.reduce((o, fn) => fn(o), o)  
-  }
-}
-
-import { prefixes, fallbacks } from './plugins' // we include these by default 
-
-export const plugins = styleSheet.plugins = new PluginSet(fallbacks, prefixes)
-plugins.media = new PluginSet() // neat! media, font-face, keyframes
-plugins.fontFace = new PluginSet()
-plugins.keyframes = new PluginSet(prefixes)
-//////
 
 /**** simulations  ****/
 
@@ -428,8 +391,6 @@ export const $ = select
 export function parent(selector, style) {
   return add('%' + selector, style)
 }
-
-
 
 // we define a function to 'merge' styles together.
 // backstory - because of a browser quirk, multiple styles are applied in the order they're 

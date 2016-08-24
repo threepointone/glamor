@@ -306,6 +306,7 @@ plugins for vendor prefixes and array fallbacks are included by default
 also -
 - `plugins.[media|keyframes|fontFace].inject(...fns)`
 - `.remove(fn), .clear()`
+
 ---
 
 `glamor/reset`
