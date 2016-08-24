@@ -44,7 +44,7 @@ function simple(str) {
 // plugins
 
 let plugins = []
-export function injectPlugin(...fns) {
+export function injectPlugin(...fns) {  
   fns.forEach(fn => {
     if(plugins.indexOf(fn) >= 0) {
       if(isDev) {
@@ -54,9 +54,9 @@ export function injectPlugin(...fns) {
     else {
       plugins.push(fn)
     }    
-  })
-  
+  })  
 }
+
 
 export function removePlugin(fn) {
   plugins = plugins.filter(x => x !== fn)
@@ -171,6 +171,7 @@ function selector(id, type) {
 }
 
 // ... which is then used to generate css rules 
+
 function cssrule(id, type, style) {
   let result = applyPlugins({ id, type, style, selector: selector(id, type) })
   return `${result.selector}{ ${
@@ -531,9 +532,9 @@ export function merge(...rules) {
     })
     
     Object.keys(mediaBag).forEach(expr => {
-      let css = Object.keys(mediaBag[expr]).map(type => cssrule(id, type, mediaBag[expr][type])).join('\n')
-
-      styleSheet.insert(`@media ${expr} { ${ css } }`)
+      let css = Object.keys(mediaBag[expr]).map(type => cssrule(id, type, mediaBag[expr][type]))
+      let result = applyPlugins({ id, media: true, expr, css })
+      styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)
     })
   }
   return { [`data-css-${id}`]: label }
