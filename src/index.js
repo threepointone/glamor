@@ -26,9 +26,15 @@ import hash from './hash'  // hashes a string to something 'unique'
 import autoprefixFn from './autoprefix'
 let autoprefix = autoprefixFn(true) // add vendor prefixes 
 // helper to hack around isp's array format 
-function prefixes(style) {
-  // todo - fallbacks / array format
-  return autoprefix(style)
+
+function fallbackPlugin(x) {
+  // todo - 
+  // flatten arrays which haven't been flattened yet 
+  return x
+}
+
+function prefixerPlugin({ style, ...rest }) {
+  return ({ style: autoprefix(style), ...rest })
 }
 
 // for the umd build, we'll used browserify to extract react's 
@@ -44,6 +50,9 @@ function simple(str) {
 // plugins
 
 class Plugins {
+  constructor(...initial) {
+    this.plugins = initial
+  }
   plugins = []
   inject(...fns) {
     fns.forEach(fn => {
@@ -64,11 +73,11 @@ class Plugins {
     this.plugins = []
   }
   apply(o) {
-    return this.plugins.reduce((o, fn) => o = fn(o), o)  
+    return this.plugins.reduce((o, fn) => fn(o), o)  
   }
 }
 
-let plugins = new Plugins()
+export const plugins = new Plugins(prefixerPlugin, fallbackPlugin)
 plugins.media = new Plugins() // neat! media, font-face, keyframes
 plugins.fontFace = new Plugins()
 plugins.keyframes = new Plugins()
@@ -179,7 +188,7 @@ function cssrule(id, type, style) {
   let result = plugins.apply({ id, type, style, selector: selector(id, type) })
   
   return `${result.selector}{ ${
-    createMarkupForStyles(prefixes(result.style))
+    createMarkupForStyles(result.style)
   } } `
 }
 
@@ -689,7 +698,7 @@ export function keyframes(name, kfs) {
   if(!styleSheet.cache[id]) {
     styleSheet.cache[id] = { id, name, kfs }
     let inner = Object.keys(kfs).map(kf => 
-      `${kf} { ${ createMarkupForStyles(prefixes(kfs[kf])) }}`
+      `${kf} { ${ createMarkupForStyles(autoprefix(kfs[kf])) }}`
     ).join('\n');
 
     [ '-webkit-', '-moz-', '-o-', '' ].forEach(prefix =>

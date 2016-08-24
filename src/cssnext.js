@@ -85,9 +85,20 @@ export function overflowWrap() {
 }
 
 
-// :any-link pseudoclass - index
-export function anyLink(x) {
-  throw new Error('todo!')
+export function anyLink({ selector, ...rest }) {
+  let pieces = selector.split(',').map(x => x.trim())
+  let result = []
+  pieces.forEach(p => {
+    if(p.indexOf(':any-link') >=0 ) {
+      result.push(p.replace(/\:any\-link/g, ':link'))
+      result.push(p.replace(/\:any\-link/g, ':visited'))
+    }
+    else {
+      result.push(p)
+    }
+  })
+  return ({ selector: result.join(', '), ...rest })
+  
 }
 
 // :matches() - index
