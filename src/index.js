@@ -43,33 +43,35 @@ function simple(str) {
 
 // plugins
 
-let plugins = []
-export function injectPlugin(...fns) {  
-  fns.forEach(fn => {
-    if(plugins.indexOf(fn) >= 0) {
-      if(isDev) {
-        console.warn('adding the same plugin again, ignoring') //eslint-disable-line no-console
-      }
-    }
-    else {
-      plugins.push(fn)
-    }    
-  })  
-}
-
-
-export function removePlugin(fn) {
-  plugins = plugins.filter(x => x !== fn)
-}
-
-export function clearPlugins() {
+class Plugins {
   plugins = []
+  inject(...fns) {
+    fns.forEach(fn => {
+      if(this.plugins.indexOf(fn) >= 0) {
+        if(isDev) {
+          console.warn('adding the same plugin again, ignoring') //eslint-disable-line no-console
+        }
+      }
+      else {
+        this.plugins.push(fn)
+      }    
+    })  
+  }
+  remove(fn) {
+    this.plugins = this.plugins.filter(x => x !== fn)  
+  }
+  clear() {
+    this.plugins = []
+  }
+  apply(o) {
+    return this.plugins.reduce((o, fn) => o = fn(o), o)  
+  }
 }
 
-function applyPlugins(o) {  
-  return plugins.reduce((o, fn) => o = fn(o), o)
-}
-
+let plugins = new Plugins()
+plugins.media = new Plugins() // neat! media, font-face, keyframes
+plugins.fontFace = new Plugins()
+plugins.keyframes = new Plugins()
 //////
 
 /**** simulations  ****/
@@ -173,7 +175,7 @@ function selector(id, type) {
 // ... which is then used to generate css rules 
 
 function cssrule(id, type, style) {
-  let result = applyPlugins({ id, type, style, selector: selector(id, type) })
+  let result = plugins.apply({ id, type, style, selector: selector(id, type) })
   return `${result.selector}{ ${
     createMarkupForStyles(prefixes(result.style))
   } } `
@@ -533,7 +535,7 @@ export function merge(...rules) {
     
     Object.keys(mediaBag).forEach(expr => {
       let css = Object.keys(mediaBag[expr]).map(type => cssrule(id, type, mediaBag[expr][type]))
-      let result = applyPlugins({ id, media: true, expr, css })
+      let result = plugins.media.apply({ id, media: true, expr, css })
       styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)
     })
   }
@@ -569,7 +571,8 @@ export function media(expr, ...rules) {
 
       if(!styleSheet.cache[newId]) {
         let cssRules = Object.keys(bag).map(type => cssrule(newId, type, bag[type]))
-        styleSheet.insert(`@media ${expr} { ${ cssRules.join('\n') } }`)
+        let result = plugins.media.apply({ id: newId, expr, css: cssRules })
+        styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)
         styleSheet.cache[newId] = { expr, rule, id: newId, label }
       }      
 
@@ -584,7 +587,9 @@ export function media(expr, ...rules) {
       let label = hasLabels ? '*mq ' + (styleSheet.cache[id].style.label || '*') : ''
 
       if(!styleSheet.cache[newId]) {
-        styleSheet.insert(`@media ${expr} { ${ cssrule(newId, styleSheet.cache[id].type, styleSheet.cache[id].style) } }`)
+        let css = cssrule(newId, styleSheet.cache[id].type, styleSheet.cache[id].style)
+        let result = plugins.media.apply({ id:newId, expr, css: [ css ] })
+        styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)
         styleSheet.cache[newId] = { expr, rule, id: newId, label }
       }
       
@@ -598,7 +603,9 @@ export function media(expr, ...rules) {
     let newId = styleHash(expr, style)
     let label = hasLabels ? '*mq ' + (style.label || '*') : ''
     if(!styleSheet.cache[newId]) {
-      styleSheet.insert(`@media ${expr} { ${ cssrule(newId, '_', style) } }`)
+      let css = [ cssrule(newId, '_', style) ]
+      let result = plugins.media.apply({ id:newId, expr, css: [ css ] })
+      styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)
       styleSheet.cache[newId] = { expr, style, id: newId, label }
     }
     return { [`data-css-${newId}`]: label }

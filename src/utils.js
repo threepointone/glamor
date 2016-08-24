@@ -222,35 +222,21 @@ export function textHide(alternative = false) {
 
 
 export function triangle(size = 12, color = '#ccc', orientation = 'down') {
-  let border 
-  switch(orientation) {
-    case 'down':
-      border = [ true, 't', false, 't' ]
-      break
-    case 'up':
-      border = [ false, 't', true, 't' ]
-      break
-    case 'left':
-      border = [ 't', true, 't', false ]
-      break
-    case 'right':
-      border = [ 't', false, 't', true ]
-      break
-    case 'up-right':
-      border = [ true, false, false, 't' ]
-      break
-    case 'up-left':
-      border = [ true, 't', false, false ]
-      break
-    case 'down-right':
-      border = [ false, false, true, 't' ]
-      break
-    case 'down-left':
-      border = [ false, 't', true, false ]
-      break
-    default:
-      throw new Error('Circle orientation is not valid.')
-  }
+  // let border 
+  let border = (dir => {
+    switch(dir) {
+      case 'down': return [ true, 't', false, 't' ]
+      case 'up': return [ false, 't', true, 't' ]
+      case 'left': return [ 't', true, 't', false ]
+      case 'right': return [ 't', false, 't', true ]
+      case 'up-right': return [ true, false, false, 't' ]
+      case 'up-left': return [ true, 't', false, false ]
+      case 'down-right': return [ false, false, true, 't' ]
+      case 'down-left': return [ false, 't', true, false ]
+      default: throw new Error('Circle orientation is not valid.')  
+    }
+  })(orientation)
+  
   let o = {
     height: 0,
     width: 0
