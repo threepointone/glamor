@@ -1,4 +1,6 @@
 import { autoprefix } from './autoprefix'
+const isDev = (x => (x === 'development') || !x)(process.env.NODE_ENV)
+
 // let autoprefix = autoprefixFn(true) // add vendor prefixes 
 // helper to hack around isp's array format 
 
