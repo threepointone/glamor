@@ -5,10 +5,12 @@ import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations' // conve
 // CSSPropertyOperations module and it's deps into ./CSSPropertyOperations 
 
 // these here are our main 'mutable' references
-export const styleSheet = new StyleSheet({ name: '_css_' }) // stores all the registered styles. most important, for such a small name.  
+export const styleSheet = new StyleSheet({ name: '_css_' }) 
+// an isomorphic StyleSheet shim. hides all the nitty gritty. 
 
 styleSheet.cache = {} // hang on some state on to this instance 
 
+// plugins 
 export const plugins = styleSheet.plugins = new PluginSet(fallbacks, prefixes)
 plugins.media = new PluginSet() // neat! media, font-face, keyframes
 plugins.fontFace = new PluginSet()
