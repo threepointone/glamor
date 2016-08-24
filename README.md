@@ -604,7 +604,6 @@ todo
 ---
 
 - alternatives for - cssnext, stylelint, cssnano
-- multiple tags to increase rule space
 - refactor `merge` / `media` functions 
 - error checking / typechecks (flow? runtime?)
 - ie8 compat for insertRule/deleteRule
