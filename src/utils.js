@@ -1,7 +1,8 @@
 // a port of https://github.com/ismamz/postcss-utilities
 
-// todo 
-// hd breakpoint 
+// todo -
+// - hd breakpoint 
+// - sticky footers
 
 import { after, merge, select } from './src'
 
@@ -180,28 +181,28 @@ export function size(width, height = width) {
   }
 }
 
-export function stickyFooterWrapper(selector = '.footer', fixedHeight = false) {
-  if(fixedHeight === false) {
-    return merge({
-      display: 'table',
-      width: '100%',
-      height: '100%'
-    }, select(` ${selector}`, {
-      display: 'table-row',
-      height: 1
-    }))  
-  }
-  return merge({
-    minHeight: '100%',
-    marginBottom: typeof fixedHeight === 'number' ? -1 * fixedHeight : `-${fixedHeight}`
-  }, after({
-    display: 'block',
-    content: '',
-    height: fixedHeight
-  }), select(` ${selector}`, {    
-    height: fixedHeight
-  }))
-}
+// export function stickyFooterWrapper(selector = '.footer', fixedHeight = false) {
+//   if(fixedHeight === false) {
+//     return merge({
+//       display: 'table',
+//       width: '100%',
+//       height: '100%'
+//     }, select(` ${selector}`, {
+//       display: 'table-row',
+//       height: 1
+//     }))  
+//   }
+//   return merge({
+//     minHeight: '100%',
+//     marginBottom: typeof fixedHeight === 'number' ? -1 * fixedHeight : `-${fixedHeight}`
+//   }, after({
+//     display: 'block',
+//     content: '',
+//     height: fixedHeight
+//   }), select(` ${selector}`, {    
+//     height: fixedHeight
+//   }))
+// }
 
 export function textHide(alternative = false) {
   if(!alternative) {

@@ -11,6 +11,7 @@ import React from 'react' //eslint-disable-line
 import { render, unmountComponentAtNode } from 'react-dom'
 
 import { style, hover, nthChild, firstLetter, media, merge, compose,  select, visited, 
+  parent,
   fontFace, keyframes,
   cssLabels,
   simulations, simulate,
@@ -93,6 +94,21 @@ describe('glamor', () => {
     // 3. merge(...styles)
   })
   it(':not() selector works for multiple selectors')
+  it('can use a parent selector to target itself', () => {
+    let x = parent('.foo', { color: 'red' })
+    render(<div>
+      <div className='foo'>
+        <span {...x}>target</span>
+      </div>
+      <div className='bar'>
+        <span {...x}>target</span>
+      </div>
+    </div>, node, () => {
+      let els = node.querySelectorAll(`[${Object.keys(x)[0]}]`)
+      expect(window.getComputedStyle(els[0]).color).toEqual('rgb(255, 0, 0)')
+      expect(window.getComputedStyle(els[1]).color).toEqual('rgb(0, 0, 0)')
+    })
+  })
 
   it('reuses common styles', () => {
     render(<div>

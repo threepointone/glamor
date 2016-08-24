@@ -157,7 +157,8 @@ function selector(id, type) {
     result = cssType.split(',').map(x => `[data-css-${id}]${x}`).join(',')
   }
   else if (isParentSelector) {
-    result = cssType.split(',').map(x => `${x}[data-css-${id}]`).join(',')
+    // todo - attach pseudo classes if any
+    result = cssType.split(',').map(x => `${x} [data-css-${id}]`).join(',')
   }
   else {
     result = `[data-css-${id}]${cssType}`  
@@ -176,6 +177,7 @@ function selector(id, type) {
 
 function cssrule(id, type, style) {
   let result = plugins.apply({ id, type, style, selector: selector(id, type) })
+  
   return `${result.selector}{ ${
     createMarkupForStyles(prefixes(result.style))
   } } `

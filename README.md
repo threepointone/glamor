@@ -140,18 +140,6 @@ similar to the above, but for pseudo elements.
 
 ---
 
-`multi(pse:udos, props)` - DEPRECATED (in favor of `select(:ps)`)
-
-pass a `:`-separated list of  pseudoclasses; for when you need to add
-multiple pseudoclasses to a rule.
-
-```jsx
-multi('hover:active', { color: 'red' })
-// corresponds to [data-css-1cb101e]:hover:active { color: red; }
-```
-
----
-
 `select(selector, props)` / `$(selector, props)`
 
 an escape hatch to define styles for arbitrary css selectors. your selector is appended 
@@ -170,6 +158,20 @@ directly to the css rule, letting you define 'whatever' you want. use sparingly!
 (nb1: don't forget to add a leading space for 'child' selectors. eg - `$(' .item', {...})`. 
 (nb2: `simulate()` does not work on these selectors yet.)
 
+---
+
+
+`parent(selector, style)`
+
+an escape hatch to target elements based on it's parent 
+
+```jsx
+<div {...parent('.no-js', { backgroundColor: '#ccc' })}> 
+  this is gray when js is disabled   
+</div>
+
+TODO - pseudo selectors for the same
+```
 ---
 
 `compose(...rules)` / `merge(...rules)`
@@ -599,7 +601,6 @@ todo
 ---
 
 - fallback values 
-- parent()
 - alternatives for - cssnext, stylelint, cssnano
 - error checking / typechecks (flow? runtime?)
 - ie8 compat for insertRule/deleteRule
