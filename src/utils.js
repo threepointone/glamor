@@ -1,58 +1,52 @@
 // todo 
 // hd breakpoint 
-// no-hover 
-// no-js 
 
-import { after, style, merge, select } from './src'
+import { after, merge, select } from './src'
 
-export function aspectRatio(width = 16, height = 9) {
-  const t = (typeof this !== 'function') ? style : this
-  return t({
+export function aspectRatio(width = 16, height = 9) {  
+  return {
     position: 'relative',
     display: 'block',
     height: 0,
     padding: 0,
     overflow: 'hidden',
     paddingBottom: ((height / width) * 100) + '%'
-  })
+  }
 }
 
 // border-radius
 
-export function borderBottomRadius(r) {
-  const t = (typeof this !== 'function') ? style : this
-  return t({
+export function borderBottomRadius(r) {  
+  return {
     borderBottomLeftRadius: r,
     borderBottomRightRadius: r
-  })
+  }
 }
 
 export function borderTopRadius(r) {
-  const t = (typeof this !== 'function') ? style : this
-  return t({
+  return {
     borderTopLeftRadius: r,
     borderTopRightRadius: r
-  })
+  }
 }
 
 export function borderLeftRadius(r) {
-  const t = (typeof this !== 'function') ? style : this
-  return t({
+  return {
     borderTopLeftRadius: r,
     borderBottomLeftRadius: r
-  })
+  }
 }
 
 export function borderRightRadius(r) {
-  const t = (typeof this !== 'function') ? style : this
-  return t({
+  
+  return {
     borderTopRightRadius: r,
     borderBottomRightRadius: r
-  })
+  }
 }
 
 
-function styleKeyed(t, prefix, key, { top, right, bottom, left }) {  
+function styleKeyed(prefix, key, { top, right, bottom, left }) {  
   let o = {}
   if(top != undefined ) {
     o[prefix + 'Top' + key] = top
@@ -66,65 +60,50 @@ function styleKeyed(t, prefix, key, { top, right, bottom, left }) {
   if(left != undefined) {
     o[prefix + 'Left' + key] = left
   }
-  return t(o)
+  return o
 }
 
 
 export function borderColor(x) {
-  const t = (typeof this !== 'function') ? style : this
-  return styleKeyed(t, 'border', 'Color', x)  
+  return styleKeyed('border', 'Color', x)  
 }
 
 export function borderStyle(x) {
-  const t = (typeof this !== 'function') ? style : this
-  return styleKeyed(t, 'border', 'Style', x)  
+  return styleKeyed('border', 'Style', x)  
 }
 
 export function borderWidth(x) {
-  const t = (typeof this !== 'function') ? style : this
-  return styleKeyed(t, 'border', 'Width', x)  
+  return styleKeyed('border', 'Width', x)  
 }
 
 export function center() {
-  const t = (typeof this !== 'function') ? style : this
-  return t({
+  return {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)'
-  })
+  }
 }
 
 export function centerBlock() {
-  const t = (typeof this !== 'function') ? style : this
-  return t({
+  return {
     display: 'block',
     marginLeft: 'auto',
     marginRight: 'auto'
-  })
+  }
 }
 
 export function circle(radius, color = 'transparent') {
-  const t = (typeof this !== 'function') ? style : this
-  return t({
+  return {
     height: radius,
     width: radius, 
     borderRadius: '50%',
     backgroundColor: color    
-  })
-}
-
-export function clearfix() {
-  return after({
-    content: '""',
-    display: 'block',
-    clear: 'both'
-  })
+  }
 }
 
 export function hideVisually() {
-  const t = (typeof this !== 'function') ? style : this
-  return t({
+  return {
     position: 'absolute',
     width: 1,
     height: 1,
@@ -133,18 +112,17 @@ export function hideVisually() {
     overflow: 'hidden',
     clip: 'rect(0, 0, 0, 0)',
     border: 0
-  })
+  }
 }
 
 export function hr(color ='#ccc', verticalMargin = '1em') {
-  const t = (typeof this !== 'function') ? style : this
-  return t({
+  return {
     height: 1,
     border: 0,
     borderTop: `1px solid ${color}`,
     margin: `${verticalMargin} 0`,
     display: 'block'
-  })
+  }
 }
 
 export function margin(x) {
@@ -156,7 +134,6 @@ export function padding(x) {
 }
 
 export function position(type, { top, left, bottom, right }) {
-  const t = (typeof this !== 'function') ? style : this
   let o = {
     position: type
   }
@@ -172,22 +149,11 @@ export function position(type, { top, left, bottom, right }) {
   if(left != undefined) {
     o.left = left
   }
-  return t(o)
-}
-
-export function resetList() {
-  return merge({
-    marginTop: 0,
-    marginBottom: 0,
-    paddingLeft: 0
-  }, select( 'li', {
-    listStyle: 'none'
-  }))
+  return o
 }
 
 export function resetText() {
-  const t = (typeof this !== 'function') ? style : this  
-  return t({
+  return {
     fontFamily: 'sans-serif',
     fontStyle: 'normal',
     fontWeight: 'normal',
@@ -202,15 +168,14 @@ export function resetText() {
     wordBreak: 'normal',
     wordSpacing: 'normal',
     wordWrap: 'normal'
-  })
+  }
 }
 
-export function size(width, height = width) {
-  const t = (typeof this !== 'function') ? style : this
-  return t({
+export function size(width, height = width) {  
+  return {
     width,
     height
-  })
+  }
 }
 
 export function stickyFooterWrapper(selector = '.footer', fixedHeight = false) {
@@ -237,27 +202,24 @@ export function stickyFooterWrapper(selector = '.footer', fixedHeight = false) {
 }
 
 export function textHide(alternative = false) {
-  const t = (typeof this !== 'function') ? style : this
   if(!alternative) {
-    return t({
+    return {
       font: '"0/0" a',
       color: 'transparent',
       textShadow: 'none',
       backgroundColor: 'transparent',
       border: 0
-    })
+    }
   }
-  return t({
+  return {
     overflow: 'hidden',
     textIndent: '101%',
     whiteSpace: 'nowrap'
-  })  
+  }
 }
 
 
 export function triangle(size = 12, color = '#ccc', orientation = 'down') {
-  const t = (typeof this !== 'function') ? style : this
-
   let border 
   switch(orientation) {
     case 'down':
@@ -322,22 +284,21 @@ export function triangle(size = 12, color = '#ccc', orientation = 'down') {
     o.borderLeft = size + ' solid transparent'
   }
 
-  return t(o)  
+  return o
 }
 
 export function truncate(lines = 0, lineHeight = 1, textOverflow = 'ellipsis') {
-  const t = (typeof this !== 'function') ? style : this
   if(!lines) {
-    return t({
+    return {
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow
-    })
+    }
   }
 
   let height = Math.round(lineHeight * lines * 100) / 100
 
-  return t({
+  return {
     display: [ 'block', '-webkit-box' ],
     height: height + 'em',
     lineHeight,
@@ -345,15 +306,43 @@ export function truncate(lines = 0, lineHeight = 1, textOverflow = 'ellipsis') {
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
     textOverflow
-  })
+  }
   
 }
 
 export function wordWrap(wrap = 'break-word', wordBreak = wrap !== 'break-word' ? wrap : 'break-all') {
-  const t = (typeof this !== 'function') ? style : this
-  return t({
+  return {
     overflowWrap: wrap,
     wordBreak: wordBreak,
     wordWrap: wrap
+  }
+}
+
+// these return rules
+
+export function clearfix() {
+  return after({
+    content: '""',
+    display: 'block',
+    clear: 'both'
   })
+}
+
+
+export function resetList() {
+  return merge({
+    marginTop: 0,
+    marginBottom: 0,
+    paddingLeft: 0
+  }, select( 'li', {
+    listStyle: 'none'
+  }))
+}
+
+export function noJs(childSelector, style) {
+  return parent(childSelector, '.no-js', style)
+}
+
+export function noHover(childSelector, style) {
+  return parent(childSelector, '.no-hover', style)
 }

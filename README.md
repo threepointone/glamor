@@ -280,6 +280,30 @@ insertRule(`body {
 
 ---
 
+plugins
+
+plugins are run just before the style object is converted into css. 
+they receive `{ selector, style, ... }` and are expected to return an object of same shape 
+
+`injectPlugin(...fns)`
+
+```jsx
+// simple plugin to support rebeccapurple color 
+injectPlugin(({ selector, style, ...rest }) => {
+    if(style.color === 'rebeccapurple') {
+      style = { ...style, color: '#663399' }
+    }
+    return { selector, style, ...rest }
+})
+
+```
+
+also -
+- `removePlugin(fn)`
+- `clearPlugins()`
+
+---
+
 `glamor/reset`
 
 includes and applies a css reset to your page 

@@ -92,6 +92,7 @@ describe('glamor', () => {
     // todo
     // 3. merge(...styles)
   })
+  it(':not() selector works for multiple selectors')
 
   it('reuses common styles', () => {
     render(<div>

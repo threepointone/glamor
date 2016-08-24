@@ -40,6 +40,38 @@ function simple(str) {
   return str.toLowerCase().replace(/[^a-z0-9]/g, '')    
 }
 
+
+// plugins
+
+let plugins = []
+export function injectPlugin(...fns) {
+  fns.forEach(fn => {
+    if(plugins.indexOf(fn) >= 0) {
+      if(isDev) {
+        console.warn('adding the same plugin again, ignoring') //eslint-disable-line no-console
+      }
+    }
+    else {
+      plugins.push(fn)
+    }    
+  })
+  
+}
+
+export function removePlugin(fn) {
+  plugins = plugins.filter(x => x !== fn)
+}
+
+export function clearPlugins() {
+  plugins = []
+}
+
+function applyPlugins(o) {  
+  return plugins.reduce((o, fn) => o = fn(o), o)
+}
+
+//////
+
 /**** simulations  ****/
 
 // a flag to enable simulation meta tags on dom nodes 
@@ -138,10 +170,11 @@ function selector(id, type) {
   return result
 }
 
-// ... which is them used to generate css rules 
+// ... which is then used to generate css rules 
 function cssrule(id, type, style) {
-  return `${selector(id, type)}{ ${
-    createMarkupForStyles(prefixes(style))
+  let result = applyPlugins({ id, type, style, selector: selector(id, type) })
+  return `${result.selector}{ ${
+    createMarkupForStyles(prefixes(result.style))
   } } `
 }
 
@@ -336,7 +369,12 @@ export function lang(p, x) {
   return add(`lang(${p})`, x)
 }
 export function not(p, x) { 
-  return add(`not(${p})`, x)
+  let selector = p.split(',').map(x => x.trim()).map(x => `:not(${x})`)
+  if(selector.length === 1) {
+    return add(`not(${p})`, x)  
+  }
+  return select(selector.join(''), x)
+  
 }
 export function nthChild(p, x) { 
   return add(`nth-child(${p})`, x)
@@ -507,6 +545,10 @@ export const compose = merge
 // they cannot be merged with other queries 
 // todo - we should test whether the query is valid and give dev feedback 
 export function media(expr, ...rules) {
+
+
+  // todo - replace min-/max- with <= & >= (syntax easier to read)
+
   if (rules.length > 1) {
     return media(expr, merge(...rules))
   } // todo - iterate yourself instead 
