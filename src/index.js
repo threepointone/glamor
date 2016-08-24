@@ -66,7 +66,7 @@ class Plugins {
 
 import { prefixes, fallbacks } from './plugins' // we include these by default 
 
-export const plugins = new Plugins(prefixes, fallbacks)
+export const plugins = new Plugins(fallbacks, prefixes)
 plugins.media = new Plugins() // neat! media, font-face, keyframes
 plugins.fontFace = new Plugins()
 plugins.keyframes = new Plugins(prefixes)

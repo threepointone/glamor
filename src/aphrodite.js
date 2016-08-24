@@ -45,11 +45,13 @@ export function css(...rules) {
 
 export function createElement(tag, props = {}, children) {
   let styles = ((props || {}).className || '')
-    .split(' ')
-    .filter(x => /^data\-css\-/.exec(x))
-    .map(x => ({ [x] : '' }))
+    .split(' ').map(x => x.trim())
 
-  return React.createElement(tag, { ...props, ... styles.length > 0 ? glamor.merge(...styles) : {} }, children)
+  let css = styles.filter(x => /^data\-css\-/.exec(x)).map(x => ({ [x] : '' }))
+  let classes = styles.filter(x => !/^data\-css\-/.exec(x)).join(' ')
+          
+
+  return React.createElement(tag, { ...props, ...(props || {}).className ? { className: classes || null } : {}, ... css.length > 0 ? glamor.merge(...css) : {} }, children)
 
 }
 
