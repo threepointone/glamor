@@ -39,20 +39,22 @@ features
 - dev helper to simulate pseudo classes like `:hover`, etc
 - server side / static rendering
 - tests / coverage
-- **new!** - glamor/reset - insert a css reset
-- **new!** - glamor/ous - a port of [the skeleton css framework](getskeleton.com)
-- **new!** - glamor/utils - a port of [postcss-utilities](https://github.com/ismamz/postcss-utilities)
-- **new!** - glamor/react - helpers for overrides, 'css' prop, `vars` support
-- **new!** - glamor/jsxstyle - react integration, à la jsxstyle
-- **new!** - glamor/aphrodite - polyfill for [aphrodite](https://github.com/Khan/aphrodite)
 
+extras 
+---
+
+- glamor/reset - insert a css reset
+- glamor/ous - a port of [the skeleton css framework](getskeleton.com)
+- glamor/utils - a port of [postcss-utilities](https://github.com/ismamz/postcss-utilities)
+- glamor/react - helpers for overrides, 'css' prop, `vars` support
+- glamor/jsxstyle - react integration, à la jsxstyle
+- glamor/aphrodite - polyfill for [aphrodite](https://github.com/Khan/aphrodite)
 
 
 cons
 ---
 
 - no real-world usage / adoption yet
-- edge cases *could* consume excess memory ([#1](https://github.com/threepointone/glamor/issues/1))
 
 api
 ---
@@ -601,6 +603,7 @@ todo
 ---
 
 - alternatives for - cssnext, stylelint, cssnano
+- multiple tags to increase rule space
 - refactor `merge` / `media` functions 
 - error checking / typechecks (flow? runtime?)
 - ie8 compat for insertRule/deleteRule

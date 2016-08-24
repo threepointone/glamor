@@ -17,7 +17,7 @@ import { style, hover, nthChild, firstLetter, media, merge, compose,  select, vi
   simulations, simulate,
   cssFor, attribsFor, idFor,
   presets,
-  flush }
+  flush, styleSheet }
 from '../src'
 
 import { rehydrate } from '../src/server'
@@ -40,7 +40,7 @@ function getDataAttributes(node) {
 }
 
 function getSheet() {
-  return [ ...document.styleSheets ].filter(sheet => sheet.ownerNode === document.getElementById('_css_'))[0]
+  return styleSheet.sheet
 }
 
 
@@ -118,7 +118,7 @@ describe('glamor', () => {
       </div>, node, () => {
 
         // only 2 rules get added to the stylesheet
-        expect(getSheet().cssRules.length).toEqual(2)
+        expect(styleSheet.rules().length).toEqual(2)
 
         let [ id0, id1, id2 ] = [ 0, 1, 2 ].map(i => getDataAttributes(node.childNodes[0].childNodes[i]))
         expect(id0).toEqual(id2) // first and third elements have the same hash
@@ -138,7 +138,7 @@ describe('glamor', () => {
     render(<div {...hover({ color: 'red' })}/>, node, () => {
       // console.log(childStyle(node, ':hover').getPropertyValue('color'))
       // ^ this doesn't work as I want
-      expect(getSheet().cssRules[0].cssText)
+      expect(styleSheet.rules()[0].cssText)
         .toEqual('[data-css-1w84cbc]:hover:nth-child(n) { color: red; }')
         // any ideas on a better test for this?
     })
@@ -186,7 +186,7 @@ describe('glamor', () => {
 
   it('can style pseudo elements', () => {
     render(<div {...firstLetter({ color:'red' })} />, node, () => {
-      expect(getSheet().cssRules[0].cssText)
+      expect(styleSheet.rules()[0].cssText)
         .toEqual('[data-css-19rst82]::first-letter { color: red; }')
     })
   }) // how do I test this?
@@ -196,7 +196,7 @@ describe('glamor', () => {
     // we assume phantomjs/chrome/whatever has a width > 300px
     render(<div {...media('(min-width: 300px)', style({ color: 'red' }))}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
-      expect(getSheet().cssRules[1].cssText.replace(/\s/g,''))
+      expect(styleSheet.rules()[1].cssText.replace(/\s/g,''))
         .toEqual('@media (min-width: 300px) { \n  [data-css-ajnavo] { color: red; }\n}'.replace(/\s/g,''))
         // ugh
     })
@@ -207,7 +207,7 @@ describe('glamor', () => {
     simulations(true)
     render(<div {...media('(min-width: 300px)', hover({ color: 'red' }))} {...simulate('hover')}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
-      expect(getSheet().cssRules[1].cssText.replace(/\s/g,''))
+      expect(styleSheet.rules()[1].cssText.replace(/\s/g,''))
         .toEqual('@media (min-width: 300px) { \n  [data-css-5o4wo0]:hover:nth-child(n), [data-css-5o4wo0][data-simulate-hover] { color: red; }\n}'.replace(/\s/g,''))
       // ugh
       simulations(false)
@@ -225,11 +225,11 @@ describe('glamor', () => {
     render(<div {...merge(red, blue, hoverGn)} />, node, () => {
       expect(childStyle(node).backgroundColor).toEqual('rgb(0, 0, 255)')
     })
-    let sheetLength = getSheet().cssRules.length
+    let sheetLength = styleSheet.rules().length
 
     render(<div {...merge(red, blue, hoverGn)} {...simulate('hover')}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(0, 128, 0)')
-      expect(getSheet().cssRules.length).toEqual(sheetLength)
+      expect(styleSheet.rules().length).toEqual(sheetLength)
     })
     simulations(false)
   })
@@ -285,7 +285,7 @@ describe('glamor', () => {
   if(isPhantom) {
     it('adds vendor prefixes', () => {
       render(<div {...style({ color: 'red', transition: 'width 2s' })} />, node, () => {
-        expect(getSheet().cssRules[0].cssText)
+        expect(styleSheet.rules()[0].cssText)
           .toEqual('[data-css-10v74ka] { color: red; -webkit-transition: width 2s; transition: width 2s; }')
       })
     })
@@ -301,7 +301,7 @@ describe('glamor', () => {
       }
 
       let f = fontFace(latin)
-      expect(getSheet().cssRules[0].cssText.replace(/\s/g,''))
+      expect(styleSheet.rules()[0].cssText.replace(/\s/g,''))
         .toEqual("@font-face { font-family: 'Open Sans'; font-style: normal; font-weight: 400; src: local(Open Sans), local(OpenSans), url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format(woff2); }".replace(/\s/g,''))
       expect(f).toEqual('Open Sans')
 
@@ -321,7 +321,7 @@ describe('glamor', () => {
           transform: 'scale(1)'
         }
       })
-      expect(getSheet().cssRules[0].cssText.replace(/\s/g,''))
+      expect(styleSheet.rules()[0].cssText.replace(/\s/g,''))
         .toEqual(`@-webkit-keyframes bounce_ma9xpz { \n  0% { opacity: 0; -webkit-transform: scale(0.1); }\n  60% { opacity: 1; -webkit-transform: scale(1.2); }\n  100% { -webkit-transform: scale(1); }\n}`.replace(/\s/g,''))
       expect(animate).toEqual('bounce_ma9xpz')
 
@@ -369,7 +369,7 @@ describe('glamor', () => {
     style({ color: 'red' })
     style({ color: 'blue' })
 
-    expect(getSheet().cssRules.length).toEqual(1)
+    expect(styleSheet.rules().length).toEqual(1)
     document.head.removeChild(styleTag)
 
   })
@@ -387,7 +387,7 @@ describe('glamor', () => {
       onClick={() => console.log('whutwhut')} // eslint-disable-line no-console
 
     />, node, () => {
-      expect([ ...getSheet().cssRules ].map(x => x.cssText).join('\n')).toEqual(
+      expect(styleSheet.rules().map(x => x.cssText).join('\n')).toEqual(
 `[data-css-qlhh8p]:hover:nth-child(n) { color: blue; }
 [data-css-g5ds2d] li { text-decoration: underline; }
 @media (min-width: 400px) { 
@@ -401,6 +401,15 @@ describe('glamor', () => {
 }`)  
     })
   })
+  
+})
+
+describe('template literal', () => {
+  it('converts a css rule into an object')
+  it('scopes multiple rules into one element')
+})
+
+describe('plugins', () => {
   
 })
 

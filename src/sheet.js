@@ -17,15 +17,13 @@ let styleSheet = new StyleSheet({ name, speedy = true/false })
 styleSheet.inject() 
 // 'injects' the stylesheet into the page (or into memory if on server)
 
-styleSheet.insert('#box { border: 1px solid red; }' [, index]) 
-// inserts a css rule into the stylesheet 
+styleSheet.insert('#box { border: 1px solid red; }') 
+// appends a css rule into the stylesheet 
 
-styleSheet.sheet.cssRules 
-// array-like collection of css rules 
+styleSheet.rules()
+// array of css rules 
 // use for server side rendering, etc 
 
-styesheet.remove(index)
-// remove rule at position `index`
 
 styleSheet.flush() 
 // empties the stylesheet of all its contents
@@ -35,18 +33,42 @@ styleSheet.flush()
 
 /**** stylesheet ****/
 
+function last() {
+  return this[this.length -1]
+}
+
+function sheetForTag(tag) {
+  for(let i = 0; i < document.styleSheets.length; i++) {
+    if(document.styleSheets[i].ownerNode === tag) {
+      return document.styleSheets[i]
+    }
+  }
+}
+
 const isBrowser = typeof document !== 'undefined' 
 const isDev = (x => (x === 'development') || !x)(process.env.NODE_ENV)
 const isTest = process.env.NODE_ENV === 'test' 
 
-let tagCounter = 0
+let sheetCounter = 0
+
+function makeTag(name = '_css_') {
+  let tag = document.createElement('style')        
+  tag.type = 'text/css'
+  tag.id = name
+  tag.setAttribute('id', name)
+  tag.appendChild(document.createTextNode(''));
+  (document.head || document.getElementsByTagName('head')[0]).appendChild(tag)
+  return tag
+}
 
 export class StyleSheet {
-  constructor({ name = '_css_' + tagCounter++, speedy = !isDev && !isTest }) {
+  constructor({ name = '_css_' + sheetCounter++, speedy = !isDev && !isTest, length = 30000 }) { // somehow default to 60000
     this.name = name 
     this.speedy = speedy // the big drawback here is that the css won't be editable in devtools
     this.sheet = undefined
-    this.tag = undefined     
+    this.tags = []
+    this.length = length
+    this.ctr = 0
   }
   inject() {
     if(this.injected) {
@@ -55,42 +77,32 @@ export class StyleSheet {
     if(isBrowser) {
       // this section is just weird alchemy I found online off many sources 
       // it checks to see if the tag exists; creates an empty one if not 
-      this.tag = document.getElementById(this.name)
-      if(!this.tag) {
-        let tag = document.createElement('style')
-        
-        tag.type = 'text/css'
-        tag.id = this.name
-        tag.setAttribute('id', this.name)
-        tag.appendChild(document.createTextNode(''));
-        (document.head || document.getElementsByTagName('head')[0]).appendChild(tag)
-        this.tag = tag
+      this.tags[0] = document.getElementById(this.name + this.ctr)
+      if(!this.tags[0]) {        
+        this.tags[0] = makeTag(this.name + this.ctr)        
       }
       // this weirdness brought to you by firefox 
-      this.sheet = [ ...document.styleSheets ].filter(x => x.ownerNode === this.tag)[0]  
-    }
+      this.sheet = sheetForTag(this.tags[0]) 
+    } 
     else {
       // server side 'polyfill'. just enough behavior to be useful.
-      this.sheet  = { 
+      this.sheet  = {         
         cssRules: [],
-        deleteRule: index => {
-          this.sheet.cssRules = [ ...this.sheet.cssRules.slice(0, index), ...this.sheet.cssRules.slice(index + 1) ]
-        },
-        insertRule: (rule, index = this.sheet.cssRules.length) => {
+        insertRule: rule => {
           // enough 'spec compliance' to be able to extract the rules later  
           // in other words, just the cssText field 
-          this.sheet.cssRules = [ ...this.sheet.cssRules.slice(0, index), { cssText: rule }, ...this.sheet.cssRules.slice(index) ]
+          this.sheet.cssRules.push({ cssText: rule }) 
         }
       }
     } 
     this.injected = true
   }
-  _insert(rule, index) {
+  _insert(rule) {
     // this weirdness for perf, and chrome's weird bug 
     // https://stackoverflow.com/questions/20007992/chrome-suddenly-stopped-accepting-insertrule
 
     try {          
-      this.sheet.insertRule(rule, index)    
+      this.sheet.insertRule(rule, this.sheet.cssRules.length) // todo - correct index here     
     }
     catch(e) {
       if(isDev) {
@@ -100,38 +112,40 @@ export class StyleSheet {
     }          
 
   }
-  insert(rule, index = this.sheet.cssRules.length) {
+  insert(rule) {    
     // more browser weirdness. I don't even know
-    if(this.tag && this.tag.styleSheet) {
-      this.tag.styleSheet.cssText+= rule
+    if(this.tags.length > 0 && this.tags::last().styleSheet) {
+      this.tags::last().styleSheet.cssText+= rule
     }
     else {
-      if(isBrowser) {       
+      if(isBrowser) {
+        // here goes the logic for 
         if(this.speedy && this.sheet.insertRule) {        
-          this._insert(rule, index)
+          this._insert(rule)
         }
         else{
-          let refNode = this.tag.childNodes[index] // not index - 1 as expected, because we have a blank leading node 
-          refNode.parentNode.insertBefore(document.createTextNode(rule), refNode.nextSibling)
+          this.tags::last().appendChild(document.createTextNode(rule))
 
           // todo - more efficent here please 
           if(!this.speedy) {
             // sighhh
-            this.sheet = [ ...document.styleSheets ].filter(x => x.ownerNode === this.tag)[0]  
+            this.sheet = sheetForTag(this.tags::last())
           }      
         }      
       }
       else{
-        // server side is pretty simple 
-        this.sheet.insertRule(rule, index)
+        // server side is pretty simple         
+        this.sheet.insertRule(rule)
       }
     }
+    this.ctr++
   }
   flush() {
     // todo backward compat (styleTag.styleSheet.cssText?)
     if(isBrowser) {
-      this.tag && this.tag.parentNode.removeChild(this.tag)
-      this.tag = null
+      this.tags.forEach(tag => tag.parentNode.removeChild(tag))
+      this.tags = []
+      this.sheet = null
       // todo - look for remnants in document.styleSheets
     }
     else {
@@ -139,16 +153,15 @@ export class StyleSheet {
       this.sheet.cssRules = []
     }
     this.injected = false
-  }
-  remove(i) {
-    // todo - tests
-    if(this.speedy || !isBrowser) {
-      this.sheet.deleteRule(i)
+  }  
+  rules() {
+    if(!isBrowser) {
+      return Array.from(this.sheet.cssRules)
     }
-    else {           
-      this.tag.removeChild(this.stag.childNodes[i + 1]) // the +1 to account for the blank node we added
-      // reassign stylesheet, because firefox is weird 
-      this.sheet = [ ...document.styleSheets ].filter(x => x.ownerNode === this.tag)[0]
-    }
+    return this.tags.reduce((arr, tag) => 
+      arr.concat(Array.from(
+        sheetForTag(tag).cssRules 
+      )), [])
+    
   }
 }

@@ -11,7 +11,7 @@ export function renderStatic(fn, optimized = false) {
   if(html === undefined) {
     throw new Error('did you forget to return from renderToString?')
   }
-  let rules = [ ...styleSheet.sheet.cssRules ], css = rules.map(r => r.cssText).join('\n')
+  let rules = styleSheet.rules(), css = rules.map(r => r.cssText).join('\n')
   if(optimized) {
     // parse out ids from html
     // reconstruct css/rules/cache to pass

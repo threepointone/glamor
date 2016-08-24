@@ -127,8 +127,8 @@ export function flush() { // todo - tests
 }
 
 // escape hatchhhhhhh
-export function insertRule(css, index) {
-  styleSheet.insert(css, index)
+export function insertRule(css) {
+  styleSheet.insert(css)
 }
 
 // now, some functions to help deal with styles / rules 
@@ -704,7 +704,7 @@ export function keyframes(name, kfs) {
 
 export function cssFor(...rules) {
   let ids = rules.reduce((o, r) => (o[idFor(r)] = true, o), {})
-  let css = [ ...styleSheet.sheet.cssRules ].map(({ cssText }) => {
+  let css = styleSheet.rules().map(({ cssText }) => {
     let regex = /\[data\-css\-([a-zA-Z0-9]+)\]/gm
     let match = regex.exec(cssText)
     
