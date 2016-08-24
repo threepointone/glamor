@@ -1,4 +1,4 @@
-// import '../src/reset' // css reset!
+import '../src/reset' // css reset!
 // import { base } from '../src/ous'
 // import { fullWidth } from '../src/ous'
 
@@ -10,13 +10,31 @@ function log() {  // eslint-disable-line
 import React from 'react'
 import { style } from '../src'
 
-// export class App extends React.Component {
-//   render() {
-//     return <div {...style({ display: 'flex', a: [ 'b', 'c', 'd' ] })} href='google.com'>
-//      what what
-//     </div>
-//   }
-// }
+function times(n, fn) {
+  let arr = []
+  for(let i=0; i< n; i++) {
+    arr.push(fn(i))
+  }
+  return arr
+}
+
+function randLevel() {
+  return Math.round(Math.random() * 255)  
+}
+function color() {
+  return `rgb(${randLevel()}, ${randLevel()}, ${randLevel()})`
+}
+
+export class App extends React.Component {
+  render() {
+    return <div>
+      {times(1000, i => 
+        <div key={i} {...style({ display: 'flex', backgroundColor: color() })}>
+          x
+        </div>)}
+    </div>
+  }
+}
 
 // import { vars } from '../src/react'            
 
@@ -64,158 +82,157 @@ import { style } from '../src'
 //   }
 // }
 
-import { StyleSheet, css, createElement } from '../src/aphrodite'
-/** @jsx createElement */
+// import { StyleSheet, css, createElement } from '../src/aphrodite'
 
-import { keyframes } from '../src'
+// import { keyframes } from '../src'
 
-let kfs = keyframes({
-  'from': {
-    marginLeft: 0
-  },
+// let kfs = keyframes({
+//   'from': {
+//     marginLeft: 0
+//   },
 
-  'to': {
-    marginLeft: '100px'
-  }
-})
+//   'to': {
+//     marginLeft: '100px'
+//   }
+// })
 
-const styles = StyleSheet.create({
-  red: {
-    color: 'red'
-  },
+// const styles = StyleSheet.create({
+//   red: {
+//     color: 'red'
+//   },
 
-  blue: {
-    color: 'blue'
-  },
+//   blue: {
+//     color: 'blue'
+//   },
 
-  hover: {
-    ':hover': {
-      color: 'red'
-    }
-  },
+//   hover: {
+//     ':hover': {
+//       color: 'red'
+//     }
+//   },
 
-  hoverBlue: {
-    ':hover': {
-      color: 'blue'
-    }
-  },
+//   hoverBlue: {
+//     ':hover': {
+//       color: 'blue'
+//     }
+//   },
 
-  small: {
-    '@media (max-width: 600px)': {
-      color: 'red'
-    }
-  },
+//   small: {
+//     '@media (max-width: 600px)': {
+//       color: 'red'
+//     }
+//   },
 
-  evenSmaller: {
-    '@media (max-width: 400px)': {
-      color: 'blue'
-    }
-  },
+//   evenSmaller: {
+//     '@media (max-width: 400px)': {
+//       color: 'blue'
+//     }
+//   },
 
-  smallAndHover: {
-    '@media (max-width: 600px)': {
-      color: 'red',
-      ':hover': {
-        color: 'blue'
-      }
-    },
-    ':hover': {
-      color: 'green'
-    }
-  },
+//   smallAndHover: {
+//     '@media (max-width: 600px)': {
+//       color: 'red',
+//       ':hover': {
+//         color: 'blue'
+//       }
+//     },
+//     ':hover': {
+//       color: 'green'
+//     }
+//   },
 
-  returnOfSmallAndHover: {
-    '@media (max-width: 600px)': {
-      color: 'blue',
-      ':hover': {
-        color: 'green'
-      }
-    },
-    ':hover': {
-      color: 'red'
-    }
-  },
+//   returnOfSmallAndHover: {
+//     '@media (max-width: 600px)': {
+//       color: 'blue',
+//       ':hover': {
+//         color: 'green'
+//       }
+//     },
+//     ':hover': {
+//       color: 'red'
+//     }
+//   },
 
-  pseudoSelectors: {
-    ':hover': {
-      color: 'red'
-    },
-    ':active': {
-      color: 'blue'
-    }
-  },
+//   pseudoSelectors: {
+//     ':hover': {
+//       color: 'red'
+//     },
+//     ':active': {
+//       color: 'blue'
+//     }
+//   },
 
-  flexCenter: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 200,
-    height: 200,
-    outline: '1px solid black'
-  },
+//   flexCenter: {
+//     display: 'flex',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     width: 200,
+//     height: 200,
+//     outline: '1px solid black'
+//   },
 
-  flexInner: {
-    display: 'inline-block',
-    width: 100,
-    textAlign: 'justify',
-    textAlignLast: 'justify'
-  },
+//   flexInner: {
+//     display: 'inline-block',
+//     width: 100,
+//     textAlign: 'justify',
+//     textAlignLast: 'justify'
+//   },
 
-  animate: {
-    animation: kfs,
-    animationDuration: '2s',
-    animationIterationCount: 'infinite'
-  }
-})
-
-
-const styles2 = StyleSheet.create({
-  red: {
-    color: 'green'
-  }
-})
+//   animate: {
+//     animation: kfs,
+//     animationDuration: '2s',
+//     animationIterationCount: 'infinite'
+//   }
+// })
 
 
-export class App extends React.Component {
-  state = {
-    timer: true
-  }
-  componentDidMount() {
-    const flipTimer = () => {
-      this.setState({
-        timer: !this.state.timer
-      })
-      setTimeout(flipTimer, 1000)
-    }
+// const styles2 = StyleSheet.create({
+//   red: {
+//     color: 'green'
+//   }
+// })
 
-    setTimeout(flipTimer, 1000)
-  }
-  render() {
-    const testCases = [
-      <span className={css(styles.red)}>This should be red</span>,
-      <span className={css(styles.hover)}>This should turn red on hover</span>,
-      <span className={css(styles.small)}>This should turn red when the browser is less than 600px width</span>,
-      <span className={css(styles.red, styles.blue)}>This should be blue</span>,
-      <span className={css(styles.blue, styles.red)}>This should be red</span>,
-      <span className={css(styles.hover, styles.blue)}>This should be blue but turn red on hover</span>,
-      <span className={css(styles.small, styles.blue)}>This should be blue but turn red when less than 600px width</span>,
-      <span className={css(styles.hover, styles.hoverBlue)}>This should turn blue on hover</span>,
-      <span className={css(styles.small, styles.evenSmaller)}>This should turn red when less than 600px and blue when less than 400px</span>,
-      <span className={css(styles.smallAndHover)}>This should be red when small, green when hovered, and blue when both.</span>,
-      <span className={css(styles.smallAndHover, styles.returnOfSmallAndHover)}>This should be blue when small, red when hovered, and green when both.</span>,
-      <span className={css(styles.red, styles2.red)}>This should be green.</span>,
-      <span className={css(this.state.timer ? styles.red : styles.blue)}>This should alternate between red and blue every second.</span>,
-      <a href="javascript: void 0" className={css(styles.pseudoSelectors)}>This should turn red on hover and ???? (blue or red) on active</a>,
-      <div className={css(styles.flexCenter)}><div className={css(styles.flexInner)}>This should be centered inside the outer box, even in IE 10.</div></div>,
-      <span className={css(styles.animate)}>This should animate</span>
-    ]
 
-    return <div>
-      {testCases.map((testCase, i) => <div key={i}>{testCase}</div>)}
-    </div>
+// export class App extends React.Component {
+//   state = {
+//     timer: true
+//   }
+//   componentDidMount() {
+//     const flipTimer = () => {
+//       this.setState({
+//         timer: !this.state.timer
+//       })
+//       setTimeout(flipTimer, 1000)
+//     }
 
-  }
-}
+//     setTimeout(flipTimer, 1000)
+//   }
+//   render() {
+//     const testCases = [
+//       <span className={css(styles.red)}>This should be red</span>,
+//       <span className={css(styles.hover)}>This should turn red on hover</span>,
+//       <span className={css(styles.small)}>This should turn red when the browser is less than 600px width</span>,
+//       <span className={css(styles.red, styles.blue)}>This should be blue</span>,
+//       <span className={css(styles.blue, styles.red)}>This should be red</span>,
+//       <span className={css(styles.hover, styles.blue)}>This should be blue but turn red on hover</span>,
+//       <span className={css(styles.small, styles.blue)}>This should be blue but turn red when less than 600px width</span>,
+//       <span className={css(styles.hover, styles.hoverBlue)}>This should turn blue on hover</span>,
+//       <span className={css(styles.small, styles.evenSmaller)}>This should turn red when less than 600px and blue when less than 400px</span>,
+//       <span className={css(styles.smallAndHover)}>This should be red when small, green when hovered, and blue when both.</span>,
+//       <span className={css(styles.smallAndHover, styles.returnOfSmallAndHover)}>This should be blue when small, red when hovered, and green when both.</span>,
+//       <span className={css(styles.red, styles2.red)}>This should be green.</span>,
+//       <span className={css(this.state.timer ? styles.red : styles.blue)}>This should alternate between red and blue every second.</span>,
+//       <a href="javascript: void 0" className={css(styles.pseudoSelectors)}>This should turn red on hover and ???? (blue or red) on active</a>,
+//       <div className={css(styles.flexCenter)}><div className={css(styles.flexInner)}>This should be centered inside the outer box, even in IE 10.</div></div>,
+//       <span className={css(styles.animate)}>This should animate</span>
+//     ]
+
+//     return <div>
+//       {testCases.map((testCase, i) => <div key={i}>{testCase}</div>)}
+//     </div>
+
+//   }
+// }
 
 // import { hover } from '../src'
 
