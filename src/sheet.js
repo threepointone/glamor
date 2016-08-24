@@ -53,6 +53,14 @@ const isBrowser = typeof document !== 'undefined'
 const isDev = (x => (x === 'development') || !x)(process.env.NODE_ENV)
 const isTest = process.env.NODE_ENV === 'test' 
 
+const oldIE = (() => {  
+  if(isBrowser) {
+    let div = document.createElement('div')
+    div.innerHTML = '<!--[if lt IE 10]><i></i><![endif]-->'
+    return div.getElementsByTagName('i').length === 1
+  }  
+})()
+
 let sheetCounter = 0
 
 function makeStyleTag(name = '_css_') {
@@ -66,7 +74,11 @@ function makeStyleTag(name = '_css_') {
 }
 
 export class StyleSheet {
-  constructor({ name = '_css_' + sheetCounter++, speedy = !isDev && !isTest, length = 30000 }) { // somehow default to 60000
+  constructor({ 
+    name = '_css_' + sheetCounter++, 
+    speedy = !isDev && !isTest, 
+    length = (isBrowser && oldIE) ? 4000 : 65000 
+  }) {
     this.name = name 
     this.speedy = speedy // the big drawback here is that the css won't be editable in devtools
     this.sheet = undefined
@@ -76,7 +88,7 @@ export class StyleSheet {
   }
   inject() {
     if(this.injected) {
-      throw new Error('already injected stylesheet!') //eslint-disable-line no-console
+      throw new Error('already injected stylesheet!') 
     }
     if(isBrowser) {
       // this section is just weird alchemy I found online off many sources 
@@ -100,7 +112,6 @@ export class StyleSheet {
   _insert(rule) {
     // this weirdness for perf, and chrome's weird bug 
     // https://stackoverflow.com/questions/20007992/chrome-suddenly-stopped-accepting-insertrule
-
     try {          
       this.sheet.insertRule(rule, this.sheet.cssRules.length) // todo - correct index here     
     }
@@ -139,7 +150,7 @@ export class StyleSheet {
       }
     }
     this.ctr++
-    if(this.ctr % this.length === 0) {
+    if(isBrowser && this.ctr % this.length === 0) {
       this.tags.push(makeStyleTag(this.name + Math.round(this.ctr / this.length)))
       this.sheet = sheetForTag(this.tags::last())
     }
@@ -169,7 +180,6 @@ export class StyleSheet {
     return this.tags.reduce((arr, tag) => 
       arr.concat(Array.from(
         sheetForTag(tag).cssRules 
-      )), [])
-    
+      )), [])    
   }
 }
