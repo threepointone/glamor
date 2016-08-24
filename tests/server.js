@@ -1,6 +1,6 @@
 import { style, merge, hover, flush,
-  cssLabels, simulations,
-  renderStatic, renderStaticOptimized } from '../src'
+  cssLabels, simulations } from '../src'
+import { renderStatic, renderStaticOptimized } from '../src/server'
 import jade from 'jade'
 
 import expect from 'expect'
@@ -35,10 +35,10 @@ style({ color: 'wheat' })
   let { html, css, cache } = renderStaticOptimized(() =>
     renderToStaticMarkup(<div {...merge(style({ color: 'red' }), hover({ color: 'blue' }))}/>))
 
-  expect(html).toEqual('<div data-css-1d79yij=""></div>')
-  expect(css).toEqual('[data-css-1d79yij]{ color:red; } \n[data-css-1d79yij]:hover{ color:blue; } \n')
+  expect(html).toEqual('<div data-css-1exzfjk=""></div>')
+  expect(css).toEqual('[data-css-1exzfjk]{ color:red; } \n[data-css-1exzfjk]:hover:nth-child(n){ color:blue; } \n')
   expect(cache).toEqual({
-    '1d79yij': { bag: { _: { color: 'red' }, hover: { color: 'blue' } }, id: '1d79yij', label: '' }
+    '1exzfjk': { bag: { _: { color: 'red' }, hover: { color: 'blue' } }, id: '1exzfjk', label: '' }
   })
   cssLabels(true)
   simulations(true)

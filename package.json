@@ -23,8 +23,10 @@
     "compress:umd": "NODE_ENV=production uglifyjs umd/index.js -mc -o umd/index.min.js",
     "clean": "rm -rf lib && rm -rf es6 && rm -rf umd && rm -f src/CSSPropertyOperations.js",
     "test": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js --single-run",
+    "test:server": "NODE_ENV=test ./node_modules/.bin/babel-node tests/server.js --presets es2015,stage-0,react --plugins transform-decorators-legacy",
     "test:watch": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "size": "cat umd/index.min.js | gzip | wc -c"
   },
   "devDependencies": {
     "aliasify": "^2.0.0",

@@ -31,10 +31,10 @@ features
 
 - really small / fast / efficient, with a fluent api
 - framework independent
-- adds vendor prefixes
+- adds vendor prefixes / fallback values 
 - supports all the pseudo :classes/::elements
-- supports `@media` queries
-- supports `@font-face` and `@keyframes`
+- `@media` queries
+- `@font-face` / `@keyframes`
 - escape hatches for global and child selectors 
 - dev helper to simulate pseudo classes like `:hover`, etc
 - server side / static rendering
@@ -284,8 +284,8 @@ insertRule(`body {
 
 plugins
 
-plugins are run just before the style object is converted into css. 
-they receive `{ selector, style, ... }` and are expected to return an object of same shape 
+plugins are functions run before the style object is converted into css. 
+they transform objects of the shape `{ selector, style, ... }`
 
 `plugins.inject(...fns)`
 
@@ -600,7 +600,6 @@ here are some key differences -
 todo
 ---
 
-- fallback values 
 - alternatives for - cssnext, stylelint, cssnano
 - error checking / typechecks (flow? runtime?)
 - ie8 compat for insertRule/deleteRule

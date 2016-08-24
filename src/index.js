@@ -27,10 +27,14 @@ import autoprefixFn from './autoprefix'
 let autoprefix = autoprefixFn(true) // add vendor prefixes 
 // helper to hack around isp's array format 
 
-function fallbackPlugin(x) {
+function fallbackPlugin({ style, ...rest }) {
+  let flattened = Object.keys(style).reduce((o, key) => {
+    o[key] = Array.isArray(style[key]) ? style[key].join(`; ${key}: `): style[key]
+    return o 
+  }, {})
   // todo - 
   // flatten arrays which haven't been flattened yet 
-  return x
+  return { style: flattened, ...rest }
 }
 
 function prefixerPlugin({ style, ...rest }) {
