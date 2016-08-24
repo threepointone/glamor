@@ -1,8 +1,6 @@
+/**** stylesheet  ****/
 import { StyleSheet } from './sheet.js'
 import { PluginSet, prefixes, fallbacks } from './plugins' // we include these by default 
-import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations' // converts a js style object to css markup
-// for the umd build, we'll used browserify to extract react's 
-// CSSPropertyOperations module and it's deps into ./CSSPropertyOperations 
 
 // these here are our main 'mutable' references
 export const styleSheet = new StyleSheet({ name: '_css_' }) 
@@ -27,7 +25,6 @@ const isTest = process.env.NODE_ENV === 'test'
 
 // import some helpers 
 import hash from './hash'  // hashes a string to something 'unique'
-
 
 // takes a string, converts to lowercase, strips out nonalphanumeric.
 function simple(str) {
@@ -73,7 +70,7 @@ export function simulate(...pseudos) {
 
 /**** labels ****/
 // toggle for debug labels. 
-// shouldn't *have* to mess with this manually
+// *shouldn't* have to mess with this manually
 let hasLabels = isDev
 
 export function cssLabels(bool) {
@@ -93,8 +90,11 @@ export function insertRule(css) {
   styleSheet.insert(css)
 }
 
-
 // now, some functions to help deal with styles / rules 
+
+import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations' // converts a js style object to css markup
+// for the umd build, we'll used browserify to extract react's 
+// CSSPropertyOperations module and it's deps into ./CSSPropertyOperations 
 
 // generates a hash for (type, style)
 function styleHash(type, style) { // todo - default type = '_'. this changes all the hashes and will break tests, so do later 
@@ -156,7 +156,7 @@ export function idFor(rule) {
 }
 
 // checks if a rule is registered
-function isRule(rule) {
+export function isRule(rule) {
   try{
     let id = idFor(rule)
     return  id && styleSheet.cache[id]
@@ -335,6 +335,7 @@ export function lang(p, x) {
   return add(`lang(${p})`, x)
 }
 export function not(p, x) { 
+  // should this be a plugin?
   let selector = p.split(',').map(x => x.trim()).map(x => `:not(${x})`)
   if(selector.length === 1) {
     return add(`not(${p})`, x)  
@@ -375,8 +376,13 @@ export function backdrop(x) {
   return add(':backdrop', x) 
 }
 export function placeholder(x) {
-  // todo - webkit placeholder
-  return add(':placeholder', x) 
+  // https://github.com/threepointone/glamor/issues/14
+  return merge(
+    add(':placeholder', x),
+    add(':-webkit-input-placeholder', x),
+    add(':-moz-placeholder', x),
+    add(':-ms-input-placeholder', x)
+  )
 }
 
 // unique feature 
@@ -397,9 +403,11 @@ export function parent(selector, style) {
 // we define a function to 'merge' styles together.
 // backstory - because of a browser quirk, multiple styles are applied in the order they're 
 // defined the stylesheet, not in the order of application 
-// in most cases, thsi won't case an issue UNTIL IT DOES 
+// in most cases, this won't case an issue UNTIL IT DOES 
 // instead, use merge() to merge styles,
 // with latter styles gaining precedence over former ones 
+
+// todo - this needs a refactor urghhh
 export function merge(...rules) {
   let labels = [], mergeLabel, styleBag = {}, mediaBag = {}
   rules.forEach((rule, i) => {

@@ -285,7 +285,7 @@ insertRule(`body {
 
 ---
 
-plugins
+`plugins`
 
 plugins are functions run before the style object is converted into css. 
 they transform objects of the shape `{ selector, style, ... }`

@@ -35,8 +35,6 @@ styleSheet.flush()
 
 */
 
-/**** stylesheet ****/
-
 function last() {
   return this[this.length -1]
 }
@@ -61,8 +59,6 @@ const oldIE = (() => {
   }  
 })()
 
-let sheetCounter = 0
-
 function makeStyleTag(name = '_css_') {
   let tag = document.createElement('style')        
   tag.type = 'text/css'
@@ -72,6 +68,8 @@ function makeStyleTag(name = '_css_') {
   (document.head || document.getElementsByTagName('head')[0]).appendChild(tag)
   return tag
 }
+
+let sheetCounter = 0
 
 export class StyleSheet {
   constructor({ 
@@ -154,10 +152,6 @@ export class StyleSheet {
       this.tags.push(makeStyleTag(this.name + Math.round(this.ctr / this.length)))
       this.sheet = sheetForTag(this.tags::last())
     }
-    // if ctr at border 
-    // add new tag 
-    // reassign sheet 
-    // ctr++ ? 
   }
   flush() {
     // todo backward compat (styleTag.styleSheet.cssText?)

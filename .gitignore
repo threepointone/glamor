@@ -2,7 +2,6 @@
 /lib
 /node_modules
 npm-debug.log
-demo/bundle.js
+examples/bundle.js
 umd/*
-demo/node_modules
-sandbox.js
+examples/node_modules

@@ -18,11 +18,9 @@ export class Runner extends React.Component {
   state = { time: -1, sheet: new StyleSheet({ speedy: this.props.speedy }) }
   componentWillMount() {
     this.state.sheet.inject()
-    let start = Date.now()
-    let c = Math.round(Math.random() * 255)
-    c = `rgb(${c}, ${c}, ${c})`
-    for(let i=0; i< this.props.count; i++) {
-      this.state.sheet.insert(`.cls-${i} { color: ${c} }`)
+    let start = Date.now()    
+    for(let i = 0; i < this.props.count; i++) {
+      this.state.sheet.insert(`.cls-${i} { color: red; }`)
     }    
     this.setState({
       time: Date.now() - start
