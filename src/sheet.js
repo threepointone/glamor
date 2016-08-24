@@ -2,17 +2,14 @@
 
 high performance StyleSheet for css-in-js systems 
 
-- uses `insertRule` in production for *much* faster performance
-- 'polyfills' on server side in memory 
+- uses multiple style tags behind the scenes for millions of rules 
+- uses `insertRule` for appending in production for *much* faster performance
+- 'polyfills' on server side 
+
 
 // usage
 import StyleSheet from 'glamor/lib/sheet'
-let styleSheet = new StyleSheet()
-
-OR 
-
-// pass a custom name/id for tag, and toggle insertRule manually 
-let styleSheet = new StyleSheet({ name, speedy = true/false })
+let styleSheet = new StyleSheet({ name:optional })
 
 styleSheet.inject() 
 // 'injects' the stylesheet into the page (or into memory if on server)
@@ -23,7 +20,6 @@ styleSheet.insert('#box { border: 1px solid red; }')
 styleSheet.rules()
 // array of css rules 
 // use for server side rendering, etc 
-
 
 styleSheet.flush() 
 // empties the stylesheet of all its contents
@@ -51,7 +47,7 @@ const isTest = process.env.NODE_ENV === 'test'
 
 let sheetCounter = 0
 
-function makeTag(name = '_css_') {
+function makeStyleTag(name = '_css_') {
   let tag = document.createElement('style')        
   tag.type = 'text/css'
   tag.id = name
@@ -77,9 +73,9 @@ export class StyleSheet {
     if(isBrowser) {
       // this section is just weird alchemy I found online off many sources 
       // it checks to see if the tag exists; creates an empty one if not 
-      this.tags[0] = document.getElementById(this.name + this.ctr)
+      // this.tags[0] = document.getElementById(this.name + this.ctr)
       if(!this.tags[0]) {        
-        this.tags[0] = makeTag(this.name + this.ctr)        
+        this.tags[0] = makeStyleTag(this.name + this.ctr)        
       }
       // this weirdness brought to you by firefox 
       this.sheet = sheetForTag(this.tags[0]) 
@@ -139,6 +135,10 @@ export class StyleSheet {
       }
     }
     this.ctr++
+    // if ctr at border 
+    // add new tag 
+    // reassign sheet 
+    // ctr++ ? 
   }
   flush() {
     // todo backward compat (styleTag.styleSheet.cssText?)

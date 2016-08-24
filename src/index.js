@@ -3,7 +3,7 @@
 import { StyleSheet } from './sheet.js'
 // these here are our main 'mutable' references
 export const styleSheet = new StyleSheet({ name: '_css_' }) // stores all the registered styles. most important, for such a small name.  
-  // styleSheet.sheet // reference to the styleSheet object, either native on browser / polyfilled on server 
+  // styleSheet.rules() // reference to the css rules, either native on browser / polyfilled on server 
   // styleSheet.inject() // adds the sheet to the page 
 
 styleSheet.cache = {} // hang on some state on to this instance 
@@ -11,8 +11,6 @@ styleSheet.cache = {} // hang on some state on to this instance
 // /**************** LIFTOFF IN 3... 2... 1... ****************/
 styleSheet.inject()
 // /****************      TO THE MOOOOOOON     ****************/
-
-/**** stylesheet ****/
 
 
 // define some constants 
@@ -36,11 +34,10 @@ function simple(str) {
 
 // plugins
 
-class Plugins {
+class PluginSet {
   constructor(...initial) {
     this.fns = initial || []
   }
-  plugins = []
   inject(...fns) {
     fns.forEach(fn => {
       if(this.fns.indexOf(fn) >= 0) {
@@ -66,10 +63,10 @@ class Plugins {
 
 import { prefixes, fallbacks } from './plugins' // we include these by default 
 
-export const plugins = new Plugins(fallbacks, prefixes)
-plugins.media = new Plugins() // neat! media, font-face, keyframes
-plugins.fontFace = new Plugins()
-plugins.keyframes = new Plugins(prefixes)
+export const plugins = styleSheet.plugins = new PluginSet(fallbacks, prefixes)
+plugins.media = new PluginSet() // neat! media, font-face, keyframes
+plugins.fontFace = new PluginSet()
+plugins.keyframes = new PluginSet(prefixes)
 //////
 
 /**** simulations  ****/
@@ -130,6 +127,7 @@ export function flush() { // todo - tests
 export function insertRule(css) {
   styleSheet.insert(css)
 }
+
 
 // now, some functions to help deal with styles / rules 
 
@@ -432,6 +430,7 @@ export function parent(selector, style) {
 }
 
 
+
 // we define a function to 'merge' styles together.
 // backstory - because of a browser quirk, multiple styles are applied in the order they're 
 // defined the stylesheet, not in the order of application 
@@ -535,7 +534,7 @@ export function merge(...rules) {
     
     Object.keys(mediaBag).forEach(expr => {
       let css = Object.keys(mediaBag[expr]).map(type => cssrule(id, type, mediaBag[expr][type]))
-      let result = plugins.media.apply({ id, media: true, expr, css })
+      let result = plugins.media.apply({ id, expr, css })
       styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)
     })
   }
@@ -544,14 +543,26 @@ export function merge(...rules) {
 
 export const compose = merge 
 
+function isMerged(id) {
+  return !!styleSheet.cache[id].bag
+}
+
+function isMedia(id) {
+  return !!styleSheet.cache[id].expr
+}
+
+
+export function insertMediaRule({ id, expr, style, rule, label, css }) {
+  let result = plugins.media.apply({ id, expr, css })
+  styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)  
+  styleSheet.cache[id] = { expr, rule, style, id, label }  
+}
+
+
 // this one's for media queries 
 // they cannot be merged with other queries 
 // todo - we should test whether the query is valid and give dev feedback 
 export function media(expr, ...rules) {
-
-
-  // todo - replace min-/max- with <= & >= (syntax easier to read)
-
   if (rules.length > 1) {
     return media(expr, merge(...rules))
   } // todo - iterate yourself instead 
@@ -559,38 +570,33 @@ export function media(expr, ...rules) {
   // test if valid media query
   if(isRule(rule)) {
     let id = idFor(rule)
-    
-    if(styleSheet.cache[id].bag) { // merged rule       
-      // todo - test if any media rules in this merged rule, throw if so 
-      if(styleSheet.cache[id].media) {
+    let spec = styleSheet.cache[id]
+    if(isMerged(id)) { // merged rule        
+      if(spec.media) {
         throw new Error('cannot apply a media rule onto another')
       }
-      let { bag } = styleSheet.cache[id]
+      let { bag } = spec
       let newId = hash(expr+id).toString(36)
-      let label = hasLabels ? `*mq [${styleSheet.cache[id].label}]` : ''
+      let label = hasLabels ? `*mq [${spec.label}]` : ''
 
       if(!styleSheet.cache[newId]) {
-        let cssRules = Object.keys(bag).map(type => cssrule(newId, type, bag[type]))
-        let result = plugins.media.apply({ id: newId, expr, css: cssRules })
-        styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)
-        styleSheet.cache[newId] = { expr, rule, id: newId, label }
+        let css = Object.keys(bag).map(type => cssrule(newId, type, bag[type]))
+        insertMediaRule({ id: newId, expr, rule, label, css })
       }      
 
       return { [`data-css-${newId}`]: label }
       // easy 
     }
-    else if(styleSheet.cache[id].expr) { // media rule
+    else if(isMedia(id)) { // media rule
       throw new Error('cannot apply a media rule onto another')
     }
     else { // simple rule
       let newId = hash(expr+id).toString(36)
-      let label = hasLabels ? '*mq ' + (styleSheet.cache[id].style.label || '*') : ''
+      let label = hasLabels ? '*mq ' + (spec.style.label || '*') : ''
 
       if(!styleSheet.cache[newId]) {
-        let css = cssrule(newId, styleSheet.cache[id].type, styleSheet.cache[id].style)
-        let result = plugins.media.apply({ id:newId, expr, css: [ css ] })
-        styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)
-        styleSheet.cache[newId] = { expr, rule, id: newId, label }
+        let css = [ cssrule(newId, spec.type, spec.style) ]
+        insertMediaRule({ id: newId, expr, rule, label, css })
       }
       
       return { [`data-css-${newId}`]: label }
@@ -604,9 +610,7 @@ export function media(expr, ...rules) {
     let label = hasLabels ? '*mq ' + (style.label || '*') : ''
     if(!styleSheet.cache[newId]) {
       let css = [ cssrule(newId, '_', style) ]
-      let result = plugins.media.apply({ id:newId, expr, css: [ css ] })
-      styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)
-      styleSheet.cache[newId] = { expr, style, id: newId, label }
+      insertMediaRule({ id: newId, expr, style: rule, label, css })
     }
     return { [`data-css-${newId}`]: label }
   }
