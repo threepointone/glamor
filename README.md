@@ -285,11 +285,11 @@ plugins
 plugins are run just before the style object is converted into css. 
 they receive `{ selector, style, ... }` and are expected to return an object of same shape 
 
-`injectPlugin(...fns)`
+`plugins.inject(...fns)`
 
 ```jsx
-// simple plugin to support rebeccapurple color 
-injectPlugin(({ selector, style, ...rest }) => {
+// support color: rebeccapurple
+plugins.inject(({ selector, style, ...rest }) => {
     if(style.color === 'rebeccapurple') {
       style = { ...style, color: '#663399' }
     }
@@ -299,8 +299,8 @@ injectPlugin(({ selector, style, ...rest }) => {
 ```
 
 also -
-- `removePlugin(fn)`
-- `clearPlugins()`
+- `plugins.[media|keyframes|fontFace].inject(...fns)`
+- `.remove(fn), .clear()`
 
 ---
 
