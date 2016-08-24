@@ -1,8 +1,4 @@
-import { autoprefix } from './autoprefix'
 const isDev = (x => (x === 'development') || !x)(process.env.NODE_ENV)
-
-// let autoprefix = autoprefixFn(true) // add vendor prefixes 
-// helper to hack around isp's array format 
 
 export class PluginSet {
   constructor(...initial) {
@@ -31,7 +27,6 @@ export class PluginSet {
   }
 }
 
-
 export function fallbacks(node) {
   let hasArray = Object.keys(node.style).map(x => Array.isArray(node.style[x])).indexOf(true) >= 0
   if(hasArray) {
@@ -47,6 +42,7 @@ export function fallbacks(node) {
   return node   
 }
 
+import { autoprefix } from './autoprefix'
 export function prefixes({ style, ...rest }) {
   return ({ style: autoprefix(style), ...rest })
 }

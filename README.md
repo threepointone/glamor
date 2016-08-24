@@ -35,7 +35,7 @@ features
 - supports all the pseudo :classes/::elements
 - `@media` queries
 - `@font-face` / `@keyframes`
-- escape hatches for global and child selectors 
+- escape hatches for parent and child selectors 
 - dev helper to simulate pseudo classes like `:hover`, etc
 - server side / static rendering
 - tests / coverage
@@ -181,12 +181,13 @@ TODO - pseudo selectors for the same
 combine rules, with latter styles taking precedence over previous ones.
 
 ```jsx
-<div {...compose(
+<div {...
+  compose(
     style(props),
     hover(props),
     { color: 'red' },
     hover(props)) }>
-    mix it up!
+      mix it up!
 </div>
 ```
 
