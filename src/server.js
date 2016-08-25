@@ -34,7 +34,7 @@ export function renderStatic(fn, optimized = false) {
     return o
 
   }
-  return { html, cache: styleSheet.cache, css }
+  return { html, cache: styleSheet.cache, css, rules }
 }
 
 export function renderStaticOptimized(fn) {

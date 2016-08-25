@@ -1,10 +1,12 @@
 import React from 'react'
-import { placeholder } from '../src'
+import { placeholder, style } from '../src'
+
 
 export class App extends React.Component {
   render() {
     return <input 
-      {...placeholder({ color: 'red' })} 
+      {...placeholder({ color: 'red' })}
+      {...style({ display: 'flex' })} 
       placeholder="some text" 
     />
   }  
