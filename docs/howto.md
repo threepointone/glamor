@@ -46,16 +46,6 @@ glamor
 let boxHover = hover({ color: 'blue' })
 ```
 
-simulate pseduoclasses on elements
----
-
-devtools
-
-glamor 
-```jsx
-<div {...hover({ color: 'red' })} {...simulate()}/>
-```
-
 
 apply multiple rules to an element
 ---
@@ -81,7 +71,7 @@ glamor
 
 ```
 
-[(more examples)](https://github.com/threepointone/glamor/blob/master/src/ous.js)
+[(more examples for composing rules)](https://github.com/threepointone/glamor/blob/master/src/ous.js)
 
 
 apply styles to child selectors
@@ -133,7 +123,7 @@ export const Button = ({ css, children, ...props }) =>
 <Button css={hover({ color: 'red' })} />
 ```
 
-also - themes
+[todo - vars and themes]
 
 parent selectors 
 ---
@@ -153,7 +143,7 @@ let box = parent('.no-js .something',
 ```
 
 
-sibling relationship
+siblings
 ---
 
 
@@ -266,8 +256,5 @@ import `glamor/reset`
 make a grid 
 ---
 
-
-css-vars
----
 
 
