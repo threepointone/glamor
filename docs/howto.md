@@ -15,7 +15,7 @@ css
 
 glamor 
 ```jsx 
-let box = $({ color: 'red' })
+let box = style({ color: 'red' })
 // ...
 <div {...box}>
   this is a nice box. 
