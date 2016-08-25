@@ -40,7 +40,7 @@ class ButtonGroup extends React.Component {                                     
 class LoginForm extends React.Component {                                         //eslint-disable-line
   render() {
     return <div>
-      <input value='ooga'/>
+      <input value="ooga"/>
       <Button>login</Button>
     </div>  
   }

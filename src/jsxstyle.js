@@ -128,7 +128,7 @@ const splitStyles = (combinedProps) => {
     else if (key === 'props') {
       Object.assign(props, combinedProps[key])
     }
-    else if(key === 'style' || key === 'className') {
+    else if(key === 'style' || key === 'className' || key === 'children') {
       props[key] = combinedProps[key]  
     }
     else {    

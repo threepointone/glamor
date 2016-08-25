@@ -46,15 +46,10 @@ extras
 - glamor/reset - insert a css reset
 - glamor/ous - a port of [the skeleton css framework](getskeleton.com)
 - glamor/utils - a port of [postcss-utilities](https://github.com/ismamz/postcss-utilities)
-- glamor/react - helpers for overrides, 'css' prop, `vars` support
+- glamor/react - helpers for themes, 'css' dom prop, `vars` support
 - glamor/jsxstyle - react integration, à la jsxstyle
 - glamor/aphrodite - polyfill for [aphrodite](https://github.com/Khan/aphrodite)
 
-
-cons
----
-
-- no real-world usage / adoption yet
 
 api
 ---
@@ -278,9 +273,7 @@ use sparingly! for granular control, use javascript and pencil and paper.
 append a raw css rule to the stylesheet. the ultimate escape hatch.
 
 ```jsx
-insertRule(`body {
-  margin: 0;
-}`)
+insertRule(`body { margin: 0; }`)
 ```
 
 ---
@@ -420,9 +413,9 @@ class LoginForm extends React.Component {
 
 ```
 
-`override()`
+`makeTheme()`
 
-a solution for overriding styles on child elements 
+configurable themes for components
 
 [TODO docs]
 
@@ -600,6 +593,11 @@ here are some key differences -
 - it does **not** touch `class`/`style` attributes, neither does it **not** generate pretty classnames; instead we use `data-*` attributes and jsx attribute spread ([some implications](https://github.com/Khan/aphrodite/issues/25)). This lets you define styles 'inline', yet globally optimize as one unit.
 - in dev mode, you can simulate pseudo classes on elements by using the `simulate()` helper (or adding a `[data-simulate-<pseudo>]` attribute manually). very useful, especially when combined when hot-loading and/or editing directly in your browser devtools.
 - in production, we switch to a **much** faster method of appending styles to the document, able to add 10s of 1000s of rules in milliseconds. the caveat with this approach is that those styles will [not be editable in chrome/firefox devtools](https://bugs.chromium.org/p/chromium/issues/detail?id=387952) (which is fine, for prod?). advanced users may use `speedy(true/false)` to toggle this setting manually. 
+
+cons
+---
+
+- no real-world usage / adoption yet
 
 todo
 ---

@@ -7,6 +7,9 @@ insertRule('[data-abc]:hover { color: red; }')
 
 export class App extends React.Component {
   render() {
-    return <div data-abc></div>
+    return <div>
+      <div>one</div>
+      <div data-abc>two</div>
+    </div>
   }
 }

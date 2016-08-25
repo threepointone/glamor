@@ -6,6 +6,7 @@ import { container, row, columns, half, oneThird, twoThirds, fullWidth } from '.
 let grayBg = style({ backgroundColor: '#eee', textAlign: 'center', borderRadius: 4 })
 let grayCols = n => merge(columns(n), grayBg)
 
+import '../src/reset' // css reset!
 
 export class Grid extends React.Component {
   render() {

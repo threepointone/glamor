@@ -39,10 +39,6 @@ function getDataAttributes(node) {
   return d
 }
 
-function getSheet() {
-  return styleSheet.sheet
-}
-
 
 describe('glamor', () => {
   let node
@@ -97,10 +93,10 @@ describe('glamor', () => {
   it('can use a parent selector to target itself', () => {
     let x = parent('.foo', { color: 'red' })
     render(<div>
-      <div className='foo'>
+      <div className="foo">
         <span {...x}>target</span>
       </div>
-      <div className='bar'>
+      <div className="bar">
         <span {...x}>target</span>
       </div>
     </div>, node, () => {
@@ -350,31 +346,39 @@ describe('glamor', () => {
     expect(idFor(red)).toEqual('16y7vsu')      
   })
 
-  it('server side rendering', () => {
-    // see tests/server.js
+
+})
+
+describe('template literal', () => {
+  it('converts css into a rule')
+  it('scopes multiple rules into one element')
+})
+
+describe('plugins', () => {
+  // add / remove
+  // plugin order 
+  
+
+})
+
+describe('react', () => {
+  // css prop
+  // themes 
+  // vars 
+})
+
+describe('jsxstyle', () => {
+  let node
+  beforeEach(() => {
+    node = document.createElement('div')
+    document.body.appendChild(node)
   })
 
-  it('can rehydrate from serialized css/cache data', () => {
-    let styleTag = document.createElement('style')
-    if (styleTag.styleSheet) {
-      styleTag.styleSheet.cssText += '[data-css-_="16y7vsu"]{ color:red; }'
-    } else {
-      styleTag.appendChild(document.createTextNode('[data-css-_="16y7vsu"]{ color:red; }'))
-    }
-    document.head.appendChild(styleTag)
-    node.innerHTML = '<div data-css-_="16y7vsu"></div>'
-    expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
-    rehydrate({ '16y7vsu': { id: '16y7vsu', style: { color: 'red' }, type: '_' } })
-
-    style({ color: 'red' })
-    style({ color: 'blue' })
-
-    expect(styleSheet.rules().length).toEqual(1)
-    document.head.removeChild(styleTag)
-
+  afterEach(() => {
+    unmountComponentAtNode(node)
+    document.body.removeChild(node)
+    flush()
   })
-
-  it('delete a rule from the stylesheet')
 
   it('exposes a View component', () => {
     render(<View color="red"
@@ -401,18 +405,43 @@ describe('glamor', () => {
 }`)  
     })
   })
-  
 })
 
-describe('template literal', () => {
-  it('converts a css rule into an object')
-  it('scopes multiple rules into one element')
+describe('server', () => {
+  let node
+  beforeEach(() => {
+    node = document.createElement('div')
+    document.body.appendChild(node)
+  })
+
+  afterEach(() => {
+    unmountComponentAtNode(node)
+    document.body.removeChild(node)
+    flush()
+  })
+
+  it('server side rendering', () => {
+    // see tests/server.js
+  })
+
+  it('can rehydrate from serialized css/cache data', () => {
+    let styleTag = document.createElement('style')
+    if (styleTag.styleSheet) {
+      styleTag.styleSheet.cssText += '[data-css-_="16y7vsu"]{ color:red; }'
+    } else {
+      styleTag.appendChild(document.createTextNode('[data-css-_="16y7vsu"]{ color:red; }'))
+    }
+    document.head.appendChild(styleTag)
+    node.innerHTML = '<div data-css-_="16y7vsu"></div>'
+    expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
+    rehydrate({ '16y7vsu': { id: '16y7vsu', style: { color: 'red' }, type: '_' } })
+
+    style({ color: 'red' })
+    style({ color: 'blue' })
+
+    expect(styleSheet.rules().length).toEqual(1)
+    document.head.removeChild(styleTag)
+
+  })
+
 })
-
-describe('plugins', () => {
-  // add / remove
-  // plugin order 
-  
-
-})
-

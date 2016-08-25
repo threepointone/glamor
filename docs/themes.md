@@ -22,15 +22,16 @@ Consumers of this component will want to style this component from any point of 
 
 This is a solution for react+glamor.
 
-We expose static overrides to `<Button/>` styles with an override helper
+We create a theme, and attach it to the '<Button/>' class
+
 ```jsx
 //button.js
 
-import { override } from 'glamor/react'
+import { makeTheme } from 'glamor/react'
 
-export const btnStyle = override() 
+export const buttonTheme = makeTheme() 
 
-@btnStyle.base()
+@buttonTheme()
 class Button extends React.Component {
   render() {
     return <button {...this.props} {...merge(style({ backgroundColor: 'blue' }), this.props[btnStyle.name])}>
@@ -44,11 +45,11 @@ alternately, we can move the default styling into `btnStyle.base`
 ```jsx
 // btn.js
 
-import { override } from 'glamor/react'
+import { makeTheme } from 'glamor/react'
 
-export const btnStyle = override() 
+export const buttonTheme = makeTheme()
 
-@btnStyle.base({ backgroundColor: 'blue' })
+@buttonTheme({ backgroundColor: 'blue' })
 class Button extends React.Component {
   render() {
     return <button {...this.props} {...this.props[btnStyle.name]}>
@@ -61,10 +62,10 @@ class Button extends React.Component {
 Now, at any point in the component tree, we can decorate components with styles to be merged into the button
 ```jsx
 // btn-group.js
-import { Button, btnStyle } from './btn.js'
+import { Button, buttonTheme } from './btn.js'
 import { hover, firstChild, lastChild, merge } from 'glamor'
 
-@btnStyle.add(merge(
+@buttonTheme.add(merge(
   hover({ backgroundColor: 'gray' }), 
   firstChild({ borderTopLeftRadius: 10 }), 
   lastChild({ borderTopRightRadius: 10 })
@@ -80,11 +81,11 @@ export class ButtonGroup extends React.Component {
 }
 
 // form.js
-import { btnStyle } from './btn.js'
+import { buttonTheme } from './btn.js'
 import { ButtonGroup } from './btn-group.js'
 import { LoginButton } from './login-btn.js'
 
-@btnStyle.add({ fontSize: 20, margin: 20 })
+@buttonTheme.add({ fontSize: 20, margin: 20 })
 export class Form extends React.Component {
   render() {
     return <div>
@@ -96,22 +97,3 @@ export class Form extends React.Component {
 }
 
 ```
-another option is to use a wrapper component in the render tree
-```jsx
-// btn-group.js
-
-import { btnStyle } from './btn.js'
-export class ButtonGroup extends React.Component {
-  render() {
-    return <div>
-      <btnStyle.Override {...style({ borderTopLeftRadius: 10 })}>
-        <Button>one</Button>
-      </btnStyle.Override>
-      <btnStyle.Override {...style({ borderTopRightRadius: 10 })}>
-        <Button>two</Button>
-      </btnStyle.Override>      
-    </div>
-  }
-}
-```
-

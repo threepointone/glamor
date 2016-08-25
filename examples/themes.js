@@ -1,21 +1,28 @@
 import React from 'react'
-import { hover } from '../src'
-import { override } from '../src/react'
+import { makeTheme } from '../src/react'
 
+export class App extends React.Component {
+  render() {
+    return <div>
+      <ButtonGroup />
+      <InlineForm big/>
+    </div>
+  }
+}
 
-let buttonStyle = override()
+let theme = makeTheme()
 
-@buttonStyle.base({ backgroundColor: 'blue' })  
+@theme({ backgroundColor: 'blue' })  
 // optional defaults
 class Button extends React.Component {                                            //eslint-disable-line
   render() {
-    return <button {...this.props[buttonStyle.name]}>
+    return <button {...this.props[theme.key]}>
       {this.props.children}
     </button>
   }
 }
 
-@buttonStyle.add({ color: 'white' })
+@theme.add({ color: 'white' })
 // can do cumulative overrides! 
 // the 'higher' components get higher precedence 
 class ButtonGroup extends React.Component {                           //eslint-disable-line
@@ -29,7 +36,7 @@ class ButtonGroup extends React.Component {                           //eslint-d
 }
 
 // can also pass a function if based on props
-@buttonStyle.add(props => ({ fontSize: 20 }))                        //eslint-disable-line
+@theme.add(props => ({ fontSize: props.big ? 20 : 12 }))                        //eslint-disable-line
 class InlineForm extends React.Component {                            //eslint-disable-line
   render() {
     return <div>

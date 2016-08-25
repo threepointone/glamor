@@ -77,8 +77,7 @@ insertRule(`audio:not([controls]) {
  * Hide the `template` element in IE 8/9/11, Safari, and Firefox < 22.
  */
 
-insertRule(`[hidden],
-template {
+insertRule(`[hidden], template {
   display: none;
 }`)
 
@@ -162,8 +161,7 @@ insertRule(`small {
  * Prevent `sub` and `sup` affecting `line-height` in all browsers.
  */
 
-insertRule(`sub,
-sup {
+insertRule(`sub, sup {
   font-size: 75%;
   line-height: 0;
   position: relative;
@@ -230,10 +228,7 @@ insertRule(`pre {
  * Address odd `em`-unit font size rendering in all browsers.
  */
 
-insertRule(`code,
-kbd,
-pre,
-samp {
+insertRule(`code, kbd, pre, samp {
   font-family: monospace, monospace;
   font-size: 1em;
 }`)
@@ -278,8 +273,7 @@ insertRule(`button {
  * Correct `select` style inheritance in Firefox.
  */
 
-insertRule(`button,
-select {
+insertRule(`button, select {
   text-transform: none;
 }`)
 
@@ -335,8 +329,7 @@ insertRule(`input {
  * 2. Remove excess padding in IE 8/9/10.
  */
 
-insertRule(`input[type="checkbox"],
-input[type="radio"] {
+insertRule(`input[type="checkbox"], input[type="radio"] {
   box-sizing: border-box; /* 1 */
   padding: 0; /* 2 */
 }`)
@@ -425,7 +418,6 @@ insertRule(`table {
   border-spacing: 0;
 }`)
 
-insertRule(`td,
-th {
+insertRule(`td, th {
   padding: 0;
 }`)

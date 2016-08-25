@@ -26,6 +26,7 @@ export function renderStatic(fn, optimized = false) {
       o.cache[id] = styleSheet.cache[id]
       
       // todo - add fonts / animations
+      // todo - add raw rules (without any data-css stuff)
       o.css+= rules
         .map(x => x.cssText)
         .filter(r => new RegExp(`\\\[data\-css\-${id}\\\]`).test(r)).join('\n') + '\n'
