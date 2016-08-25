@@ -7,7 +7,6 @@ apply a style to an element
 --- 
 
 css
-
 ```css
 .box { color: red; }
 ```
@@ -18,7 +17,6 @@ css
 ```
 
 glamor 
-
 ```jsx 
 let box = style({ color: 'red' })
 // ...
@@ -35,13 +33,11 @@ target pseudoclasses
 ---
 
 css
-
 ```css
 .box:hover { color: blue; }
 ```
 
 glamor
-
 ```jsx
 let boxHover = hover({ color: 'blue' })
 ```
@@ -51,13 +47,11 @@ apply multiple rules to an element
 ---
 
 css
-
 ```html
 <div class="bold myClass"/>
 ```
 
 glamor 
-
 ```jsx
 <div {...bold} {...myClass} />
 
@@ -78,7 +72,6 @@ apply styles to child selectors
 ---
 
 css
-
 ```css
 #box { display: block; }
 .bold { font-weight: bold; }
@@ -93,7 +86,6 @@ css
 ```
 
 glamor 
-
 ```jsx
 let box = merge(
   { display: 'block' },
@@ -129,7 +121,6 @@ parent selectors
 ---
 
 css
-
 ```css
 .no-js .something #box { color: gray; }
 ```
@@ -150,6 +141,7 @@ siblings
 apply media queries
 ---
 
+css
 ```css
 .box {
   position: 'relative',
@@ -180,7 +172,7 @@ apply media queries
 }
 ```
 
-
+glamor
 ```jsx
 const container = merge(
   {
@@ -211,13 +203,11 @@ add a global css rule
 ---
 
 css 
-
 ```css
 html, body { padding: 0 }
 ```
 
 glamor 
-
 ```jsx
 insertRule('html, body { padding: 0 }')
 ```
@@ -233,6 +223,7 @@ css
 }
 ```
 
+glamor 
 ```jsx
 let box = style({
   display: ['flex', 'block']
