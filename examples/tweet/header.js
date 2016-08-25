@@ -1,4 +1,4 @@
-import {createElement} from '../../src/react' // eslint-disable-line
+import { createElement } from '../../src/react' // eslint-disable-line no-unused-vars
 /** @jsx createElement */
 
 
@@ -42,22 +42,22 @@ export class Header extends React.Component {
       marginTop: '-.15rem'
     }, select(':hover .name', {
       textDecoration: 'underline'
-    }, select(' .name' , {
+    }), select(' .name' , {
       color: this.props.vars.primary,
       fontWeight: 700
-    }))),
+    })),
 
     screenName: merge({
       color: this.props.vars.secondary
     }, before({
-      content: '"\a"',
+      content: '\a',
       whiteSpace: 'pre'
     }))
 
   }
   render() {
     let styles = this.styles
-    let { url, profileImageUrl, screenName } = this.props
+    let { url, profileImageUrl, screenName, name } = this.props
     return <div css={styles.header}>
       <div css={styles.profile}>
         <a href={url}>
@@ -66,7 +66,7 @@ export class Header extends React.Component {
       </div>
       <div css={styles.user}>
         <a css={styles.url} href={url}>
-          <span className='name'>{name}</span>
+          <span className="name">{name}</span>
           <span css={styles.screenName}>@{screenName}</span>
         </a>
       </div>

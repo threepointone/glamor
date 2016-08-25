@@ -1,17 +1,13 @@
-import {createElement} from '../../src/react' // eslint-disable-line
+import { createElement } from '../../src/react' // eslint-disable-line no-unused-vars
 /** @jsx createElement */
 
-import React, { Component, PropTypes } from 'react'
+import React, { Component, PropTypes } from 'react' // eslint-disable-line no-unused-vars
 
 import { reply, retweet, like, more } from './svgs'
-// import  from 'assets/retweet.svg'
-// import LikeIcon from 'assets/like.svg'
-// import MoreIcon from 'assets/more.svg'
 
 import { keyframes } from '../../src'
 import { vars } from '../../src/react'
 
-// import styles from './footer.css'
 
 let liked = keyframes({
   '50%': {
@@ -21,10 +17,6 @@ let liked = keyframes({
     transform: 'scale(1)'
   }
 })
-
-// const 
-
-// styles.button = merge(styles.icon, styles.button)
 
 @vars()
 export class Footer extends Component {
@@ -40,7 +32,7 @@ export class Footer extends Component {
       color: this.props.vars.secondary
     },
     counters: {
-      borderTop: '1px solid border',
+      borderTop: `1px solid ${this.props.vars.border}`,
       padding: '.98438rem 0',
       textTransform: 'uppercase'
     },
@@ -57,8 +49,8 @@ export class Footer extends Component {
     },
     actions: {
       alignItems: 'center',
-      borderBottom: '1px solid border',
-      borderTop: '1px solid border',
+      borderBottom: `1px solid ${this.props.vars.border}`,
+      borderTop: `1px solid ${this.props.vars.border}`,
       color: this.props.vars.secondary,
       display: 'flex',
       fontSize: '1.5rem',

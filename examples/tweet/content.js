@@ -1,4 +1,4 @@
-import {createElement} from '../../src/react' // eslint-disable-line
+import { createElement } from '../../src/react' // eslint-disable-line no-unused-vars
 /** @jsx createElement */
 
 import React, { PropTypes } from 'react' //eslint-disable-line no-unused-vars
@@ -45,7 +45,3 @@ export class Content extends React.Component {
   }
 }
 
-
-
-
-// export default Tweet

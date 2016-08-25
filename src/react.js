@@ -22,7 +22,7 @@ export const createElement = (tag, allProps, ...children) => {
 // see examples/vars for usage 
 export function vars(value = {}) {
   return function (Target) {
-    return class Theme extends React.Component {
+    return class Vars extends React.Component {
       static childContextTypes = {
         glamorCssVars: PropTypes.object
       }
