@@ -1,7 +1,4 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 
-export class App extends React.Component {
-  render() {
-
-  }
-}
+import { App as pApp } from './app'
+export const App = pApp
