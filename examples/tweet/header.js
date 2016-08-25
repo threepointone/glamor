@@ -50,7 +50,7 @@ export class Header extends React.Component {
     screenName: merge({
       color: this.props.vars.secondary
     }, before({
-      content: '\a',
+      content: '"\\a"',
       whiteSpace: 'pre'
     }))
 

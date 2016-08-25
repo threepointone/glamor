@@ -2,15 +2,14 @@ import { createElement } from '../../src/react' // eslint-disable-line no-unused
 /** @jsx createElement */
 
 import React from 'react'
-import { vars } from '../../src/react'
-
-
-import { Tweet } from './tweet'
-import data from './data.json'
 
 import { insertRule, merge, media } from '../../src'
 import '../../src/reset'
 
+import { vars } from '../../src/react'
+
+import { Tweet } from './tweet'
+import data from './data.json'
 
 let variables = {
   accent: '#1da1f2',

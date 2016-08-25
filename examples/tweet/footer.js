@@ -5,7 +5,7 @@ import React, { Component, PropTypes } from 'react' // eslint-disable-line no-un
 
 import { reply, retweet, like, more } from './svgs'
 
-import { keyframes } from '../../src'
+import { keyframes, style } from '../../src'
 import { vars } from '../../src/react'
 
 
@@ -76,7 +76,7 @@ export class Footer extends Component {
       outline: 'none'
     },
     liked: {
-      animation: `$${liked} .25s`,
+      animation: `${liked} .25s`,
       color: this.props.vars.animation
     }
   }
@@ -115,7 +115,7 @@ export class Footer extends Component {
             {retweet()}
           </div>
           <button css={styles.button} onClick={this.handleClick}>
-            {like(liked && styles.liked)}          
+            {like(liked && style(styles.liked))}          
           </button>
           <div css={styles.icon}>
             {more()}
