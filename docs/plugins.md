@@ -27,8 +27,23 @@ function anyLink({ selector, ...rest }) {
 
 ```
 
+To add a plugin -
+```jsx
+import { plugins } from 'glamor'
+plugins.inject(anyLink)
+```
 
-[todo]
+You can remove it with -
+```jsx
+plugins.remove(anyLink)
+// or to clear all plugins 
+plugins.clear()
+```
+
+plugins for vendor prefixes and array fallbacks are included by default. 
+
+
+[todo] - plugins for @-rules - 
 - media 
 - keyframes 
 - animation
