@@ -3,17 +3,18 @@ import { isRule, style, merge } from './index.js'
 
 
 // allows for dom elements to have a 'css' prop
-export const createElement = (tag, { css, ...props }, children) => {
+export const createElement = (tag, allProps, ...children) => { 
   // todo - pull ids from className as well? 
-  if(typeof tag === 'string' && css) {
+  if(typeof tag === 'string' && allProps && allProps.css) {
+    let { css , ...props } = allProps
     return React.createElement(tag, { 
       ...props, 
       ...Array.isArray(css) ? merge(...css) : 
         isRule(css) ? css : 
         style(css) 
-    }, children)
+    }, ...children)
   }
-  return React.createElement(tag, props, children )
+  return React.createElement(tag, allProps, ...children)
 }
 
 

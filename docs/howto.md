@@ -1,7 +1,4 @@
-WARNING : WORK IN PROGRESS
----
-
-// a comparison of techniques for using css&html vs glamor&react 
+// css vs glamor
 
 apply a style to an element 
 --- 
@@ -18,7 +15,7 @@ css
 
 glamor 
 ```jsx 
-let box = style({ color: 'red' })
+let box = $({ color: 'red' })
 // ...
 <div {...box}>
   this is a nice box. 
@@ -29,7 +26,7 @@ let box = style({ color: 'red' })
 </div>
 ```
 
-target pseudoclasses
+pseudoclasses
 ---
 
 css
@@ -43,7 +40,7 @@ let boxHover = hover({ color: 'blue' })
 ```
 
 
-apply multiple rules to an element
+multiple styles to an element
 ---
 
 css
@@ -68,7 +65,7 @@ glamor
 [(more examples for composing rules)](https://github.com/threepointone/glamor/blob/master/src/ous.js)
 
 
-apply styles to child selectors
+child selectors
 ---
 
 css
@@ -137,8 +134,39 @@ let box = parent('.no-js .something',
 siblings
 ---
 
+use `+` and `~` selectors
 
-apply media queries
+css
+```css
+.list li:first-of-type + li {
+  color: red
+}
+```
+```html
+<ul class='list'>
+  <li>one</li>
+  <li>two - red!</li>
+  <li>three</li>
+</ul>
+```
+
+```jsx
+let ul = $(' li:first-of-type + li', {
+  color: 'red'
+})
+
+// ...
+
+<ul {...ul}>
+  <li>one</li>
+  <li>two - red!</li>
+  <li>three</li>  
+</ul>
+
+```
+
+
+media queries
 ---
 
 css
@@ -199,7 +227,7 @@ const container = merge(
 ```
 
 
-add a global css rule
+:global css rule
 ---
 
 css 
@@ -216,7 +244,7 @@ fallback values
 ---
 
 css
-```
+```css
 .box {
   display: flex;
   display: block;
@@ -231,11 +259,42 @@ let box = style({
 ```
 
 
-fonts
+font-face
 ---
+
+[todo]
 
 animations
 ---
+
+css 
+```css
+@keyframes bounce { 
+  0%': { transform: scale(0.1); opacity: 0; }
+  60%: { transform: scale(1.2), opacity: 1 }
+  100%: { transform: scale(1) }
+}
+.box {
+  animation: bounce 2s;
+  width: 50, height: 50,
+  backgroundColor: 'red'
+}
+```
+
+glamor
+```jsx
+let bounce = keyframes({ 
+  '0%': { transform: 'scale(0.1)', opacity: 0 },
+  '60%': { transform: 'scale(1.2)', opacity: 1 },
+  '100%': { transform: 'scale(1)' }
+})
+
+let box = style({
+  animation: `${bounce} 2s`,
+  width: 50, height: 50,
+  backgroundColor: 'red'
+}) 
+```
 
 css reset / normalize
 ---
@@ -244,8 +303,10 @@ css reset / normalize
 import `glamor/reset`
 ```
 
-make a grid 
+grids
 ---
+
+[todo]
 
 
 

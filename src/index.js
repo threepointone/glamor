@@ -89,6 +89,7 @@ export function flush() { // todo - tests
 export function insertRule(css) {
   styleSheet.insert(css)
 }
+// todo insertRuleOnce
 
 // now, some functions to help deal with styles / rules 
 
@@ -389,8 +390,12 @@ export function placeholder(x) {
 // when you need to define 'real' css (whatever that may be)
 // https://twitter.com/threepointone/status/756585907877273600
 // https://twitter.com/threepointone/status/756986938033254400
-export function select(selector, style) {
-  return add('$' + selector, style) // signalling ahead that this is a plain selector 
+export function select(selector, _style) {
+  if(typeof selector === 'object') {
+    return style(selector)
+  }
+  //  todo - warn when missing possible space
+  return add('$' + selector, _style) // signalling ahead that this is a plain selector 
 }
 
 // alias. bringin' back jquery
@@ -523,7 +528,7 @@ function isMedia(id) {
 }
 
 
-export function insertMediaRule({ id, expr, style, rule, label, css }) {
+function insertMediaRule({ id, expr, style, rule, label, css }) {
   let result = plugins.media.apply({ id, expr, css })
   styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)  
   styleSheet.cache[id] = { expr, rule, style, id, label }  
