@@ -20,10 +20,6 @@ let box = $({ color: 'red' })
 <div {...box}>
   this is a nice box. 
 </div>
-// or, with the `createElement` shim 
-<div css={box}>
-  this is a nice box. 
-</div>
 ```
 
 pseudoclasses
@@ -55,11 +51,6 @@ glamor
 // or, unlike css, to maintain precendence order 
 
 <div {...merge(bold, myClass)} />
-
-// the css prop accepts arrays by default
-
-<div css={[ bold, myClass ]} />
-
 ```
 
 [(more examples for composing rules)](https://github.com/threepointone/glamor/blob/master/src/ous.js)
