@@ -31,7 +31,7 @@ let box = style({ color: 'red' })
 </div>
 ```
 
-add pseudo class styling to an element
+target pseudoclasses
 ---
 
 css
@@ -53,7 +53,7 @@ devtools
 
 glamor 
 ```jsx
-<div {...hover({ color: 'red' })} {...simulate()}
+<div {...hover({ color: 'red' })} {...simulate()}/>
 ```
 
 
@@ -81,12 +81,7 @@ glamor
 
 ```
 
-
-more examples in [glamor/ous](https://github.com/threepointone/glamor/blob/master/src/ous.js)
-
-composing rules 
----
-
+[(more examples)](https://github.com/threepointone/glamor/blob/master/src/ous.js)
 
 
 apply styles to child selectors
@@ -120,10 +115,22 @@ let box = merge(
 // ...
 
 <div {...box}>
-  <div class="one bold">is blue-bold!</div>
-  <div class="two">hover red!</div>
+  <div className="one bold">is blue-bold!</div>
+  <div className="two">hover red!</div>
 </div>
 
+```
+
+your components could also accept props to be merged into the component 
+
+```jsx
+let defaultStyle = { color: 'blue' }
+export const Button = ({ css, children, ...props }) => 
+  <button {...this.props} {merge(defaultStyle, css)}>
+    {this.props.children}
+  </button>
+
+<Button css={hover({ color: 'red' })} />
 ```
 
 also - themes
@@ -134,12 +141,12 @@ parent selectors
 css
 
 ```css
-.no-js #box { color: gray; }
+.no-js .something #box { color: gray; }
 ```
 
 glamor 
 ```jsx
-let box = parent('.no-js', 
+let box = parent('.no-js .something', 
   { color: 'gray' })
 
 <div {...box} /> 
@@ -153,8 +160,95 @@ sibling relationship
 apply media queries
 ---
 
-- presets 
-- merges 
+```css
+.box {
+  position: 'relative',
+  width: '100%',
+  maxWidth: 960,
+  margin: '0 auto',
+  padding: '0 20px',
+  boxSizing: 'border-box'
+}
+
+.box:after {
+  content: '""',
+  display: 'table',
+  clear: 'both'
+}
+
+@media (min-width: 400px) {
+  .box {
+    width: 85%;
+    padding: 0
+  }
+}
+
+@media (min-width: 550px) {
+  .box:nth-child(2n) {
+    width: 80%
+  }
+}
+```
+
+
+```jsx
+const container = merge(
+  {
+    position: 'relative',
+    width: '100%',
+    maxWidth: 960,
+    margin: '0 auto',
+    padding: '0 20px',
+    boxSizing: 'border-box'
+  },
+  after({
+    content: '""',
+    display: 'table',
+    clear: 'both'
+  }),
+  media('(min-width: 400px)', {
+    width: '85%',
+    padding: 0
+  }),
+  media('(min-width: 550px)', nthChild('2n', {
+    width: '80%'    
+  }))  
+)
+```
+
+
+add a global css rule
+---
+
+css 
+
+```css
+html, body { padding: 0 }
+```
+
+glamor 
+
+```jsx
+insertRule('html, body { padding: 0 }')
+```
+
+fallback values
+---
+
+css
+```
+.box {
+  display: flex;
+  display: block;
+}
+```
+
+```jsx
+let box = style({
+  display: ['flex', 'block']
+})
+```
+
 
 fonts
 ---
@@ -162,28 +256,18 @@ fonts
 animations
 ---
 
-add a global css rule
+css reset / normalize
 ---
 
-add a css reset
----
-
-server side / static rendering
----
+```jsx
+import `glamor/reset`
+```
 
 make a grid 
 ---
 
+
 css-vars
 ---
-
-
-extend the syntax / plugins
----
-
-
-fallback values
----
-
 
 
