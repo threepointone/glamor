@@ -1,6 +1,6 @@
 {
   "name": "glamor",
-  "version": "2.12.1",
+  "version": "2.13.0",
   "description": "inline css for component systems",
   "main": "lib/index.js",
   "files": [
@@ -84,7 +84,13 @@
     ]
   },
   "babel": {
-    "presets": ["es2015", "stage-0", "react"],
-    "plugins": ["transform-decorators-legacy"]
+    "presets": [
+      "es2015",
+      "stage-0",
+      "react"
+    ],
+    "plugins": [
+      "transform-decorators-legacy"
+    ]
   }
 }
