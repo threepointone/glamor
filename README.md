@@ -79,7 +79,6 @@ todo
 - grid helpers
 - browserstack integration
 - alternatives for - cssnext, stylelint, cssnano
-- insertRuleOnce
 - refactor `merge` / `media` functions 
 - error checking / typechecks (flow? runtime?)
 - ie8 compat for insertRule/deleteRule

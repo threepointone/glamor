@@ -215,16 +215,16 @@ use sparingly! for granular control, use javascript and pencil and paper.
 
 ---
 
-`insertRule(css)`/`insertRuleOnce(css)`
+`insertRule(css)`
 
-append a raw css rule to the stylesheet. the ultimate escape hatch.
+append a raw css rule at most once to the stylesheet. the ultimate escape hatch.
 
 ```jsx
 insertRule(`body { margin: 0; }`)
-// or use insertRuleOnce to insert just once, no matter how many times it's called 
-insertRuleOnce(`body { margin: 0; }`)
-insertRuleOnce(`body { margin: 0; }`)
-insertRuleOnce(`body { margin: 0; }`)
+insertRule(`body { margin: 0; }`)
+insertRule(`body { margin: 0; }`)
+
+// the above inserts the rule just once 
 ```
 
 

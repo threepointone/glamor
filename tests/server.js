@@ -20,7 +20,7 @@ style({ color: 'wheat' })
 
   expect(html).toEqual('<div data-css-16y7vsu=""></div>')
   expect(css).toEqual('[data-css-ruiioi]{ color:wheat; } \n[data-css-16y7vsu]{ color:red; } ')
-  expect(ids).toEqual({ '16y7vsu': true, ruiioi: true })
+  expect(ids).toEqual([ 'ruiioi', '16y7vsu' ])
   cssLabels(true)
   simulations(true)
 }
@@ -34,7 +34,7 @@ style({ color: 'wheat' })
 
   expect(html).toEqual('<div data-css-1exzfjk=""></div>')
   expect(css).toEqual('[data-css-1exzfjk]{ color:red; } \n[data-css-1exzfjk]:hover:nth-child(n){ color:blue; } \n')
-  expect(ids).toEqual({ '1exzfjk': true })
+  expect(ids).toEqual([ '1exzfjk' ])
   cssLabels(true)
   simulations(true)
 }

@@ -16,7 +16,7 @@ export function renderStatic(fn, optimized = false) {
     // parse out ids from html
     // reconstruct css/rules/cache to pass
 
-    let o = { html, ids: {}, css: '' }
+    let o = { html, ids: [], css: '' }
     let regex = /data\-css\-([a-zA-Z0-9]+)=/gm
     let match, ids = []
     while((match = regex.exec(html)) !== null) {
@@ -24,7 +24,7 @@ export function renderStatic(fn, optimized = false) {
     }
     ids.forEach(id => {
       // o.cache[id] = styleSheet.cache[id]
-      o.ids[id] = true
+      o.ids.push(id)
       // todo - add fonts / animations
       // todo - add raw rules (without any data-css stuff)
       o.css+= rules
@@ -34,7 +34,7 @@ export function renderStatic(fn, optimized = false) {
     return o
 
   }
-  return { html, ids: styleSheet.inserted, css, rules }
+  return { html, ids: Object.keys(styleSheet.inserted), css, rules }
 }
 
 export function renderStaticOptimized(fn) {
@@ -44,6 +44,6 @@ export function renderStaticOptimized(fn) {
 export function rehydrate(ids) {
   // load up ids
   // todoo - accept array
-  styleSheet.inserted = { ...styleSheet.inserted, ...ids }
+  styleSheet.inserted = { ...styleSheet.inserted, ...ids.reduce((o, i) => (o[i] = true, o), {}) }
   // assume css loaded separately
 }
