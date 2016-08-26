@@ -39,7 +39,7 @@ export class App extends React.Component {
       html {
         font-size: 16px;
       }
-    }` ].map(x => insertRule(x)),
+    }` ].forEach(x => insertRule(x)),
     container:  merge({
       margin: '0 auto',
       width: '100%'
