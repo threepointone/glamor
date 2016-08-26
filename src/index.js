@@ -1,36 +1,27 @@
 /**** stylesheet  ****/
-import { StyleSheet } from './sheet.js'
-import { PluginSet, prefixes, fallbacks } from './plugins' // we include these by default 
 
-// these here are our main 'mutable' references
+import { StyleSheet } from './sheet.js'
+import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations'
+
 export const styleSheet = new StyleSheet({ name: '_css_' }) 
 // an isomorphic StyleSheet shim. hides all the nitty gritty. 
-
-styleSheet.cache = {} // hang on some state on to this instance 
-styleSheet.inserted = {} // ids of rules inserted 
-
-// plugins 
-export const plugins = styleSheet.plugins = new PluginSet(fallbacks, prefixes)
-plugins.media = new PluginSet() // neat! media, font-face, keyframes
-plugins.fontFace = new PluginSet()
-plugins.keyframes = new PluginSet(prefixes)
 
 // /**************** LIFTOFF IN 3... 2... 1... ****************/
                         styleSheet.inject()                     //eslint-disable-line indent
 // /****************      TO THE MOOOOOOON     ****************/
 
+
+// plugins 
+import { PluginSet, prefixes, fallbacks } from './plugins' // we include these by default 
+export const plugins = styleSheet.plugins = new PluginSet(fallbacks, prefixes)
+plugins.media = new PluginSet() // neat! media, font-face, keyframes
+plugins.fontFace = new PluginSet()
+plugins.keyframes = new PluginSet(prefixes)
+
 // define some constants 
 const isBrowser = typeof document !== 'undefined' 
 const isDev = (x => (x === 'development') || !x)(process.env.NODE_ENV)
 const isTest = process.env.NODE_ENV === 'test' 
-
-// import some helpers 
-import hash from './hash'  // hashes a string to something 'unique'
-
-// takes a string, converts to lowercase, strips out nonalphanumeric.
-function simple(str) {
-  return str.toLowerCase().replace(/[^a-z0-9]/g, '')    
-}
 
 /**** simulations  ****/
 
@@ -68,7 +59,6 @@ export function simulate(...pseudos) {
   return pseudos.reduce((o, p) => (o[`data-simulate-${simple(p)}`] = '', o), {})
 }
 
-
 /**** labels ****/
 // toggle for debug labels. 
 // *shouldn't* have to mess with this manually
@@ -78,537 +68,253 @@ export function cssLabels(bool) {
   hasLabels = !!bool
 }
 
-// // clears out the cache and empties the stylesheet
-// best for tests, though there might be some value for SSR. 
-export function flush() { // todo - tests 
-  styleSheet.inserted = {}
-  styleSheet.cache = {}  
-  styleSheet.flush()
-  styleSheet.inject()
+
+// takes a string, converts to lowercase, strips out nonalphanumeric.
+function simple(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]/g, '')    
 }
 
-// escape hatchhhhhhh
-// export function insertRule(css) {
-//   styleSheet.insert(css)  
-// }
-
-export function insertRule(css, id) {
-  let hasId = !!id 
-  id = id || hash(css).toString(36)
-  if(!styleSheet.inserted[id]) {
-    styleSheet.insert(css + (!hasId ? `/* $id: ${id} */` : ''))  
-    styleSheet.inserted[id] = true 
-  }  
-}
-
-
-// now, some functions to help deal with styles / rules 
-
-import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations' // converts a js style object to css markup
-// for the umd build, we'll used browserify to extract react's 
-// CSSPropertyOperations module and it's deps into ./CSSPropertyOperations 
-
-// generates a hash for (type, style)
-function styleHash(type, style) { // todo - default type = '_'. this changes all the hashes and will break tests, so do later 
-  // make sure type exists
-  // make sure obj is style-like?
-  return hash(type + Object.keys(style).reduce((str, k) => str + k + style[k], '')).toString(36)
-}
-
-// generates a css selector for (id, type)
-function selector(id, type) {
-  // id should exist
-  let isFullSelector = type && type[0] === '$' 
-  let isParentSelector = type && type[0] === '%'
-  let cssType = type === '_' ? '' :  // plain style object
-    isFullSelector ? type.slice(1) : // via select()
-    isParentSelector ? type.slice(1) : // via parent()
-    `:${type}` // pseudo
-  let result 
-
-  if(isFullSelector) {    
-    result = cssType.split(',').map(x => `[data-css-${id}]${x}`).join(',')
+// flatten a nested array 
+function flatten(...els) {
+  let arr = []
+  for(let i=0; i<els.length; i++) {
+    if(Array.isArray(els[i])) 
+      arr = arr.concat(flatten(...els[i]))    
+    else 
+      arr = arr.concat(els[i])    
   }
-  else if (isParentSelector) {
-    // todo - attach pseudo classes if any
-    result = cssType.split(',').map(x => `${x} [data-css-${id}]`).join(',')
-  }
-  else {
-    result = `[data-css-${id}]${cssType}`  
-  }
-
-  // https://github.com/threepointone/glamor/issues/20
-  // todo - only on chrome versions and server side 
-  result = result.replace(/\:hover/g, ':hover:nth-child(n)')  
-  
-  if(canSimulate && type !== '_' && !isFullSelector && !isParentSelector && cssType[0] === ':') { // todo - work with pseudo selector on full selector at least 
-    result+= `, [data-css-${id}][data-simulate-${simple(type)}]`
-  }
-  return result
+  return arr
 }
 
-// ... which is then used to generate css rules 
-
-function cssrule(id, type, style) {
-  let result = plugins.apply({ id, type, style, selector: selector(id, type) })
-  
-  return `${result.selector}{ ${
-    createMarkupForStyles(result.style)
-  } } `
+// hashes a string to something 'unique'
+// we use this to generate ids for styles
+import hash from './hash'
+function hashify(...objs) {
+  return hash(objs.map(x => JSON.stringify(x)).join('')).toString(36)
 }
 
-// given a rule {data-css-id: ''}, checks if it's a valid, registered id
-// returns the id 
+function isLikeRule(rule) {
+  if(Object.keys(rule).length !== 1) {
+    return false 
+  }
+  return !!/data\-css\-([a-zA-Z0-9]+)/.exec(Object.keys(rule)[0])
+}
+
 export function idFor(rule) {
-  // todo - weak map hash for this?
   if(Object.keys(rule).length !== 1) throw new Error('not a rule')
   let regex = /data\-css\-([a-zA-Z0-9]+)/
   let match = regex.exec(Object.keys(rule)[0])
   if(!match) throw new Error('not a rule')
-  return match[1]
-}
-
-// checks if a rule is registered
-export function isRule(rule) {
-  try{
-    let id = idFor(rule)
-    return  id && styleSheet.cache[id]
-  }
-  catch(e) {
-    return false
-  }
-}
-
-// a generic rule creator/insertor 
-export function add(type = '_', style) {
-  let id = styleHash(type, style), // generate a hash based on type/style, use this to 'id' the rule everywhere 
-    label = ''
-  if(!styleSheet.cache[id]) {
-    insertRule(cssrule(id, type, style), id)    
-    styleSheet.cache[id] = { type, style, id }    
-  }
-  if(hasLabels) {
-    // adds a debug label 
-    label = style.label || label
-  }
-
-  return { [`data-css-${id}`]: label } 
-}
-
-// with those in place, we can now define user-friendly functions for 
-// defining styles on nodes 
-
-// first up, what will probably be most commonly used.
-// defines some css 'directly' on the node it's applied on
-export function style(obj) {
-  return add(undefined, obj)
-}
-
-// alllllll the pseudoclasses
-// todo - autogenerate this by scraping MDN
-export function active(x) { 
-  return add('active', x) 
-}
-
-export function any(x) { 
-  return add('any', x) 
-}
-
-export function checked(x) { 
-  return add('checked', x) 
-}
-
-export function disabled(x) { 
-  return add('disabled', x) 
-}
-
-export function empty(x) { 
-  return add('empty', x) 
-}
-
-export function enabled(x) { 
-  return add('enabled', x) 
-}
-
-export function _default(x) { 
-  return add('default', x) // note '_default' name  
-}
-
-export function first(x) { 
-  return add('first', x) 
-}
-
-export function firstChild(x) { 
-  return add('first-child', x) 
-}
-
-export function firstOfType(x) { 
-  return add('first-of-type', x) 
-}
-
-export function fullscreen(x) { 
-  return add('fullscreen', x) 
-}
-
-export function focus(x) { 
-  return add('focus', x) 
-}
-
-export function hover(x) { 
-  return add('hover', x) 
-}
-
-export function indeterminate(x) { 
-  return add('indeterminate', x) 
-}
-
-export function inRange(x) { 
-  return add('in-range', x) 
-}
-
-export function invalid(x) { 
-  return add('invalid', x) 
-}
-
-export function lastChild(x) { 
-  return add('last-child', x) 
-}
-
-export function lastOfType(x) { 
-  return add('last-of-type', x) 
-}
-
-export function left(x) { 
-  return add('left', x) 
-}
-
-export function link(x) { 
-  return add('link', x) 
-}
-
-export function onlyChild(x) { 
-  return add('only-child', x) 
-}
-
-export function onlyOfType(x) { 
-  return add('only-of-type', x) 
-}
-
-export function optional(x) { 
-  return add('optional', x) 
-}
-
-export function outOfRange(x) { 
-  return add('out-of-range', x) 
-}
-
-export function readOnly(x) { 
-  return add('read-only', x) 
-}
-
-export function readWrite(x) { 
-  return add('read-write', x) 
-}
-
-export function required(x) { 
-  return add('required', x) 
-}
-
-export function right(x) { 
-  return add('right', x) 
-}
-
-export function root(x) { 
-  return add('root', x) 
-}
-
-export function scope(x) { 
-  return add('scope', x) 
-}
-
-export function target(x) { 
-  return add('target', x) 
-}
-
-export function valid(x) { 
-  return add('valid', x) 
-}
-
-export function visited(x) { 
-  return add('visited', x) 
+  return match[1]  
 }
 
 
-// parameterized pseudoclasses
-export function dir(p, x) { 
-  return add(`dir(${p})`, x)
+function deepMerge(dest, src) {
+  Object.keys(src).forEach(expr => {
+    dest[expr] = dest[expr] || {}
+    Object.keys(src[expr]).forEach(type => {       
+      dest[expr][type] = dest[expr][type] || {}
+      Object.assign(dest[expr][type], src[expr][type])
+    })
+  })
 }
-export function lang(p, x) { 
-  return add(`lang(${p})`, x)
+
+let registered = {}
+function register(spec) {
+  if(!registered[spec.id]) {
+    registered[spec.id] = spec    
+  }  
 }
-export function not(p, x) { 
-  // should this be a plugin?
-  let selector = p.split(',').map(x => x.trim()).map(x => `:not(${x})`)
-  if(selector.length === 1) {
-    return add(`not(${p})`, x)  
-  }
-  return select(selector.join(''), x)
+
+function extractStyles(...rules) {
+  rules = flatten(rules)
+  let exprs = {}
   
-}
-export function nthChild(p, x) { 
-  return add(`nth-child(${p})`, x)
-}
-export function nthLastChild(p, x) { 
-  return add(`nth-last-child(${p})`, x)
-}
-export function nthLastOfType(p, x) { 
-  return add(`nth-last-of-type(${p})`, x)
-}
-export function nthOfType(p, x) { 
-  return add(`nth-of-type(${p})`, x)
-}
-
-// pseudoelements
-export function after(x) {
-  return add(':after', x) 
-}
-export function before(x) {
-  return add(':before', x) 
-}
-export function firstLetter(x) {
-  return add(':first-letter', x) 
-}
-export function firstLine(x) {
-  return add(':first-line', x) 
-}
-export function selection(x) {
-  return add(':selection', x) 
-}
-export function backdrop(x) {
-  return add(':backdrop', x) 
-}
-export function placeholder(x) {
-  // https://github.com/threepointone/glamor/issues/14
-  return merge(
-    add(':placeholder', x),
-    add(':-webkit-input-placeholder', x),
-    add(':-moz-placeholder', x),
-    add(':-ms-input-placeholder', x)
-  )
-}
-
-// unique feature 
-// when you need to define 'real' css (whatever that may be)
-// https://twitter.com/threepointone/status/756585907877273600
-// https://twitter.com/threepointone/status/756986938033254400
-export function select(selector, _style) {
-  if(typeof selector === 'object') {
-    return style(selector)
-  }
-  //  todo - warn when missing possible space
-  return add('$' + selector, _style) // signalling ahead that this is a plain selector 
-}
-
-// alias. bringin' back jquery
-export const $ = select
-
-export function parent(selector, style) {
-  return add('%' + selector, style)
-}
-
-// we define a function to 'merge' styles together.
-// backstory - because of a browser quirk, multiple styles are applied in the order they're 
-// defined the stylesheet, not in the order of application 
-// in most cases, this won't case an issue UNTIL IT DOES 
-// instead, use merge() to merge styles,
-// with latter styles gaining precedence over former ones 
-
-// todo - this needs a refactor urghhh
-export function merge(...rules) {
-  let labels = [], mergeLabel, styleBag = {}, mediaBag = {}
-  rules.forEach((rule, i) => {
-    // optionally send a string as first argumnet to 'label' this merged rule  
-    if(i === 0 && typeof rule === 'string') {
-      mergeLabel = rule
-      // bail early
+  rules.forEach(rule => {    
+    if(typeof rule === 'string') {
       return
     }
-    if(isRule(rule)) { // it's a rule!
-      
-      let id = idFor(rule)  
-      
-      if(styleSheet.cache[id].bag) { // merged rule 
-
-        let { bag, label, media } = styleSheet.cache[id]
-        Object.keys(bag).forEach(type => {
-          styleBag[type] = { ...styleBag[type] || {}, ...bag[type] }
-        })
-        // if there's a media bag, merge those in 
-        if(media) {
-          Object.keys(media).forEach(expr => {
-            mediaBag[expr] = mediaBag[expr] || {}
-            Object.keys(media[expr]).forEach(type => {
-              // mediaBag[expr][type] = mediaBag[expr][type] || {}
-              mediaBag[expr][type] = { ...mediaBag[expr][type] || {}, ...media[expr][type] }
-            })
-          })
-        }
-
-
-        hasLabels && labels.push('[' + (label || '*') + ']')
-        return 
-        // that was fairly straightforward
-      }
-      
-      if(styleSheet.cache[id].expr) { // media rule
-        let { expr, label, rule, style } = styleSheet.cache[id]
-        mediaBag[expr] = mediaBag[expr] || { }
-        if(rule) {
-          let iid = idFor(rule)
-          if(styleSheet.cache[iid].bag) {
-            // if merged rule, merge it's bag into stylebag 
-            // we won't expect a mediabag in this merged rule, because it would have thrown in media (phew)
-
-            let { bag } = styleSheet.cache[iid]
-            Object.keys(bag).forEach(type => {
-              mediaBag[expr][type] = { ...mediaBag[expr][type] || {}, ...bag[type] }  
-            }) 
-          }
-          else {
-            let { type, style } = styleSheet.cache[iid]  
-            mediaBag[expr][type] = { ...mediaBag[expr][type] || {}, ...style }  
-          }  
-        }
-        else {
-          mediaBag[expr]._ =  { ...mediaBag[expr]._ || {}, ...style }
-        }
-        
-        
-        // mediaBag[expr].push(rule)
-        hasLabels && labels.push(label)
-        return
-
-        // throw new Error('cannot merge a media rule')
-      }
-      else {  // simple rule 
-      
-        let { type, style } = styleSheet.cache[id]
-        styleBag[type] = { ...styleBag[type] || {}, ...style }
-        hasLabels && labels.push(style.label || '*') // todo - match 'add()'s original label
-        return 
-        // not too bad 
-      }  
+    if(isLikeRule(rule)) {
+      rule = registered[idFor(rule)]
     }
-    
-    else {
-      // plain style 
-      styleBag._ = { ...styleBag._ || {}, ...rule }
-      hasLabels && labels.push('{:}')
-    }
+    // throw on raw fontface keyframes etc 
+    switch(rule.type) {
+      case 'merge': return deepMerge(exprs, extractStyles(rule.rules))
+      case 'pseudo': return deepMerge(exprs, { _: { ['%%%' + rule.selector]: rule.style } })
+      case 'child': return deepMerge(exprs, { _: { ['^^^' + rule.selector]: rule.style } })
+      case 'parent': return deepMerge(exprs, { _: { ['***' + rule.selector]: rule.style } })
+      case 'style': return deepMerge(exprs, { _: { _: rule.style } })
+      case 'media': return deepMerge(exprs, { [rule.expr]: extractStyles(rule.rules)._ }) 
+      default: return deepMerge(exprs, { _: { _: rule } })
+    }        
   })
+  return exprs
 
-  // todo - remove label from merged styles? unclear. 
+}
 
-  let id = hash(mergeLabel + JSON.stringify(mediaBag) + JSON.stringify(styleBag)).toString(36) // todo - predictable order
-  // make a merged label
-  let label = hasLabels ? `${mergeLabel ? mergeLabel + '= ' : ''}${labels.length ? labels.join(' + ') : ''}` : '' // yuck 
-  
-  if(!styleSheet.cache[id]) {
-    if(!styleSheet.inserted[id]) {
-      Object.keys(styleBag).forEach(type => {            
-        styleSheet.insert(cssrule(id, type, styleBag[type]))
-      })
-      
-      Object.keys(mediaBag).forEach(expr => {
-        let css = Object.keys(mediaBag[expr]).map(type => cssrule(id, type, mediaBag[expr][type]))
-        let result = plugins.media.apply({ id, expr, css })
-        styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)
-      })
-      styleSheet.inserted[id] = true 
-    }
-    
-    styleSheet.cache[id] = { bag: styleBag, id, label, ...(Object.keys(mediaBag).length > 0 ? { media: mediaBag } : {}) }
+function extractLabel(rule) {
+  if(isLikeRule(rule)) {
+    rule = registered[idFor(rule)]
   }
-  return { [`data-css-${id}`]: label }
-}
-
-export const compose = merge 
-
-function isMerged(id) {
-  return !!styleSheet.cache[id].bag
-}
-
-function isMedia(id) {
-  return !!styleSheet.cache[id].expr
+  return rule.label || '{:}'
 }
 
 
-function insertMediaRule({ id, expr, style, rule, label, css }) {  
-  if(!styleSheet.inserted[id]) {
-    let result = plugins.media.apply({ id, expr, css })
-    styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)  
-    styleSheet.inserted[id] = true  
+function selector(id, path) {
+  if(path === '_') return `[data-css-${id}]`
+
+  if(path.indexOf('%%%') === 0) {
+    let x =`[data-css-${id}]${path.slice(3)}` 
+    if(canSimulate) x+= `, [data-css-${id}][data-simulate-${simple(path)}]`
+    return x.replace(':hover', ':hover:nth-child(n)')
+  }
+  
+  if(path.indexOf('***') === 0) {
+    return path.slice(3)
+      .split(',')
+      .map(x => `${x} [data-css-${id}]`)
+      .join(',')    
+  }
+  if(path.indexOf('^^^') === 0) {
+    return path.slice(3)
+      .split(',')
+      .map(x => `[data-css-${id}]${x}`)
+      .join(',')    
+  }
+}
+
+
+function toCSS({ selector, style }) {
+  let result = plugins.apply({ selector, style })
+  return `${result.selector} { ${createMarkupForStyles(result.style)} }`
+}
+
+function toCSSAST(rule) {
+  let styles = extractStyles(rule)
+  return Object.keys(styles).reduce((o, expr) => {
+    o[expr] = Object.keys(styles[expr]).map(s => 
+      ({ selector: selector(rule.id, s), style: styles[expr][s] }))
+    return o
+  }, {})
+}
+
+function ruleToCSS(spec) {
+  let css = []
+  let ast = toCSSAST(spec)
+  // plugins here 
+  let { _, ...exprs } = ast
+  if(_) {      
+    _.map(toCSS).forEach(str => css.push(str))
+  }
+  Object.keys(exprs).forEach(expr => {
+    css.push(`@media ${expr}{
+      ${exprs[expr].map(toCSS).join('\n\t')}
+    }`)
+  })
+  return css
+}
+
+
+let inserted = styleSheet.inserted = {}
+
+function insert(spec) {
+  if(!inserted[spec.id]) {
+    inserted[spec.id] = true
+    let css = ruleToCSS(spec)   
+    css.map(cssRule => styleSheet.insert(cssRule))    
+  }    
+}
+
+function insertKeyframe(spec) {
+  if(!inserted[spec.id]) {
+    let inner = Object.keys(spec.keyframes).map(kf => {
+      let result = plugins.keyframes.apply({ id: spec.id, name: kf, style: spec.keyframes[kf] })
+      return `${result.name} { ${ createMarkupForStyles(result.style) }}`
+    }).join('\n');
+
+    [ '-webkit-', '-moz-', '-o-', '' ].forEach(prefix =>
+      styleSheet.insert(`@${ prefix }keyframes ${ spec.name + '_' + spec.id } { ${ inner }}`))    
+
+    inserted[spec.id] = true
   }  
-  styleSheet.cache[id] = { expr, rule, style, id, label }  
-  
+}
+
+function insertFontFace(spec) {  
+  if(!inserted[spec.id]) {
+    styleSheet.insert(`@font-face { ${createMarkupForStyles(spec.font)}}`)
+    inserted[spec.id] = true
+  }
+}
+
+export function rehydrate(ids) {
+  // load up ids
+  Object.assign(inserted, ids.reduce((o, i) => (o[i] = true, o), {}) )
+  // assume css loaded separately
 }
 
 
-// this one's for media queries 
-// they cannot be merged with other queries 
-// todo - we should test whether the query is valid and give dev feedback 
+export function flush() {
+  inserted = styleSheet.inserted = {}
+  registered = {}  
+  styleSheet.flush()
+  styleSheet.inject()
+}
+
+function toRule(spec) {
+  register(spec)
+  insert(spec)
+  return { [`data-css-${spec.id}`]: hasLabels ? spec.label || '' : '' } 
+}
+
+export function style(obj) {
+  return toRule({    
+    id: hashify(obj), 
+    type: 'style',
+    style: obj,
+    label: obj.label || '*'
+  })
+}
+
+export function select(selector, obj) {  
+  return toRule({    
+    id: hashify(selector, obj), 
+    type: 'child',
+    selector, 
+    style: obj,
+    label: obj.label || '*'
+  }) 
+}
+
+export function parent(selector, obj) {  
+  return toRule({    
+    id: hashify(selector, obj), 
+    type: 'parent',
+    selector, 
+    style: obj,
+    label: obj.label || '*'
+  }) 
+}
+
+export function merge(...rules) {
+  return toRule({
+    id: hashify(extractStyles(rules)),
+    type: 'merge',
+    rules,
+    label: '[' + (typeof rules[0] === 'string' ? rules[0] : rules.map(extractLabel).join(' + '))  + ']'
+  })
+}
+export function compose(...args) {
+  return merge(...args)
+}
+
 export function media(expr, ...rules) {
-  if (rules.length > 1) {
-    return media(expr, merge(...rules))
-  } // todo - iterate yourself instead 
-  let rule = rules[0]
-  // test if valid media query
-  if(isRule(rule)) {
-    let id = idFor(rule)
-    let spec = styleSheet.cache[id]
-    if(isMerged(id)) { // merged rule        
-      if(spec.media) {
-        throw new Error('cannot apply a media rule onto another')
-      }
-      let { bag } = spec
-      let newId = hash(expr+id).toString(36)
-      let label = hasLabels ? `*mq [${spec.label}]` : ''
-
-      if(!styleSheet.cache[newId]) {
-        let css = Object.keys(bag).map(type => cssrule(newId, type, bag[type]))
-        insertMediaRule({ id: newId, expr, rule, label, css })
-      }      
-
-      return { [`data-css-${newId}`]: label }
-      // easy 
-    }
-    else if(isMedia(id)) { // media rule
-      throw new Error('cannot apply a media rule onto another')
-    }
-    else { // simple rule
-      let newId = hash(expr+id).toString(36)
-      let label = hasLabels ? '*mq ' + (spec.style.label || '*') : ''
-
-      if(!styleSheet.cache[newId]) {
-        let css = [ cssrule(newId, spec.type, spec.style) ]
-        insertMediaRule({ id: newId, expr, rule, label, css })
-      }
-      
-      return { [`data-css-${newId}`]: label }
-      // easier 
-    }
-  }
-  
-  else { // a plain style 
-    let style = rule 
-    let newId = styleHash(expr, style)
-    let label = hasLabels ? '*mq ' + (style.label || '*') : ''
-    if(!styleSheet.cache[newId]) {
-      let css = [ cssrule(newId, '_', style) ]
-      insertMediaRule({ id: newId, expr, style: rule, label, css })
-    }
-    return { [`data-css-${newId}`]: label }
-  }
+  return toRule({
+    id: hashify(expr, extractStyles(rules)),
+    type: 'media',
+    rules, 
+    expr,
+    label: '*mq(' + rules.map(extractLabel).join(' + ') + ')'
+  })
 }
 
 export const presets = {  
@@ -663,65 +369,247 @@ if(isDev && isBrowser) {
   // todo - clearInterval on browser close  
 }
 
-// we don't go all out for fonts as much, giving a simple font loading strategy 
-// use a fancier lib if you need moar power
-export function fontFace(font) {
-  let id = hash(JSON.stringify(font)).toString(36)
-  if(!styleSheet.cache[id]) {
-    styleSheet.cache[id] = { id, family: font.fontFamily, font }    
-    // todo - crossbrowser 
-    insertRule(`@font-face { ${createMarkupForStyles(font)}}`, id)
-    // if(!styleSheet.inserted[id]) {
-    //   styleSheet.insert()  
-    //   styleSheet.inserted[id] = true
-    // }
-    
-  }
-  return font.fontFamily
+
+export function raw(css) {
+  return toRule({
+    id: hashify(css),
+    type: 'raw',
+    label: '^'
+  })
 }
+
+export function pseudo(selector, obj) {
+  return toRule({
+    id: hashify(selector, obj),
+    type: 'pseudo',
+    selector,
+    style: obj,
+    label: obj.label || ':*'
+  })
+}
+
+export function active(x) { 
+  return pseudo(':active', x) 
+}
+
+export function any(x) { 
+  return pseudo(':any', x) 
+}
+
+export function checked(x) { 
+  return pseudo(':checked', x) 
+}
+
+export function disabled(x) { 
+  return pseudo(':disabled', x) 
+}
+
+export function empty(x) { 
+  return pseudo(':empty', x) 
+}
+
+export function enabled(x) { 
+  return pseudo(':enabled', x) 
+}
+
+export function _default(x) { 
+  return pseudo(':default', x) // note '_default' name  
+}
+
+export function first(x) { 
+  return pseudo(':first', x) 
+}
+
+export function firstChild(x) { 
+  return pseudo(':first-child', x) 
+}
+
+export function firstOfType(x) { 
+  return pseudo(':first-of-type', x) 
+}
+
+export function fullscreen(x) { 
+  return pseudo(':fullscreen', x) 
+}
+
+export function focus(x) { 
+  return pseudo(':focus', x) 
+}
+
+export function hover(x) { 
+  return pseudo(':hover', x) 
+}
+
+export function indeterminate(x) { 
+  return pseudo(':indeterminate', x) 
+}
+
+export function inRange(x) { 
+  return pseudo(':in-range', x) 
+}
+
+export function invalid(x) { 
+  return pseudo(':invalid', x) 
+}
+
+export function lastChild(x) { 
+  return pseudo(':last-child', x) 
+}
+
+export function lastOfType(x) { 
+  return pseudo(':last-of-type', x) 
+}
+
+export function left(x) { 
+  return pseudo(':left', x) 
+}
+
+export function link(x) { 
+  return pseudo(':link', x) 
+}
+
+export function onlyChild(x) { 
+  return pseudo(':only-child', x) 
+}
+
+export function onlyOfType(x) { 
+  return pseudo(':only-of-type', x) 
+}
+
+export function optional(x) { 
+  return pseudo(':optional', x) 
+}
+
+export function outOfRange(x) { 
+  return pseudo(':out-of-range', x) 
+}
+
+export function readOnly(x) { 
+  return pseudo(':read-only', x) 
+}
+
+export function readWrite(x) { 
+  return pseudo(':read-write', x) 
+}
+
+export function required(x) { 
+  return pseudo(':required', x) 
+}
+
+export function right(x) { 
+  return pseudo(':right', x) 
+}
+
+export function root(x) { 
+  return pseudo(':root', x) 
+}
+
+export function scope(x) { 
+  return pseudo(':scope', x) 
+}
+
+export function target(x) { 
+  return pseudo(':target', x) 
+}
+
+export function valid(x) { 
+  return pseudo(':valid', x) 
+}
+
+export function visited(x) { 
+  return pseudo(':visited', x) 
+}
+
+// parameterized pseudoclasses
+export function dir(p, x) { 
+  return pseudo(`:dir(${p})`, x)
+}
+export function lang(p, x) { 
+  return pseudo(`:lang(${p})`, x)
+}
+export function not(p, x) { 
+  // should this be a plugin?
+  let selector = p.split(',').map(x => x.trim()).map(x => `:not(${x})`)
+  if(selector.length === 1) {
+    return pseudo(`:not(${p})`, x)  
+  }
+  return select(selector.join(''), x)
+  
+}
+export function nthChild(p, x) { 
+  return pseudo(`:nth-child(${p})`, x)
+}
+export function nthLastChild(p, x) { 
+  return pseudo(`:nth-last-child(${p})`, x)
+}
+export function nthLastOfType(p, x) { 
+  return pseudo(`:nth-last-of-type(${p})`, x)
+}
+export function nthOfType(p, x) { 
+  return pseudo(`:nth-of-type(${p})`, x)
+}
+
+// pseudoelements
+export function after(x) {
+  return pseudo('::after', x) 
+}
+export function before(x) {
+  return pseudo('::before', x) 
+}
+export function firstLetter(x) {
+  return pseudo('::first-letter', x) 
+}
+export function firstLine(x) {
+  return pseudo('::first-line', x) 
+}
+export function selection(x) {
+  return pseudo('::selection', x) 
+}
+export function backdrop(x) {
+  return pseudo('::backdrop', x) 
+}
+export function placeholder(x) {
+  // https://github.com/threepointone/glamor/issues/14
+  return select('::placeholder,::-webkit-input-placeholder,::-moz-placeholder,::-ms-input-placeholder', x)  
+}
+
 
 // we can add keyframes in a similar manner, but still generating a unique name 
 // for including in styles. this gives us modularity, but still a natural api 
 export function keyframes(name, kfs) {
-  if(typeof name !== 'string') {
-    kfs = name
-    name = 'animate'
+  if(!kfs) {
+    kfs = name,
+    name='animation'
   }
-  let id = hash(name + JSON.stringify(kfs)).toString(36)
-  if(!styleSheet.cache[id]) {
-    styleSheet.cache[id] = { id, name, kfs }
-    
-    if(!styleSheet.inserted[id]) {
-      styleSheet.inserted[id] = true  
-      let inner = Object.keys(kfs).map(kf => {
-        let result = plugins.keyframes.apply({ id, name: kf, style: kfs[kf] })
-        return `${result.name} { ${ createMarkupForStyles(result.style) }}`
-      }).join('\n');
-
-      [ '-webkit-', '-moz-', '-o-', '' ].forEach(prefix =>
-        styleSheet.insert(`@${ prefix }keyframes ${ name + '_' + id } { ${ inner }}`))
-      
-    }
-    
+  
+  let spec = {
+    id: hashify(kfs),
+    type: 'keyframes',
+    name,
+    keyframes: kfs
   }
-  return name + '_' + id
-
+  register(spec)
+  insertKeyframe(spec)
+  return name + '_' + spec.id
 }
 
-/*** helpers for web components ***/
-// https://github.com/threepointone/glamor/issues/16
+// we don't go all out for fonts as much, giving a simple font loading strategy 
+// use a fancier lib if you need moar power
+export function fontFace(font) {
+  let spec = {
+    id: hashify(font),
+    font
+  }
+  register(spec)
+  insertFontFace(spec)
+  
+  return font.fontFamily
+}
+
 
 export function cssFor(...rules) {
-  let ids = rules.reduce((o, r) => (o[idFor(r)] = true, o), {})
-  let css = styleSheet.rules().map(({ cssText }) => {
-    let regex = /\[data\-css\-([a-zA-Z0-9]+)\]/gm
-    let match = regex.exec(cssText)
-    
-    if(match && ids[match[1]]) {
-      return cssText
-    }
-  }).filter(x => !!x).join('\n')
-  return css 
+  return flatten(rules.map(r => 
+    registered[idFor(r)]).map(ruleToCSS)).join('\n')
 }
 
 export function attribsFor(...rules) {
@@ -734,11 +622,3 @@ export function attribsFor(...rules) {
   return htmlAttributes
 }
 
-
-// a useful utility for quickly tapping objects. use with the :: operator 
-// {x: 1}::log()
-// [5, 12, 90]::log().filter(x => x%5)::log()
-export function log(msg) { //eslint-disable-line no-unused-vars
-  console.log(msg || this) //eslint-disable-line no-console
-  return this
-}

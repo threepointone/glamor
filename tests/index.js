@@ -17,10 +17,8 @@ import { style, hover, nthChild, firstLetter, media, merge, compose,  select, vi
   simulations, simulate,
   cssFor, attribsFor, idFor,
   presets,
-  flush, styleSheet }
+  flush, styleSheet, rehydrate }
 from '../src'
-
-import { rehydrate } from '../src/server'
 
 import { View } from '../src/jsxstyle'
 
@@ -61,7 +59,7 @@ describe('glamor', () => {
 
   it('only adds a data attribute to the node', () => {
     let el = <div {...style({ backgroundColor: '#0f0' })} />
-    expect(el).toEqual(<div data-css-1ipahuh=""/>)
+    expect(el).toEqual(<div data-css-1j3zyhl=""/>)
     render(el, node, () => {
       expect(childStyle(node).backgroundColor).toEqual('rgb(0, 255, 0)')
     })
@@ -134,7 +132,7 @@ describe('glamor', () => {
     render(<div {...hover({ color: 'red' })}/>, node, () => {
       // console.log(childStyle(node, ':hover').getPropertyValue('color'))
       // ^ this doesn't work as I want
-      expect(styleSheet.inserted['1w84cbc']).toEqual(true)
+      expect(styleSheet.inserted).toEqual({ '28rtqh': true })
         // any ideas on a better test for this?
     })
   })
@@ -182,7 +180,7 @@ describe('glamor', () => {
   it('can style pseudo elements', () => {
     render(<div {...firstLetter({ color:'red' })} />, node, () => {
       expect(styleSheet.rules()[0].cssText)
-        .toEqual('[data-css-19rst82]::first-letter { color: red; }')
+        .toEqual('[data-css-1gza2g7]::first-letter { color: red; }')
     })
   }) // how do I test this?
 
@@ -192,7 +190,7 @@ describe('glamor', () => {
     render(<div {...media('(min-width: 300px)', style({ color: 'red' }))}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
       expect(styleSheet.rules()[1].cssText.replace(/\s/g,''))
-        .toEqual('@media (min-width: 300px) { \n  [data-css-ajnavo] { color: red; }\n}'.replace(/\s/g,''))
+        .toEqual('@media(min-width:300px){[data-css-18m9kj]{color:red;}}'.replace(/\s/g,''))
         // ugh
     })
 
@@ -202,7 +200,7 @@ describe('glamor', () => {
     simulations(true)
     render(<div {...media('(min-width: 300px)', hover({ color: 'red' }))} {...simulate('hover')}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
-      expect(styleSheet.inserted['5o4wo0']).toEqual(true)
+      expect(styleSheet.inserted).toEqual({ '18lme2n': true, '28rtqh': true })
       simulations(false)
     })
 
@@ -261,11 +259,11 @@ describe('glamor', () => {
       </ul>
     </div>
     
-    expect(el).toEqual(<div data-css-1ge1o1y="[red + blue] + * + {:}">
-      <ul data-css-1oppo9="mylist">
-        <li data-css-qh7ndu="">one</li>
+    expect(el).toEqual(<div data-css-dysmjn="[[red + blue] + :* + {:}]">
+      <ul data-css-36ngum="mylist">
+        <li data-css-12ttild=":*">one</li>
         <li >two</li>
-        <li data-css-suws9l="*mq [red + blue]">three</li>
+        <li data-css-1oj4iwd="*mq([red + blue])">three</li>
       </ul>
     </div>)
     cssLabels(false)
@@ -279,7 +277,7 @@ describe('glamor', () => {
     it('adds vendor prefixes', () => {
       render(<div {...style({ color: 'red', transition: 'width 2s' })} />, node, () => {
         expect(styleSheet.rules()[0].cssText)
-          .toEqual('[data-css-10v74ka] { color: red; -webkit-transition: width 2s; transition: width 2s; }')
+          .toEqual('[data-css-1roj518] { color: red; -webkit-transition: width 2s; transition: width 2s; }')
       })
     })
 
@@ -315,8 +313,8 @@ describe('glamor', () => {
         }
       })
       expect(styleSheet.rules()[0].cssText.replace(/\s/g,''))
-        .toEqual(`@-webkit-keyframes bounce_ma9xpz { \n  0% { opacity: 0; -webkit-transform: scale(0.1); }\n  60% { opacity: 1; -webkit-transform: scale(1.2); }\n  100% { -webkit-transform: scale(1); }\n}`.replace(/\s/g,''))
-      expect(animate).toEqual('bounce_ma9xpz')
+        .toEqual(`@-webkit-keyframes bounce_1h38pxm { \n  0% { opacity: 0; -webkit-transform: scale(0.1); }\n  60% { opacity: 1; -webkit-transform: scale(1.2); }\n  100% { -webkit-transform: scale(1); }\n}`.replace(/\s/g,''))
+      expect(animate).toEqual('bounce_1h38pxm')
 
     })
   }
@@ -328,21 +326,23 @@ describe('glamor', () => {
 
     expect(cssFor(red, merged)
       .replace(':nth-child(1n)', ':nth-child(n)')) // dumb chrome 
-    .toEqual('[data-css-16y7vsu] { color: red; }\n[data-css-1exzfjk] { color: red; }\n[data-css-1exzfjk]:hover:nth-child(n) { color: blue; }')
+    .toEqual('[data-css-im3wl1] { color:red; }\n[data-css-1lci705] { color:red; }\n[data-css-1lci705]:hover:nth-child(n) { color:blue; }')
   })
 
   it('can generate html attributes from rules', () => {
+    cssLabels(false)
     let red = style({ color: 'red' }),
       blue = hover({ color: 'blue' }),
       merged = compose(red, blue)
 
-    expect(attribsFor(red, merged)).toEqual('data-css-16y7vsu="" data-css-1exzfjk=""')    
+    expect(attribsFor(red, merged)).toEqual('data-css-im3wl1="" data-css-1lci705=""')    
+    cssLabels(true)
   })
 
   it('can extract an id from a rule', () => {
     let red = style({ color: 'red' })
 
-    expect(idFor(red)).toEqual('16y7vsu')      
+    expect(idFor(red)).toEqual('im3wl1')      
   })
 
 
@@ -394,21 +394,20 @@ describe('template literal', () => {
 })
 
 describe('plugins', () => {
-  // add / remove
-  // plugin order 
-  
+  it('can add/remove plugins')
+  it('receive and return style descriptors')
+  it('plugins are run reverse to the order they\'re registered')
 
 })
 
 describe('react', () => {
-  // css prop
-  // themes 
-  // vars 
+  it('dom elements accept css prop')
+  it('can use vars to set/unset values vertically on the dom-tree')
+  it('can use themes to compose styles vertically on  the dom-tree')  
 })
 
 describe('aphrodite', () => {
-  // classname extraction
-  // applied styles
+  it('takes an aphrodite stylesheet and applies it onto a dom')
 })
 
 describe('jsxstyle', () => {
@@ -434,9 +433,17 @@ describe('jsxstyle', () => {
       className="myView"
       onClick={() => console.log('whutwhut')} // eslint-disable-line no-console
 
-    />, node, () => {
-      expect(styleSheet.inserted).toEqual({ qlhh8p: true, g5ds2d: true, '1rbt3bj': true, d6gtia: true })
+    />, node, () => {      
+      expect(styleSheet.inserted).toEqual({ '10yhhz1': true, '13imxhw': true, '1jtt596': true, '1rhjrui': true })
     })
   })
 })
 
+
+// a useful utility for quickly tapping objects. use with the :: operator 
+// {x: 1}::log()
+// [5, 12, 90]::log().filter(x => x%5)::log()
+export function log(msg) { //eslint-disable-line no-unused-vars
+  console.log(msg || this) //eslint-disable-line no-console
+  return this
+}

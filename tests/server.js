@@ -18,9 +18,9 @@ style({ color: 'wheat' })
   let { html, css, ids } = renderStatic(()=>
     renderToStaticMarkup(<div {...style({ color: 'red' })}/>))
 
-  expect(html).toEqual('<div data-css-16y7vsu=""></div>')
-  expect(css).toEqual('[data-css-ruiioi]{ color:wheat; } \n[data-css-16y7vsu]{ color:red; } ')
-  expect(ids).toEqual([ 'ruiioi', '16y7vsu' ])
+  expect(html).toEqual('<div data-css-im3wl1=""></div>')
+  expect(css).toEqual('[data-css-92lrii] { color:wheat; }\n[data-css-im3wl1] { color:red; }')
+  expect(ids).toEqual([ '92lrii', 'im3wl1' ])
   cssLabels(true)
   simulations(true)
 }
@@ -32,9 +32,9 @@ style({ color: 'wheat' })
   let { html, css, ids } = renderStaticOptimized(() =>
     renderToStaticMarkup(<div {...merge(style({ color: 'red' }), hover({ color: 'blue' }))}/>))
 
-  expect(html).toEqual('<div data-css-1exzfjk=""></div>')
-  expect(css).toEqual('[data-css-1exzfjk]{ color:red; } \n[data-css-1exzfjk]:hover:nth-child(n){ color:blue; } \n')
-  expect(ids).toEqual([ '1exzfjk' ])
+  expect(html).toEqual('<div data-css-1lci705=""></div>')
+  expect(css).toEqual('[data-css-1lci705] { color:red; }\n[data-css-1lci705]:hover:nth-child(n) { color:blue; }\n')
+  expect(ids).toEqual([ '1lci705' ])
   cssLabels(true)
   simulations(true)
 }
@@ -50,6 +50,6 @@ div&attributes(style({ color: 'blue' }))
   | yay!
 `, { style })
   })
-  expect(html).toEqual('<div data-css-po2wuq="">yay!</div>')
-  expect(css).toEqual('[data-css-po2wuq]{ color:blue; } ')
+  expect(html).toEqual('<div data-css-hxfs3d="*">yay!</div>')
+  expect(css).toEqual('[data-css-hxfs3d] { color:blue; }')
 }

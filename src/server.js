@@ -41,9 +41,3 @@ export function renderStaticOptimized(fn) {
   return renderStatic(fn, true)
 }
 
-export function rehydrate(ids) {
-  // load up ids
-  // todoo - accept array
-  styleSheet.inserted = { ...styleSheet.inserted, ...ids.reduce((o, i) => (o[i] = true, o), {}) }
-  // assume css loaded separately
-}
