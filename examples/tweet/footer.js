@@ -110,16 +110,16 @@ export class Footer extends Component {
         </div>
         <div css={styles.actions}>
           <div css={styles.icon}>
-            {reply()}
+            {reply}
           </div>
           <div css={styles.icon}>
-            {retweet()}
+            {retweet}
           </div>
           <button css={styles.button} onClick={this.handleClick}>
             {like(liked && style(styles.liked))}          
           </button>
           <div css={styles.icon}>
-            {more()}
+            {more}
           </div>
         </div>
       </div>
