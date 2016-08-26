@@ -6,10 +6,12 @@ import React from 'react' //eslint-disable-line
 import { render } from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 
-import { App } from './app'
+import { App } from './tweet'
 
 let make = App =>
-  <AppContainer errorReporter={Redbox}><App/></AppContainer>
+  <AppContainer errorReporter={Redbox}>
+    <App/>
+  </AppContainer>
 
 render(make(App),
   document.querySelector('#demo'))

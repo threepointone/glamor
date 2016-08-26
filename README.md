@@ -75,16 +75,9 @@ here are some key differences -
 todo
 ---
 
+- [planned enhancements](https://github.com/threepointone/glamor/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement)
 - notes on composition
-- grid helpers
-- browserstack integration
-- alternatives for - cssnext, stylelint, cssnano
-- refactor `merge` / `media` functions 
-- error checking / typechecks (flow? runtime?)
-- ie8 compat for insertRule/deleteRule
-- compile time optimizations / statically generate css files alá jsxstyle
-- benchmarks ([#3](https://github.com/threepointone/glamor/issues/3))
-- bring back coverage
+- ie8 compat
 
 profit, profit
 ---
