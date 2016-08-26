@@ -7,6 +7,7 @@ export const styleSheet = new StyleSheet({ name: '_css_' })
 // an isomorphic StyleSheet shim. hides all the nitty gritty. 
 
 styleSheet.cache = {} // hang on some state on to this instance 
+styleSheet.inserted = {} // ids of rules inserted 
 
 // plugins 
 export const plugins = styleSheet.plugins = new PluginSet(fallbacks, prefixes)
@@ -80,6 +81,7 @@ export function cssLabels(bool) {
 // // clears out the cache and empties the stylesheet
 // best for tests, though there might be some value for SSR. 
 export function flush() { // todo - tests 
+  styleSheet.inserted = {}
   styleSheet.cache = {}  
   styleSheet.flush()
   styleSheet.inject()
@@ -87,7 +89,12 @@ export function flush() { // todo - tests
 
 // escape hatchhhhhhh
 export function insertRule(css) {
-  styleSheet.insert(css)
+  let id = hash(css).toString(36)
+  if(!styleSheet.inserted[id]) {
+    styleSheet.insert(css)  
+    styleSheet.inserted[id] = true 
+  }
+  
 }
 // todo insertRuleOnce
 
@@ -127,6 +134,7 @@ function selector(id, type) {
   }
 
   // https://github.com/threepointone/glamor/issues/20
+  // todo - only on chrome versions and server side 
   result = result.replace(/\:hover/g, ':hover:nth-child(n)')  
   
   if(canSimulate && type !== '_' && !isFullSelector && !isParentSelector && cssType[0] === ':') { // todo - work with pseudo selector on full selector at least 
@@ -171,10 +179,13 @@ export function isRule(rule) {
 export function add(type = '_', style) {
   let id = styleHash(type, style), // generate a hash based on type/style, use this to 'id' the rule everywhere 
     label = ''
-
-  if(!styleSheet.cache[id]) {    
-    styleSheet.insert(cssrule(id, type, style))    
+  if(!styleSheet.cache[id]) {
+    if(!styleSheet.inserted[id]) {
+      styleSheet.insert(cssrule(id, type, style))    
+      styleSheet.inserted[id] = true
+    }
     styleSheet.cache[id] = { type, style, id }
+    
   }
   if(hasLabels) {
     // adds a debug label 
@@ -503,16 +514,20 @@ export function merge(...rules) {
   let label = hasLabels ? `${mergeLabel ? mergeLabel + '= ' : ''}${labels.length ? labels.join(' + ') : ''}` : '' // yuck 
   
   if(!styleSheet.cache[id]) {
-    styleSheet.cache[id] = { bag: styleBag, id, label, ...(Object.keys(mediaBag).length > 0 ? { media: mediaBag } : {}) }
-    Object.keys(styleBag).forEach(type => {      
-      styleSheet.insert(cssrule(id, type, styleBag[type]))
-    })
+    if(!styleSheet.inserted[id]) {
+      Object.keys(styleBag).forEach(type => {            
+        styleSheet.insert(cssrule(id, type, styleBag[type]))
+      })
+      
+      Object.keys(mediaBag).forEach(expr => {
+        let css = Object.keys(mediaBag[expr]).map(type => cssrule(id, type, mediaBag[expr][type]))
+        let result = plugins.media.apply({ id, expr, css })
+        styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)
+      })
+      styleSheet.inserted[id] = true 
+    }
     
-    Object.keys(mediaBag).forEach(expr => {
-      let css = Object.keys(mediaBag[expr]).map(type => cssrule(id, type, mediaBag[expr][type]))
-      let result = plugins.media.apply({ id, expr, css })
-      styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)
-    })
+    styleSheet.cache[id] = { bag: styleBag, id, label, ...(Object.keys(mediaBag).length > 0 ? { media: mediaBag } : {}) }
   }
   return { [`data-css-${id}`]: label }
 }
@@ -528,10 +543,14 @@ function isMedia(id) {
 }
 
 
-function insertMediaRule({ id, expr, style, rule, label, css }) {
-  let result = plugins.media.apply({ id, expr, css })
-  styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)  
+function insertMediaRule({ id, expr, style, rule, label, css }) {  
+  if(!styleSheet.inserted[id]) {
+    let result = plugins.media.apply({ id, expr, css })
+    styleSheet.insert(`@media ${result.expr} { ${ result.css.join('\n') } }`)  
+    styleSheet.inserted[id] = true  
+  }  
   styleSheet.cache[id] = { expr, rule, style, id, label }  
+  
 }
 
 
@@ -649,9 +668,13 @@ if(isDev && isBrowser) {
 export function fontFace(font) {
   let id = hash(JSON.stringify(font)).toString(36)
   if(!styleSheet.cache[id]) {
-    styleSheet.cache[id] = { id, family: font.fontFamily, font }
+    styleSheet.cache[id] = { id, family: font.fontFamily, font }    
     // todo - crossbrowser 
-    styleSheet.insert(`@font-face { ${createMarkupForStyles(font)}}`)
+    if(!styleSheet.inserted[id]) {
+      styleSheet.insert(`@font-face { ${createMarkupForStyles(font)}}`)  
+      styleSheet.inserted[id] = true
+    }
+    
   }
   return font.fontFamily
 }
@@ -666,13 +689,18 @@ export function keyframes(name, kfs) {
   let id = hash(name + JSON.stringify(kfs)).toString(36)
   if(!styleSheet.cache[id]) {
     styleSheet.cache[id] = { id, name, kfs }
-    let inner = Object.keys(kfs).map(kf => {
-      let result = plugins.keyframes.apply({ id, name: kf, style: kfs[kf] })
-      return `${result.name} { ${ createMarkupForStyles(result.style) }}`
-    }).join('\n');
+    
+    if(!styleSheet.inserted[id]) {
+      styleSheet.inserted[id] = true  
+      let inner = Object.keys(kfs).map(kf => {
+        let result = plugins.keyframes.apply({ id, name: kf, style: kfs[kf] })
+        return `${result.name} { ${ createMarkupForStyles(result.style) }}`
+      }).join('\n');
 
-    [ '-webkit-', '-moz-', '-o-', '' ].forEach(prefix =>
-      styleSheet.insert(`@${ prefix }keyframes ${ name + '_' + id } { ${ inner }}`))
+      [ '-webkit-', '-moz-', '-o-', '' ].forEach(prefix =>
+        styleSheet.insert(`@${ prefix }keyframes ${ name + '_' + id } { ${ inner }}`))
+      
+    }
     
   }
   return name + '_' + id

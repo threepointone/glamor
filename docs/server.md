@@ -4,7 +4,7 @@ server side rendering
 
 `renderStatic(fn:html)`
 `renderStaticOptimized(fn:html)`
-`rehydrate(cache)`
+`rehydrate(ids)`
 
 this api is mostly copied from [aphrodite](https://github.com/Khan/aphrodite);
 render your component inside of a callback, and glamor will gather all
@@ -14,7 +14,7 @@ to rehydrate the lib's cache for fast startup
 ```jsx
 // on the server
 import { renderStatic } from 'glamor/server'
-let { html, css, cache } = renderStatic(() =>
+let { html, css, ids } = renderStatic(() =>
   ReactDOMServer.renderToString(<App/>)) // or `renderToStaticMarkup`
 ```
 ```html
@@ -31,7 +31,7 @@ let { html, css, cache } = renderStatic(() =>
     <div id='root'>${html}</div>
     <script>
       // optional!
-      window._css = ${JSON.stringify(cache)}
+      window._glam = ${JSON.stringify(ids)}
     </script>
     <script src="bundle.js"></script>
   </body>
@@ -41,11 +41,11 @@ let { html, css, cache } = renderStatic(() =>
 // optional!
 // when starting up your app
 import { rehydrate } from 'glamor'
-rehydrate(window._css)
+rehydrate(window._glam)
 ReactDOM.render(<App/>, document.getElementById('root'))
 ```
 
 caveat: the above will include all the css that's been generated in the app's lifetime.
 This should be fine in most cases. If you seem to be including too many unused styles,
 use `renderStaticOptimized` instead of `renderStatic`. This will parse the generated
-html and include only the relevant used css / cache.
+html and include only the relevant used css / ids.

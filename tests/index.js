@@ -376,7 +376,7 @@ describe('server', () => {
     document.head.appendChild(styleTag)
     node.innerHTML = '<div data-css-_="16y7vsu"></div>'
     expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
-    rehydrate({ '16y7vsu': { id: '16y7vsu', style: { color: 'red' }, type: '_' } })
+    rehydrate({ '16y7vsu': true })
 
     style({ color: 'red' })
     style({ color: 'blue' })

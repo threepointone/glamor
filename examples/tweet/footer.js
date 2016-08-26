@@ -68,6 +68,7 @@ export class Footer extends Component {
       flexGrow: 1,
       justifyContent: 'center',
       textAlign: 'center',
+      
       background: 'none',
       border: 'none',
       color: 'inherit',

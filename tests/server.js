@@ -15,15 +15,12 @@ style({ color: 'wheat' })
 {
   cssLabels(false)
   simulations(false)
-  let { html, css, cache } = renderStatic(()=>
+  let { html, css, ids } = renderStatic(()=>
     renderToStaticMarkup(<div {...style({ color: 'red' })}/>))
 
   expect(html).toEqual('<div data-css-16y7vsu=""></div>')
   expect(css).toEqual('[data-css-ruiioi]{ color:wheat; } \n[data-css-16y7vsu]{ color:red; } ')
-  expect(cache).toEqual({
-    '16y7vsu': { id: '16y7vsu', style: { color: 'red' }, type: '_' },
-    ruiioi: { id: 'ruiioi', style: { color: 'wheat' }, type: '_' }
-  })
+  expect(ids).toEqual({ '16y7vsu': true, ruiioi: true })
   cssLabels(true)
   simulations(true)
 }
@@ -32,14 +29,12 @@ style({ color: 'wheat' })
 {
   cssLabels(false)
   simulations(false)
-  let { html, css, cache } = renderStaticOptimized(() =>
+  let { html, css, ids } = renderStaticOptimized(() =>
     renderToStaticMarkup(<div {...merge(style({ color: 'red' }), hover({ color: 'blue' }))}/>))
 
   expect(html).toEqual('<div data-css-1exzfjk=""></div>')
   expect(css).toEqual('[data-css-1exzfjk]{ color:red; } \n[data-css-1exzfjk]:hover:nth-child(n){ color:blue; } \n')
-  expect(cache).toEqual({
-    '1exzfjk': { bag: { _: { color: 'red' }, hover: { color: 'blue' } }, id: '1exzfjk', label: '' }
-  })
+  expect(ids).toEqual({ '1exzfjk': true })
   cssLabels(true)
   simulations(true)
 }
