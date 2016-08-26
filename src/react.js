@@ -39,7 +39,7 @@ export function vars(value = {}) {
       }
       render() {
         return React.createElement(Target, 
-          { ...this.props, vars: this.context.glamorCssVars }, 
+          { ...this.props, vars: this.context.glamorCssVars || (typeof value === 'function' ? value(this.props) : value)  }, 
           this.props.children
         )
       }
