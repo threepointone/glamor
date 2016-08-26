@@ -96,8 +96,7 @@ export function insertRuleOnce(css, id = hash(css).toString(36)) {
   if(!styleSheet.inserted[id]) {
     styleSheet.insert(css)  
     styleSheet.inserted[id] = true 
-  }
-  
+  }  
 }
 
 // todo insertRuleOnce
