@@ -89,13 +89,17 @@ export function flush() { // todo - tests
 
 // escape hatchhhhhhh
 export function insertRule(css) {
-  let id = hash(css).toString(36)
+  styleSheet.insert(css)  
+}
+
+export function insertRuleOnce(css, id = hash(css).toString(36)) {
   if(!styleSheet.inserted[id]) {
     styleSheet.insert(css)  
     styleSheet.inserted[id] = true 
   }
   
 }
+
 // todo insertRuleOnce
 
 // now, some functions to help deal with styles / rules 
@@ -180,12 +184,8 @@ export function add(type = '_', style) {
   let id = styleHash(type, style), // generate a hash based on type/style, use this to 'id' the rule everywhere 
     label = ''
   if(!styleSheet.cache[id]) {
-    if(!styleSheet.inserted[id]) {
-      styleSheet.insert(cssrule(id, type, style))    
-      styleSheet.inserted[id] = true
-    }
-    styleSheet.cache[id] = { type, style, id }
-    
+    insertRuleOnce(cssrule(id, type, style), id)    
+    styleSheet.cache[id] = { type, style, id }    
   }
   if(hasLabels) {
     // adds a debug label 
@@ -670,10 +670,11 @@ export function fontFace(font) {
   if(!styleSheet.cache[id]) {
     styleSheet.cache[id] = { id, family: font.fontFamily, font }    
     // todo - crossbrowser 
-    if(!styleSheet.inserted[id]) {
-      styleSheet.insert(`@font-face { ${createMarkupForStyles(font)}}`)  
-      styleSheet.inserted[id] = true
-    }
+    insertRuleOnce(`@font-face { ${createMarkupForStyles(font)}}`, id)
+    // if(!styleSheet.inserted[id]) {
+    //   styleSheet.insert()  
+    //   styleSheet.inserted[id] = true
+    // }
     
   }
   return font.fontFamily
