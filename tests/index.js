@@ -392,6 +392,15 @@ describe('server', () => {
 
 })
 
+describe('StyleSheet', () => {
+  it('can initialize')
+  it('can be injected into the dom')
+  it('can add css')
+  it('gets applied to the element')
+  it('can flush all the css')
+  it('uses multiple tags')
+})
+
 
 describe('template literal', () => {
   it('converts css into a rule')

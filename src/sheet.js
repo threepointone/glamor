@@ -10,27 +10,20 @@ high performance StyleSheet for css-in-js systems
 // usage
 
 import StyleSheet from 'glamor/lib/sheet'
-let styleSheet = new StyleSheet({ 
-  name: 'mySheet', // optional
-  length: 30000 // defaults to 4000 for IE9, 65000 otherwise 
-})
+let styleSheet = new StyleSheet()
 
 styleSheet.inject() 
-
-// 'injects' the stylesheet into the page (or into memory if on server)
+- 'injects' the stylesheet into the page (or into memory if on server)
 
 styleSheet.insert('#box { border: 1px solid red; }') 
-
-// appends a css rule into the stylesheet 
+- appends a css rule into the stylesheet 
 
 styleSheet.rules()
+- array of injected css rules 
 
-// array of css rules 
-// use for server side rendering, etc 
 
 styleSheet.flush() 
-
-// empties the stylesheet of all its contents
+- empties the stylesheet of all its contents
 
 
 */
@@ -59,29 +52,24 @@ const oldIE = (() => {
   }  
 })()
 
-function makeStyleTag(name = '_css_') {
+function makeStyleTag() {
   let tag = document.createElement('style')        
   tag.type = 'text/css'
-  tag.id = name
-  tag.setAttribute('id', name)
   tag.appendChild(document.createTextNode(''));
   (document.head || document.getElementsByTagName('head')[0]).appendChild(tag)
   return tag
 }
 
-let sheetCounter = 0
 
 export class StyleSheet {
   constructor({ 
-    name = '_css_' + sheetCounter++, 
     speedy = !isDev && !isTest, 
-    length = (isBrowser && oldIE) ? 4000 : 65000 
+    maxLength = (isBrowser && oldIE) ? 4000 : 65000 
   }) {
-    this.name = name 
-    this.speedy = speedy // the big drawback here is that the css won't be editable in devtools
+    this.isSpeedy = speedy // the big drawback here is that the css won't be editable in devtools
     this.sheet = undefined
     this.tags = []
-    this.length = length
+    this.maxLength = maxLength
     this.ctr = 0
   }
   inject() {
@@ -90,7 +78,7 @@ export class StyleSheet {
     }
     if(isBrowser) {
       // this section is just weird alchemy I found online off many sources 
-      this.tags[0] = makeStyleTag(this.name + this.ctr)        
+      this.tags[0] = makeStyleTag()        
       // this weirdness brought to you by firefox 
       this.sheet = sheetForTag(this.tags[0]) 
     } 
@@ -125,7 +113,7 @@ export class StyleSheet {
     
     if(isBrowser) {
       // this is the ultrafast version, works across browsers 
-      if(this.speedy && this.sheet.insertRule) { 
+      if(this.isSpeedy && this.sheet.insertRule) { 
         this._insert(rule)
       }
       // more browser weirdness. I don't even know    
@@ -135,8 +123,7 @@ export class StyleSheet {
       else{
         this.tags::last().appendChild(document.createTextNode(rule))
 
-        // todo - more efficent here please 
-        if(!this.speedy) {
+        if(!this.isSpeedy) {
           // sighhh
           this.sheet = sheetForTag(this.tags::last())
         }      
@@ -148,17 +135,17 @@ export class StyleSheet {
     }
     
     this.ctr++
-    if(isBrowser && this.ctr % this.length === 0) {
-      this.tags.push(makeStyleTag(this.name + Math.round(this.ctr / this.length)))
+    if(isBrowser && this.ctr % this.maxLength === 0) {
+      this.tags.push(makeStyleTag())
       this.sheet = sheetForTag(this.tags::last())
     }
   }
   flush() {
-    // todo backward compat (styleTag.styleSheet.cssText?)
     if(isBrowser) {
       this.tags.forEach(tag => tag.parentNode.removeChild(tag))
       this.tags = []
       this.sheet = null
+      this.ctr = 0
       // todo - look for remnants in document.styleSheets
     }
     else {
@@ -169,7 +156,7 @@ export class StyleSheet {
   }  
   rules() {
     if(!isBrowser) {
-      return Array.from(this.sheet.cssRules)
+      return this.sheet.cssRules
     }
     return this.tags.reduce((arr, tag) => 
       arr.concat(Array.from(
