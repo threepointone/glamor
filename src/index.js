@@ -68,7 +68,6 @@ export function cssLabels(bool) {
   hasLabels = !!bool
 }
 
-
 // takes a string, converts to lowercase, strips out nonalphanumeric.
 function simple(str) {
   return str.toLowerCase().replace(/[^a-z0-9]/g, '')    
@@ -93,6 +92,7 @@ function hashify(...objs) {
   return hash(objs.map(x => JSON.stringify(x)).join('')).toString(36)
 }
 
+// of shape { 'data-css-<id>': ''}
 function isLikeRule(rule) {
   if(Object.keys(rule).length !== 1) {
     return false 
@@ -100,6 +100,7 @@ function isLikeRule(rule) {
   return !!/data\-css\-([a-zA-Z0-9]+)/.exec(Object.keys(rule)[0])
 }
 
+// extracts id from a { 'data-css-<id>': ''} like object 
 export function idFor(rule) {
   if(Object.keys(rule).length !== 1) throw new Error('not a rule')
   let regex = /data\-css\-([a-zA-Z0-9]+)/
@@ -108,8 +109,8 @@ export function idFor(rule) {
   return match[1]  
 }
 
-
-function deepMerge(dest, src) {
+// semi-deeply merge 2 'mega' styles
+function deepMergeStyles(dest, src) {
   Object.keys(src).forEach(expr => {
     dest[expr] = dest[expr] || {}
     Object.keys(src[expr]).forEach(type => {       
@@ -119,6 +120,7 @@ function deepMerge(dest, src) {
   })
 }
 
+// a simple cache to store rules 
 let registered = {}
 function register(spec) {
   if(!registered[spec.id]) {
@@ -126,32 +128,51 @@ function register(spec) {
   }  
 }
 
+// extracts and composes styles from a rule into a 'mega' style
+// with sub styles keyed by media query + 'path'
 function extractStyles(...rules) {
   rules = flatten(rules)
   let exprs = {}
   
-  rules.forEach(rule => {    
+  // converts {[data-css-<id>]} to the backing rule 
+  rules.forEach(rule => { 
+    // avoid possible label. todo - cleaner 
     if(typeof rule === 'string') {
       return
-    }
+    }    
     if(isLikeRule(rule)) {
       rule = registered[idFor(rule)]
     }
-    // throw on raw fontface keyframes etc 
     switch(rule.type) {
-      case 'merge': return deepMerge(exprs, extractStyles(rule.rules))
-      case 'pseudo': return deepMerge(exprs, { _: { ['%%%' + rule.selector]: rule.style } })
-      case 'child': return deepMerge(exprs, { _: { ['^^^' + rule.selector]: rule.style } })
-      case 'parent': return deepMerge(exprs, { _: { ['***' + rule.selector]: rule.style } })
-      case 'style': return deepMerge(exprs, { _: { _: rule.style } })
-      case 'media': return deepMerge(exprs, { [rule.expr]: extractStyles(rule.rules)._ }) 
-      default: return deepMerge(exprs, { _: { _: rule } })
+      case 'raw': 
+      case 'font-face':
+      case 'keyframes': throw new Error('not implemented')
+
+      case 'merge': return deepMergeStyles(exprs, 
+        extractStyles(rule.rules))
+      
+      case 'pseudo': return deepMergeStyles(exprs, 
+        { _: { ['%%%' + rule.selector]: rule.style } })
+      case 'select': return deepMergeStyles(exprs, 
+        { _: { ['^^^' + rule.selector]: rule.style } })
+      case 'parent': return deepMergeStyles(exprs, 
+        { _: { ['***' + rule.selector]: rule.style } })
+      
+      case 'style': return deepMergeStyles(exprs, 
+        { _: { _: rule.style } })
+      
+      case 'media': return deepMergeStyles(exprs, 
+        { [rule.expr]: extractStyles(rule.rules)._ }) 
+
+      default: return deepMergeStyles(exprs, 
+        { _: { _: rule } })
     }        
   })
   return exprs
 
 }
 
+// extract label from a rule / style 
 function extractLabel(rule) {
   if(isLikeRule(rule)) {
     rule = registered[idFor(rule)]
@@ -159,7 +180,7 @@ function extractLabel(rule) {
   return rule.label || '{:}'
 }
 
-
+// given an id / 'path', generate a css selector 
 function selector(id, path) {
   if(path === '_') return `[data-css-${id}]`
 
@@ -185,7 +206,7 @@ function selector(id, path) {
 
 
 function toCSS({ selector, style }) {
-  let result = plugins.apply({ selector, style })
+  let result = plugins.transform({ selector, style })
   return `${result.selector} { ${createMarkupForStyles(result.style)} }`
 }
 
@@ -214,9 +235,11 @@ function ruleToCSS(spec) {
   return css
 }
 
-
+// this cache to track which rules have 
+// been inserted into the stylesheet
 let inserted = styleSheet.inserted = {}
 
+// and helpers to insert rules into said styleSheet
 function insert(spec) {
   if(!inserted[spec.id]) {
     inserted[spec.id] = true
@@ -228,7 +251,7 @@ function insert(spec) {
 function insertKeyframe(spec) {
   if(!inserted[spec.id]) {
     let inner = Object.keys(spec.keyframes).map(kf => {
-      let result = plugins.keyframes.apply({ id: spec.id, name: kf, style: spec.keyframes[kf] })
+      let result = plugins.keyframes.transform({ id: spec.id, name: kf, style: spec.keyframes[kf] })
       return `${result.name} { ${ createMarkupForStyles(result.style) }}`
     }).join('\n');
 
@@ -246,12 +269,17 @@ function insertFontFace(spec) {
   }
 }
 
+// rehydrate the insertion cache with ids sent from 
+// renderStatic / renderStaticOptimized 
 export function rehydrate(ids) {
   // load up ids
   Object.assign(inserted, ids.reduce((o, i) => (o[i] = true, o), {}) )
   // assume css loaded separately
 }
 
+
+// clears out the cache and empties the stylesheet
+// best for tests, though there might be some value for SSR. 
 
 export function flush() {
   inserted = styleSheet.inserted = {}
@@ -275,15 +303,21 @@ export function style(obj) {
   })
 }
 
+// unique feature 
+// when you need to define 'real' css (whatever that may be)
+// https://twitter.com/threepointone/status/756585907877273600
+// https://twitter.com/threepointone/status/756986938033254400
 export function select(selector, obj) {  
   return toRule({    
     id: hashify(selector, obj), 
-    type: 'child',
+    type: 'select',
     selector, 
     style: obj,
     label: obj.label || '*'
   }) 
 }
+
+export const $ = select
 
 export function parent(selector, obj) {  
   return toRule({    
@@ -295,6 +329,14 @@ export function parent(selector, obj) {
   }) 
 }
 
+
+// we define a function to 'merge' styles together.
+// backstory - because of a browser quirk, multiple styles are applied in the order they're 
+// defined in the stylesheet, not in the order of application 
+// in most cases, this won't case an issue UNTIL IT DOES 
+// instead, use merge() to merge styles,
+// with latter styles gaining precedence over former ones 
+
 export function merge(...rules) {
   return toRule({
     id: hashify(extractStyles(rules)),
@@ -303,9 +345,8 @@ export function merge(...rules) {
     label: '[' + (typeof rules[0] === 'string' ? rules[0] : rules.map(extractLabel).join(' + '))  + ']'
   })
 }
-export function compose(...args) {
-  return merge(...args)
-}
+
+export const compose = merge
 
 export function media(expr, ...rules) {
   return toRule({
@@ -373,6 +414,7 @@ if(isDev && isBrowser) {
 export function raw(css) {
   return toRule({
     id: hashify(css),
+    css,
     type: 'raw',
     label: '^'
   })
@@ -387,6 +429,8 @@ export function pseudo(selector, obj) {
     label: obj.label || ':*'
   })
 }
+
+// allllll the pseudoclasses
 
 export function active(x) { 
   return pseudo(':active', x) 
@@ -583,7 +627,7 @@ export function keyframes(name, kfs) {
   }
   
   let spec = {
-    id: hashify(kfs),
+    id: hashify(name, kfs),
     type: 'keyframes',
     name,
     keyframes: kfs
@@ -598,6 +642,7 @@ export function keyframes(name, kfs) {
 export function fontFace(font) {
   let spec = {
     id: hashify(font),
+    type:'font-face',
     font
   }
   register(spec)
@@ -606,6 +651,9 @@ export function fontFace(font) {
   return font.fontFamily
 }
 
+
+/*** helpers for web components ***/
+// https://github.com/threepointone/glamor/issues/16
 
 export function cssFor(...rules) {
   return flatten(rules.map(r => 

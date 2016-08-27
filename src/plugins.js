@@ -4,7 +4,7 @@ export class PluginSet {
   constructor(...initial) {
     this.fns = initial || []
   }
-  inject(...fns) {
+  add(...fns) {
     fns.forEach(fn => {
       if(this.fns.indexOf(fn) >= 0) {
         if(isDev) {
@@ -22,7 +22,7 @@ export class PluginSet {
   clear() {
     this.fns = []
   }
-  apply(o) {
+  transform(o) {
     return this.fns.reduce((o, fn) => fn(o), o)  
   }
 }

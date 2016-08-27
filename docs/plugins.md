@@ -30,7 +30,7 @@ function anyLink({ selector, ...rest }) {
 To add a plugin -
 ```jsx
 import { plugins } from 'glamor'
-plugins.inject(anyLink)
+plugins.add(anyLink)
 ```
 
 You can remove it with -
