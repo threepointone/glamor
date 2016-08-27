@@ -17,8 +17,8 @@ render(make(App),
   document.querySelector('#demo'))
 
 if (module.hot) {
-  module.hot.accept('./app', () => {
-    render(make(require('./app').App),
+  module.hot.accept('./tweet', () => {
+    render(make(require('./tweet').App),
       document.querySelector('#demo'))
   })
 }
