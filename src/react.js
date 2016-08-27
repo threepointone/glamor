@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { isRule, style, merge } from './index.js'
+import { isLikeRule, style, merge } from './index.js'
 
 
 // allows for dom elements to have a 'css' prop
@@ -10,7 +10,7 @@ export const createElement = (tag, allProps, ...children) => {
     return React.createElement(tag, { 
       ...props, 
       ...Array.isArray(css) ? merge(...css) : 
-        isRule(css) ? css : 
+        isLikeRule(css) ? css : 
         style(css) 
     }, ...children)
   }

@@ -93,7 +93,7 @@ function hashify(...objs) {
 }
 
 // of shape { 'data-css-<id>': ''}
-function isLikeRule(rule) {
+export function isLikeRule(rule) {
   if(Object.keys(rule).length !== 1) {
     return false 
   }
@@ -244,9 +244,15 @@ let inserted = styleSheet.inserted = {}
 function insert(spec) {
   if(!inserted[spec.id]) {
     inserted[spec.id] = true
-    let css = ruleToCSS(spec)   
-    css.map(cssRule => styleSheet.insert(cssRule))    
+    if(spec.css) {
+      styleSheet.insert(spec.css)
+    }
+    else ruleToCSS(spec).map(cssRule => styleSheet.insert(cssRule))    
   }    
+}
+
+export function insertRule(css) {
+  return raw(css)
 }
 
 function insertKeyframe(spec) {
@@ -373,8 +379,8 @@ export const presets = {
 // cycle through the cache, and for every media query
 // find matching elements and update the label 
 function updateMediaQueryLabels() {
-  Object.keys(styleSheet.cache).forEach(id => {
-    let { expr } = styleSheet.cache[id]
+  Object.keys(registered).forEach(id => {
+    let { expr } = registered[id]
     if(expr && hasLabels && window.matchMedia) {
       let els = document.querySelectorAll(`[data-css-${id}]`)
       let match = window.matchMedia(expr).matches ? '✓': '✕'
@@ -615,7 +621,12 @@ export function backdrop(x) {
 }
 export function placeholder(x) {
   // https://github.com/threepointone/glamor/issues/14
-  return select('::placeholder,::-webkit-input-placeholder,::-moz-placeholder,::-ms-input-placeholder', x)  
+  return merge(
+    pseudo('::placeholder', x),
+    pseudo('::-webkit-input-placeholder', x),
+    pseudo('::-moz-placeholder', x),
+    pseudo('::-ms-input-placeholder', x)
+  )
 }
 
 

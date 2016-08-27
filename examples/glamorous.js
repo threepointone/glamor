@@ -1,12 +1,21 @@
 import React from 'react'
 import { style, merge, hover } from '../src'
 
-import { container, row, columns, half, oneThird, twoThirds, fullWidth } from '../src/ous'
+import '../src/reset' // css reset!
+
+import { base, container, row, columns, half, oneThird, twoThirds, fullWidth } from '../src/ous'
 
 let grayBg = style({ backgroundColor: '#eee', textAlign: 'center', borderRadius: 4 })
 let grayCols = n => merge(columns(n), grayBg)
 
-import '../src/reset' // css reset!
+
+export class App extends React.Component {
+  render() {
+    return <div {...base}>
+      <Grid/>
+    </div>
+  }
+}
 
 export class Grid extends React.Component {
   render() {
