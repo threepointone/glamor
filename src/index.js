@@ -12,8 +12,8 @@ export const styleSheet = new StyleSheet({ name: '_css_' })
 
 
 // plugins 
-import { PluginSet, prefixes, fallbacks } from './plugins' // we include these by default 
-export const plugins = styleSheet.plugins = new PluginSet(fallbacks, prefixes)
+import { PluginSet, prefixes, fallbacks, bug20fix } from './plugins' // we include these by default 
+export const plugins = styleSheet.plugins = new PluginSet(fallbacks, bug20fix, prefixes)
 plugins.media = new PluginSet() // neat! media, font-face, keyframes
 plugins.fontFace = new PluginSet()
 plugins.keyframes = new PluginSet(prefixes)
@@ -187,7 +187,7 @@ function selector(id, path) {
   if(path.indexOf('%%%') === 0) {
     let x =`[data-css-${id}]${path.slice(3)}` 
     if(canSimulate) x+= `, [data-css-${id}][data-simulate-${simple(path)}]`
-    return x.replace(':hover', ':hover:nth-child(n)')
+    return x
   }
   
   if(path.indexOf('***') === 0) {
@@ -202,6 +202,7 @@ function selector(id, path) {
       .map(x => `[data-css-${id}]${x}`)
       .join(',')    
   }
+
 }
 
 

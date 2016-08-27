@@ -47,3 +47,10 @@ export function prefixes({ style, ...rest }) {
   return ({ style: autoprefix(style), ...rest })
 }
 
+export function bug20fix({ selector, style }) {
+  // https://github.com/threepointone/glamor/issues/20
+  // todo - only on chrome versions and server side 
+  return { selector: selector.replace(/\:hover/g, ':hover:nth-child(n)') , style }
+  
+}
+

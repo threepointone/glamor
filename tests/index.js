@@ -313,8 +313,8 @@ describe('glamor', () => {
         }
       })
       expect(styleSheet.rules()[0].cssText.replace(/\s/g,''))
-        .toEqual(`@-webkit-keyframes bounce_1h38pxm { \n  0% { opacity: 0; -webkit-transform: scale(0.1); }\n  60% { opacity: 1; -webkit-transform: scale(1.2); }\n  100% { -webkit-transform: scale(1); }\n}`.replace(/\s/g,''))
-      expect(animate).toEqual('bounce_1h38pxm')
+        .toEqual(`@-webkit-keyframes bounce_zhy6v5 { \n  0% { opacity: 0; -webkit-transform: scale(0.1); }\n  60% { opacity: 1; -webkit-transform: scale(1.2); }\n  100% { -webkit-transform: scale(1); }\n}`.replace(/\s/g,''))
+      expect(animate).toEqual('bounce_zhy6v5')
 
     })
   }
