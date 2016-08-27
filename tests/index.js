@@ -66,9 +66,13 @@ describe('glamor', () => {
   })
 
   it('correctly handles display:flex', () => {
-    render(<div {...style({ display: 'flex' })}/>, node, () => {
-      expect(childStyle(node).display).toMatch(/flex/)
-    })
+    let d = document.documentElement.style
+    if (('flexWrap' in d) || ('WebkitFlexWrap' in d) || ('msFlexWrap' in d)) {
+      render(<div {...style({ display: 'flex' })}/>, node, () => {
+        expect(childStyle(node).display).toMatch(/flex/)
+      })
+    }
+    
   })
 
   it('multiple styles can be combined', () => {
@@ -123,7 +127,7 @@ describe('glamor', () => {
   it('doesn\'t touch style/className', () => {
     render(<div {...style({ color: 'red' })} className="whatever" style={{ color: 'blue' }}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')
-      expect([ ...node.childNodes[0].classList ]).toEqual([ 'whatever' ])
+      expect(node.childNodes[0].className).toEqual('whatever')
     })
 
   })
