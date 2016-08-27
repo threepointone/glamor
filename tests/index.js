@@ -365,17 +365,18 @@ describe('server', () => {
     // see tests/server.js
   })
 
-  it('can rehydrate from serialized css/cache data', () => {
+  it.only('can rehydrate from serialized css/cache data', () => {
+
     let styleTag = document.createElement('style')
     if (styleTag.styleSheet) {
-      styleTag.styleSheet.cssText += '[data-css-_="16y7vsu"]{ color:red; }'
+      styleTag.styleSheet.cssText += '[data-css-im3wl1]{ color:red; }'
     } else {
-      styleTag.appendChild(document.createTextNode('[data-css-_="16y7vsu"]{ color:red; }'))
+      styleTag.appendChild(document.createTextNode('[data-css-im3wl1]{ color:red; }'))
     }
     document.head.appendChild(styleTag)
-    node.innerHTML = '<div data-css-_="16y7vsu"></div>'
+    node.innerHTML = '<div data-css-im3wl1=""></div>'
     expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
-    rehydrate([ '16y7vsu' ])
+    rehydrate([ 'im3wl1' ])
 
     style({ color: 'red' })
     style({ color: 'blue' })
