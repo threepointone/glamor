@@ -43,6 +43,8 @@ features
 - server side / static rendering
 - tests / coverage
 
+(thanks to [BrowserStack](https://www.browserstack.com/) for providing the infrastructure that allows us to run our build in real browsers.)
+
 docs 
 ---
 - [api documentation](https://github.com/threepointone/glamor/blob/master/docs/api.md)
@@ -70,6 +72,10 @@ here are some key differences -
 - it does **not** touch `class`/`style` attributes, neither does it **not** generate pretty classnames; instead we use `data-*` attributes and jsx attribute spread ([some implications](https://github.com/Khan/aphrodite/issues/25)). This lets you define styles 'inline', yet globally optimize as one unit.
 - in dev mode, you can simulate pseudo classes on elements by using the `simulate()` helper (or adding a `[data-simulate-<pseudo>]` attribute manually). very useful, especially when combined when hot-loading and/or editing directly in your browser devtools.
 - in production, we switch to a **much** faster method of appending styles to the document, able to add 10s of 1000s of rules in milliseconds. the caveat with this approach is that those styles will [not be editable in chrome/firefox devtools](https://bugs.chromium.org/p/chromium/issues/detail?id=387952) (which is fine, for prod?). advanced users may use `speedy(true/false)` to toggle this setting manually. 
+
+
+thanks
+---
 
 
 todo
