@@ -122,31 +122,31 @@ export class StyleSheet {
 
   }
   insert(rule) {    
-    // more browser weirdness. I don't even know
-    if(this.tags.length > 0 && this.tags::last().styleSheet) {
-      this.tags::last().styleSheet.cssText+= rule
-    }
-    else {
-      if(isBrowser) {
-        // here goes the logic for 
-        if(this.speedy && this.sheet.insertRule) {        
-          this._insert(rule)
-        }
-        else{
-          this.tags::last().appendChild(document.createTextNode(rule))
-
-          // todo - more efficent here please 
-          if(!this.speedy) {
-            // sighhh
-            this.sheet = sheetForTag(this.tags::last())
-          }      
-        }      
+    
+    if(isBrowser) {
+      // this is the ultrafast version, works across browsers 
+      if(this.speedy && this.sheet.insertRule) { 
+        this._insert(rule)
+      }
+      // more browser weirdness. I don't even know    
+      else if(this.tags.length > 0 && this.tags::last().styleSheet) {      
+        this.tags::last().styleSheet.cssText+= rule
       }
       else{
-        // server side is pretty simple         
-        this.sheet.insertRule(rule)
-      }
+        this.tags::last().appendChild(document.createTextNode(rule))
+
+        // todo - more efficent here please 
+        if(!this.speedy) {
+          // sighhh
+          this.sheet = sheetForTag(this.tags::last())
+        }      
+      }      
     }
+    else{
+      // server side is pretty simple         
+      this.sheet.insertRule(rule)
+    }
+    
     this.ctr++
     if(isBrowser && this.ctr % this.length === 0) {
       this.tags.push(makeStyleTag(this.name + Math.round(this.ctr / this.length)))
