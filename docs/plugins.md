@@ -11,18 +11,17 @@ Here is an example plugin that adds ':any-link' support
 ```jsx
 
 function anyLink({ selector, style }) {
-  let pieces = selector.split(',').map(x => x.trim())
-  let result = []
-  pieces.forEach(p => {
-    if(p.indexOf(':any-link') >=0 ) {
-      result.push(p.replace(/\:any\-link/g, ':link'))
-      result.push(p.replace(/\:any\-link/g, ':visited'))
-    }
-    else {
-      result.push(p)
-    }
-  })
-  return ({ selector: result.join(', '), style })  
+  selector = selector.split(',').map(x => x.trim())
+    .forEach(p => {
+      if(p.indexOf(':any-link') >=0 ) {
+        result.push(p.replace(/\:any\-link/g, ':link'))
+        result.push(p.replace(/\:any\-link/g, ':visited'))
+      }
+      else {
+        result.push(p)
+      }
+    }).join(', ')
+  return ({ selector, style })  
 }
 
 ```

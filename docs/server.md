@@ -8,8 +8,8 @@ server side rendering
 
 this api is mostly copied from [aphrodite](https://github.com/Khan/aphrodite);
 render your component inside of a callback, and glamor will gather all
-the calls you used and return an object with html, css, and an object
-to rehydrate the lib's cache for fast startup
+the calls you used and return an object with html, css, and an array of ids
+to `rehydrate` the library for fast startup
 
 ```jsx
 // on the server

@@ -50,6 +50,7 @@
     "jade": "^1.11.0",
     "karma": "^1.2.0",
     "karma-browserify": "^5.1.0",
+    "karma-browserstack-launcher": "^1.0.1",
     "karma-chrome-launcher": "^1.0.1",
     "karma-coverage": "^1.1.1",
     "karma-firefox-launcher": "^1.0.0",

@@ -1,3 +1,5 @@
+// plugins should be able to return arrays
+
 // import { color } from './color'
 import { media } from './index'
 

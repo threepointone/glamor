@@ -189,7 +189,7 @@ describe('glamor', () => {
     // we assume phantomjs/chrome/whatever has a width > 300px
     render(<div {...media('(min-width: 300px)', style({ color: 'red' }))}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
-      expect(styleSheet.rules()[1].cssText.replace(/\s/g,''))
+      expect(styleSheet.rules()[1].cssText.replace(/\s/g,'').replace('alland', '')) // ie quirk
         .toEqual('@media(min-width:300px){[data-css-18m9kj]{color:red;}}'.replace(/\s/g,''))
         // ugh
     })

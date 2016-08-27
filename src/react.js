@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react'
 import { isLikeRule, style, merge } from './index.js'
 
+export * from './index.js' // convenience
 
 // allows for dom elements to have a 'css' prop
-export const createElement = (tag, allProps, ...children) => { 
+export function createElement(tag, allProps, ...children) { 
   // todo - pull ids from className as well? 
   if(typeof tag === 'string' && allProps && allProps.css) {
     let { css , ...props } = allProps
@@ -17,6 +18,7 @@ export const createElement = (tag, allProps, ...children) => {
   return React.createElement(tag, allProps, ...children)
 }
 
+export const dom = createElement
 
 // css vars, done right 
 // see examples/vars for usage 
