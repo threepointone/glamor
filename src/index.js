@@ -109,7 +109,16 @@ export function idFor(rule) {
   return match[1]  
 }
 
-// semi-deeply merge 2 'mega' styles
+
+// a simple cache to store generated rules 
+let registered = {}
+function register(spec) {
+  if(!registered[spec.id]) {
+    registered[spec.id] = spec    
+  }  
+}
+
+// semi-deeply merge 2 'mega' style objects 
 function deepMergeStyles(dest, src) {
   Object.keys(src).forEach(expr => {
     dest[expr] = dest[expr] || {}
@@ -120,13 +129,6 @@ function deepMergeStyles(dest, src) {
   })
 }
 
-// a simple cache to store rules 
-let registered = {}
-function register(spec) {
-  if(!registered[spec.id]) {
-    registered[spec.id] = spec    
-  }  
-}
 
 // extracts and composes styles from a rule into a 'mega' style
 // with sub styles keyed by media query + 'path'
@@ -211,7 +213,7 @@ function toCSS({ selector, style }) {
   return `${result.selector} { ${createMarkupForStyles(result.style)} }`
 }
 
-function toCSSAST(rule) {
+function ruleToAst(rule) {
   let styles = extractStyles(rule)
   return Object.keys(styles).reduce((o, expr) => {
     o[expr] = Object.keys(styles[expr]).map(s => 
@@ -222,7 +224,7 @@ function toCSSAST(rule) {
 
 function ruleToCSS(spec) {
   let css = []
-  let ast = toCSSAST(spec)
+  let ast = ruleToAst(spec)
   // plugins here 
   let { _, ...exprs } = ast
   if(_) {      
@@ -244,16 +246,25 @@ let inserted = styleSheet.inserted = {}
 function insert(spec) {
   if(!inserted[spec.id]) {
     inserted[spec.id] = true
-    if(spec.css) {
-      styleSheet.insert(spec.css)
-    }
-    else ruleToCSS(spec).map(cssRule => styleSheet.insert(cssRule))    
+    ruleToCSS(spec).map(cssRule => 
+      styleSheet.insert(cssRule))    
   }    
 }
 
 export function insertRule(css) {
-  return raw(css)
+  let spec = {
+    id: hashify(css),
+    css,
+    type: 'raw',
+    label: '^'    
+  }
+  register(spec)
+  if(!inserted[spec.id]) {
+    styleSheet.insert(spec.css)
+    inserted[spec.id] = true
+  }
 }
+
 
 function insertKeyframe(spec) {
   if(!inserted[spec.id]) {
@@ -315,6 +326,9 @@ export function style(obj) {
 // https://twitter.com/threepointone/status/756585907877273600
 // https://twitter.com/threepointone/status/756986938033254400
 export function select(selector, obj) {  
+  if(typeof selector === 'object') {
+    return style(selector)
+  }
   return toRule({    
     id: hashify(selector, obj), 
     type: 'select',
@@ -324,7 +338,7 @@ export function select(selector, obj) {
   }) 
 }
 
-export const $ = select
+export const $ = select // bringin' jquery back
 
 export function parent(selector, obj) {  
   return toRule({    
@@ -417,15 +431,6 @@ if(isDev && isBrowser) {
   // todo - clearInterval on browser close  
 }
 
-
-export function raw(css) {
-  return toRule({
-    id: hashify(css),
-    css,
-    type: 'raw',
-    label: '^'
-  })
-}
 
 export function pseudo(selector, obj) {
   return toRule({
