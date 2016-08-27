@@ -4,13 +4,13 @@ plugin system
 glamor ships with a plugin system, allowing you to add custom transforms 
 on selectors and styles before they get converted to css.
 
-A plugin is a function that recieves `{ id, selector, style, ...rest }`,
+A plugin is a function that recieves `{ selector, style }`,
 and is expected to return an object of the same shape. 
 
 Here is an example plugin that adds ':any-link' support 
 ```jsx
 
-function anyLink({ selector, ...rest }) {
+function anyLink({ selector, style }) {
   let pieces = selector.split(',').map(x => x.trim())
   let result = []
   pieces.forEach(p => {
@@ -22,7 +22,7 @@ function anyLink({ selector, ...rest }) {
       result.push(p)
     }
   })
-  return ({ selector: result.join(', '), ...rest })  
+  return ({ selector: result.join(', '), style })  
 }
 
 ```
