@@ -365,7 +365,7 @@ describe('server', () => {
     // see tests/server.js
   })
 
-  it.only('can rehydrate from serialized css/cache data', () => {
+  it('can rehydrate from serialized css/cache data', () => {
 
     let styleTag = document.createElement('style')
     if (styleTag.styleSheet) {
