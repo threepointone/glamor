@@ -3,12 +3,17 @@
 import { StyleSheet } from './sheet.js'
 import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations'
 
-export const styleSheet = new StyleSheet({ name: '_css_' }) 
+export const styleSheet = new StyleSheet() 
 // an isomorphic StyleSheet shim. hides all the nitty gritty. 
 
 // /**************** LIFTOFF IN 3... 2... 1... ****************/
                         styleSheet.inject()                     //eslint-disable-line indent
 // /****************      TO THE MOOOOOOON     ****************/
+
+// conveneience function to toggle speedy
+export function speedy(bool) { 
+  return styleSheet.speedy(bool)
+}
 
 
 // plugins 

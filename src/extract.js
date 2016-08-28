@@ -8,7 +8,9 @@ import React from 'react'
 import { renderStaticOptimized } from './server'
 import { renderToStaticMarkup } from 'react-dom/server'
 
-let El = require(process.argv[2])
+let argv = require('minimist')(process.argv.slice(2))
+
+let El = require(argv.src)
 El = El.default || El
 El = El.App || El
 

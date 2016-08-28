@@ -65,7 +65,7 @@ export class StyleSheet {
   constructor({ 
     speedy = !isDev && !isTest, 
     maxLength = (isBrowser && oldIE) ? 4000 : 65000 
-  }) {
+  } = {}) {
     this.isSpeedy = speedy // the big drawback here is that the css won't be editable in devtools
     this.sheet = undefined
     this.tags = []
@@ -94,6 +94,12 @@ export class StyleSheet {
       }
     } 
     this.injected = true
+  }
+  speedy(bool) {
+    if(this.ctr !== 0) {
+      throw new Error(`cannot change speedy mode after inserting any rule to sheet. Either call speedy(${bool}) earlier in your app, or call flush() before speedy(${bool})`)
+    }
+    this.isSpeedy = !!bool
   }
   _insert(rule) {
     // this weirdness for perf, and chrome's weird bug 
@@ -158,9 +164,10 @@ export class StyleSheet {
     if(!isBrowser) {
       return this.sheet.cssRules
     }
-    return this.tags.reduce((arr, tag) => 
-      arr.concat(Array.from(
+    let arr = []
+    this.tags.forEach(tag => arr.splice(arr.length, 0, ...Array.from(
         sheetForTag(tag).cssRules 
-      )), [])    
+      )))
+    return arr
   }
 }

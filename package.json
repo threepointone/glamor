@@ -16,10 +16,10 @@
   ],
   "scripts": {
     "build": "npm run clean && npm run build:cssops && npm run build:lib && npm run build:es6 && mkdir umd && npm run build:umd && npm run size",
-    "build:cssops": "echo 'module.exports = require(\"react/lib/CSSPropertyOperations\");' | browserify - -p browserify-derequire -s CSSOps -o src/CSSPropertyOperations.js -t babelify -t envify",
-    "build:lib": "NODE_ENV=production babel src -d lib",
+    "build:cssops": "echo 'module.exports = require(\"react/lib/CSSPropertyOperations\");' | browserify - -p browserify-derequire -s CSSOps -o src/CSSPropertyOperations.js -t envify",
+    "build:lib": "NODE_ENV=production babel src -d lib --presets es2015,stage-0,react --plugins transform-decorators-legacy",
     "build:es6": "echo 'es6 build not implemented'",
-    "build:umd": "NODE_ENV=production browserify src/index.js -s Glamor -o umd/index.js -t babelify -t envify -t aliasify && npm run compress:umd",
+    "build:umd": "NODE_ENV=production browserify src/index.js -s Glamor -o umd/index.js -t [ rollupify --config rollup.config.js ] -t envify -t aliasify && npm run compress:umd",
     "compress:umd": "NODE_ENV=production uglifyjs umd/index.js -mc -o umd/index.min.js",
     "clean": "rm -rf lib && rm -rf es6 && rm -rf umd && rm -f src/CSSPropertyOperations.js",
     "test": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js --single-run",
@@ -36,9 +36,9 @@
     "babel-polyfill": "^6.13.0",
     "babel-preset-babili": "0.0.1",
     "babel-preset-es2015": "^6.14.0",
+    "babel-preset-es2015-rollup": "^1.2.0",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
-    "babelify": "^7.3.0",
     "browserify": "^13.0.1",
     "browserify-derequire": "^0.9.4",
     "envify": "^3.4.1",
@@ -62,6 +62,8 @@
     "mocha": "^2.5.3",
     "react": "^15.3.1",
     "react-dom": "^15.3.1",
+    "rollup-plugin-babel": "^2.6.1",
+    "rollupify": "^0.3.4",
     "uglify-js": "^2.7.3",
     "watchify": "^3.7.0"
   },
@@ -85,15 +87,6 @@
     "extends": [
       "rackt"
     ]
-  },
-  "babel": {
-    "presets": [
-      "es2015",
-      "stage-0",
-      "react"
-    ],
-    "plugins": [
-      "transform-decorators-legacy"
-    ]
   }
+  
 }

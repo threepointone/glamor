@@ -116,10 +116,10 @@ const splitStyles = (combinedProps) => {
     }
     else if((key === 'merge') || (key === 'compose')) {
       if(Array.isArray(combinedProps[key])) {
-        gStyle.splice(-1, 0, ...combinedProps[key])
+        gStyle.splice(gStyle.length, 0, ...combinedProps[key])
       }
       else {
-        gStyle.splice(-1, 0, combinedProps[key])  
+        gStyle.splice(gStyle.length, 0, combinedProps[key])  
       }
     }
     else if(isHandler(key)) {
