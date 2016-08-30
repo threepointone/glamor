@@ -19,7 +19,7 @@
     "build:cssops": "echo 'module.exports = require(\"react/lib/CSSPropertyOperations\");' | browserify - -p browserify-derequire -s CSSOps -o src/CSSPropertyOperations.js -t envify",
     "build:lib": "NODE_ENV=production babel src -d lib --presets es2015,stage-0,react --plugins transform-decorators-legacy",
     "build:es6": "echo 'es6 build not implemented'",
-    "build:umd": "NODE_ENV=production browserify src/index.js -s Glamor -o umd/index.js -t [ rollupify --config rollup.config.js ] -t envify -t aliasify && npm run compress:umd",
+    "build:umd": "NODE_ENV=production browserify src/index.js -s Glamor -o umd/index.js -t [ babelify --presets [ es2015 stage-0 react ] --plugins [ transform-decorators-legacy ] ] -t envify -t aliasify && npm run compress:umd",
     "compress:umd": "NODE_ENV=production uglifyjs umd/index.js -mc -o umd/index.min.js",
     "clean": "rm -rf lib && rm -rf es6 && rm -rf umd && rm -f src/CSSPropertyOperations.js",
     "test": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js --single-run",
