@@ -392,13 +392,43 @@ describe('server', () => {
 
 })
 
+import { StyleSheet } from '../src/sheet'
+
 describe('StyleSheet', () => {
-  it('can initialize')
-  it('can be injected into the dom')
-  it('can add css')
-  it('gets applied to the element')
-  it('can flush all the css')
+  it('can initialize', () => {
+    let sheet = new StyleSheet()
+    sheet.inject()
+    expect([ ...document.styleSheets ].filter(s => s.ownerNode === sheet.tags[0]).length).toEqual(1)
+    sheet.flush()
+  })
+  
+  it('can add css', () => {
+    let sheet = new StyleSheet()
+    sheet.inject()
+    sheet.insert('#box { color: red; }')
+    let node = document.createElement('div')
+    document.body.appendChild(node)
+    node.innerHTML = '<div id="box"/>'
+    expect (window.getComputedStyle(node.childNodes[0]).color).toEqual('rgb(255, 0, 0)')
+    document.body.removeChild(node)
+    sheet.flush()
+  })
+  
+  it('can flush all the css', () => {
+    let sheet = new StyleSheet()
+    sheet.inject()
+    sheet.insert('#box { color: red; }')
+    let node = document.createElement('div')
+    document.body.appendChild(node)
+    node.innerHTML = '<div id="box"/>'
+    expect (window.getComputedStyle(node.childNodes[0]).color).toEqual('rgb(255, 0, 0)')
+    sheet.flush()
+    expect (window.getComputedStyle(node.childNodes[0]).color).toEqual('rgb(0, 0, 0)')
+    document.body.removeChild(node)
+    
+  })
   it('uses multiple tags')
+  // run all tests in  speedy mode
 })
 
 

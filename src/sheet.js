@@ -18,10 +18,6 @@ styleSheet.inject()
 styleSheet.insert('#box { border: 1px solid red; }') 
 - appends a css rule into the stylesheet 
 
-styleSheet.rules()
-- array of injected css rules 
-
-
 styleSheet.flush() 
 - empties the stylesheet of all its contents
 
