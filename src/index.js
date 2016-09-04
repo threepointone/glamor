@@ -1,13 +1,3 @@
-// export class Glamor {
-//   registered = {}
-//   inserted = {}
-//   plugins = {}
-//   register() {}
-//   insert() {}
-//   styles(...rules) {}
-
-// }
-
 /**** stylesheet  ****/
 
 import { StyleSheet } from './sheet.js'
