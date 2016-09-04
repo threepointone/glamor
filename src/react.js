@@ -7,7 +7,7 @@ export * from './index.js' // convenience
 export function createElement(tag, allProps, ...children) { 
   // todo - pull ids from className as well? 
   if(typeof tag === 'string' && allProps && allProps.css) {
-    let { css , ...props } = allProps
+    let { css, ...props } = allProps
     return React.createElement(tag, { 
       ...props, 
       ...Array.isArray(css) ? merge(...css) : 
@@ -48,15 +48,6 @@ export function vars(value = {}) {
     }
   }
 }
-
-// @styled(...{})
-// @styled(name, ...{})
-
-// @styled(Button, ...{})
-// @styled(Button, name, ...{}) // should throw if not defined? 
-
-// override(Button, ...{})(element)
-// override(Button, name, ...{})(element)
 
 let themeIndex = 0
 

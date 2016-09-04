@@ -13,8 +13,6 @@ style({ color: 'wheat' })
 
 // basic 
 {
-  cssLabels(false)
-  simulations(false)
   let { html, css, ids } = renderStatic(()=>
     renderToStaticMarkup(<div {...style({ color: 'red' })}/>))
 
