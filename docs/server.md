@@ -49,3 +49,5 @@ caveat: the above will include all the css that's been generated in the app's li
 This should be fine in most cases. If you seem to be including too many unused styles,
 use `renderStaticOptimized` instead of `renderStatic`. This will parse the generated
 html and include only the relevant used css / ids.
+
+WARNING: if you're bundling your *server side* code with webpack/browserify/etc (as opposed to just browser code), be warned of a subtle issue with excluding node_modules from the module. More details in [this twitter thread](https://twitter.com/andrewingram/status/771370174587043840), and [this issue](https://github.com/threepointone/glamor/issues/37). tldr - be certain to exclude *all* glamor modules, not just the root.
