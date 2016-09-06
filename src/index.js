@@ -311,6 +311,15 @@ export function flush() {
   styleSheet.inject()
 }
 
+function filterStyle(style) {
+  return Object.entries(style).reduce((acc, [key, value]) => {
+    if (value !== false && value !== null && value !== undefined) {
+      acc[key] = value
+    }
+    return acc
+  }, {})
+}
+
 function toRule(spec) {
   register(spec)
   insert(spec)
@@ -321,7 +330,7 @@ export function style(obj) {
   return toRule({    
     id: hashify(obj), 
     type: 'style',
-    style: obj,
+    style: filterStyle(obj),
     label: obj.label || '*'
   })
 }
@@ -338,7 +347,7 @@ export function select(selector, obj) {
     id: hashify(selector, obj), 
     type: 'select',
     selector, 
-    style: obj,
+    style: filterStyle(obj),
     label: obj.label || '*'
   }) 
 }
@@ -350,7 +359,7 @@ export function parent(selector, obj) {
     id: hashify(selector, obj), 
     type: 'parent',
     selector, 
-    style: obj,
+    style: filterStyle(obj),
     label: obj.label || '*'
   }) 
 }
@@ -442,7 +451,7 @@ export function pseudo(selector, obj) {
     id: hashify(selector, obj),
     type: 'pseudo',
     selector,
-    style: obj,
+    style: filterStyle(obj),
     label: obj.label || ':*'
   })
 }
@@ -691,5 +700,3 @@ export function attribsFor(...rules) {
   
   return htmlAttributes
 }
-
-

@@ -57,6 +57,19 @@ describe('glamor', () => {
     })
   })
 
+  it('ignores rules with falsy values: null, undefined, false', () => {
+    render(<div {...style({ fontSize: 10 })}>
+        <div {...style({ fontSize: undefined })}/>
+        <div {...style({ fontSize: null })}/>
+        <div {...style({ fontSize: false })}/>
+        <div {...style({ fontSize: 0 })}/>
+      </div>, node, () => {
+        const sizes = [0, 1, 2, 3].map(i => window.getComputedStyle(node.childNodes[0].childNodes[i]).fontSize)
+        expect(sizes).toEqual([ '10px', '10px', '10px', '0px' ])
+      }
+    )
+  })
+
   it('only adds a data attribute to the node', () => {
     let el = <div {...style({ backgroundColor: '#0f0' })} />
     expect(el).toEqual(<div data-css-1j3zyhl=""/>)
