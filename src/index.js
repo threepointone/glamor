@@ -312,12 +312,17 @@ export function flush() {
 }
 
 function filterStyle(style) {
-  return Object.entries(style).reduce((acc, [ key, value ]) => {
+  let acc = {}, keys = Object.keys(style), hasFalsy = false
+  for(let i = 0; i < keys.length; i++) {
+    let value = style[keys[i]]
     if (value !== false && value !== null && value !== undefined) {
-      acc[key] = value
+      acc[keys[i]] = value
     }
-    return acc
-  }, {})
+    else {
+      hasFalsy = true
+    }
+  }
+  return hasFalsy ? acc : style 
 }
 
 function toRule(spec) {
