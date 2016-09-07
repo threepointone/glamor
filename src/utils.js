@@ -4,7 +4,7 @@
 // - hd breakpoint 
 // - sticky footers
 
-import { after, merge, select } from './src'
+import { after, merge, select } from './index.js'
 
 export function aspectRatio(width = 16, height = 9) {  
   return {
