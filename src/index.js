@@ -312,7 +312,7 @@ export function flush() {
 }
 
 function filterStyle(style) {
-  return Object.entries(style).reduce((acc, [key, value]) => {
+  return Object.entries(style).reduce((acc, [ key, value ]) => {
     if (value !== false && value !== null && value !== undefined) {
       acc[key] = value
     }

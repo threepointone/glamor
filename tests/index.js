@@ -64,7 +64,7 @@ describe('glamor', () => {
         <div {...style({ fontSize: false })}/>
         <div {...style({ fontSize: 0 })}/>
       </div>, node, () => {
-        const sizes = [0, 1, 2, 3].map(i => window.getComputedStyle(node.childNodes[0].childNodes[i]).fontSize)
+        const sizes = [ 0, 1, 2, 3 ].map(i => window.getComputedStyle(node.childNodes[0].childNodes[i]).fontSize)
         expect(sizes).toEqual([ '10px', '10px', '10px', '0px' ])
       }
     )
