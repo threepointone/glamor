@@ -327,11 +327,12 @@ function toRule(spec) {
 }
 
 export function style(obj) {
+  const filtered = filterStyle(obj)
   return toRule({    
-    id: hashify(obj), 
+    id: hashify(filtered), 
     type: 'style',
-    style: filterStyle(obj),
-    label: obj.label || '*'
+    style: filtered,
+    label: filtered.label || '*'
   })
 }
 
@@ -343,24 +344,26 @@ export function select(selector, obj) {
   if(typeof selector === 'object') {
     return style(selector)
   }
+  const filtered = filterStyle(obj)
   return toRule({    
-    id: hashify(selector, obj), 
+    id: hashify(selector, filtered), 
     type: 'select',
     selector, 
-    style: filterStyle(obj),
-    label: obj.label || '*'
+    style: filtered,
+    label: filtered.label || '*'
   }) 
 }
 
 export const $ = select // bringin' jquery back
 
 export function parent(selector, obj) {  
+  const filtered = filterStyle(obj)
   return toRule({    
-    id: hashify(selector, obj), 
+    id: hashify(selector, filtered), 
     type: 'parent',
     selector, 
-    style: filterStyle(obj),
-    label: obj.label || '*'
+    style: filtered,
+    label: filtered.label || '*'
   }) 
 }
 
@@ -447,12 +450,13 @@ if(isDev && isBrowser) {
 
 
 export function pseudo(selector, obj) {
+  const filtered = filterStyle(obj)
   return toRule({
-    id: hashify(selector, obj),
+    id: hashify(selector, filtered),
     type: 'pseudo',
     selector,
-    style: filterStyle(obj),
-    label: obj.label || ':*'
+    style: filtered,
+    label: filtered.label || ':*'
   })
 }
 
