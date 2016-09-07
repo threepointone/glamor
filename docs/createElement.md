@@ -5,7 +5,7 @@ a drop-in replacement for React.createElement, allowing you to pass a `css` prop
 usage 
 
 ```jsx
-import createElement from 'glamor/react'
+import { createElement } from 'glamor/react'
 /* @jsx createElement */
 
 <div css={{ color: 'red' }}>
@@ -26,7 +26,7 @@ Use the following settings to avoid the `createElement` boilerplate
   "plugins": [
     [
       "transform-react-jsx",
-      { "pragma": "createElement" }
+      { "pragma": "Glamor.createElement" }
     ]
   ]
 }
@@ -36,7 +36,7 @@ Use the following settings to avoid the `createElement` boilerplate
 ```js
 plugins: [
   new webpack.ProvidePlugin({
-    createElement: 'glamor/aphrodite'
+    Glamor: 'glamor/react'
   })
 ]
 ```
