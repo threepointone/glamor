@@ -3,6 +3,7 @@
   "version": "2.15.3",
   "description": "inline css for component systems",
   "main": "lib/index.js",
+  "typings": "index.d.ts",
   "files": [
     "lib",
     "umd",
