@@ -3,6 +3,7 @@
   "version": "2.15.3",
   "description": "inline css for component systems",
   "main": "lib/index.js",
+  "typings": "index.d.ts",
   "files": [
     "lib",
     "umd",
@@ -12,7 +13,13 @@
     "ous.js",
     "reset.js",
     "utils.js",
-    "server.js"
+    "server.js",
+    "index.d.ts",
+    "aphrodite.d.ts",
+    "jsxstyle.d.ts",
+    "ous.d.ts",
+    "react.d.ts",
+    "utils.d.ts"
   ],
   "scripts": {
     "build": "npm run clean && npm run build:cssops && npm run build:lib && npm run build:es6 && mkdir umd && npm run build:umd && npm run size",
