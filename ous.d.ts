@@ -1,15 +1,20 @@
-export const container: any;
-export const row: any;
-export const columns: any;
-export const half: any;
-export const oneThird: any;
-export const twoThirds: any;
-export const button: any;
-export const primary: any;
-export const labelBody: any;
-export const base: any;
-export const fullWidth: any;
-export const maxFullWidth: any;
-export const pullRight: any;
-export const pullLeft: any;
-export const clearfix: any;
+import { StyleAttribute } from './index';
+
+type FractionalWidth = 'half' | 'oneThird' | 'twoThird';
+type FractionalOffset = FractionalWidth;
+
+export const container: StyleAttribute;
+export const row: StyleAttribute;
+export const columns: (columns: number | FractionalWidth, offset?: number | FractionalOffset) => StyleAttribute;
+export const half: (offset?: number | FractionalOffset) => StyleAttribute;
+export const oneThird: (offset?: number | FractionalOffset) => StyleAttribute;
+export const twoThirds: (offset?: number | FractionalOffset) => StyleAttribute;
+export const button: StyleAttribute;
+export const primary: StyleAttribute;
+export const labelBody: StyleAttribute;
+export const base: StyleAttribute;
+export const fullWidth: StyleAttribute;
+export const maxFullWidth: StyleAttribute;
+export const pullRight: StyleAttribute;
+export const pullLeft: StyleAttribute;
+export const clearfix: StyleAttribute;
