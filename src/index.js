@@ -2,6 +2,7 @@
 
 import { StyleSheet } from './sheet.js'
 import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations'
+import clean from './clean.js'
 
 export const styleSheet = new StyleSheet() 
 // an isomorphic StyleSheet shim. hides all the nitty gritty. 
@@ -50,6 +51,8 @@ export function simulations(bool = true) {
 // and matches an existing rule on the element 
 // eg simulate('nthChild2', ':hover:active') etc 
 export function simulate(...pseudos) {
+  pseudos = clean(pseudos) 
+  if (!pseudos) return {}
   if(!canSimulate) {
     if(!warned1) {
       console.warn('can\'t simulate without once calling simulations(true)') //eslint-disable-line no-console
@@ -140,13 +143,12 @@ function deepMergeStyles(dest, src) {
 function extractStyles(...rules) {
   rules = flatten(rules)
   let exprs = {}
-  
   // converts {[data-css-<id>]} to the backing rule 
   rules.forEach(rule => { 
     // avoid possible label. todo - cleaner 
     if(typeof rule === 'string') {
       return
-    }    
+    }
     if(isLikeRule(rule)) {
       rule = registered[idFor(rule)]
     }
@@ -215,7 +217,7 @@ function selector(id, path) {
 
 function toCSS({ selector, style }) {
   let result = plugins.transform({ selector, style })
-  return `${result.selector} { ${createMarkupForStyles(result.style)} }`
+  return `${result.selector} { ${createMarkupForStyles(result.style) } }` 
 }
 
 function ruleToAst(rule) {
@@ -311,20 +313,6 @@ export function flush() {
   styleSheet.inject()
 }
 
-function filterStyle(style) {
-  let acc = {}, keys = Object.keys(style), hasFalsy = false
-  for(let i = 0; i < keys.length; i++) {
-    let value = style[keys[i]]
-    if (value !== false && value !== null && value !== undefined) {
-      acc[keys[i]] = value
-    }
-    else {
-      hasFalsy = true
-    }
-  }
-  return hasFalsy ? acc : style 
-}
-
 function toRule(spec) {
   register(spec)
   insert(spec)
@@ -332,13 +320,13 @@ function toRule(spec) {
 }
 
 export function style(obj) {
-  const filtered = filterStyle(obj)
-  return toRule({    
-    id: hashify(filtered), 
+  obj = clean(obj)
+  return obj ? toRule({    
+    id: hashify(obj), 
     type: 'style',
-    style: filtered,
-    label: filtered.label || '*'
-  })
+    style: obj,
+    label: obj.label || '*'
+  }) : {}
 }
 
 // unique feature 
@@ -349,29 +337,28 @@ export function select(selector, obj) {
   if(typeof selector === 'object') {
     return style(selector)
   }
-  const filtered = filterStyle(obj)
-  return toRule({    
-    id: hashify(selector, filtered), 
+  obj = clean(obj)
+  return obj ? toRule({    
+    id: hashify(selector, obj), 
     type: 'select',
     selector, 
-    style: filtered,
-    label: filtered.label || '*'
-  }) 
+    style: obj,
+    label: obj.label || '*'
+  }) : {} 
 }
 
 export const $ = select // bringin' jquery back
 
 export function parent(selector, obj) {  
-  const filtered = filterStyle(obj)
-  return toRule({    
-    id: hashify(selector, filtered), 
+  obj = clean(obj)
+  return obj ? toRule({    
+    id: hashify(selector, obj), 
     type: 'parent',
     selector, 
-    style: filtered,
-    label: filtered.label || '*'
-  }) 
+    style: obj,
+    label: obj.label || '*'
+  }) : {} 
 }
-
 
 // we define a function to 'merge' styles together.
 // backstory - because of a browser quirk, multiple styles are applied in the order they're 
@@ -381,24 +368,26 @@ export function parent(selector, obj) {
 // with latter styles gaining precedence over former ones 
 
 export function merge(...rules) {
-  return toRule({
+  rules = clean(rules)
+  return rules ? toRule({
     id: hashify(extractStyles(rules)),
     type: 'merge',
     rules,
     label: '[' + (typeof rules[0] === 'string' ? rules[0] : rules.map(extractLabel).join(' + '))  + ']'
-  })
+  }) : {}
 }
 
 export const compose = merge
 
 export function media(expr, ...rules) {
-  return toRule({
+  rules = clean(rules)
+  return rules ? toRule({
     id: hashify(expr, extractStyles(rules)),
     type: 'media',
     rules, 
     expr,
     label: '*mq(' + rules.map(extractLabel).join(' + ') + ')'
-  })
+  }) : {}
 }
 
 export const presets = {  
@@ -455,14 +444,14 @@ if(isDev && isBrowser) {
 
 
 export function pseudo(selector, obj) {
-  const filtered = filterStyle(obj)
-  return toRule({
-    id: hashify(selector, filtered),
+  obj = clean(obj)
+  return obj ? toRule({
+    id: hashify(selector, obj),
     type: 'pseudo',
     selector,
-    style: filtered,
-    label: filtered.label || ':*'
-  })
+    style: obj,
+    label: obj.label || ':*'
+  }) : {}
 }
 
 // allllll the pseudoclasses
@@ -666,6 +655,8 @@ export function keyframes(name, kfs) {
     name='animation'
   }
   
+  // do not ignore empty keyframe definitions for now.
+  kfs = clean(kfs) || {}
   let spec = {
     id: hashify(name, kfs),
     type: 'keyframes',
@@ -680,6 +671,7 @@ export function keyframes(name, kfs) {
 // we don't go all out for fonts as much, giving a simple font loading strategy 
 // use a fancier lib if you need moar power
 export function fontFace(font) {
+  font = clean(font)
   let spec = {
     id: hashify(font),
     type:'font-face',
@@ -696,16 +688,18 @@ export function fontFace(font) {
 // https://github.com/threepointone/glamor/issues/16
 
 export function cssFor(...rules) {
-  return flatten(rules.map(r => 
-    registered[idFor(r)]).map(ruleToCSS)).join('\n')
+  rules = clean(rules)
+  return rules ? flatten(rules.map(r => 
+    registered[idFor(r)]).map(ruleToCSS)).join('\n') : ''
 }
 
 export function attribsFor(...rules) {
-  let htmlAttributes = rules.map(rule => {
+  rules = clean(rules)
+  let htmlAttributes = rules ? rules.map(rule => {
     idFor(rule) // throwaway check for rule 
     let key = Object.keys(rule)[0], value = rule[key]
     return `${key}="${value || ''}"`  
-  }).join(' ')
+  }).join(' ') : ''
   
   return htmlAttributes
 }
