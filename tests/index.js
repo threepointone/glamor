@@ -1,4 +1,4 @@
-/* global describe, it, beforeEach, afterEach */
+/* global describe, it, beforeEach, afterEach, before, after */
 import 'babel-polyfill'
 let isPhantom = navigator.userAgent.match(/Phantom/)
 
@@ -19,6 +19,8 @@ import { style, hover, nthChild, firstLetter, media, merge, compose,  select, vi
   presets,
   flush, styleSheet, rehydrate }
 from '../src'
+
+import clean from '../src/clean'
 
 import { View } from '../src/jsxstyle'
 
@@ -55,19 +57,6 @@ describe('glamor', () => {
     render(<div {...style({ backgroundColor: 'red' })}/>, node, () => {
       expect(childStyle(node).backgroundColor).toEqual('rgb(255, 0, 0)')
     })
-  })
-
-  it('ignores rules with falsy values: null, undefined, false', () => {
-    render(<div {...style({ fontSize: 10 })}>
-        <div {...style({ fontSize: undefined })}/>
-        <div {...style({ fontSize: null })}/>
-        <div {...style({ fontSize: false })}/>
-        <div {...style({ fontSize: 0 })}/>
-      </div>, node, () => {
-        const sizes = [ 0, 1, 2, 3 ].map(i => window.getComputedStyle(node.childNodes[0].childNodes[i]).fontSize)
-        expect(sizes).toEqual([ '10px', '10px', '10px', '0px' ])
-      }
-    )
   })
 
   it('only adds a data attribute to the node', () => {
@@ -360,9 +349,149 @@ describe('glamor', () => {
     let red = style({ color: 'red' })
 
     expect(idFor(red)).toEqual('im3wl1')      
+  })  
+})
+
+describe('clean', () => {
+  it('keeps normal objects', () => {
+    const sample = { a: 'b' }
+    Object.freeze(sample)
+    expect(clean(sample)).toBe(sample)
   })
+  
+  it('keeps normal arrays of objects', () => {
+    const sample = [ { a: 'b' }, { c: 'd' } ]
+    Object.freeze(sample)
+    expect(clean(sample)).toBe(sample)
+  })
+  
+  it('removes falsy values from objects', () => {
+    const sample = { a: 'b', c: null }
+    Object.freeze(sample)
+    expect(clean(sample)).toEqual({ a: 'b' })
+  })
+  
+  it('removes falsy values from objects on second level', () => {
+    const sample = { a: 'b', c: { d: 'd', e: {} } }
+    Object.freeze(sample)
+    expect(clean(sample)).toEqual({ a: 'b', c: { d: 'd' } })
+  })
+  
+  it('removes falsy values from arrays', () => {
+    const sample = [ 1, {}, false ]
+    Object.freeze(sample)
+    expect(clean(sample)).toEqual([ 1 ])
+  })
+  
+  it('filters objects inside arrays', () => {
+    const sample = [ 1, { x : null }, { y: 'y' } ]
+    Object.freeze(sample)
+    expect(clean(sample)).toEqual([ 1, { y: 'y' } ])
+  })
+  
+  it('returns null for single falsy value', () => {
+    expect(clean(null)).toBe(null)
+    expect(clean(undefined)).toBe(null)
+    expect(clean(false)).toBe(null)
+    expect(clean({})).toBe(null)
+  })
+  
+  it('returns null if there is no styles left after filtration', () => {
+    const samples = [
+      [ [ {} ] ],
+      [],
+      { a: { b: { x: null } } },
+      [ {}, { a: { b: false } } ]
+    ]
+    samples.forEach(sample => {
+      expect(clean(sample)).toBe(null)
+    })
+  })
+})
 
+describe('empty styles', () => {  
+  afterEach(flush)
+  
+  const shouldIgnore = (method, ...args) => {
+    it(`${method.name} ignores empty styles`, () => {
+      expect(method(...args)).toEqual({})
+      expect(styleSheet.rules().length).toEqual(0)
+    })
+  }
+  
+  shouldIgnore(style, {})
+  shouldIgnore(select, ' a', {})
+  shouldIgnore(parent, '', {})
+  shouldIgnore(merge)
+  shouldIgnore(merge, {})
+  shouldIgnore(media, '()')
+  shouldIgnore(media, '()', {})
+    
+  // TODO test simulate, fontFace, keyframes, cssFor, attribsFor
+})
 
+describe('falsy values', () => {
+  before(() => {
+    simulations(true)
+  })
+  
+  after(() => {
+    simulations(false)
+  })
+  
+  ;[ null, false, undefined ].forEach(falsy => {
+    const check = (method, a, b) => {
+      it(`${method.name} ignores ${falsy} values`, () => {
+        expect(method(...a)).toEqual(method(...b))
+      })
+    }
+    
+    check(style, 
+     [ { fontSize: 10, color: falsy } ],
+     [ { fontSize: 10 } ]
+    )
+    check(select,
+      [ '', { fontSize: 10, color: falsy } ],
+      [ '', { fontSize: 10 } ]
+    )
+    check(
+      parent,
+      [ '', { fontSize: 10, color: falsy } ],
+      [ '', { fontSize: 10 } ]
+    )
+    check(merge,
+      [ { fontSize: 10 }, falsy ],
+      [ { fontSize: 10 } ]
+    )
+    check(media,
+      [ '()', { fontSize: 10, color: falsy } ],
+      [ '()', { fontSize: 10 } ]
+    )
+    check(simulate,
+      [ 'hover', falsy ],
+      [ 'hover' ]
+    )
+    check(fontFace,
+      [ { fontFamily: 'Open Sans', fontStyle: falsy } ],
+      [ { fontFamily: 'Open Sans' } ]
+    )
+    check(keyframes,
+      [ 'bounce', { '0%': { width: 0, height: falsy } } ],
+      [ 'bounce', { '0%': { width: 0 } } ]
+    )
+    check(keyframes,
+      [ 'bounce', { '0%': { width: 0 }, '100%': falsy } ],
+      [ 'bounce', { '0%': { width: 0 } } ]
+    )
+    check(cssFor,   
+      [ falsy ],
+      [])
+    check(attribsFor, 
+      [ falsy ],
+      []
+    )
+  })
+  simulations(false)
 })
 
 describe('server', () => {
