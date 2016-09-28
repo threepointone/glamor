@@ -1,10 +1,10 @@
-/* 
+/*
 
-high performance StyleSheet for css-in-js systems 
+high performance StyleSheet for css-in-js systems
 
-- uses multiple style tags behind the scenes for millions of rules 
+- uses multiple style tags behind the scenes for millions of rules
 - uses `insertRule` for appending in production for *much* faster performance
-- 'polyfills' on server side 
+- 'polyfills' on server side
 
 
 // usage
@@ -12,20 +12,20 @@ high performance StyleSheet for css-in-js systems
 import StyleSheet from 'glamor/lib/sheet'
 let styleSheet = new StyleSheet()
 
-styleSheet.inject() 
+styleSheet.inject()
 - 'injects' the stylesheet into the page (or into memory if on server)
 
-styleSheet.insert('#box { border: 1px solid red; }') 
-- appends a css rule into the stylesheet 
+styleSheet.insert('#box { border: 1px solid red; }')
+- appends a css rule into the stylesheet
 
-styleSheet.flush() 
+styleSheet.flush()
 - empties the stylesheet of all its contents
 
 
 */
 
-function last() {
-  return this[this.length -1]
+function last(arr) {
+  return arr[arr.length -1]
 }
 
 function sheetForTag(tag) {
@@ -36,20 +36,20 @@ function sheetForTag(tag) {
   }
 }
 
-const isBrowser = typeof document !== 'undefined' 
+const isBrowser = typeof document !== 'undefined'
 const isDev = (x => (x === 'development') || !x)(process.env.NODE_ENV)
-const isTest = process.env.NODE_ENV === 'test' 
+const isTest = process.env.NODE_ENV === 'test'
 
-const oldIE = (() => {  
+const oldIE = (() => {
   if(isBrowser) {
     let div = document.createElement('div')
     div.innerHTML = '<!--[if lt IE 10]><i></i><![endif]-->'
     return div.getElementsByTagName('i').length === 1
-  }  
+  }
 })()
 
 function makeStyleTag() {
-  let tag = document.createElement('style')        
+  let tag = document.createElement('style')
   tag.type = 'text/css'
   tag.appendChild(document.createTextNode(''));
   (document.head || document.getElementsByTagName('head')[0]).appendChild(tag)
@@ -58,9 +58,9 @@ function makeStyleTag() {
 
 
 export class StyleSheet {
-  constructor({ 
-    speedy = !isDev && !isTest, 
-    maxLength = (isBrowser && oldIE) ? 4000 : 65000 
+  constructor({
+    speedy = !isDev && !isTest,
+    maxLength = (isBrowser && oldIE) ? 4000 : 65000
   } = {}) {
     this.isSpeedy = speedy // the big drawback here is that the css won't be editable in devtools
     this.sheet = undefined
@@ -70,25 +70,27 @@ export class StyleSheet {
   }
   inject() {
     if(this.injected) {
-      throw new Error('already injected stylesheet!') 
+      throw new Error('already injected stylesheet!')
     }
     if(isBrowser) {
-      // this section is just weird alchemy I found online off many sources 
-      this.tags[0] = makeStyleTag()        
-      // this weirdness brought to you by firefox 
-      this.sheet = sheetForTag(this.tags[0]) 
-    } 
+      // this section is just weird alchemy I found online off many sources
+      this.tags[0] = makeStyleTag()
+      // this weirdness brought to you by firefox
+      this.sheet = sheetForTag(this.tags[0])
+    }
     else {
       // server side 'polyfill'. just enough behavior to be useful.
-      this.sheet  = {         
+      this.sheet  = {
         cssRules: [],
         insertRule: rule => {
-          // enough 'spec compliance' to be able to extract the rules later  
-          // in other words, just the cssText field 
-          this.sheet.cssRules.push({ cssText: rule }) 
+          // enough 'spec compliance' to be able to extract the rules later
+          // in other words, just the cssText field
+          const serverRule = { cssText: rule }
+          this.sheet.cssRules.push(serverRule)
+          return {serverRule, updateRule: (newCss => serverRule.cssText = newCss)}
         }
       }
-    } 
+    }
     this.injected = true
   }
   speedy(bool) {
@@ -98,49 +100,53 @@ export class StyleSheet {
     this.isSpeedy = !!bool
   }
   _insert(rule) {
-    // this weirdness for perf, and chrome's weird bug 
+    // this weirdness for perf, and chrome's weird bug
     // https://stackoverflow.com/questions/20007992/chrome-suddenly-stopped-accepting-insertrule
-    try {          
-      this.sheet.insertRule(rule, this.sheet.cssRules.length) // todo - correct index here     
+    try {
+      this.sheet.insertRule(rule, this.sheet.cssRules.length) // todo - correct index here
     }
     catch(e) {
       if(isDev) {
-        // might need beter dx for this 
+        // might need beter dx for this
         console.warn('whoops, illegal rule inserted', rule) //eslint-disable-line no-console
-      }          
-    }          
+      }
+    }
 
   }
-  insert(rule) {    
-    
+  insert(rule) {
+    let insertedRule
+
     if(isBrowser) {
-      // this is the ultrafast version, works across browsers 
-      if(this.isSpeedy && this.sheet.insertRule) { 
+      // this is the ultrafast version, works across browsers
+      if(this.isSpeedy && this.sheet.insertRule) {
         this._insert(rule)
       }
-      // more browser weirdness. I don't even know    
-      else if(this.tags.length > 0 && this.tags::last().styleSheet) {      
-        this.tags::last().styleSheet.cssText+= rule
+      // more browser weirdness. I don't even know
+      else if(this.tags.length > 0 && last(this.tags).styleSheet) {
+        last(this.tags).styleSheet.cssText+= rule
       }
       else{
-        this.tags::last().appendChild(document.createTextNode(rule))
+        const textNode = document.createTextNode(rule)
+        last(this.tags).appendChild(textNode)
+        insertedRule = { textNode, updateRule: newCss => (textNode.data = newCss)}
 
         if(!this.isSpeedy) {
           // sighhh
-          this.sheet = sheetForTag(this.tags::last())
-        }      
-      }      
+          this.sheet = sheetForTag(last(this.tags))
+        }
+      }
     }
     else{
-      // server side is pretty simple         
-      this.sheet.insertRule(rule)
+      // server side is pretty simple
+      insertedRule = this.sheet.insertRule(rule)
     }
-    
+
     this.ctr++
     if(isBrowser && this.ctr % this.maxLength === 0) {
       this.tags.push(makeStyleTag())
-      this.sheet = sheetForTag(this.tags::last())
+      this.sheet = sheetForTag(last(this.tags))
     }
+    return insertedRule
   }
   flush() {
     if(isBrowser) {
@@ -151,18 +157,18 @@ export class StyleSheet {
       // todo - look for remnants in document.styleSheets
     }
     else {
-      // simpler on server 
+      // simpler on server
       this.sheet.cssRules = []
     }
     this.injected = false
-  }  
+  }
   rules() {
     if(!isBrowser) {
       return this.sheet.cssRules
     }
     let arr = []
     this.tags.forEach(tag => arr.splice(arr.length, 0, ...Array.from(
-        sheetForTag(tag).cssRules 
+        sheetForTag(tag).cssRules
       )))
     return arr
   }
