@@ -8,7 +8,7 @@ export class App extends React.Component {
   }
   render() {
     return <div onClick={this.toggle}>
-      <Runner key={ this.state.speedy ? 1: 0} count={1000} speedy={this.state.speedy}/>
+      <Runner key={ this.state.speedy ? 1: 0} count={5000} speedy={this.state.speedy}/>
     </div>
   }
 }

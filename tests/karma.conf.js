@@ -63,7 +63,7 @@ const customLaunchers = {
 module.exports = function (config) {
   config.set({    
     frameworks: [ 'browserify', 'mocha' ],
-    browsers: allBrowsers ? [ 'PhantomJS', 'Firefox', 'Chrome', 'Safari' ] : [ 'PhantomJS' ],
+    browsers: allBrowsers ? [ 'PhantomJS', 'Firefox', 'Chrome', 'Safari', 'MobileSafari' ] : [ 'PhantomJS' ],
     reporters: [ 'mocha' ],
     preprocessors: {
       'index.js': [ 'browserify' ]

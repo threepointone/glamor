@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=development beefy index.js:bundle.js --index index.html -- -p browserify-hmr -p errorify -t babelify -t envify"
+    "start": "NODE_ENV=development beefy index.js:bundle.js --index index.html -- -p browserify-hmr -p errorify -t [ babelify --presets [ es2015 stage-0 react ] --plugins [ transform-decorators-legacy ] ] -t envify"
   },
   "author": "",
   "license": "ISC",

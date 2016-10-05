@@ -25,7 +25,7 @@ plugins.fontFace = new PluginSet()
 plugins.keyframes = new PluginSet(prefixes)
 
 // define some constants 
-const isBrowser = typeof document !== 'undefined' 
+const isBrowser = typeof window !== 'undefined'
 const isDev = (x => (x === 'development') || !x)(process.env.NODE_ENV)
 const isTest = process.env.NODE_ENV === 'test' 
 
@@ -319,8 +319,33 @@ function toRule(spec) {
   return { [`data-css-${spec.id}`]: hasLabels ? spec.label || '' : '' } 
 }
 
+function find(arr, fn){  
+  for(let i=0; i < arr.length; i++){
+    if(fn(arr[i]) === true){
+      return true
+    }
+  }
+  return false
+}
+
 export function style(obj) {
   obj = clean(obj)
+
+  let hasPseudos = obj && find(Object.keys(obj), x => x.charAt(0) === ':')
+  if(hasPseudos){
+    let plain = {}, pseudos = []
+    Object.keys(obj).forEach(key => {
+      if(key.charAt(0) === ':'){
+        pseudos.push(pseudo(key, obj[key]))
+      }
+      else {
+        plain[key] = obj[key]
+      }
+    })
+    return merge(plain, ...pseudos)    
+  }
+  
+
   return obj ? toRule({    
     id: hashify(obj), 
     type: 'style',
@@ -338,6 +363,7 @@ export function select(selector, obj) {
     return style(selector)
   }
   obj = clean(obj)
+
   return obj ? toRule({    
     id: hashify(selector, obj), 
     type: 'select',

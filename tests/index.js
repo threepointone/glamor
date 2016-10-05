@@ -90,9 +90,17 @@ describe('glamor', () => {
       expect(childStyle(node).height).toEqual('100px')
     })
 
-    // todo
-    // 3. merge(...styles)
+    
   })
+
+  it('accepts nested objects', () => {
+    simulations(true)
+    render(<div {...style({ color: '#ccc', ':hover': { color: 'blue' }})} {...simulate('hover')} ></div>, node, () => {
+      simulations(false)
+      expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')  
+    })
+  })
+
   it(':not() selector works for multiple selectors')
   it('can use a parent selector to target itself', () => {
     let x = parent('.foo', { color: 'red' })
