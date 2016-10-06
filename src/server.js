@@ -18,9 +18,12 @@ export function renderStatic(fn, optimized = false) {
 
     let o = { html, ids: [], css: '', rules: [] }
     let regex = /data\-css\-([a-zA-Z0-9]+)=/gm
-    let match, ids = []
+    let match, ids = [], insertedIDs = {}
     while((match = regex.exec(html)) !== null) {
-      ids.push(match[1])
+      if(!insertedIDs[match[1] + '']) {
+        ids.push(match[1])  
+        insertedIDs[match[1] + ''] = true
+      }
     }
     ids.forEach(id => {
       // o.cache[id] = styleSheet.cache[id]
