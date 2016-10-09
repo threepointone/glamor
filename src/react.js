@@ -4,15 +4,15 @@ import { isLikeRule, style, merge } from './index.js'
 export * from './index.js' // convenience
 
 // allows for dom elements to have a 'css' prop
-export function createElement(tag, allProps, ...children) { 
-  // todo - pull ids from className as well? 
+export function createElement(tag, allProps, ...children) {
+  // todo - pull ids from className as well?
   if(typeof tag === 'string' && allProps && allProps.css) {
     let { css, ...props } = allProps
-    return React.createElement(tag, { 
-      ...props, 
-      ...Array.isArray(css) ? merge(...css) : 
-        isLikeRule(css) ? css : 
-        style(css) 
+    return React.createElement(tag, {
+      ...props,
+      ...Array.isArray(css) ? merge(...css) :
+        isLikeRule(css) ? css :
+        style(css)
     }, ...children)
   }
   return React.createElement(tag, allProps, ...children)
@@ -20,8 +20,8 @@ export function createElement(tag, allProps, ...children) {
 
 export const dom = createElement
 
-// css vars, done right 
-// see examples/vars for usage 
+// css vars, done right
+// see examples/vars for usage
 export function vars(value = {}) {
   return function (Target) {
     return class Vars extends React.Component {
@@ -29,19 +29,19 @@ export function vars(value = {}) {
         glamorCssVars: PropTypes.object
       }
       static contextTypes = {
-        glamorCssVars: PropTypes.object  
+        glamorCssVars: PropTypes.object
       }
       getChildContext() {
-        return { 
-          glamorCssVars: { 
-            ...this.context.glamorCssVars, 
-            ...typeof value === 'function' ? value(this.props) : value 
+        return {
+          glamorCssVars: {
+            ...this.context.glamorCssVars,
+            ...typeof value === 'function' ? value(this.props) : value
           }
         }
       }
       render() {
-        return React.createElement(Target, 
-          { ...this.props, vars: this.context.glamorCssVars || (typeof value === 'function' ? value(this.props) : value)  }, 
+        return React.createElement(Target,
+          { ...this.props, vars: this.context.glamorCssVars || (typeof value === 'function' ? value(this.props) : value)  },
           this.props.children
         )
       }
@@ -51,7 +51,7 @@ export function vars(value = {}) {
 
 let themeIndex = 0
 
-export function makeTheme() {  
+export function makeTheme() {
 
   let key = `data-glamor-theme-${themeIndex++}`
 
@@ -64,13 +64,13 @@ export function makeTheme() {
         render() {
           return React.createElement(Target, {
             ...this.props,
-            [key]: merge( typeof _default === 'function' ? 
-                _default(this.props) : 
-                _default, 
-              ...this.context[key] )
+            [key]: merge( typeof _default === 'function' ?
+                _default(this.props) :
+                _default,
+              ...(this.context[key] || []) )
           })
         }
-      }  
+      }
     }
   }
 
@@ -82,23 +82,22 @@ export function makeTheme() {
           [key]: PropTypes.arrayOf(PropTypes.object)
         }
         static childContextTypes = {
-          [key]: PropTypes.arrayOf(PropTypes.object)  
+          [key]: PropTypes.arrayOf(PropTypes.object)
         }
         getChildContext() {
           return {
-            [key]: [ typeof _style === 'function' ? 
-              _style(this.props) : 
-              _style, 
+            [key]: [ typeof _style === 'function' ?
+              _style(this.props) :
+              _style,
             ...this.context[key] || [] ]
           }
         }
         render() {
           return React.createElement(Target, this.props)
         }
-      }  
-    }      
+      }
+    }
   }
-  return fn 
-  
-}
+  return fn
 
+}
