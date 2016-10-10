@@ -11,7 +11,7 @@ export const styleSheet = new StyleSheet()
                         styleSheet.inject()                     //eslint-disable-line indent
 // /****************      TO THE MOOOOOOON     ****************/
 
-// conveneience function to toggle speedy
+// convenience function to toggle speedy
 export function speedy(bool) { 
   return styleSheet.speedy(bool)
 }
