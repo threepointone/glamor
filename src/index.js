@@ -1,7 +1,7 @@
 /**** stylesheet  ****/
 
 import { StyleSheet } from './sheet.js'
-import { createMarkupForStyles } from 'react/lib/CSSPropertyOperations'
+import { createMarkupForStyles } from './CSSPropertyOperations'
 import clean from './clean.js'
 
 export const styleSheet = new StyleSheet() 
