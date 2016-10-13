@@ -100,19 +100,22 @@ function hashify(...objs) {
   return hash(objs.map(x => JSON.stringify(x)).join('')).toString(36)
 }
 
+
 // of shape { 'data-css-<id>': ''}
 export function isLikeRule(rule) {
-  if(Object.keys(rule).length !== 1) {
+  let keys = Object.keys(rule).filter(x => x !== 'toString')
+  if(keys.length !== 1) {
     return false 
   }
-  return !!/data\-css\-([a-zA-Z0-9]+)/.exec(Object.keys(rule)[0])
+  return !!/data\-css\-([a-zA-Z0-9]+)/.exec(keys[0])
 }
 
 // extracts id from a { 'data-css-<id>': ''} like object 
 export function idFor(rule) {
-  if(Object.keys(rule).length !== 1) throw new Error('not a rule')
+  let keys = Object.keys(rule).filter(x => x !== 'toString')
+  if(keys.length !== 1) throw new Error('not a rule')
   let regex = /data\-css\-([a-zA-Z0-9]+)/
-  let match = regex.exec(Object.keys(rule)[0])
+  let match = regex.exec(keys[0])
   if(!match) throw new Error('not a rule')
   return match[1]  
 }
@@ -191,24 +194,24 @@ function extractLabel(rule) {
 
 // given an id / 'path', generate a css selector 
 function selector(id, path) {
-  if(path === '_') return `[data-css-${id}]`
+  if(path === '_') return `.css-${id}, [data-css-${id}]`
 
   if(path.indexOf('%%%') === 0) {
-    let x =`[data-css-${id}]${path.slice(3)}` 
-    if(canSimulate) x+= `, [data-css-${id}][data-simulate-${simple(path)}]`
+    let x =`.css-${id}${path.slice(3)}, [data-css-${id}]${path.slice(3)}` 
+    if(canSimulate) x+= `, [data-css-${id}][data-simulate-${simple(path)}], .css-${id}[data-simulate-${simple(path)}]`
     return x
   }
   
   if(path.indexOf('***') === 0) {
     return path.slice(3)
       .split(',')
-      .map(x => `${x} [data-css-${id}]`)
+      .map(x => `${x} .css-${id}, ${x} [data-css-${id}]`)
       .join(',')    
   }
   if(path.indexOf('^^^') === 0) {
     return path.slice(3)
       .split(',')
-      .map(x => `[data-css-${id}]${x}`)
+      .map(x => `.css-${id}${x}, [data-css-${id}]${x}`)
       .join(',')    
   }
 
@@ -313,15 +316,20 @@ export function flush() {
   styleSheet.inject()
 }
 
+
 function toRule(spec) {
   register(spec)
   insert(spec)
-  return { [`data-css-${spec.id}`]: hasLabels ? spec.label || '' : '' } 
+  let ret = { [`data-css-${spec.id}`]: hasLabels ? spec.label || '' : '', toString() { return 'css-' + spec.id } }
+  Object.defineProperty(ret, 'toString', {
+    enumerable: false, value() { return 'css-' + spec.id }
+  })
+  return ret
 }
 
-function find(arr, fn){  
-  for(let i=0; i < arr.length; i++){
-    if(fn(arr[i]) === true){
+function find(arr, fn) {  
+  for(let i=0; i < arr.length; i++) {
+    if(fn(arr[i]) === true) {
       return true
     }
   }
@@ -330,12 +338,15 @@ function find(arr, fn){
 
 export function style(obj) {
   obj = clean(obj)
+  let plain = {}, pseudos = [], medias = {}
 
   let hasPseudos = obj && find(Object.keys(obj), x => x.charAt(0) === ':')
-  if(hasPseudos){
-    let plain = {}, pseudos = []
+  
+  
+  if(hasPseudos) {
+    
     Object.keys(obj).forEach(key => {
-      if(key.charAt(0) === ':'){
+      if(key.charAt(0) === ':') {
         pseudos.push(pseudo(key, obj[key]))
       }
       else {
@@ -343,6 +354,18 @@ export function style(obj) {
       }
     })
     return merge(plain, ...pseudos)    
+  }
+  let hasMedias = obj && find(Object.keys(obj), x => x.charAt(0) === '@') // todo - check @media
+  if(hasMedias) {
+    Object.keys(obj).forEach(key => {
+      if(key.charAt(0) === '@') {
+        medias.push(media(key.substring(6), obj[key]))
+      }
+      else {
+        plain[key] = obj[key]
+      }      
+    })  
+    return merge(plain, ...medias)
   }
   
 
