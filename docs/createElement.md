@@ -19,10 +19,7 @@ Use the following settings to avoid the `createElement` boilerplate
 ---
 ```json
 {
-  "presets": [
-    "es2015",
-    "stage-0"
-  ],
+  ...
   "plugins": [
     [
       "transform-react-jsx",
@@ -34,6 +31,7 @@ Use the following settings to avoid the `createElement` boilerplate
 `webpack.config.js`
 ---
 ```js
+...
 plugins: [
   new webpack.ProvidePlugin({
     Glamor: 'glamor/react'

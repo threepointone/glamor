@@ -184,15 +184,14 @@ function extractStyles(...rules) {
   rules = flatten(rules)
   let exprs = {}
   // converts {[data-css-<id>]} to the backing rule 
-  rules = rules.map(x => ((x.type === 'style') || !x.type) ? deconstruct(x.style || x) : x)
+  rules = rules
+    .map(x => isLikeRule(x) ? registered[idFor(x)] : x)
+    .map(x => ((x.type === 'style') || !x.type) ? deconstruct(x.style || x) : x)
   rules = flatten(rules)
   rules.forEach(rule => { 
     // avoid possible label. todo - cleaner 
     if(typeof rule === 'string') {
       return
-    }
-    if(isLikeRule(rule)) {
-      rule = registered[idFor(rule)]
     }
     switch(rule.type) {
       case 'raw': 

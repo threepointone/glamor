@@ -1,6 +1,5 @@
 import React from 'react'
-import { StyleSheet, css, createElement } from '../src/aphrodite' //eslint-disable-line no-unused-vars
-/** @jsx createElement */
+import { StyleSheet, css } from '../src/aphrodite' //eslint-disable-line no-unused-vars
 
 import { keyframes } from '../src'
 
