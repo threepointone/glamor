@@ -317,6 +317,9 @@ export function insertRule(css) {
   }
 }
 
+export function insertGlobal(selector, style) {
+  return insertRule(`${selector} { ${createMarkupForStyles(style)} }`)
+}
 
 function insertKeyframe(spec) {
   if(!inserted[spec.id]) {
