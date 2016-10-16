@@ -82,13 +82,13 @@ function simple(str) {
 }
 
 // flatten a nested array 
-function flatten(...els) {
+function flatten(inArr) {
   let arr = []
-  for(let i=0; i<els.length; i++) {
-    if(Array.isArray(els[i])) 
-      arr = arr.concat(flatten(...els[i]))    
+  for(let i=0; i<inArr.length; i++) {
+    if(Array.isArray(inArr[i])) 
+      arr = arr.concat(flatten(inArr[i]))    
     else 
-      arr = arr.concat(els[i])    
+      arr = arr.concat(inArr[i])    
   }
   return arr
 }
@@ -141,12 +141,50 @@ function deepMergeStyles(dest, src) {
 }
 
 
+//todo - prevent nested media queries
+function deconstruct(obj) {
+  let ret = []  
+  let plain = {}, hasPlain = false
+  let hasPseudos = obj && find(Object.keys(obj), x => x.charAt(0) === ':')
+  let hasMedias = obj && find(Object.keys(obj), x => x.charAt(0) === '@') // todo - check @media
+  
+  if(hasPseudos || hasMedias) {
+    
+    Object.keys(obj).forEach(key => {
+      if(key.charAt(0) === ':') {
+        ret.push({
+          type: 'pseudo',
+          style: obj[key],
+          selector: key
+        })
+      }
+      else if (key.charAt(0) === '@') {
+        ret.push({
+          type: 'media',
+          rules: deconstruct(obj[key]),
+          expr: key.substring(6)
+        })
+      }
+      else {
+        hasPlain = true
+        plain[key] = obj[key]
+      }
+    })
+    return hasPlain ? [ plain, ...ret ] : ret
+  }
+  return obj
+
+}
+
+
 // extracts and composes styles from a rule into a 'mega' style
 // with sub styles keyed by media query + 'path'
 function extractStyles(...rules) {
   rules = flatten(rules)
   let exprs = {}
   // converts {[data-css-<id>]} to the backing rule 
+  rules = rules.map(x => ((x.type === 'style') || !x.type) ? deconstruct(x.style || x) : x)
+  rules = flatten(rules)
   rules.forEach(rule => { 
     // avoid possible label. todo - cleaner 
     if(typeof rule === 'string') {
@@ -316,11 +354,11 @@ export function flush() {
   styleSheet.inject()
 }
 
-
+// todo - perf
 function toRule(spec) {
   register(spec)
   insert(spec)
-  let ret = { [`data-css-${spec.id}`]: hasLabels ? spec.label || '' : '', toString() { return 'css-' + spec.id } }
+  let ret = { [`data-css-${spec.id}`]: hasLabels ? spec.label || '' : '' }
   Object.defineProperty(ret, 'toString', {
     enumerable: false, value() { return 'css-' + spec.id }
   })
@@ -338,36 +376,6 @@ function find(arr, fn) {
 
 export function style(obj) {
   obj = clean(obj)
-  let plain = {}, pseudos = [], medias = {}
-
-  let hasPseudos = obj && find(Object.keys(obj), x => x.charAt(0) === ':')
-  
-  
-  if(hasPseudos) {
-    
-    Object.keys(obj).forEach(key => {
-      if(key.charAt(0) === ':') {
-        pseudos.push(pseudo(key, obj[key]))
-      }
-      else {
-        plain[key] = obj[key]
-      }
-    })
-    return merge(plain, ...pseudos)    
-  }
-  let hasMedias = obj && find(Object.keys(obj), x => x.charAt(0) === '@') // todo - check @media
-  if(hasMedias) {
-    Object.keys(obj).forEach(key => {
-      if(key.charAt(0) === '@') {
-        medias.push(media(key.substring(6), obj[key]))
-      }
-      else {
-        plain[key] = obj[key]
-      }      
-    })  
-    return merge(plain, ...medias)
-  }
-  
 
   return obj ? toRule({    
     id: hashify(obj), 

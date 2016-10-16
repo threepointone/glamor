@@ -111,6 +111,29 @@ describe('glamor', () => {
     })
   })
 
+  it('accepts nested media queries', () => {
+    style({
+      color: 'red',
+      ':hover': {
+        color: 'blue'
+      },
+      '@media(min-width: 300px)': {
+        color: 'green',
+        ':hover': {
+          color: 'yellow'
+        }
+      }
+    })
+    
+    expect(styleSheet.rules().map(x => x.cssText).join('\n').replace(/\:nth\-child\(n\)/g, '')).toEqual(
+`.css-fq3bw6, [data-css-fq3bw6] { color: red; }
+.css-fq3bw6:hover, [data-css-fq3bw6]:hover { color: blue; }
+@media (min-width: 300px) { 
+  .css-fq3bw6, [data-css-fq3bw6] { color: green; }
+  .css-fq3bw6:hover, [data-css-fq3bw6]:hover { color: yellow; }
+}`)
+  })
+
   it(':not() selector works for multiple selectors')
   it('can use a parent selector to target itself', () => {
     let x = parent('.foo', { color: 'red' })

@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "build": "npm run clean && npm run build:cssops && npm run build:lib && npm run build:es6 && mkdir umd && npm run build:umd && npm run size",
-    "build:cssops": "echo 'module.exports = require(\"react/lib/CSSPropertyOperations\");' | browserify - -p browserify-derequire -s CSSOps -o src/CSSPropertyOperations.js -t envify",
+    "build:cssops": "NODE_ENV=production echo 'module.exports = require(\"react/lib/CSSPropertyOperations\");' | NODE_ENV=production browserify - -p browserify-derequire -s CSSOps -o src/CSSPropertyOperations.js -t envify -t uglifyify",
     "build:lib": "NODE_ENV=production babel src -d lib --presets es2015,stage-0,react --plugins transform-decorators-legacy",
     "build:es6": "echo 'es6 build not implemented'",
     "build:umd": "NODE_ENV=production browserify src/index.js -s Glamor -o umd/index.js -t [ babelify --presets [ es2015 stage-0 react ] --plugins [ transform-decorators-legacy ] ] -t envify -t aliasify && npm run compress:umd",
@@ -51,6 +51,7 @@
     "babelify": "^7.3.0",
     "browserify": "^13.1.0",
     "browserify-derequire": "^0.9.4",
+    "classnames": "^2.2.5",
     "envify": "^3.4.1",
     "eslint": "^3.7.1",
     "eslint-config-rackt": "^1.1.1",
@@ -76,6 +77,7 @@
     "rollup-plugin-babel": "^2.6.1",
     "rollupify": "^0.3.4",
     "uglify-js": "^2.7.3",
+    "uglifyify": "^3.0.3",
     "watchify": "^3.7.0"
   },
   "peerDependencies": {
