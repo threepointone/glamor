@@ -7,12 +7,9 @@ import { merge, style } from './index.js'
 
 export const StyleSheet = {
   create(spec) {    
-    let entries = Object.keys(spec).map(name => {
-      let rule = style(spec[name])
-      return [ name, rule ]
-    })
-
-    return entries.reduce((o, [ name, val ]) => (o[name] = val, o), {})
+    return Object.keys(spec)
+      .reduce((o, name) => 
+        (o[name] = style(spec[name]), o), {})
   }
 }
 
