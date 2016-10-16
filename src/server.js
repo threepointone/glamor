@@ -17,7 +17,7 @@ export function renderStatic(fn, optimized = false) {
     // reconstruct css/rules/cache to pass
 
     let o = { html, ids: [], css: '', rules: [] }
-    let regex = /data\-css\-([a-zA-Z0-9]+)=/gm
+    let regex = /css\-([a-zA-Z0-9]+)=/gm
     let match, ids = [], insertedIDs = {}
     while((match = regex.exec(html)) !== null) {
       if(!insertedIDs[match[1] + '']) {
@@ -32,7 +32,7 @@ export function renderStatic(fn, optimized = false) {
       // todo - add raw rules (without any data-css stuff)
       o.css+= rules
         .map(x => x.cssText)
-        .filter(r => new RegExp(`\\\[data\-css\-${id}\\\]`).test(r))
+        .filter(r => new RegExp(`css\-${id}`).test(r))
         .map(x => (o.rules.push(x), x))
         .join('')
 
