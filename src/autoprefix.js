@@ -255,4 +255,5 @@ function gate(objOrBool, optionalBoolean = false) {
   } // default: don't include all browsers
 }
 
-export const autoprefix = gate(true)
+let isBrowser = typeof window !== 'undefined'
+export const autoprefix = gate(!isBrowser)
