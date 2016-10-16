@@ -4,7 +4,6 @@ import { merge, style } from './index.js'
 // - animations 
 // - fonts 
 
-
 export const StyleSheet = {
   create(spec) {    
     return Object.keys(spec)
@@ -13,7 +12,4 @@ export const StyleSheet = {
   }
 }
 
-export function css(...rules) {  
-  return merge(...rules)
-}
-
+export const css = merge
