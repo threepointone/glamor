@@ -61,9 +61,19 @@ describe('glamor', () => {
 
   it('only adds a data attribute to the node', () => {
     let el = <div {...style({ backgroundColor: '#0f0' })} />
-    expect(el).toEqual(<div data-css-1j3zyhl=""/>)
+    
     render(el, node, () => {
       expect(childStyle(node).backgroundColor).toEqual('rgb(0, 255, 0)')
+      expect(el).toEqual(<div data-css-1j3zyhl=""/>)
+    })
+  })
+
+  it('becomes a classname when treated as a string', () => {
+    let el = <div className={style({ backgroundColor: '#0f0' }) + ' wellnow'} />
+    
+    render(el, node, () => {
+      expect(childStyle(node).backgroundColor).toEqual('rgb(0, 255, 0)')
+      expect(el).toEqual(<div className="css-1j3zyhl wellnow"/>)
     })
   })
 
@@ -95,10 +105,34 @@ describe('glamor', () => {
 
   it('accepts nested objects', () => {
     simulations(true)
-    render(<div {...style({ color: '#ccc', ':hover': { color: 'blue' }})} {...simulate('hover')} ></div>, node, () => {
+    render(<div {...style({ color: '#ccc', ':hover': { color: 'blue' } })} {...simulate('hover')} ></div>, node, () => {
       simulations(false)
       expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')  
     })
+  })
+
+  it('accepts nested media queries', () => {
+    if(!isPhantom) return 
+    style({
+      color: 'red',
+      ':hover': {
+        color: 'blue'
+      },
+      '@media(min-width: 300px)': {
+        color: 'green',
+        ':hover': {
+          color: 'yellow'
+        }
+      }
+    })
+
+    expect(styleSheet.rules().map(x => x.cssText).join('\n').replace(/\:nth\-child\(n\)/g, '')).toEqual(
+`.css-fq3bw6, [data-css-fq3bw6] { color: red; }
+.css-fq3bw6:hover, [data-css-fq3bw6]:hover { color: blue; }
+@media (min-width: 300px) { 
+  .css-fq3bw6, [data-css-fq3bw6] { color: green; }
+  .css-fq3bw6:hover, [data-css-fq3bw6]:hover { color: yellow; }
+}`)
   })
 
   it(':not() selector works for multiple selectors')
@@ -194,7 +228,7 @@ describe('glamor', () => {
   it('can style pseudo elements', () => {
     render(<div {...firstLetter({ color:'red' })} />, node, () => {
       expect(styleSheet.rules()[0].cssText)
-        .toEqual('[data-css-1gza2g7]::first-letter { color: red; }')
+        .toEqual('.css-1gza2g7::first-letter, [data-css-1gza2g7]::first-letter { color: red; }')
     })
   }) // how do I test this?
 
@@ -204,7 +238,7 @@ describe('glamor', () => {
     render(<div {...media('(min-width: 300px)', style({ color: 'red' }))}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
       expect(styleSheet.rules()[1].cssText.replace(/\s/g,'').replace('alland', '')) // ie quirk
-        .toEqual('@media(min-width:300px){[data-css-18m9kj]{color:red;}}'.replace(/\s/g,''))
+        .toEqual('@media(min-width:300px){.css-18m9kj,[data-css-18m9kj]{color:red;}}'.replace(/\s/g,''))
         // ugh
     })
 
@@ -291,7 +325,7 @@ describe('glamor', () => {
     it('adds vendor prefixes', () => {
       render(<div {...style({ color: 'red', transition: 'width 2s' })} />, node, () => {
         expect(styleSheet.rules()[0].cssText)
-          .toEqual('[data-css-1roj518] { color: red; -webkit-transition: width 2s; transition: width 2s; }')
+          .toEqual('.css-1roj518, [data-css-1roj518] { color: red; -webkit-transition: width 2s; transition: width 2s; }')
       })
     })
 
@@ -340,7 +374,7 @@ describe('glamor', () => {
 
     expect(cssFor(red, merged)
       .replace(':nth-child(1n)', ':nth-child(n)')) // dumb chrome 
-    .toEqual('[data-css-im3wl1] { color:red; }\n[data-css-1lci705] { color:red; }\n[data-css-1lci705]:hover:nth-child(n) { color:blue; }')
+    .toEqual('.css-im3wl1, [data-css-im3wl1] { color:red; }\n.css-1lci705, [data-css-1lci705] { color:red; }\n.css-1lci705:hover:nth-child(n), [data-css-1lci705]:hover:nth-child(n) { color:blue; }')
   })
 
   it('can generate html attributes from rules', () => {
