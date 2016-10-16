@@ -96,6 +96,7 @@ function flatten(inArr) {
 // hashes a string to something 'unique'
 // we use this to generate ids for styles
 import hash from './hash'
+
 function hashify(...objs) {
   return hash(objs.map(x => JSON.stringify(x)).join('')).toString(36)
 }
@@ -236,24 +237,24 @@ function extractLabel(rule) {
 
 // given an id / 'path', generate a css selector 
 function selector(id, path) {
-  if(path === '_') return `.css-${id}, [data-css-${id}]`
+  if(path === '_') return `.css-${id},[data-css-${id}]`
 
   if(path.indexOf('%%%') === 0) {
-    let x =`.css-${id}${path.slice(3)}, [data-css-${id}]${path.slice(3)}` 
-    if(canSimulate) x+= `, [data-css-${id}][data-simulate-${simple(path)}], .css-${id}[data-simulate-${simple(path)}]`
+    let x =`.css-${id}${path.slice(3)},[data-css-${id}]${path.slice(3)}` 
+    if(canSimulate) x+= `,[data-css-${id}][data-simulate-${simple(path)}],.css-${id}[data-simulate-${simple(path)}]`
     return x
   }
   
   if(path.indexOf('***') === 0) {
     return path.slice(3)
       .split(',')
-      .map(x => `${x} .css-${id}, ${x} [data-css-${id}]`)
+      .map(x => `${x} .css-${id},${x} [data-css-${id}]`)
       .join(',')    
   }
   if(path.indexOf('^^^') === 0) {
     return path.slice(3)
       .split(',')
-      .map(x => `.css-${id}${x}, [data-css-${id}]${x}`)
+      .map(x => `.css-${id}${x},[data-css-${id}]${x}`)
       .join(',')    
   }
 
@@ -262,7 +263,7 @@ function selector(id, path) {
 
 function toCSS({ selector, style }) {
   let result = plugins.transform({ selector, style })
-  return `${result.selector} { ${createMarkupForStyles(result.style) } }` 
+  return `${result.selector}{${createMarkupForStyles(result.style) }}` 
 }
 
 function ruleToAst(rule) {
@@ -283,9 +284,7 @@ function ruleToCSS(spec) {
     _.map(toCSS).forEach(str => css.push(str))
   }
   Object.keys(exprs).forEach(expr => {
-    css.push(`@media ${expr}{
-      ${exprs[expr].map(toCSS).join('\n\t')}
-    }`)
+    css.push(`@media ${expr}{${exprs[expr].map(toCSS).join('')}}`)
   })
   return css
 }
@@ -318,18 +317,18 @@ export function insertRule(css) {
 }
 
 export function insertGlobal(selector, style) {
-  return insertRule(`${selector} { ${createMarkupForStyles(style)} }`)
+  return insertRule(`${selector}{${createMarkupForStyles(style)}}`)
 }
 
 function insertKeyframe(spec) {
   if(!inserted[spec.id]) {
     let inner = Object.keys(spec.keyframes).map(kf => {
       let result = plugins.keyframes.transform({ id: spec.id, name: kf, style: spec.keyframes[kf] })
-      return `${result.name} { ${ createMarkupForStyles(result.style) }}`
-    }).join('\n');
+      return `${result.name}{${ createMarkupForStyles(result.style) }}`
+    }).join('');
 
     [ '-webkit-', '-moz-', '-o-', '' ].forEach(prefix =>
-      styleSheet.insert(`@${ prefix }keyframes ${ spec.name + '_' + spec.id } { ${ inner }}`))    
+      styleSheet.insert(`@${ prefix }keyframes ${ spec.name + '_' + spec.id }{${ inner }}`))    
 
     inserted[spec.id] = true
   }  
@@ -337,7 +336,7 @@ function insertKeyframe(spec) {
 
 function insertFontFace(spec) {  
   if(!inserted[spec.id]) {
-    styleSheet.insert(`@font-face { ${createMarkupForStyles(spec.font)}}`)
+    styleSheet.insert(`@font-face{${createMarkupForStyles(spec.font)}}`)
     inserted[spec.id] = true
   }
 }
@@ -351,26 +350,35 @@ export function rehydrate(ids) {
 }
 
 
+// todo - perf
+let ruleCache = {}
+function toRule(spec) {
+  register(spec)
+  insert(spec)
+  if(ruleCache[spec.id]) {
+    return ruleCache[spec.id]
+  }
+
+  let ret = { [`data-css-${spec.id}`]: hasLabels ? spec.label || '' : '' }
+  Object.defineProperty(ret, 'toString', {
+    enumerable: false, value() { return 'css-' + spec.id }
+  })
+  ruleCache[spec.id] = ret
+  return ret
+}
+
 // clears out the cache and empties the stylesheet
 // best for tests, though there might be some value for SSR. 
 
 export function flush() {
   inserted = styleSheet.inserted = {}
   registered = {}  
+  ruleCache = {}
   styleSheet.flush()
   styleSheet.inject()
+
 }
 
-// todo - perf
-function toRule(spec) {
-  register(spec)
-  insert(spec)
-  let ret = { [`data-css-${spec.id}`]: hasLabels ? spec.label || '' : '' }
-  Object.defineProperty(ret, 'toString', {
-    enumerable: false, value() { return 'css-' + spec.id }
-  })
-  return ret
-}
 
 function find(arr, fn) {  
   for(let i=0; i < arr.length; i++) {
@@ -754,7 +762,7 @@ export function fontFace(font) {
 export function cssFor(...rules) {
   rules = clean(rules)
   return rules ? flatten(rules.map(r => 
-    registered[idFor(r)]).map(ruleToCSS)).join('\n') : ''
+    registered[idFor(r)]).map(ruleToCSS)).join('') : ''
 }
 
 export function attribsFor(...rules) {
