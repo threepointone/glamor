@@ -112,6 +112,7 @@ describe('glamor', () => {
   })
 
   it('accepts nested media queries', () => {
+    if(!isPhantom) return 
     style({
       color: 'red',
       ':hover': {
@@ -124,7 +125,7 @@ describe('glamor', () => {
         }
       }
     })
-    
+
     expect(styleSheet.rules().map(x => x.cssText).join('\n').replace(/\:nth\-child\(n\)/g, '')).toEqual(
 `.css-fq3bw6, [data-css-fq3bw6] { color: red; }
 .css-fq3bw6:hover, [data-css-fq3bw6]:hover { color: blue; }
