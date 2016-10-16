@@ -1,4 +1,4 @@
-import { style, merge, hover, flush,
+import { style, merge, hover, flush, insertGlobal,
   cssLabels, simulations } from '../src'
 import { renderStatic, renderStaticOptimized } from '../src/server'
 import jade from 'jade'
@@ -9,6 +9,9 @@ import React from 'react' // eslint-disable-line
 import { renderToStaticMarkup } from 'react-dom/server'
 
 // make a throwaway style
+insertGlobal('html, body', {
+  padding: 20
+})
 style({ color: 'wheat' })
 
 // basic 
@@ -17,8 +20,8 @@ style({ color: 'wheat' })
     renderToStaticMarkup(<div {...style({ color: 'red' })}/>))
 
   expect(html).toEqual('<div data-css-im3wl1=""></div>')
-  expect(css).toEqual('.css-92lrii,[data-css-92lrii]{color:wheat;}.css-im3wl1,[data-css-im3wl1]{color:red;}')
-  expect(ids).toEqual([ '92lrii', 'im3wl1' ])
+  expect(css).toEqual('html, body{padding:20px;}.css-92lrii,[data-css-92lrii]{color:wheat;}.css-im3wl1,[data-css-im3wl1]{color:red;}')
+  expect(ids).toEqual([ 'afsnj3', '92lrii', 'im3wl1' ])
   cssLabels(true)
   simulations(true)
 }
@@ -31,8 +34,8 @@ style({ color: 'wheat' })
     renderToStaticMarkup(<div {...merge(style({ color: 'red' }), hover({ color: 'blue' }))}/>))
 
   expect(html).toEqual('<div data-css-1lci705=""></div>')
-  expect(css).toEqual('.css-1lci705,[data-css-1lci705]{color:red;}.css-1lci705:hover:nth-child(n),[data-css-1lci705]:hover:nth-child(n){color:blue;}')
-  expect(ids).toEqual([ '1lci705' ])
+  expect(css).toEqual('html, body{padding:20px;}.css-1lci705,[data-css-1lci705]{color:red;}.css-1lci705:hover:nth-child(n),[data-css-1lci705]:hover:nth-child(n){color:blue;}')
+  expect(ids).toEqual([ 'afsnj3', '1lci705' ])
   cssLabels(true)
   simulations(true)
 }

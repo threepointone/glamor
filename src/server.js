@@ -1,5 +1,6 @@
 import { styleSheet } from './index.js'
 
+
 /**** serverside stuff ****/
 
 // the api's copied from aphrodite, with 1 key difference 
@@ -11,35 +12,38 @@ export function renderStatic(fn, optimized = false) {
   if(html === undefined) {
     throw new Error('did you forget to return from renderToString?')
   }
-  let rules = styleSheet.rules(), css = rules.map(r => r.cssText).join('')
+  
   if(optimized) {
     // parse out ids from html
     // reconstruct css/rules/cache to pass
 
     let o = { html, ids: [], css: '', rules: [] }
     let regex = /css\-([a-zA-Z0-9]+)=/gm
-    let match, ids = [], insertedIDs = {}
+    let match, ids = {} 
     while((match = regex.exec(html)) !== null) {
-      if(!insertedIDs[match[1] + '']) {
-        ids.push(match[1])  
-        insertedIDs[match[1] + ''] = true
+      if(!ids[match[1] + '']) {        
+        ids[match[1] + ''] = true
       }
     }
-    ids.forEach(id => {
-      // o.cache[id] = styleSheet.cache[id]
-      o.ids.push(id)
-      // todo - add fonts / animations
-      // todo - add raw rules (without any data-css stuff)
-      o.css+= rules
-        .map(x => x.cssText)
-        .filter(r => new RegExp(`css\-${id}`).test(r))
-        .map(x => (o.rules.push(x), x))
-        .join('')
 
+    o.rules = styleSheet.rules().filter(x => {
+      let regex = /css\-([a-zA-Z0-9]+)/gm
+      let match = regex.exec(x.cssText)
+      if(match && ids[match[1] + '']) {
+        return true
+      }
+      if(!match) {
+        return true
+      }
+      return false
     })
+    o.ids = Object.keys(styleSheet.inserted).filter(id => !!ids[id + ''] || styleSheet.registered[id].type === 'raw')
+    o.css = o.rules.map(x => x.cssText).join('')
+    
     return o
 
   }
+  let rules = styleSheet.rules(), css = rules.map(r => r.cssText).join('')
   return { html, ids: Object.keys(styleSheet.inserted), css, rules }
 }
 

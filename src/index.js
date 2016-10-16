@@ -123,7 +123,7 @@ export function idFor(rule) {
 
 
 // a simple cache to store generated rules 
-let registered = {}
+let registered =  styleSheet.registered = {}
 function register(spec) {
   if(!registered[spec.id]) {
     registered[spec.id] = spec    
@@ -240,7 +240,7 @@ function selector(id, path) {
 
   if(path.indexOf('%%%') === 0) {
     let x =`.css-${id}${path.slice(3)},[data-css-${id}]${path.slice(3)}` 
-    if(canSimulate) x+= `,[data-css-${id}][data-simulate-${simple(path)}],.css-${id}[data-simulate-${simple(path)}]`
+    if(canSimulate) x+= `,.css-${id}[data-simulate-${simple(path)}],[data-css-${id}][data-simulate-${simple(path)}]`
     return x
   }
   
@@ -371,7 +371,7 @@ function toRule(spec) {
 
 export function flush() {
   inserted = styleSheet.inserted = {}
-  registered = {}  
+  registered = styleSheet.registered = {}  
   ruleCache = {}
   styleSheet.flush()
   styleSheet.inject()
