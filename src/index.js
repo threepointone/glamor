@@ -201,7 +201,11 @@ function extractStyles(...rules) {
       case 'merge': return deepMergeStyles(exprs, 
         extractStyles(rule.rules))
       
-      case 'pseudo': return deepMergeStyles(exprs, 
+      case 'pseudo': 
+        if((rule.selector === ':hover') && exprs._ && exprs._['%%%:active'] && !exprs._['%%%:hover']) {
+          console.warn(':active must come after :hover to work correctly') //eslint-disable-line no-console
+        }
+        return deepMergeStyles(exprs, 
         { _: { ['%%%' + rule.selector]: rule.style } })
       case 'select': return deepMergeStyles(exprs, 
         { _: { ['^^^' + rule.selector]: rule.style } })
