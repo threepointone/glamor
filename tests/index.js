@@ -175,7 +175,7 @@ describe('glamor', () => {
         
         expect(
           styleSheet.rules().map(x => x.cssText).filter(x => !!x.trim()).length          
-          ).toEqual(oldishIE ? 3 : 2) // this weirdness because ie 'splits' the initial rule in 9, 10. I don't know why.
+          ).toEqual((oldishIE && !styleSheet.isSpeedy) ? 3 : 2) // this weirdness because ie 'splits' the initial rule in 9, 10. I don't know why.
 
         let [ id0, id1, id2 ] = [ 0, 1, 2 ].map(i => getDataAttributes(node.childNodes[0].childNodes[i]))
         expect(id0).toEqual(id2) // first and third elements have the same hash
