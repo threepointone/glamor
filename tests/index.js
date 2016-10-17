@@ -2,6 +2,13 @@
 import 'babel-polyfill'
 let isPhantom = navigator.userAgent.match(/Phantom/)
 
+const oldishIE = (() => {  
+  let div = document.createElement('div')
+  div.innerHTML = '<!--[if lte IE 10]><i></i><![endif]-->'
+  return div.getElementsByTagName('i').length === 1
+})()
+
+
 import expect from 'expect'
 import expectJSX from 'expect-jsx'
 
@@ -160,7 +167,7 @@ describe('glamor', () => {
       </div>, node, () => {
 
         // only 2 rules get added to the stylesheet
-        expect(styleSheet.rules().length).toEqual(2)
+        expect(styleSheet.rules().length).toEqual(oldishIE ? 3 :2)
 
         let [ id0, id1, id2 ] = [ 0, 1, 2 ].map(i => getDataAttributes(node.childNodes[0].childNodes[i]))
         expect(id0).toEqual(id2) // first and third elements have the same hash
@@ -173,7 +180,6 @@ describe('glamor', () => {
       expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')
       expect(node.childNodes[0].className).toEqual('whatever')
     })
-
   })
 
   it('can style pseudo classes', () => {
@@ -235,9 +241,12 @@ describe('glamor', () => {
   
   it('can style media queries', () => {
     // we assume phantomjs/chrome/whatever has a width > 300px
+    function last(arr) {
+      return arr[arr.length -1]
+    }
     render(<div {...media('(min-width: 300px)', style({ color: 'red' }))}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
-      expect(styleSheet.rules()[1].cssText.replace(/\s/g,'').replace('alland', '')) // ie quirk
+      expect(last(styleSheet.rules()).cssText.replace(/\s/g,'').replace('alland', '')) // ie quirk
         .toEqual('@media(min-width:300px){.css-18m9kj,[data-css-18m9kj]{color:red;}}'.replace(/\s/g,''))
         // ugh
     })
