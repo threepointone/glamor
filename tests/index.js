@@ -1,16 +1,21 @@
 /* global describe, it, beforeEach, afterEach, before, after */
+if (!String.prototype.trim) {
+  String.prototype.trim = function () {
+    return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '')
+  }
+}
 import 'babel-polyfill'
 let isPhantom = navigator.userAgent.match(/Phantom/)
+
+import expect from 'expect'
+import expectJSX from 'expect-jsx'
 
 const oldishIE = (() => {  
   let div = document.createElement('div')
   div.innerHTML = '<!--[if lte IE 10]><i></i><![endif]-->'
   return div.getElementsByTagName('i').length === 1
-})()
+})() || Function('/*@cc_on return document.documentMode===10@*/')()
 
-
-import expect from 'expect'
-import expectJSX from 'expect-jsx'
 
 expect.extend(expectJSX)
 
@@ -167,7 +172,10 @@ describe('glamor', () => {
       </div>, node, () => {
 
         // only 2 rules get added to the stylesheet
-        expect(styleSheet.rules().length).toEqual(oldishIE ? 3 :2)
+        
+        expect(
+          styleSheet.rules().map(x => x.cssText).filter(x => !!x.trim()).length          
+          ).toEqual(oldishIE ? 3 : 2) // this weirdness because ie 'splits' the initial rule in 9, 10. I don't know why.
 
         let [ id0, id1, id2 ] = [ 0, 1, 2 ].map(i => getDataAttributes(node.childNodes[0].childNodes[i]))
         expect(id0).toEqual(id2) // first and third elements have the same hash
