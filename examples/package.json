@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=development beefy index.js:bundle.js --index index.html -- -p browserify-hmr -p errorify -t [ babelify --presets [ es2015 stage-0 react ] --plugins [ transform-decorators-legacy ] ] -t envify"
+    "start": "NODE_ENV=development beefy index.js:bundle.js --index index.html -- -p errorify -t [ babelify --presets [ es2015 stage-0 react ] --plugins [ transform-decorators-legacy ] ] -t envify"
   },
   "author": "",
   "license": "ISC",
@@ -21,16 +21,6 @@
       "stage-0",
       "react"
     ],
-    "plugins": ["transform-decorators-legacy"],
-    "env": {
-      "development": {
-        "plugins": [
-          "react-hot-loader/babel"
-        ]
-      }
-    }
-  },
-  "dependencies": {
-    "react-hot-loader": "^3.0.0-beta.2"
+    "plugins": ["transform-decorators-legacy"]
   }
 }

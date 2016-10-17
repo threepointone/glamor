@@ -29,6 +29,11 @@ function last() {
 }
 
 function sheetForTag(tag) {
+  if(tag.sheet) {
+    return tag.sheet
+  }
+
+  // this weirdness brought to you by firefox 
   for(let i = 0; i < document.styleSheets.length; i++) {
     if(document.styleSheets[i].ownerNode === tag) {
       return document.styleSheets[i]
@@ -68,6 +73,9 @@ export class StyleSheet {
     this.maxLength = maxLength
     this.ctr = 0
   }
+  getSheet() {
+    return sheetForTag(this.tags::last())  
+  }
   inject() {
     if(this.injected) {
       throw new Error('already injected stylesheet!') 
@@ -75,8 +83,6 @@ export class StyleSheet {
     if(isBrowser) {
       // this section is just weird alchemy I found online off many sources 
       this.tags[0] = makeStyleTag()        
-      // this weirdness brought to you by firefox 
-      this.sheet = sheetForTag(this.tags[0]) 
     } 
     else {
       // server side 'polyfill'. just enough behavior to be useful.
@@ -100,8 +106,9 @@ export class StyleSheet {
   _insert(rule) {
     // this weirdness for perf, and chrome's weird bug 
     // https://stackoverflow.com/questions/20007992/chrome-suddenly-stopped-accepting-insertrule
-    try {          
-      this.sheet.insertRule(rule, this.sheet.cssRules.length) // todo - correct index here     
+    try {  
+      let sheet = this.getSheet()        
+      sheet.insertRule(rule, sheet.cssRules.length) // todo - correct index here     
     }
     catch(e) {
       if(isDev) {
@@ -115,7 +122,7 @@ export class StyleSheet {
     
     if(isBrowser) {
       // this is the ultrafast version, works across browsers 
-      if(this.isSpeedy && this.sheet.insertRule) { 
+      if(this.isSpeedy && this.getSheet().insertRule) { 
         this._insert(rule)
       }
       // more browser weirdness. I don't even know    
@@ -124,11 +131,6 @@ export class StyleSheet {
       }
       else{
         this.tags::last().appendChild(document.createTextNode(rule))
-
-        if(!this.isSpeedy) {
-          // sighhh
-          this.sheet = sheetForTag(this.tags::last())
-        }      
       }      
     }
     else{
@@ -139,7 +141,6 @@ export class StyleSheet {
     this.ctr++
     if(isBrowser && this.ctr % this.maxLength === 0) {
       this.tags.push(makeStyleTag())
-      this.sheet = sheetForTag(this.tags::last())
     }
   }
   flush() {
