@@ -19,51 +19,51 @@ export function mediaQuery({ expr, ...rest }) {
 
 // font-variant 
 let fontVariantProperties = {
-  "font-variant-ligatures": {
-    "common-ligatures": "\"liga\", \"clig\"",
-    "no-common-ligatures": "\"liga\", \"clig off\"",
-    "discretionary-ligatures": "\"dlig\"",
-    "no-discretionary-ligatures": "\"dlig\" off",
-    "historical-ligatures": "\"hlig\"",
-    "no-historical-ligatures": "\"hlig\" off",
-    contextual: "\"calt\"",
-    "no-contextual": "\"calt\" off"
+  'font-variant-ligatures': {
+    'common-ligatures': '"liga", "clig"',
+    'no-common-ligatures': '"liga", "clig off"',
+    'discretionary-ligatures': '"dlig"',
+    'no-discretionary-ligatures': '"dlig" off',
+    'historical-ligatures': '"hlig"',
+    'no-historical-ligatures': '"hlig" off',
+    contextual: '"calt"',
+    'no-contextual': '"calt" off'
   },
 
-  "font-variant-position": {
-    sub: "\"subs\"",
-    "super": "\"sups\"",
-    normal: "\"subs\" off, \"sups\" off"
+  'font-variant-position': {
+    sub: '"subs"',
+    'super': '"sups"',
+    normal: '"subs" off, "sups" off'
   },
 
-  "font-variant-caps": {
-    "small-caps": "\"c2sc\"",
-    "all-small-caps": "\"smcp\", \"c2sc\"",
-    "petite-caps": "\"pcap\"",
-    "all-petite-caps": "\"pcap\", \"c2pc\"",
-    unicase: "\"unic\"",
-    "titling-caps": "\"titl\""
+  'font-variant-caps': {
+    'small-caps': '"c2sc"',
+    'all-small-caps': '"smcp", "c2sc"',
+    'petite-caps': '"pcap"',
+    'all-petite-caps': '"pcap", "c2pc"',
+    unicase: '"unic"',
+    'titling-caps': '"titl"'
   },
 
-  "font-variant-numeric": {
-    "lining-nums": "\"lnum\"",
-    "oldstyle-nums": "\"onum\"",
-    "proportional-nums": "\"pnum\"",
-    "tabular-nums": "\"tnum\"",
-    "diagonal-fractions": "\"frac\"",
-    "stacked-fractions": "\"afrc\"",
-    ordinal: "\"ordn\"",
-    "slashed-zero": "\"zero\""
+  'font-variant-numeric': {
+    'lining-nums': '"lnum"',
+    'oldstyle-nums': '"onum"',
+    'proportional-nums': '"pnum"',
+    'tabular-nums': '"tnum"',
+    'diagonal-fractions': '"frac"',
+    'stacked-fractions': '"afrc"',
+    ordinal: '"ordn"',
+    'slashed-zero': '"zero"'
   },
 
-  "font-kerning": {
-    normal: "\"kern\"",
-    none: "\"kern\" off"
+  'font-kerning': {
+    normal: '"kern"',
+    none: '"kern" off'
   },
 
-  "font-variant": {
-    normal: "normal",
-    inherit: "inherit"
+  'font-variant': {
+    normal: 'normal',
+    inherit: 'inherit'
   }
 }
 
