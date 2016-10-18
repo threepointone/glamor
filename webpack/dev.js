@@ -8,11 +8,7 @@ module.exports = {
     loaders: [ {
       test: /\.js$/,
       exclude: /node_modules/,
-      loader: 'babel-loader',
-      query: {
-        presets: [ [ 'es2015', { modules: false } ], 'stage-0', 'react' ],
-        plugins: [ 'transform-decorators-legacy' ]
-      }
+      loader: 'babel'
     } ]  
   },
   devServer: {
