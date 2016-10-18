@@ -32,6 +32,9 @@ import { plugins } from 'glamor'
 plugins.add(anyLink)
 ```
 
+NB: plugins are executed in the *opposite* order of insertion. So, if you've added `a` and `b`, `b` will get called before `a` ([#55](https://github.com/threepointone/glamor/issues/55))
+
+
 You can remove it with -
 ```jsx
 plugins.remove(anyLink)
