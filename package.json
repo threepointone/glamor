@@ -25,7 +25,7 @@
     "utils.d.ts"
   ],
   "scripts": {
-    "dev": "NODE_ENV=development webpack-dev-server --config webpack/dev.js",
+    "dev": "webpack-dev-server --config webpack/dev.js",
     "build": "npm run clean && npm run build:lib && npm run build:es6 && mkdir umd && npm run build:umd && npm run size",
     "build:lib": "babel src -d lib --presets es2015,stage-0,react",
     "build:es6": "babel src -d es6",
@@ -33,9 +33,9 @@
     "build:umd-react": "echo 'react build not implemented'",
     "compress:umd": "NODE_ENV=production webpack --config webpack/umd.js",
     "clean": "rm -rf lib && rm -rf es6 && rm -rf umd",
-    "test": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js --single-run",
+    "test": "node ./node_modules/.bin/karma start tests/karma.conf.js --single-run",
     "test:server": "NODE_ENV=test babel-node tests/server.js",
-    "test:watch": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js",
+    "test:watch": "node ./node_modules/.bin/karma start tests/karma.conf.js",
     "prepublish": "npm run build",
     "size": "cat umd/index.min.js | gzip | wc -c"
   },
