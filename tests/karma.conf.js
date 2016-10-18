@@ -37,13 +37,14 @@ const customLaunchers = {
     browser: 'iphone',
     real_mobile: false
   },
-  BS_InternetExplorer9: {
-    base: 'BrowserStack',
-    os: 'Windows',
-    os_version: '7',
-    browser: 'ie',
-    browser_version: '9.0'
-  },
+  // // enable this again when browserstack starts behaving
+  // BS_InternetExplorer9: {
+  //   base: 'BrowserStack',
+  //   os: 'Windows',
+  //   os_version: '7',
+  //   browser: 'ie',
+  //   browser_version: '9.0'
+  // },
   BS_InternetExplorer10: {
     base: 'BrowserStack',
     os: 'Windows',
