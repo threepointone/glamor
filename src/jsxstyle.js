@@ -132,8 +132,8 @@ const splitStyles = (combinedProps) => {
       props[key] = combinedProps[key]  
     }
     else {    
-      console.warn('irregular key ' + key)    //eslint-disable-line no-console
-      props[key] = combinedProps[key]
+      // console.warn('irregular key ' + key)    //eslint-disable-line no-console
+      // props[key] = combinedProps[key]
     }
   })
   return { ...gStyle.length > 0 ? 
