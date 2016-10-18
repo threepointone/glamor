@@ -80,8 +80,7 @@ export class StyleSheet {
     if(this.injected) {
       throw new Error('already injected stylesheet!') 
     }
-    if(isBrowser) {
-      // this section is just weird alchemy I found online off many sources 
+    if(isBrowser) {      
       this.tags[0] = makeStyleTag()        
     } 
     else {

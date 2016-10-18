@@ -20,6 +20,13 @@ let box = style({ color: 'red' })
 <div {...box}>
   this is a nice box. 
 </div>
+
+// or 
+<div className={box}>
+  this is a nice box. 
+</div>
+
+
 ```
 
 pseudoclasses
@@ -33,6 +40,12 @@ css
 glamor
 ```jsx
 let boxHover = hover({ color: 'blue' })
+// or 
+let boxHover = style({ 
+  ':hover': {
+    color: 'blue' 
+  } 
+})
 ```
 
 
@@ -51,6 +64,10 @@ glamor
 // or, unlike css, to maintain precendence order 
 
 <div {...merge(bold, myClass)} />
+
+// also works with classes
+
+<div className={merge(bold, myClass)} />
 ```
 
 [(more examples for composing rules)](https://github.com/threepointone/glamor/blob/master/src/ous.js)

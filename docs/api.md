@@ -246,14 +246,6 @@ console.log(cssFor(red, blue))
 */
 ```
 
-`attribsFor(...rules)`
 
-another helper for webcomponents, this generates the attributes to be included when constructing an element's html 
-
-```jsx
-// continued from above 
-console.log(attribsFor(red, blue))
-/*
-data-css-16y7vsu="" data-css-1el9v42=""
-*/
-```
+`speedy`
+`insertGlobal`
