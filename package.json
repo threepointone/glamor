@@ -22,14 +22,13 @@
     "utils.d.ts"
   ],
   "scripts": {
-    "build": "npm run clean && npm run build:cssops && npm run build:lib && npm run build:es6 && mkdir umd && npm run build:umd && npm run size",
-    "build:cssops": "NODE_ENV=production echo 'module.exports = require(\"react/lib/CSSPropertyOperations\");' | NODE_ENV=production browserify - -p browserify-derequire -s CSSOps  -t envify | uglifyjs -c > src/CSSPropertyOperations.js",
+    "build": "npm run clean && npm run build:lib && npm run build:es6 && mkdir umd && npm run build:umd && npm run size",
     "build:lib": "NODE_ENV=production babel src -d lib --presets es2015,stage-0,react --plugins transform-decorators-legacy",
     "build:es6": "echo 'es6 build not implemented'",
-    "build:umd": "NODE_ENV=production browserify src/index.js -s Glamor -o umd/index.js -t [ babelify --presets [ es2015 stage-0 react ] --plugins [ transform-decorators-legacy ] ] -t envify -t aliasify && npm run compress:umd",
+    "build:umd": "NODE_ENV=production browserify src/index.js -s Glamor -o umd/index.js -t [ babelify --presets [ es2015 stage-0 react ] --plugins [ transform-decorators-legacy ] ] -t envify && npm run compress:umd",
     "build:umd-react": "echo 'react build not implemented'",
     "compress:umd": "NODE_ENV=production uglifyjs umd/index.js -mc -o umd/index.min.js",
-    "clean": "rm -rf lib && rm -rf es6 && rm -rf umd && rm -f src/CSSPropertyOperations.js",
+    "clean": "rm -rf lib && rm -rf es6 && rm -rf umd",
     "test": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js --single-run",
     "test:server": "NODE_ENV=test babel-node tests/server.js --presets es2015,stage-0,react --plugins transform-decorators-legacy",
     "test:watch": "NODE_ENV=test node ./node_modules/.bin/karma start tests/karma.conf.js",
@@ -37,7 +36,6 @@
     "size": "cat umd/index.min.js | gzip | wc -c"
   },
   "devDependencies": {
-    "aliasify": "^2.0.0",
     "babel-cli": "^6.16.0",
     "babel-eslint": "^7.0.0",
     "babel-plugin-external-helpers": "^6.8.0",
@@ -90,11 +88,6 @@
     "css",
     "inline"
   ],
-  "aliasify": {
-    "aliases": {
-      "react/lib/CSSPropertyOperations": "./src/CSSPropertyOperations.js"
-    }
-  },
   "eslintConfig": {
     "extends": [
       "rackt"
