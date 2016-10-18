@@ -1,4 +1,4 @@
-{
+module.exports = {
   "created_at": "Tue Jul 19 19:17:50 +0000 2016",
   "text": "\ud83d\udc4f Love love love this article by @chantastic. CSS-in-JS isn\u2019t a campaign against CSS! https:\/\/t.co\/P3QdkX88rs https:\/\/t.co\/vV3dJ4fens",
   "entities": {

@@ -9,7 +9,7 @@ import '../../src/reset'
 import { vars } from '../../src/react'
 
 import { Tweet } from './tweet'
-import data from './data.json'
+import data from './data.js'
 
 
 @vars({

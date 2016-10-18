@@ -62,16 +62,14 @@ const customLaunchers = {
 
 module.exports = function (config) {
   config.set({    
-    frameworks: [ 'browserify', 'mocha' ],
+    frameworks: [ 'mocha' ],
     browsers: allBrowsers ? [ 'PhantomJS', 'Firefox', 'Chrome', 'Safari' ] : [ 'PhantomJS' ],
     reporters: [ 'mocha' ],
     preprocessors: {
-      'index.js': [ 'browserify' ]
+      'index.js': [ 'webpack' ]
     },
     files: [ 'index.js' ],
-    browserify: {
-      transform: [ 'babelify', 'envify' ]
-    }
+    webpack: require('../webpack/tests')
   })
 
   if (process.env.USE_CLOUD) {
