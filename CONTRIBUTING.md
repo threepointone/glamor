@@ -8,8 +8,7 @@
 
 ## Demo Development Server
 
-* `cd examples && npm install` to install dependencies for the sample page
-* `npm start` will run a development server with the component's demo app at [http://localhost:9966](http://localhost:9966) with hot module reloading.
+* `npm run dev` will run a development server with the component's demo app at [http://localhost:8080](http://localhost:8080)
 
 ## Running Tests
 
