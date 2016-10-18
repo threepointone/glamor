@@ -25,7 +25,7 @@
     "utils.d.ts"
   ],
   "scripts": {
-    "dev": "webpack-dev-server --config webpack/dev.js",
+    "start": "webpack-dev-server --config webpack/dev.js",
     "build": "npm run clean && npm run build:lib && npm run build:es6 && mkdir umd && npm run build:umd && npm run size",
     "build:lib": "babel src -d lib --presets es2015,stage-0,react",
     "build:es6": "babel src -d es6",

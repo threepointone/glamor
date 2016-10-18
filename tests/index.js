@@ -589,28 +589,49 @@ describe('server', () => {
 import { StyleSheet } from '../src/sheet'
 
 describe('StyleSheet', () => {
-  it('can initialize', () => {
-    let sheet = new StyleSheet()
-    sheet.inject()
-    expect([ ...document.styleSheets ].filter(s => s.ownerNode === sheet.tags[0]).length).toEqual(1)
+  let sheet
+  beforeEach(() => {
+    sheet = new StyleSheet()
+    sheet.inject()    
+  })
+
+  afterEach(() => {
     sheet.flush()
+  })
+
+  it('can initialize', () => {    
+    expect([ ...document.styleSheets ].filter(s => s.ownerNode === sheet.tags[0]).length).toEqual(1)    
   })
   
   it('can add css', () => {
-    let sheet = new StyleSheet()
-    sheet.inject()
+    
     sheet.insert('#box { color: red; }')
     let node = document.createElement('div')
     document.body.appendChild(node)
     node.innerHTML = '<div id="box"/>'
     expect (window.getComputedStyle(node.childNodes[0]).color).toEqual('rgb(255, 0, 0)')
     document.body.removeChild(node)
-    sheet.flush()
+    
+  })
+
+  it('can replace css', () => {
+    sheet.insert('.abc { color: red; }')
+    sheet.insert('.abc { color: blue; }')
+    let peg1 = sheet.insert('.xyz { color: yellow; }')
+    sheet.insert('.abc { color: orange; }')
+    sheet.insert('.abc { color: green; }')
+
+    sheet.replace(peg1, '.xyz { color: black; }')
+    sheet.replace(peg1, '.xyz { color: gray; }')
+
+    let rules = sheet.rules()
+    expect(rules.length).toEqual(5)
+    expect(rules[2].cssText).toEqual('.xyz { color: gray; }')
+    
   })
   
   it('can flush all the css', () => {
-    let sheet = new StyleSheet()
-    sheet.inject()
+    
     sheet.insert('#box { color: red; }')
     let node = document.createElement('div')
     document.body.appendChild(node)

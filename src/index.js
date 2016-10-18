@@ -194,8 +194,8 @@ function extractStyles(...rules) {
       return
     }
     switch(rule.type) {
-      case 'raw': 
-      case 'font-face':
+      case 'raw': throw new Error('not implemented')
+      case 'font-face': throw new Error('not implemented')
       case 'keyframes': throw new Error('not implemented')
 
       case 'merge': return deepMergeStyles(exprs, 
@@ -716,7 +716,6 @@ export function placeholder(x) {
     pseudo('::-ms-input-placeholder', x)
   )
 }
-
 
 // we can add keyframes in a similar manner, but still generating a unique name 
 // for including in styles. this gives us modularity, but still a natural api 

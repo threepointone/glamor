@@ -141,6 +141,43 @@ export class StyleSheet {
     if(isBrowser && this.ctr % this.maxLength === 0) {
       this.tags.push(makeStyleTag())
     }
+    return this.ctr -1
+  }
+  _replace(index, rule) {
+    // this weirdness for perf, and chrome's weird bug 
+    // https://stackoverflow.com/questions/20007992/chrome-suddenly-stopped-accepting-insertrule
+    try {  
+      let sheet = this.getSheet()        
+      sheet.deleteRule(index) // todo - correct index here     
+      sheet.insertRule(rule, index)
+    }
+    catch(e) {
+      if(isDev) {
+        // might need beter dx for this 
+        console.warn('whoops, problem replacing rule', rule) //eslint-disable-line no-console
+      }          
+    }          
+
+  }
+  replace(index, rule) {
+    if(isBrowser) {
+      if(this.isSpeedy && this.getSheet().insertRule) {
+        this._replace(index, rule)
+      }
+      else {
+        let _slot = Math.floor((index  + this.maxLength) / this.maxLength) - 1        
+        let _index = (index % this.maxLength) + 1
+        let tag = this.tags[_slot]
+        tag.replaceChild(document.createTextNode(rule), tag.childNodes[_index])
+      }
+    }
+    else {
+      this.sheet.cssRules = [ ...this.sheet.cssRules.slice(0, index), { cssText: rule }, ...this.sheet.cssRules.slice(index + 1) ]
+    }
+  }
+  delete(index) {
+    // we insert a blank rule when 'deleting' so previously returned indexes remain stable
+    return this.replace(index, '')
   }
   flush() {
     if(isBrowser) {
