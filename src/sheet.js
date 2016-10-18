@@ -125,9 +125,9 @@ export class StyleSheet {
         this._insert(rule)
       }
       // more browser weirdness. I don't even know    
-      else if(this.tags.length > 0 && this.tags::last().styleSheet) {      
-        this.tags::last().styleSheet.cssText+= rule
-      }
+      // else if(this.tags.length > 0 && this.tags::last().styleSheet) {      
+      //   this.tags::last().styleSheet.cssText+= rule
+      // }
       else{
         this.tags::last().appendChild(document.createTextNode(rule))
       }      

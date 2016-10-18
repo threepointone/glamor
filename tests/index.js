@@ -10,13 +10,6 @@ let isPhantom = navigator.userAgent.match(/Phantom/)
 import expect from 'expect'
 import expectJSX from 'expect-jsx'
 
-const oldishIE = (() => {  
-  let div = document.createElement('div')
-  div.innerHTML = '<!--[if lte IE 10]><i></i><![endif]-->'
-  return div.getElementsByTagName('i').length === 1
-})() || Function('/*@cc_on return document.documentMode===10@*/')()
-
-
 expect.extend(expectJSX)
 
 import React from 'react' //eslint-disable-line
@@ -175,7 +168,7 @@ describe('glamor', () => {
         
         expect(
           styleSheet.rules().map(x => x.cssText).filter(x => !!x.trim()).length          
-          ).toEqual((oldishIE && !styleSheet.isSpeedy) ? 3 : 2) // this weirdness because ie 'splits' the initial rule in 9, 10. I don't know why.
+          ).toEqual(2)
 
         let [ id0, id1, id2 ] = [ 0, 1, 2 ].map(i => getDataAttributes(node.childNodes[0].childNodes[i]))
         expect(id0).toEqual(id2) // first and third elements have the same hash
