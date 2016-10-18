@@ -70,7 +70,10 @@ module.exports = function (config) {
       'index.js': [ 'webpack' ]
     },
     files: [ 'index.js' ],
-    webpack: require('../webpack/tests')
+    webpack: require('../webpack/tests'),
+    webpackMiddleware: {
+      stats: 'errors-only'
+    }
   })
 
   if (process.env.USE_CLOUD) {
