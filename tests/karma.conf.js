@@ -70,11 +70,7 @@ module.exports = function (config) {
     },
     files: [ 'index.js' ],
     browserify: {
-      transform: [ [
-        'babelify', {
-          presets: [ 'es2015', 'stage-0', 'react' ]
-        }
-      ], 'envify' ]
+      transform: [ 'babelify', 'envify' ]
     }
   })
 

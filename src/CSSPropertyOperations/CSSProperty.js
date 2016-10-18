@@ -9,13 +9,12 @@
  * @providesModule CSSProperty
  */
 
-'use strict';
 
 /**
  * CSS properties which accept numbers but are not in units of "px".
  */
 
-var isUnitlessNumber = {
+let isUnitlessNumber = {
   animationIterationCount: true,
   borderImageOutset: true,
   borderImageSlice: true,
@@ -52,7 +51,7 @@ var isUnitlessNumber = {
   strokeMiterlimit: true,
   strokeOpacity: true,
   strokeWidth: true
-};
+}
 
 /**
  * @param {string} prefix vendor-specific prefix, eg: Webkit
@@ -61,22 +60,22 @@ var isUnitlessNumber = {
  * WebkitTransitionDuration
  */
 function prefixKey(prefix, key) {
-  return prefix + key.charAt(0).toUpperCase() + key.substring(1);
+  return prefix + key.charAt(0).toUpperCase() + key.substring(1)
 }
 
 /**
  * Support style names that may come passed in prefixed by adding permutations
  * of vendor prefixes.
  */
-var prefixes = ['Webkit', 'ms', 'Moz', 'O'];
+let prefixes = [ 'Webkit', 'ms', 'Moz', 'O' ]
 
 // Using Object.keys here, or else the vanilla for-in loop makes IE8 go into an
 // infinite loop, because it iterates over the newly added props too.
 Object.keys(isUnitlessNumber).forEach(function (prop) {
   prefixes.forEach(function (prefix) {
-    isUnitlessNumber[prefixKey(prefix, prop)] = isUnitlessNumber[prop];
-  });
-});
+    isUnitlessNumber[prefixKey(prefix, prop)] = isUnitlessNumber[prop]
+  })
+})
 
 /**
  * Most style properties can be unset by doing .style[prop] = '' but IE8
@@ -87,7 +86,7 @@ Object.keys(isUnitlessNumber).forEach(function (prop) {
  * behave without any problems. Curiously, list-style works too without any
  * special prodding.
  */
-var shorthandPropertyExpansions = {
+let shorthandPropertyExpansions = {
   background: {
     backgroundAttachment: true,
     backgroundColor: true,
@@ -138,11 +137,11 @@ var shorthandPropertyExpansions = {
     outlineStyle: true,
     outlineColor: true
   }
-};
+}
 
-var CSSProperty = {
+const CSSProperty = {
   isUnitlessNumber: isUnitlessNumber,
   shorthandPropertyExpansions: shorthandPropertyExpansions
-};
+}
 
-module.exports = CSSProperty;
+export default CSSProperty

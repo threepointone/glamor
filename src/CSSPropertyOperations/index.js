@@ -9,94 +9,72 @@
  * @providesModule CSSPropertyOperations
  */
 
-'use strict';
 
-// var CSSProperty = require('./CSSProperty');
-// var ExecutionEnvironment = require('fbjs/lib/ExecutionEnvironment');
-// var ReactInstrumentation = require('./ReactInstrumentation');
+import camelizeStyleName from 'fbjs/lib/camelizeStyleName'
+import dangerousStyleValue from './dangerousStyleValue'
+import hyphenateStyleName from 'fbjs/lib/hyphenateStyleName'
+import memoizeStringOnly from 'fbjs/lib/memoizeStringOnly'
+import warning from 'fbjs/lib/warning'
 
-var camelizeStyleName = require('fbjs/lib/camelizeStyleName');
-var dangerousStyleValue = require('./dangerousStyleValue');
-var hyphenateStyleName = require('fbjs/lib/hyphenateStyleName');
-var memoizeStringOnly = require('fbjs/lib/memoizeStringOnly');
-var warning = require('fbjs/lib/warning');
+let processStyleName = memoizeStringOnly(hyphenateStyleName)
 
-var processStyleName = memoizeStringOnly(function (styleName) {
-  return hyphenateStyleName(styleName);
-});
-
-// var hasShorthandPropertyBug = false;
-// var styleFloatAccessor = 'cssFloat';
-// if (ExecutionEnvironment.canUseDOM) {
-//   var tempStyle = document.createElement('div').style;
-//   try {
-//     // IE8 throws "Invalid argument." if resetting shorthand style properties.
-//     tempStyle.font = '';
-//   } catch (e) {
-//     hasShorthandPropertyBug = true;
-//   }
-//   // IE8 only supports accessing cssFloat (standard) as styleFloat
-//   if (document.documentElement.style.cssFloat === undefined) {
-//     styleFloatAccessor = 'styleFloat';
-//   }
-// }
 
 if (process.env.NODE_ENV !== 'production') {
   // 'msTransform' is correct, but the other prefixes should be capitalized
-  var badVendoredStyleNamePattern = /^(?:webkit|moz|o)[A-Z]/;
+  let badVendoredStyleNamePattern = /^(?:webkit|moz|o)[A-Z]/
 
   // style values shouldn't contain a semicolon
-  var badStyleValueWithSemicolonPattern = /;\s*$/;
+  let badStyleValueWithSemicolonPattern = /;\s*$/
 
-  var warnedStyleNames = {};
-  var warnedStyleValues = {};
-  var warnedForNaNValue = false;
+  let warnedStyleNames = {}
+  let warnedStyleValues = {}
+  let warnedForNaNValue = false
 
-  var warnHyphenatedStyleName = function (name, owner) {
+  let warnHyphenatedStyleName = function (name, owner) {
     if (warnedStyleNames.hasOwnProperty(name) && warnedStyleNames[name]) {
-      return;
+      return
     }
 
-    warnedStyleNames[name] = true;
-    process.env.NODE_ENV !== 'production' ? warning(false, 'Unsupported style property %s. Did you mean %s?%s', name, camelizeStyleName(name), checkRenderMessage(owner)) : void 0;
-  };
+    warnedStyleNames[name] = true
+    process.env.NODE_ENV !== 'production' ? warning(false, 'Unsupported style property %s. Did you mean %s?%s', name, camelizeStyleName(name), checkRenderMessage(owner)) : void 0
+  }
 
-  var warnBadVendoredStyleName = function (name, owner) {
+  let warnBadVendoredStyleName = function (name, owner) {
     if (warnedStyleNames.hasOwnProperty(name) && warnedStyleNames[name]) {
-      return;
+      return
     }
 
-    warnedStyleNames[name] = true;
-    process.env.NODE_ENV !== 'production' ? warning(false, 'Unsupported vendor-prefixed style property %s. Did you mean %s?%s', name, name.charAt(0).toUpperCase() + name.slice(1), checkRenderMessage(owner)) : void 0;
-  };
+    warnedStyleNames[name] = true
+    process.env.NODE_ENV !== 'production' ? warning(false, 'Unsupported vendor-prefixed style property %s. Did you mean %s?%s', name, name.charAt(0).toUpperCase() + name.slice(1), checkRenderMessage(owner)) : void 0
+  }
 
-  var warnStyleValueWithSemicolon = function (name, value, owner) {
+  let warnStyleValueWithSemicolon = function (name, value, owner) {
     if (warnedStyleValues.hasOwnProperty(value) && warnedStyleValues[value]) {
-      return;
+      return
     }
 
-    warnedStyleValues[value] = true;
-    process.env.NODE_ENV !== 'production' ? warning(false, 'Style property values shouldn\'t contain a semicolon.%s ' + 'Try "%s: %s" instead.', checkRenderMessage(owner), name, value.replace(badStyleValueWithSemicolonPattern, '')) : void 0;
-  };
+    warnedStyleValues[value] = true
+    process.env.NODE_ENV !== 'production' ? warning(false, 'Style property values shouldn\'t contain a semicolon.%s ' + 'Try "%s: %s" instead.', checkRenderMessage(owner), name, value.replace(badStyleValueWithSemicolonPattern, '')) : void 0
+  }
 
-  var warnStyleValueIsNaN = function (name, value, owner) {
+  let warnStyleValueIsNaN = function (name, value, owner) {
     if (warnedForNaNValue) {
-      return;
+      return
     }
 
-    warnedForNaNValue = true;
-    process.env.NODE_ENV !== 'production' ? warning(false, '`NaN` is an invalid value for the `%s` css style property.%s', name, checkRenderMessage(owner)) : void 0;
-  };
+    warnedForNaNValue = true
+    process.env.NODE_ENV !== 'production' ? warning(false, '`NaN` is an invalid value for the `%s` css style property.%s', name, checkRenderMessage(owner)) : void 0
+  }
 
-  var checkRenderMessage = function (owner) {
+  let checkRenderMessage = function (owner) {
     if (owner) {
-      var name = owner.getName();
+      let name = owner.getName()
       if (name) {
-        return ' Check the render method of `' + name + '`.';
+        return ' Check the render method of `' + name + '`.'
       }
     }
-    return '';
-  };
+    return ''
+  }
 
   /**
    * @param {string} name
@@ -104,30 +82,26 @@ if (process.env.NODE_ENV !== 'production') {
    * @param {ReactDOMComponent} component
    */
   var warnValidStyle = function (name, value, component) {
-    var owner;
+    let owner
     if (component) {
-      owner = component._currentElement._owner;
+      owner = component._currentElement._owner
     }
     if (name.indexOf('-') > -1) {
-      warnHyphenatedStyleName(name, owner);
+      warnHyphenatedStyleName(name, owner)
     } else if (badVendoredStyleNamePattern.test(name)) {
-      warnBadVendoredStyleName(name, owner);
+      warnBadVendoredStyleName(name, owner)
     } else if (badStyleValueWithSemicolonPattern.test(value)) {
-      warnStyleValueWithSemicolon(name, value, owner);
+      warnStyleValueWithSemicolon(name, value, owner)
     }
 
     if (typeof value === 'number' && isNaN(value)) {
-      warnStyleValueIsNaN(name, value, owner);
+      warnStyleValueIsNaN(name, value, owner)
     }
-  };
+  }
 }
 
-/**
- * Operations for dealing with CSS properties.
- */
-var CSSPropertyOperations = {
 
-  /**
+/**
    * Serializes a mapping of style properties for use as inline styles:
    *
    *   > createMarkupForStyles({width: '200px', height: 0})
@@ -140,24 +114,22 @@ var CSSPropertyOperations = {
    * @param {ReactDOMComponent} component
    * @return {?string}
    */
-  createMarkupForStyles: function (styles, component) {
-    var serialized = '';
-    for (var styleName in styles) {
-      if (!styles.hasOwnProperty(styleName)) {
-        continue;
-      }
-      var styleValue = styles[styleName];
-      if (process.env.NODE_ENV !== 'production') {
-        warnValidStyle(styleName, styleValue, component);
-      }
-      if (styleValue != null) {
-        serialized += processStyleName(styleName) + ':';
-        serialized += dangerousStyleValue(styleName, styleValue, component) + ';';
-      }
+
+export function createMarkupForStyles(styles, component) {
+  let serialized = ''
+  for (let styleName in styles) {
+    if (!styles.hasOwnProperty(styleName)) {
+      continue
     }
-    return serialized || null;
+    let styleValue = styles[styleName]
+    if (process.env.NODE_ENV !== 'production') {
+      warnValidStyle(styleName, styleValue, component)
+    }
+    if (styleValue != null) {
+      serialized += processStyleName(styleName) + ':'
+      serialized += dangerousStyleValue(styleName, styleValue, component) + ';'
+    }
   }
+  return serialized || null
+}
 
-};
-
-module.exports = CSSPropertyOperations;

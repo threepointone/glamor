@@ -9,13 +9,12 @@
  * @providesModule dangerousStyleValue
  */
 
-'use strict';
+import CSSProperty from './CSSProperty'
+// let CSSProperty = require('./CSSProperty')
+import warning from 'fbjs/lib/warning'
 
-var CSSProperty = require('./CSSProperty');
-var warning = require('fbjs/lib/warning');
-
-var isUnitlessNumber = CSSProperty.isUnitlessNumber;
-var styleWarnings = {};
+let isUnitlessNumber = CSSProperty.isUnitlessNumber
+let styleWarnings = {}
 
 /**
  * Convert a value into the proper css writable value. The style name `name`
@@ -38,14 +37,14 @@ function dangerousStyleValue(name, value, component) {
   // which has lead to a greater discussion about how we're going to
   // trust URLs moving forward. See #2115901
 
-  var isEmpty = value == null || typeof value === 'boolean' || value === '';
+  let isEmpty = value == null || typeof value === 'boolean' || value === ''
   if (isEmpty) {
-    return '';
+    return ''
   }
 
-  var isNonNumeric = isNaN(value);
+  let isNonNumeric = isNaN(value)
   if (isNonNumeric || value === 0 || isUnitlessNumber.hasOwnProperty(name) && isUnitlessNumber[name]) {
-    return '' + value; // cast to string
+    return '' + value // cast to string
   }
 
   if (typeof value === 'string') {
@@ -53,27 +52,27 @@ function dangerousStyleValue(name, value, component) {
       // Allow '0' to pass through without warning. 0 is already special and
       // doesn't require units, so we don't need to warn about it.
       if (component && value !== '0') {
-        var owner = component._currentElement._owner;
-        var ownerName = owner ? owner.getName() : null;
+        let owner = component._currentElement._owner
+        let ownerName = owner ? owner.getName() : null
         if (ownerName && !styleWarnings[ownerName]) {
-          styleWarnings[ownerName] = {};
+          styleWarnings[ownerName] = {}
         }
-        var warned = false;
+        let warned = false
         if (ownerName) {
-          var warnings = styleWarnings[ownerName];
-          warned = warnings[name];
+          let warnings = styleWarnings[ownerName]
+          warned = warnings[name]
           if (!warned) {
-            warnings[name] = true;
+            warnings[name] = true
           }
         }
         if (!warned) {
-          process.env.NODE_ENV !== 'production' ? warning(false, 'a `%s` tag (owner: `%s`) was passed a numeric string value ' + 'for CSS property `%s` (value: `%s`) which will be treated ' + 'as a unitless number in a future version of React.', component._currentElement.type, ownerName || 'unknown', name, value) : void 0;
+          process.env.NODE_ENV !== 'production' ? warning(false, 'a `%s` tag (owner: `%s`) was passed a numeric string value ' + 'for CSS property `%s` (value: `%s`) which will be treated ' + 'as a unitless number in a future version of React.', component._currentElement.type, ownerName || 'unknown', name, value) : void 0
         }
       }
     }
-    value = value.trim();
+    value = value.trim()
   }
-  return value + 'px';
+  return value + 'px'
 }
 
-module.exports = dangerousStyleValue;
+export default dangerousStyleValue
