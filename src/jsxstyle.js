@@ -133,7 +133,7 @@ const splitStyles = (combinedProps) => {
     }
     else {    
       // console.warn('irregular key ' + key)    //eslint-disable-line no-console
-      // props[key] = combinedProps[key]
+      props[key] = combinedProps[key]
     }
   })
   return { ...gStyle.length > 0 ? 
