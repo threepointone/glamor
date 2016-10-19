@@ -10,7 +10,6 @@
  */
 
 import CSSProperty from './CSSProperty'
-// let CSSProperty = require('./CSSProperty')
 import warning from 'fbjs/lib/warning'
 
 let isUnitlessNumber = CSSProperty.isUnitlessNumber

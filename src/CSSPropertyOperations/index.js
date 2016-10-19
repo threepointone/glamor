@@ -81,7 +81,7 @@ if (process.env.NODE_ENV !== 'production') {
    * @param {*} value
    * @param {ReactDOMComponent} component
    */
-  var warnValidStyle = function (name, value, component) {
+  var warnValidStyle = function (name, value, component) { //eslint-disable-line no-var
     let owner
     if (component) {
       owner = component._currentElement._owner

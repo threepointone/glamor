@@ -262,7 +262,7 @@ function selector(id, path) {
     return path.slice(3)
       .split(',')
       .map(x => x.indexOf('&') >= 0 ? 
-        [ x.replace(/\&/mg, `.css-${id}`), x.replace(/\&/mg, `[data-css-${id}]`) ].join(',')
+        [ x.replace(/\&/mg, `.css-${id}`), x.replace(/\&/mg, `[data-css-${id}]`) ].join(',') // todo - make sure each sub selector has an &
         : `.css-${id}${x},[data-css-${id}]${x}`)
       .join(',')    
   }  
