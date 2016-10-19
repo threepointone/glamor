@@ -96,5 +96,8 @@
       "react/jsx-uses-react": "error",
       "jsx-quotes": 0
     }
+  },
+  "dependencies": {
+    "fbjs": "^0.8.5"
   }
 }
