@@ -48,4 +48,4 @@ todo
 - convert to rules
 - stubs for 'vars' like functions, objects, etc
 - babel plugin
-
+- fallback values

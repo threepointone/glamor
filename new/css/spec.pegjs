@@ -51,10 +51,7 @@ start
 stylesheet
   = rules:((ruleset / media / declare) (CDO S* / CDC S*)*)*
     {
-      return {
-        type: "StyleSheet",        
-        rules: extractList(rules, 0)
-      };
+      return extractList(rules, 0)
     }
 
 declare = dec:declaration S* ";" S*  { return dec }
@@ -345,9 +342,6 @@ IMPORT_SYM "@import"
 
 MEDIA_SYM "@media"
   = comment* "@" M E D I A
-
-CHARSET_SYM "@charset"
-  = comment* "@charset "
 
 // We use |s| instead of |w| here to avoid infinite recursion.
 IMPORTANT_SYM "!important"
