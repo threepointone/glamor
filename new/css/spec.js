@@ -143,7 +143,9 @@ function peg$parse(input, options) {
 
       peg$c0 = function(stylesheet) { return stylesheet; },
       peg$c1 = function(rules) {
-            return extractList(rules, 0)
+            return {
+              type: 'StyleSheet',
+              rules: extractList(rules, 0)}
           },
       peg$c2 = ";",
       peg$c3 = peg$literalExpectation(";", false),
@@ -201,6 +203,7 @@ function peg$parse(input, options) {
             return {
               type: "SimpleSelector",
               element: element,
+              all: element === '*',
               qualifiers: qualifiers
             };
           },
@@ -208,6 +211,7 @@ function peg$parse(input, options) {
             return {
               type: "SimpleSelector",
               element: "*",
+              all: false,
               qualifiers: qualifiers
             };
           },

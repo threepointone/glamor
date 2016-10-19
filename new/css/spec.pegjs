@@ -51,7 +51,9 @@ start
 stylesheet
   = rules:((ruleset / media / declare) (CDO S* / CDC S*)*)*
     {
-      return extractList(rules, 0)
+      return {
+        type: 'StyleSheet',
+        rules: extractList(rules, 0)}
     }
 
 declare = dec:declaration S* ";" S*  { return dec }
@@ -122,6 +124,7 @@ simple_selector
       return {
         type: "SimpleSelector",
         element: element,
+        all: element === '*',
         qualifiers: qualifiers
       };
     }
@@ -129,6 +132,7 @@ simple_selector
       return {
         type: "SimpleSelector",
         element: "*",
+        all: false,
         qualifiers: qualifiers
       };
     }
