@@ -148,8 +148,9 @@ function deconstruct(obj) {
   let plain = {}, hasPlain = false
   let hasPseudos = obj && find(Object.keys(obj), x => x.charAt(0) === ':')
   let hasMedias = obj && find(Object.keys(obj), x => x.charAt(0) === '@') // todo - check @media
+  let hasSelects = obj && find(Object.keys(obj), x => x.indexOf('&') >= 0)
   
-  if(hasPseudos || hasMedias) {
+  if(hasPseudos || hasMedias || hasSelects) {
     
     Object.keys(obj).forEach(key => {
       if(key.charAt(0) === ':') {
@@ -164,6 +165,13 @@ function deconstruct(obj) {
           type: 'media',
           rules: deconstruct(obj[key]),
           expr: key.substring(6)
+        })
+      }
+      else if(key.indexOf('&') >= 0) {
+        ret.push({
+          type: 'select',
+          style: obj[key],
+          selector: key
         })
       }
       else {
@@ -253,9 +261,11 @@ function selector(id, path) {
   if(path.indexOf('^^^') === 0) {
     return path.slice(3)
       .split(',')
-      .map(x => `.css-${id}${x},[data-css-${id}]${x}`)
+      .map(x => x.indexOf('&') >= 0 ? 
+        [ x.replace(/\&/mg, `.css-${id}`), x.replace(/\&/mg, `[data-css-${id}]`) ].join(',')
+        : `.css-${id}${x},[data-css-${id}]${x}`)
       .join(',')    
-  }
+  }  
 
 }
 

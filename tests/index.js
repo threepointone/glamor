@@ -110,7 +110,7 @@ describe('glamor', () => {
 
   it('accepts nested objects', () => {
     simulations(true)
-    render(<div {...style({ color: '#ccc', ':hover': { color: 'blue' } })} {...simulate('hover')} ></div>, node, () => {
+    render(<div {...style({ color: '#ccc', ':hover': { color: 'blue' }, '.a & .c': { color: 'green' } })} {...simulate('hover')} ></div>, node, () => {
       simulations(false)
       expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')  
     })
@@ -127,16 +127,21 @@ describe('glamor', () => {
         color: 'green',
         ':hover': {
           color: 'yellow'
-        }
+        },
+        '.a & .c': { color: 'wheat' },
+        '&&': { color: 'ivory' }
       }
     })
 
+
     expect(styleSheet.rules().map(x => x.cssText).join('\n').replace(/\:nth\-child\(n\)/g, '')).toEqual(
-`.css-fq3bw6, [data-css-fq3bw6] { color: red; }
-.css-fq3bw6:hover, [data-css-fq3bw6]:hover { color: blue; }
+`.css-w732o9, [data-css-w732o9] { color: red; }
+.css-w732o9:hover, [data-css-w732o9]:hover { color: blue; }
 @media (min-width: 300px) { 
-  .css-fq3bw6, [data-css-fq3bw6] { color: green; }
-  .css-fq3bw6:hover, [data-css-fq3bw6]:hover { color: yellow; }
+  .css-w732o9, [data-css-w732o9] { color: green; }
+  .css-w732o9:hover, [data-css-w732o9]:hover { color: yellow; }
+  .a .css-w732o9 .c, .a [data-css-w732o9] .c { color: rgb(245, 222, 179); }
+  .css-w732o9.css-w732o9, [data-css-w732o9][data-css-w732o9] { color: rgb(255, 255, 240); }
 }`)
   })
 
@@ -298,6 +303,18 @@ describe('glamor', () => {
       expect(window.getComputedStyle(second).color).toEqual('rgb(255, 0, 0)')
     })
     // todo - test classnames, operators combos
+  })
+  it('select() accepts contextual selectors', () => {
+    render(<div className='up'>
+        <div {...select('.up & .down', { color: 'red' })}>
+          <div className='down'>hello world</div>
+          <div className='notdown'>hello world</div>
+        </div>
+      </div>, node, () => {
+        expect(window.getComputedStyle(node.querySelector('.down')).color).toEqual('rgb(255, 0, 0)')
+        expect(window.getComputedStyle(node.querySelector('.notdown')).color).toEqual('rgb(0, 0, 0)')
+        expect(styleSheet.rules().map(x => x.cssText).join('').replace(/\s/g,'')).toEqual('.up.css-1dfn10h.down,.up[data-css-1dfn10h].down{color:red;}')
+      })
   })
 
   it('generates debug labels', () => {
