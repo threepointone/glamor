@@ -1,6 +1,6 @@
 {
   "name": "glamor",
-  "version": "2.17.8",
+  "version": "2.17.9",
   "description": "inline css for component systems",
   "main": "lib/index.js",
   "jsnext:main": "es6/index.js",
