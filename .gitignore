@@ -6,3 +6,4 @@ examples/bundle.js
 umd/*
 examples/node_modules
 es6/*
+tests/coverage

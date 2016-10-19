@@ -65,7 +65,7 @@ module.exports = function (config) {
   config.set({    
     frameworks: [ 'mocha' ],
     browsers: allBrowsers ? [ 'PhantomJS', 'Firefox', 'Chrome', 'Safari' ] : [ 'PhantomJS' ],
-    reporters: [ 'mocha' ],
+    reporters: process.env.COVERAGE ? [ 'mocha', 'coverage' ] : [ 'mocha' ],
     preprocessors: {
       'index.js': [ 'webpack' ]
     },

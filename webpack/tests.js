@@ -5,7 +5,10 @@ module.exports = {
     loaders: [ {
       test: /\.js$/,
       exclude: /node_modules/,
-      loader: 'babel'
+      loader: 'babel',
+      query: {
+        plugins: process.env.COVERAGE ? [ '__coverage__' ] : []
+      }
     } ]  
   },
   plugins: [
