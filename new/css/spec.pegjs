@@ -49,7 +49,7 @@ start
 // ----- G.1 Grammar -----
 
 stylesheet
-  = rules:((ruleset / media) (CDO S* / CDC S*)*)*
+  = rules:((ruleset / media / declare) (CDO S* / CDC S*)*)*
     {
       return {
         type: "StyleSheet",        
@@ -57,8 +57,10 @@ stylesheet
       };
     }
 
+declare = dec:declaration S* ";" S*  { return dec }
+
 media
-  = MEDIA_SYM S* media:media_list "{" S* rules:ruleset* "}" S* {
+  = MEDIA_SYM S* media:media_list "{" S* rules:(ruleset / declare)* "}" S* {
       return {
         type: "MediaRule",
         media: media,
@@ -119,20 +121,23 @@ selector
   / selector:simple_selector S* { return selector; }
 
 simple_selector
-  = element:element_name qualifiers:(id / class / attrib / pseudo)* {
+  = element:element_name qualifiers:(id / class / attrib / pseudo / contextual)* {
       return {
         type: "SimpleSelector",
         element: element,
         qualifiers: qualifiers
       };
     }
-  / qualifiers:(id / class / attrib / pseudo)+ {
+  / qualifiers:(id / class / attrib / pseudo/ contextual)+ {
       return {
         type: "SimpleSelector",
         element: "*",
         qualifiers: qualifiers
       };
     }
+
+contextual
+  = AMP { return { type: 'Contextual' } }
 
 id
   = id:HASH { return { type: "IDSelector", id: id }; }
@@ -308,6 +313,9 @@ Z  = "z"i / "\\" "0"? "0"? "0"? "0"? [\x5a\x7a] ("\r\n" / [ \t\r\n\f])? / "\\z"i
 
 // Tokens
 
+AMP "ampersand"
+  = "&"
+
 S "whitespace"
   = comment* s
 
@@ -334,9 +342,6 @@ HASH "hash"
 
 IMPORT_SYM "@import"
   = comment* "@" I M P O R T
-
-PAGE_SYM "@page"
-  = comment* "@" P A G E
 
 MEDIA_SYM "@media"
   = comment* "@" M E D I A
