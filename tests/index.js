@@ -418,7 +418,13 @@ describe('glamor', () => {
     let red = style({ color: 'red' })
 
     expect(idFor(red)).toEqual('im3wl1')      
-  })  
+  })
+
+  it('checks for a cache miss', () => {
+    const myObscureStyle = { 'data-css-obscureclass': '"*"' }
+
+    expect(() => merge(myObscureStyle)).toThrow('[glamor] an unexpected rule cache miss occurred. This is probably a sign of multiple glamor instances in your app. See https://github.com/threepointone/glamor/issues/79');
+  })
 })
 
 describe('clean', () => {
