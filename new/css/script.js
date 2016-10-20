@@ -1,20 +1,15 @@
 import { parse } from './spec'
-// semi-deeply merge 2 'mega' style objects 
-// function deepMergeStyles(dest, src) {
-//   Object.keys(src).forEach(expr => {
-//     dest[expr] = dest[expr] || {}
-//     Object.keys(src[expr]).forEach(type => {       
-//       dest[expr][type] = dest[expr][type] || {}
-//       Object.assign(dest[expr][type], src[expr][type])
-//     })
-//   })
-// }
+import { style } from '../../src'
+
 
 export const convert = {
   StyleSheet(node) {  
-    return node.rules.map((rule) => {
-      return convert[rule.type](rule)
+    let ret = {}
+    // todo - deep merging 
+    node.rules.forEach((rule) => {
+      Object.assign(ret, convert[rule.type](rule))
     })
+    return style(ret)
     
   },
   MediaRule(node) {
@@ -81,12 +76,12 @@ export function css(strings) {
 console.log(JSON.stringify( //eslint-disable-line no-console
 css` 
   color: yellow;
-  html {
+  html & {
     color: red;
   }
   @media all, or, none {
     color: orange;
-    html {
+    html & {
       color: blue;
       border: 1px solid blue
     }
