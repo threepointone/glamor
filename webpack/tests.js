@@ -2,11 +2,11 @@ let webpack = require('webpack')
 
 module.exports = {
   module: {
-    loaders: [ {
+    rules: [ {
       test: /\.js$/,
       exclude: /node_modules/,
       loader: 'babel',
-      query: {
+      options: {
         plugins: process.env.COVERAGE ? [ 'istanbul' ] : []
       }
     } ]  
