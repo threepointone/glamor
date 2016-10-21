@@ -45,7 +45,7 @@ working
 
 todo
 - media queries 
-- convert to rules
+- interpolations
 - stubs for 'vars' like functions, objects, etc
 - babel plugin
 - fallback values

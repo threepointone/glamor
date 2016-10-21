@@ -1,6 +1,4 @@
 import { parse } from './spec'
-import { style } from '../../src'
-
 
 export const convert = {
   StyleSheet(node) {  
@@ -9,7 +7,7 @@ export const convert = {
     node.rules.forEach((rule) => {
       Object.assign(ret, convert[rule.type](rule))
     })
-    return style(ret)
+    return ret
     
   },
   MediaRule(node) {
@@ -68,16 +66,21 @@ export const convert = {
   }
 }
 
-export function css(strings) {
-  let parsed = parse(strings.join('').trim())
+export function css(strings, ...values) {  
+  strings = strings.reduce((arr, x, i) => {
+    arr.push(x)
+    arr.push(values[i])
+    return arr
+  }, []).join('').trim()
+  let parsed = parse(strings)
   return convert[parsed.type](parsed)
 }
 
-console.log(JSON.stringify( //eslint-disable-line no-console
+
 css` 
   color: yellow;
   html & {
-    color: red;
+    color: red;    
   }
   @media all, or, none {
     color: orange;
@@ -89,5 +92,5 @@ css`
   & :hover.xyz {
     color: green
   }
-  `, null, ' '))
+`
 
