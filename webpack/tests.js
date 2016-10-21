@@ -7,7 +7,7 @@ module.exports = {
       exclude: /node_modules/,
       loader: 'babel',
       query: {
-        plugins: process.env.COVERAGE ? [ '__coverage__' ] : []
+        plugins: process.env.COVERAGE ? [ 'istanbul' ] : []
       }
     } ]  
   },
