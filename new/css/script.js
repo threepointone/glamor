@@ -107,16 +107,24 @@ export function css(strings, ...values) {
 }
 
 let rule = css`
+  /* the css syntax you love */
   color: yellow;
-  ${{ color: 'gray' }}      /* compose with objects */
-  ${css` color: white; `}   /* or more rules */
-  :hover {                  /* pseudo classes */
-    color: ${ Math.random() > 0.5 ? 'red' : 'blue'};  /* just javascript */
+  /* pseudo classes */
+  :hover {
+    /* just javascript */
+    color: ${ Math.random() > 0.5 ? 'red' : 'blue'};
   }
-  html.ie9 & span { padding: 10 } /* contextual selectors */
-  @media all, or, none {    /* media queries */
+  /* contextual selectors */
+  html.ie9 & span { padding: 10 }
+  /* compose with objects */
+  ${{ color: 'gray' }}
+  /* or more rules */
+  ${ css` color: white; ` }
+  /* media queries */
+  @media all, or, none {
     color: orange;
-    && {              /* increase specificity */
+    /* increase specificity */
+    && {
       color: blue;
     }
   }
