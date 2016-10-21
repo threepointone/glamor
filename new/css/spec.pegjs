@@ -49,7 +49,7 @@ start
 // ----- G.1 Grammar -----
 
 stylesheet
-  = rules:((ruleset / media / declare) (CDO S* / CDC S*)*)*
+  = rules:((stub / ruleset / media / declare) (CDO S* / CDC S*)*)*
     {
       return {
         type: 'StyleSheet',
@@ -59,7 +59,7 @@ stylesheet
 declare = dec:declaration S* ";" S*  { return dec }
 
 media
-  = MEDIA_SYM S* media:media_list "{" S* rules:(ruleset / declare)* "}" S* {
+  = MEDIA_SYM S* media:media_list "{" S* rules:(stub / ruleset / declare)* "}" S* {
       return {
         type: "MediaRule",
         media: media,
@@ -136,6 +136,8 @@ simple_selector
         qualifiers: qualifiers
       };
     }
+
+stub = stub_id:(S_ P U R "-" num) S* ";"* S* { return { type:'Stub', id: stub_id.join('') } }
 
 contextual
   = AMP { return { type: 'Contextual' } }

@@ -8,7 +8,7 @@ styled('div')`
   /* comments? */
   &:hover {
     color: red  // inline comments?
-  } 
+  }
   @media query {
     color: ${greenVar}
     &:hover {
@@ -23,7 +23,7 @@ styled('div')`
   }}
 `
 
-// variant with no inline functions 
+// variant with no inline functions
 css`
   color: red;
   // etc...
@@ -32,20 +32,20 @@ css`
 todo - plugin
 ---
 
-a babel plugin that strips out the tagged literal syntax, 
+a babel plugin that strips out the tagged literal syntax,
 and replaces with a json form. everybody wins!
 we can do this because we control the ast
 and there's a corresponding json representation for every kv pair / nesting form
 
-working 
-- basic css 
-- media lists 
-- inline key values 
-- contextual selectors 
+working
+- basic css
+- media lists
+- inline key values
+- contextual selectors
+- interpolations
 
 todo
-- media queries 
-- interpolations
-- stubs for 'vars' like functions, objects, etc
+- media queries
 - babel plugin
 - fallback values
+- composes

@@ -1,39 +1,51 @@
 import { parse } from './spec'
+import beautify from 'cssbeautify'
+import { style, cssFor, select, merge, media } from '../../src'
 
-export const convert = {
-  StyleSheet(node) {  
-    let ret = {}
-    // todo - deep merging 
-    node.rules.forEach((rule) => {
-      Object.assign(ret, convert[rule.type](rule))
-    })
-    return ret
-    
+function log(x) {
+
+  console.log((x || ''), this) // eslint-disable-line no-console
+  return this
+}
+
+function stringify() {
+  return JSON.stringify(this)
+}
+
+function convert(node, ctx) {
+  return conversions[node.type](node, ctx)
+}
+
+export const conversions = {
+  StyleSheet(node, ctx) {
+    return merge(node.rules.map(x => convert(x, ctx)))
   },
-  MediaRule(node) {
-    return { ['@media ' + node.media.join(',')]: Object.assign({}, ...node.rules.map(x => convert[x.type](x))) }
+  MediaRule(node, ctx) {
+    return media(node.media.join(','), node.rules.map(x => convert(x, ctx)))
   },
-  RuleSet(node) {
-    let x = { [node.selectors.map(x => convert[x.type](x)).join('')]: Object.assign({}, ...node.declarations.map(x => convert[x.type](x))) }
+  RuleSet(node, ctx) {
+    // let selector =
+    let x = select(node.selectors.map(x => convert(x)).join(''),  Object.assign({}, ...node.declarations.map(x => convert(x, ctx))))
+
     return x
   },
-  Selector(node) {
-    return `${convert[node.left.type](node.left)}${node.combinator}${convert[node.right.type](node.right)}`
+  Selector(node, ctx) {
+    return `${convert(node.left, ctx)}${node.combinator}${convert(node.right, ctx)}`
   },
-  SimpleSelector(node) {
-    let ret = `${node.all ? '*' : (node.element !== '*' ? node.element : '' )}${node.qualifiers.map(x => convert[x.type](x)).join('')}`    
+  SimpleSelector(node, ctx) {
+    let ret = `${node.all ? '*' : (node.element !== '*' ? node.element : '' )}${node.qualifiers.map(x => convert(x, ctx)).join('')}`
     return ret
   },
   Contextual() {
     return '&'
   },
-  IDSelector(node) {
+  IDSelector(node, ctx) {
     return node.id
   },
-  ClassSelector(node) {
+  ClassSelector(node, ctx) {
     return '.' + node['class']
   },
-  PseudoSelector(node) {
+  PseudoSelector(node, ctx) {
     return ':' + node.value
   },
   AttributeSelector() {
@@ -42,9 +54,9 @@ export const convert = {
   Function() {
 
   },
-  Declaration(node) {
+  Declaration(node, ctx) {
     // todo - fallbacks
-    return { [node.name]: convert[node.value.type](node.value) }
+    return { [node.name]: convert(node.value, ctx) }
   },
   Quantity(node) {
     return node.value + node.unit
@@ -61,36 +73,54 @@ export const convert = {
   Hexcolor(node) {
     return node.value
   },
-  Expression(node) {
-    return convert[node.left.type](node.left) + (node.operator || ' ') + convert[node.right.type](node.right)
+  Expression(node, ctx) {
+    return convert(node.left, ctx) + (node.operator || ' ') + convert(node.right, ctx)
+  },
+  Stub(node, ctx) {
+    return ctx.stubs[node.id]
   }
 }
 
-export function css(strings, ...values) {  
+export function css(strings, ...values) {
+  let stubs = {}, ctr = 0
   strings = strings.reduce((arr, x, i) => {
     arr.push(x)
-    arr.push(values[i])
+    if(values[i] === undefined || values[i] === null) {
+      return arr
+    }
+    if([ 'number', 'string', 'boolean' ].indexOf(typeof values[i]) >= 0) {
+      arr.push(values[i])
+    }
+    else {
+      let j = ctr++
+      stubs['spur-' + j] = values[i]
+      arr.push('spur-' + j + ';')
+    }
+
     return arr
   }, []).join('').trim()
+
   let parsed = parse(strings)
-  return convert[parsed.type](parsed)
+  // replace stubs here
+  // JSON.stringify(parsed, null, ' ')::log()
+  return convert(parsed, { stubs })
 }
 
-
-css` 
+let rule = css`
   color: yellow;
-  html & {
-    color: red;    
+  ${{ color: 'gray' }}      /* compose with objects */
+  ${css` color: white; `}   /* or more rules */
+  :hover {                  /* pseudo classes */
+    color: ${ Math.random() > 0.5 ? 'red' : 'blue'};  /* just javascript */
   }
-  @media all, or, none {
+  html.ie9 & span { padding: 10 } /* contextual selectors */
+  @media all, or, none {    /* media queries */
     color: orange;
-    html & {
+    && {              /* increase specificity */
       color: blue;
-      border: 1px solid blue
     }
   }
-  & :hover.xyz {
-    color: green
-  }
-`
+`::log()
 
+
+beautify(cssFor(rule))::log()
