@@ -8,7 +8,7 @@ css for component systems
 
 usage 
 ```jsx
-import { style, hover } from 'glamor'
+import { style, merge } from 'glamor'
 
 // make css rules 
 let rule = style({ 

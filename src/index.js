@@ -201,6 +201,13 @@ function extractStyles(...rules) {
   // converts {[data-css-<id>]} to the backing rule 
   rules = rules
     .map(x => isLikeRule(x) ? registered[idFor(x)] : x)
+    .map(x => {
+      if(x != null) {
+        return x;
+      }
+
+      throw new Error('[glamor] an unexpected rule cache miss occurred. This is probably a sign of multiple glamor instances in your app. See https://github.com/threepointone/glamor/issues/79')
+    })
     .map(x => ((x.type === 'style') || !x.type) ? deconstruct(x.style || x) : x)
 
   rules = flatten(rules)
