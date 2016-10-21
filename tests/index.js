@@ -145,6 +145,20 @@ describe('glamor', () => {
 }`)
   })
 
+  it('nested objects can compose with `composes`', () => {
+    let rule1 = style({ color: 'red' })
+    let rule2 = style({ color: 'blue' })
+    let rule3 = style({ color: 'green' })
+    let rule4 = style({
+      composes: [ rule1, rule2 ],
+      fontWeight: 'bold'
+    })
+    
+    render(<div {...rule4}/>, node, () => {
+      expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')
+    })
+  })
+
   it(':not() selector works for multiple selectors')
   it('can use a parent selector to target itself', () => {
     let x = parent('.foo', { color: 'red' })
@@ -418,7 +432,13 @@ describe('glamor', () => {
     let red = style({ color: 'red' })
 
     expect(idFor(red)).toEqual('im3wl1')      
-  })  
+  })
+
+  it('checks for a cache miss', () => {
+    const myObscureStyle = { 'data-css-obscureclass': '"*"' }
+
+    expect(() => merge(myObscureStyle)).toThrow('[glamor] an unexpected rule cache miss occurred. This is probably a sign of multiple glamor instances in your app. See https://github.com/threepointone/glamor/issues/79');
+  })
 })
 
 describe('clean', () => {

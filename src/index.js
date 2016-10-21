@@ -144,16 +144,21 @@ function deepMergeStyles(dest, src) {
 
 //todo - prevent nested media queries
 function deconstruct(obj) {
-  let ret = []  
+  let ret = [], composesWith
   let plain = {}, hasPlain = false
-  let hasPseudos = obj && find(Object.keys(obj), x => x.charAt(0) === ':')
-  let hasMedias = obj && find(Object.keys(obj), x => x.charAt(0) === '@') // todo - check @media
-  let hasSelects = obj && find(Object.keys(obj), x => x.indexOf('&') >= 0)
+  let isSpecial = obj && find(Object.keys(obj), x => {
+    return (x.charAt(0) === ':') || // pseudos 
+    (x.charAt(0) === '@') || // media queries; todo - check @media
+    (x.indexOf('&') >= 0) || // 'selects'
+    (x === 'composes')
+  }) // like css modules!
   
-  if(hasPseudos || hasMedias || hasSelects) {
-    
+  if(isSpecial) { 
     Object.keys(obj).forEach(key => {
-      if(key.charAt(0) === ':') {
+      if(key === 'composes') {
+        composesWith = obj[key]
+      }
+      else if(key.charAt(0) === ':') {
         ret.push({
           type: 'pseudo',
           style: obj[key],
@@ -179,7 +184,9 @@ function deconstruct(obj) {
         plain[key] = obj[key]
       }
     })
-    return hasPlain ? [ plain, ...ret ] : ret
+    ret = hasPlain ? [ plain, ...ret ] : ret
+    ret = composesWith ? [ composesWith, ...ret ] : ret
+    return ret
   }
   return obj
 
@@ -194,8 +201,18 @@ function extractStyles(...rules) {
   // converts {[data-css-<id>]} to the backing rule 
   rules = rules
     .map(x => isLikeRule(x) ? registered[idFor(x)] : x)
+    .map(x => {
+      if(x != null) {
+        return x;
+      }
+
+      throw new Error('[glamor] an unexpected rule cache miss occurred. This is probably a sign of multiple glamor instances in your app. See https://github.com/threepointone/glamor/issues/79')
+    })
     .map(x => ((x.type === 'style') || !x.type) ? deconstruct(x.style || x) : x)
+
   rules = flatten(rules)
+  .map(x => isLikeRule(x) ? registered[idFor(x)] : x) // sigh, this is to handle arrays in `composes`. must make better.
+  
   rules.forEach(rule => { 
     // avoid possible label. todo - cleaner 
     if(typeof rule === 'string') {
