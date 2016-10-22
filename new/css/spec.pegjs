@@ -93,6 +93,7 @@ ruleset
     declarationsTail:(";" S* declaration?)*
     "}" S*
     {
+      // todo - accept interpolated objects here 
       return {
         type: "RuleSet",
         selectors: buildList(selectorsHead, selectorsTail, 2),

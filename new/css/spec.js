@@ -176,6 +176,7 @@ function peg$parse(input, options) {
       peg$c22 = peg$literalExpectation(">", false),
       peg$c23 = function() { return ">"; },
       peg$c24 = function(selectorsHead, selectorsTail, declarationsHead, declarationsTail) {
+            // todo - accept interpolated objects here 
             return {
               type: "RuleSet",
               selectors: buildList(selectorsHead, selectorsTail, 2),
@@ -1441,7 +1442,10 @@ function peg$parse(input, options) {
             s5 = peg$parseS();
           }
           if (s4 !== peg$FAILED) {
-            s5 = peg$parsedeclaration();
+            s5 = peg$parsestub();
+            if (s5 === peg$FAILED) {
+              s5 = peg$parsedeclaration();
+            }
             if (s5 === peg$FAILED) {
               s5 = null;
             }

@@ -1,6 +1,7 @@
 import { parse } from './spec'
 import beautify from 'cssbeautify'
-import { style, cssFor, select, merge, media } from '../../src'
+import { simulations, style, cssFor, select, merge, media, styleSheet } from '../../src'
+
 
 function log(x) {
 
@@ -21,11 +22,12 @@ export const conversions = {
     return merge(node.rules.map(x => convert(x, ctx)))
   },
   MediaRule(node, ctx) {
-    return media(node.media.join(','), node.rules.map(x => convert(x, ctx)))
+    let query = node.media.join(',')
+    return { [`@media ${query}`]: node.rules.map(x => convert(x, ctx)) }
   },
   RuleSet(node, ctx) {
-    // let selector =
-    let x = select(node.selectors.map(x => convert(x)).join(''),  Object.assign({}, ...node.declarations.map(x => convert(x, ctx))))
+    let selector = node.selectors.map(x => convert(x)).join('')
+    let x = { [selector]:  Object.assign({}, ...node.declarations.map(x => convert(x, ctx))) }
 
     return x
   },
@@ -106,14 +108,15 @@ export function css(strings, ...values) {
   return convert(parsed, { stubs })
 }
 
+
 let rule = css`
-  /* the css syntax you love */
-  color: yellow;
+  color: yellow; /* 'real' css syntax */
   /* pseudo classes */
   :hover {
     /* just javascript */
-    color: ${ Math.random() > 0.5 ? 'red' : 'blue'};
+    color: ${ Math.random() > 0.5 ? 'red' : 'blue' };
   }
+  & > h1 { color: purple }
   /* contextual selectors */
   html.ie9 & span { padding: 10 }
   /* compose with objects */
@@ -123,12 +126,19 @@ let rule = css`
   /* media queries */
   @media all, or, none {
     color: orange;
+    ${{ color: 'poopy' }}
     /* increase specificity */
     && {
+
       color: blue;
+
     }
   }
-`::log()
+`
+export const App = () => <div className={rule}>
+  ...
+</div>
 
-
+// beautify(styleSheet.rules().map(x => x.cssText).join(''))::log()
+// 'boop'::log('\n \n')
 beautify(cssFor(rule))::log()

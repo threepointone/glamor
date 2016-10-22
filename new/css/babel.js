@@ -7,3 +7,11 @@
 // parse to get intermediate form
 // print back, replacing stubs with interpolations
 // tada?
+
+let template = require('babel-template')
+
+module.exports = {
+  visitor: {
+    
+  }
+}

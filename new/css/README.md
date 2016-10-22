@@ -43,9 +43,12 @@ working
 - inline key values
 - contextual selectors
 - interpolations
+- composition
 
 todo
 - media queries
+- direct selectors 
 - babel plugin
 - fallback values
-- composes
+- leading comments
+
