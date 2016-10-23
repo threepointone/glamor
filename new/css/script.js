@@ -10,23 +10,24 @@ function log(x) {
 }
 
 function stringify() {
-  return JSON.stringify(this)
+  return JSON.stringify(this, null, ' ')
 }
 
 function convert(node, ctx) {
+  // console.log(arguments)
   return conversions[node.type](node, ctx)
 }
 
 export const conversions = {
   StyleSheet(node, ctx) {
-    return merge(node.rules.map(x => convert(x, ctx)))
+    return node.rules.map(x => convert(x, ctx))
   },
   MediaRule(node, ctx) {
     let query = node.media.join(',')
     return { [`@media ${query}`]: node.rules.map(x => convert(x, ctx)) }
   },
   RuleSet(node, ctx) {
-    let selector = node.selectors.map(x => convert(x)).join('')
+    let selector = node.selectors.map(x => convert(x, ctx)).join('')
     let x = { [selector]:  Object.assign({}, ...node.declarations.map(x => convert(x, ctx))) }
 
     return x
@@ -80,6 +81,9 @@ export const conversions = {
   },
   Stub(node, ctx) {
     return ctx.stubs[node.id]
+  },
+  Stubs(node, ctx) {
+    return node.stubs.map(x => convert(x, ctx))
   }
 }
 
@@ -90,42 +94,39 @@ export function css(strings, ...values) {
     if(values[i] === undefined || values[i] === null) {
       return arr
     }
-    if([ 'number', 'string', 'boolean' ].indexOf(typeof values[i]) >= 0) {
-      arr.push(values[i])
-    }
-    else {
-      let j = ctr++
-      stubs['spur-' + j] = values[i]
-      arr.push('spur-' + j + ';')
-    }
+    let j = ctr++
+    stubs['spur-' + j] = values[i]
+    arr.push('spur-' + j)
 
     return arr
   }, []).join('').trim()
 
-  let parsed = parse(strings)
-  // replace stubs here
-  // JSON.stringify(parsed, null, ' ')::log()
-  return convert(parsed, { stubs })
+  let parsed = parse(strings)::log()
+  return merge(convert(parsed, { stubs }))
+}
+
+export function css2(x) {
+  console.log(x)  //eslint-disable-line no-console
 }
 
 
 let rule = css`
   color: yellow; /* 'real' css syntax */
   /* pseudo classes */
+  ${css`color: greenish;`}
   :hover {
     /* just javascript */
     color: ${ Math.random() > 0.5 ? 'red' : 'blue' };
   }
   & > h1 { color: purple }
   /* contextual selectors */
-  html.ie9 & span { padding: 10 }
+  html.ie9 & ${'span'} { padding: 10 }
   /* compose with objects */
-  ${{ color: 'gray' }}
   /* or more rules */
-  ${ css` color: white; ` }
   /* media queries */
   @media all, or, none {
     color: orange;
+    border: 1px ${'solid'} blue;
     ${{ color: 'poopy' }}
     /* increase specificity */
     && {

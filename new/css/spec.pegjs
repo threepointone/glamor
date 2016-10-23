@@ -49,7 +49,7 @@ start
 // ----- G.1 Grammar -----
 
 stylesheet
-  = rules:((stub / ruleset / media / declare) (CDO S* / CDC S*)*)*
+  = rules:((stubs / ruleset / media / declare) (CDO S* / CDC S*)*)*
     {
       return {
         type: 'StyleSheet',
@@ -59,7 +59,7 @@ stylesheet
 declare = dec:declaration S* ";" S*  { return dec }
 
 media
-  = MEDIA_SYM S* media:media_list "{" S* rules:(stub / ruleset / declare)* "}" S* {
+  = MEDIA_SYM S* media:media_list "{" S* rules:(stubs / ruleset / declare)* "}" S* {
       return {
         type: "MediaRule",
         media: media,
@@ -93,7 +93,7 @@ ruleset
     declarationsTail:(";" S* declaration?)*
     "}" S*
     {
-      // todo - accept interpolated objects here 
+      
       return {
         type: "RuleSet",
         selectors: buildList(selectorsHead, selectorsTail, 2),
@@ -121,7 +121,8 @@ selector
   / selector:simple_selector S* { return selector; }
 
 simple_selector
-  = element:element_name qualifiers:(id / class / attrib / pseudo / contextual)* {
+  = inter: stub { return  inter} / 
+  element:element_name qualifiers:(stub / id / class / attrib / pseudo / contextual)* {
       return {
         type: "SimpleSelector",
         element: element,
@@ -129,12 +130,21 @@ simple_selector
         qualifiers: qualifiers
       };
     }
-  / qualifiers:(id / class / attrib / pseudo/ contextual)+ {
+  / qualifiers:(stub / id / class / attrib / pseudo/ contextual)+ {
       return {
         type: "SimpleSelector",
         element: "*",
         all: false,
         qualifiers: qualifiers
+      };
+    }
+
+stubs = stubsHead:stub
+    stubsTail:(";" S* stub?)* {
+      
+      return {
+        type: "Stubs",        
+        stubs: buildList(stubsHead, stubsTail, 2)
       };
     }
 
@@ -182,7 +192,8 @@ pseudo
     { return { type: "PseudoSelector", value: value }; }
 
 declaration
-  = name:property ':' S* value:expr prio:prio? {
+  = inter: stub { return inter } / name:property ':' S* value:expr prio:prio? {
+
       return {
         type: "Declaration",
         name: name,
@@ -198,7 +209,8 @@ expr
   = head:term tail:(operator? term)* { return buildExpression(head, tail); }
 
 term
-  = quantity:(PERCENTAGE / LENGTH / EMS / EXS / ANGLE / TIME / FREQ / NUMBER)
+  = inter: stub { return inter }
+  / quantity:(PERCENTAGE / LENGTH / EMS / EXS / ANGLE / TIME / FREQ / NUMBER)
     S*
     {
       return {
@@ -281,7 +293,7 @@ string
   / string2
 
 url
-  = chars:([!#$%&*-\[\]-~] / nonascii / escape)* { return chars.join(""); }
+  = (inter:stub) { return inter } / chars:([!#$%&*-\[\]-~] / nonascii / escape)* { chars.join(""); }
 
 s
   = [ \t\r\n\f]+
