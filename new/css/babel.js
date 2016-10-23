@@ -10,8 +10,12 @@
 
 let template = require('babel-template')
 
+
 module.exports = {
   visitor: {
-    
+    TaggedTemplateExpression(path) {
+      let cssStr = path.node.quasi.
+      path.replaceWithSourceString(`css2(${JSON.stringify(intermediate)})`)
+    }    
   }
 }

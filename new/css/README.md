@@ -48,7 +48,6 @@ working
 todo
 - media queries
 - direct selectors 
-- babel plugin
+~ babel plugin
 - fallback values
-- leading comments
 
