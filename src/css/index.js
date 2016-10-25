@@ -39,7 +39,7 @@ export const conversions = {
   },
   RuleSet(node, ctx) {
     let selector = node.selectors.map(x => convert(x, ctx)).join('')
-    let x = { [selector]:  Object.assign({}, ...node.declarations.map(x => convert(x, ctx))) }
+    let x = { [selector]:  Object.assign({}, ...node.declarations.map(x => convert(x, ctx))) } // todo - more nesting, accept rules, etc 
 
     return x
   },
@@ -98,9 +98,6 @@ export const conversions = {
   }
 }
 
-function inter(ast) {
-
-}
 
 export function css(strings, ...values) {
   let stubs = {}, ctr = 0
@@ -117,6 +114,5 @@ export function css(strings, ...values) {
   }, []).join('').trim()
 
   let parsed = parse(strings)
-  // parsed::stringify()::log()
   return merge(convert(parsed, { stubs }))
 }

@@ -44,10 +44,11 @@ working
 - contextual selectors
 - interpolations
 - composition
+- media queries
 
 todo
-- media queries
+
 - direct selectors 
 ~ babel plugin
 - fallback values
-
+- tests!!!
