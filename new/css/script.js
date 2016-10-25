@@ -21,11 +21,11 @@ let rule = css`
   }
   & > h1 { color: purple }
   /* contextual selectors */
-  html.ie9 & ${someTag} { padding: 10 }
+  html.ie9 & ${someTag} { padding: 300px }
   /* compose with objects */
   /* or more rules */
   /* media queries */
-  @media all, or, none {
+  @media (min-width: 300px) {
     color: orange;
     border: 1px ${'solid'} blue;
     ${{ color: 'brown' }}

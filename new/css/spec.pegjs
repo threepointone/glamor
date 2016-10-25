@@ -59,7 +59,7 @@ stylesheet
 declare = dec:declaration S* ";" S*  { return dec }
 
 media
-  = MEDIA_SYM S* media:media_list "{" S* rules:(stubs / ruleset / declare)* "}" S* {
+  = MEDIA_SYM S* media:mlist "{" S* rules:(stubs / ruleset / declare)* "}" S* {
       return {
         type: "MediaRule",
         media: media,
@@ -67,11 +67,13 @@ media
       };
     }
 
-media_list
-  = head:medium tail:("," S* medium)* { return buildList(head, tail, 2); }
 
-medium
-  = name:IDENT S* { return name; }
+mlist = head:mquery tail:("," S* mquery)* { return buildList(head, tail, 2) }
+
+mquery = prefix:("only" / "not")? S* type:( stub / property) S* exprs:("and" S* x:(stub / mexpr) S* { return x } )* { return { type:'MediaQuery', prefix, type, exprs }}  
+  / head:(stub / mexpr) tail:("and" S* x:(stub / mexpr) S* { return x })* S* { return { type:'MediaQuery', exprs: buildList(head, tail, 2) }}  
+
+mexpr = "(" S* feat:property S* t:(":"? S* t:term { return t })* S* ")" { return { type: 'MediaExpr', feature: feat, value: t }}
 
 
 operator
@@ -141,14 +143,13 @@ simple_selector
 
 stubs = stubsHead:stub
     stubsTail:(";" S* stub?)* {
-      
       return {
         type: "Stubs",        
         stubs: buildList(stubsHead, stubsTail, 2)
       };
     }
 
-stub = stub_id:(S_ P U R "-" num) S* ";"* S* { return { type:'Stub', id: stub_id.join('') } }
+stub = stub_id:(S_ P U R "-" num) S*  { return { type:'Stub', id: stub_id.join('').trim() } }
 
 contextual
   = AMP { return { type: 'Contextual' } }

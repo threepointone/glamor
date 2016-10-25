@@ -12,7 +12,6 @@ function stringify() {
 }
 
 function convert(node, ctx) {
-  // console.log(arguments)
   return conversions[node.type](node, ctx)
 }
 
@@ -21,8 +20,22 @@ export const conversions = {
     return node.rules.map(x => convert(x, ctx))
   },
   MediaRule(node, ctx) {
-    let query = node.media.join(',')
+    let query = node.media.map(x => convert(x, ctx)).join(',')
     return { [`@media ${query}`]: node.rules.map(x => convert(x, ctx)) }
+  },
+  MediaQuery(node, ctx) {
+    if(node.prefix) {
+      return `${node.prefix} ${node.type} ${node.exprs.map(x => convert(x, ctx)).join(' ')}` 
+    }
+    else {
+      return node.exprs.map(x => convert(x, ctx)).join(' ')
+    }
+  },
+  MediaExpr(node, ctx) {
+    if(node.value) {
+      return `(${node.feature}:${node.value.map(x => convert(x, ctx))})`
+    }
+    return `(${node.feature})`
   },
   RuleSet(node, ctx) {
     let selector = node.selectors.map(x => convert(x, ctx)).join('')
@@ -104,6 +117,6 @@ export function css(strings, ...values) {
   }, []).join('').trim()
 
   let parsed = parse(strings)
-  parsed::stringify()::log()
+  // parsed::stringify()::log()
   return merge(convert(parsed, { stubs }))
 }
