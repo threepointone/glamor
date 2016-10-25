@@ -2,7 +2,7 @@ css
 ---
 
 tl:dr; 
-  - you can now 'real' css in your javascript
+  - you can now write 'real' css in your javascript
   - that just works 
   - with syntax highlighting and linting
   - and can be precompiled / extracted 
