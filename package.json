@@ -24,8 +24,8 @@
   ],
   "scripts": {
     "start": "webpack-dev-server --config webpack/dev.js",
-    "parser": "pegjs new/css/spec.pegjs",
-    "build": "npm run clean && npm run build:lib && npm run build:es6 && mkdir umd && npm run build:umd",
+    "parser": "pegjs src/css/spec.pegjs",
+    "build": "npm run clean && npm run parser && npm run build:lib && npm run build:es6 && mkdir umd && npm run build:umd",
     "build:lib": "babel src -d lib --presets es2015,stage-0,react",
     "build:es6": "babel src -d es6",
     "build:umd": "webpack --config webpack/umd.js && npm run compress:umd",

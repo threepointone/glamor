@@ -1,54 +1,87 @@
 css
 ---
 
-styled('div')`
+tl:dr; 
+  - you can now 'real' css in your javascript
+  - that just works 
+  - with syntax highlighting and linting
+  - and can be precompiled / extracted 
+  - all glamor goodies apply 
+
+```jsx
+let rule = css`
   color: red;
-  border: 1px solid blue;
-  background: url(${props => props.url || 'bg.png'});
-  /* comments? */
-  &:hover {
-    color: red  // inline comments?
+  font-family: helvetica, sans-serif
+  :hover: {
+    color: blue
   }
-  @media query {
-    color: ${greenVar}
-    &:hover {
-      nest: more
+  @media(min-width: 300px){
+    color: green
+  }
+`
+// ...
+<div className={rule}>
+  zomg!
+</div>
+```
+
+longer 
+
+```jsx
+let rule = css`
+  /* 'real' css syntax */
+  color: yellow; 
+  
+  /* pseudo classes */  
+  :hover {
+    /* just javascript */
+    color: ${ Math.random() > 0.5 ? 'red' : 'blue' };
+  }
+  
+  /* contextual selectors */
+  & > h1 { color: purple }  
+  html.ie9 & span { padding: 300px }
+  
+  /* compose with objects */
+  ${{ color: 'red' }}
+  
+  /* or more rules */
+  ${ css`color: greenish;` }
+  
+  /* media queries */
+  @media (min-width: 300px) {
+    color: orange;
+    border: 1px solid blue;
+    ${{ color: 'brown' }}
+    /* increase specificity */
+    && {
+      color: blue;
+      ${{ color: 'browner' }}
     }
   }
-  html.someglobal & {
-    sall: good;
-  }
-  &:active ${{
-    an: object
-  }}
 `
+```
 
-// variant with no inline functions
-css`
-  color: red;
-  // etc...
-`
 
-todo - plugin
+babel plugin (work in progress)
 ---
 
-a babel plugin that strips out the tagged literal syntax,
-and replaces with a json form. everybody wins!
-we can do this because we control the ast
-and there's a corresponding json representation for every kv pair / nesting form
+the babel plugin strips out the tagged literal syntax,
+and replaces with a glamor friendly json form. everybody wins! this - 
+```jsx
+css` color: red `
+```
+becomes this -
+```jsx
+css({ color: 'red' })
+```
+eliminating the need for the css parser in the js bundle. wowzah.
 
-working
-- basic css
-- media lists
-- inline key values
-- contextual selectors
-- interpolations
-- composition
-- media queries
 
 todo
 
-- direct selectors 
+- direct selectors `> h1 {...}`
+- match more of the css spec (currently ~2.1)
 ~ babel plugin
 - fallback values
 - tests!!!

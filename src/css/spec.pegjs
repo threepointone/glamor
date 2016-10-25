@@ -70,10 +70,28 @@ media
 
 mlist = head:mquery tail:("," S* mquery)* { return buildList(head, tail, 2) }
 
-mquery = prefix:("only" / "not")? S* type:( stub / property) S* exprs:("and" S* x:(stub / mexpr) S* { return x } )* { return { type:'MediaQuery', prefix, type, exprs }}  
-  / head:(stub / mexpr) tail:("and" S* x:(stub / mexpr) S* { return x })* S* { return { type:'MediaQuery', exprs: buildList(head, tail, 2) }}  
+mquery = prefix:("only" / "not")? S* type:( stub / property) S* exprs:("and" S* x:(stub / mexpr) S* { return x } )* { 
+      return { 
+        type:'MediaQuery', 
+        prefix, 
+        type, 
+        exprs 
+      }
+    }  
+  / head:(stub / mexpr) tail:("and" S* x:(stub / mexpr) S* { return x })* S* { 
+      return { 
+        type:'MediaQuery', 
+        exprs: buildList(head, tail, 2) 
+      }
+    }  
 
-mexpr = "(" S* feat:property S* t:(":"? S* t:term { return t })* S* ")" { return { type: 'MediaExpr', feature: feat, value: t }}
+mexpr = "(" S* feat:property S* t:(":"? S* t:term { return t })* S* ")" { 
+  return { 
+    type: 'MediaExpr', 
+    feature: feat, 
+    value: t 
+  }
+}
 
 
 operator
