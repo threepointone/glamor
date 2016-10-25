@@ -1,5 +1,7 @@
 # glamor
 
+[![Join the chat at https://gitter.im/glamor-css/Lobby](https://badges.gitter.im/glamor-css/Lobby.svg)](https://gitter.im/glamor-css/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ![build status](https://travis-ci.org/threepointone/glamor.svg)
 
 css for component systems
