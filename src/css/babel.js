@@ -83,7 +83,16 @@ let conversions = {
   },
   Declaration(node, ctx) {
     // todo - fallbacks
-    return `{ '${node.name}': \`${convert(node.value, ctx, true)}\` }` // todo - numbers 
+    let val = convert(node.value, ctx, true)
+    let icky = false;
+    [ '${', '\'', '"' ].forEach(x => {
+      icky = icky || (val.indexOf(x) >= 0)
+    })
+    val = icky ? `\`${val}\`` : `'${val}'`
+    if(node.value.type === 'Stub') {
+      val = convert(node.value, ctx)
+    }
+    return `{ '${node.name}': ${val} }` // todo - numbers 
   },
   Quantity(node) {
     return node.value + node.unit
@@ -129,7 +138,7 @@ module.exports = {
           return arr
         }, []).join('')
         let parsed = parse(src.trim())
-        let newSrc = convert(parsed, { stubs: stubCtx })        
+        let newSrc = convert(parsed, { stubs: stubCtx })      
         path.replaceWithSourceString(newSrc)
       }
     }    
