@@ -106,6 +106,7 @@ here are some key differences -
 todo
 ---
 
+- redo all the docs
 - [planned enhancements](https://github.com/threepointone/glamor/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement)
 - notes on composition
 - ie8 compat
