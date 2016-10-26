@@ -75,9 +75,9 @@
     "webpack-dev-server": "2.1.0-beta.9"
   },
   "author": "Sunil Pai <threepointone@gmail.com>",
-  "homepage": "",
+  "homepage": "https://github.com/threepointone/glamor",
   "license": "MIT",
-  "repository": "",
+  "repository": "https://github.com/threepointone/glamor",
   "keywords": [
     "css",
     "inline"
