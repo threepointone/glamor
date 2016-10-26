@@ -62,10 +62,11 @@ let rule = css`
 ```
 
 
-babel plugin (work in progress)
+babel plugin
 ---
 
-the babel plugin strips out the tagged literal syntax,
+While the css literal syntax is great for developing, it nearly doubles the library size, 
+and is slower than we'd like for production. By using the babel plugin, we can strip out the tagged literal syntax,
 and replaces with a glamor friendly json form. everybody wins! this - 
 ```jsx
 css` color: red `

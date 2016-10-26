@@ -10,8 +10,16 @@ module.exports = {
     rules: [ {
       test: /\.js$/,
       exclude: /node_modules/,
-      loader: 'babel'
+      loader: 'babel',
+      query: {
+        plugins: [ path.join(__dirname, '../src/css/babel.js') ]
+      }
     } ]  
+  },
+  resolve: {
+    alias: {
+      'glamor': '../src'
+    }
   },
   plugins: [
     new webpack.DefinePlugin({

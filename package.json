@@ -76,7 +76,7 @@
     "react-dom": "^15.3.2",
     "stylelint": "^7.5.0",
     "stylelint-config-standard": "^14.0.0",
-    "stylelint-processor-styled-components": "^0.0.3",
+    "stylelint-processor-styled-components": "^0.0.4",
     "webpack": "2.1.0-beta.25",
     "webpack-dev-server": "2.1.0-beta.9"
   },
