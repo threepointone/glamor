@@ -15,6 +15,11 @@ function convert(node, ctx) {
   return conversions[node.type](node, ctx)
 }
 
+
+function toCamel(x) {
+  return x.replace(/(\-[a-z])/g, $1 => $1.toUpperCase().replace('-',''))
+}
+
 export const conversions = {
   StyleSheet(node, ctx) {
     return node.rules.map(x => convert(x, ctx))
@@ -70,7 +75,7 @@ export const conversions = {
   },
   Declaration(node, ctx) {
     // todo - fallbacks
-    return { [node.name]: convert(node.value, ctx) }
+    return { [toCamel(node.name)]: convert(node.value, ctx) }
   },
   Quantity(node) {
     return node.value + node.unit

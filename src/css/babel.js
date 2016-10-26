@@ -18,6 +18,10 @@ function convert(node, ctx, interpolated) {
   return conversions[node.type](node, ctx, interpolated)
 }
 
+function toCamel(x) {
+  return x.replace(/(\-[a-z])/g, $1 => $1.toUpperCase().replace('-',''))
+}
+
 let conversions = {
   StyleSheet(node, ctx) {
     return 'merge([ ' + node.rules.map(x => convert(x, ctx)).join(', ') + ' ])'
@@ -92,7 +96,7 @@ let conversions = {
     if(node.value.type === 'Stub') {
       val = convert(node.value, ctx)
     }
-    return `{ '${node.name}': ${val} }` // todo - numbers 
+    return `{ '${toCamel(node.name)}': ${val} }` // todo - numbers 
   },
   Quantity(node) {
     return node.value + node.unit
