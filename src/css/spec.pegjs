@@ -56,7 +56,7 @@ stylesheet
         rules: extractList(rules, 0)}
     }
 
-declare = dec:declaration S* ";" S*  { return dec }
+declare = dec:declaration S* ";"? S*  { return dec }
 
 media
   = MEDIA_SYM S* media:mlist "{" S* rules:(stubs / ruleset / declare)* "}" S* {

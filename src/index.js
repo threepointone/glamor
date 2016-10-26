@@ -175,7 +175,7 @@ function deconstruct(obj) {
       else if(key.indexOf('&') >= 0) {
         ret.push({
           type: 'select',
-          style: obj[key],
+          style: Array.isArray(obj[key]) ? Object.assign({}, ...obj[key]) : obj[key],
           selector: key
         })
       }

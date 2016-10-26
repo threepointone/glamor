@@ -3,7 +3,7 @@
 import React from 'react'
 
 
-import { cssFor } from '../src'
+import { cssFor, merge } from '../src'
 import { css } from '../src/css'
 
 function log(x) {
@@ -17,7 +17,7 @@ let someTag = '.xyz:hover'
 let rule = css`
   color: yellow; /* 'real' css syntax */
   /* pseudo classes */
-  ${css`color: greenish;`}
+  ${css`color: greenish`}
   :hover {
     /* just javascript */
     color: ${ Math.random() > 0.5 ? 'red' : 'blue' };

@@ -3,9 +3,8 @@ css
 
 tl:dr; 
   - you can now write 'real' css in your javascript
-  - that just works 
-  - with syntax highlighting and linting
-  - and can be precompiled / extracted 
+  - with syntax highlighting and linting (via [styled components'](https://github.com/styled-components/styled-components) work)
+  - that can be precompiled / extracted 
   - all glamor goodies apply 
 
 ```jsx
@@ -46,7 +45,7 @@ let rule = css`
   ${{ color: 'red' }}
   
   /* or more rules */
-  ${ css`color: greenish;` }
+  ${ css`color: greenish` }
   
   /* media queries */
   @media (min-width: 300px) {
@@ -81,7 +80,9 @@ eliminating the need for the css parser in the js bundle. wowzah.
 todo
 
 - direct selectors `> h1 {...}`
+- attribute selectors 
 - match more of the css spec (currently ~2.1)
-~ babel plugin
 - fallback values
+- more interpolation points
+- better parsing errors
 - tests!!!

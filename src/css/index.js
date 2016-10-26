@@ -25,7 +25,7 @@ export const conversions = {
   },
   MediaQuery(node, ctx) {
     if(node.prefix) {
-      return `${node.prefix} ${node.type} ${node.exprs.map(x => convert(x, ctx)).join(' ')}` 
+      return `${node.prefix} ${node.type} ${node.exprs.map(x => convert(x, ctx)).join(' ')}` // todo - bug - "and" 
     }
     else {
       return node.exprs.map(x => convert(x, ctx)).join(' ')
@@ -112,6 +112,7 @@ export function css(strings, ...values) {
 
     return arr
   }, []).join('').trim()
+
 
   let parsed = parse(strings)
   return merge(convert(parsed, { stubs }))

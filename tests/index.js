@@ -735,6 +735,26 @@ describe('jsxstyle', () => {
   })
 })
 
+import { css } from '../src/css'
+describe('css', () => {
+  // how to test the plugin?
+  let node
+  beforeEach(() => {
+    node = document.createElement('div')
+    document.body.appendChild(node)
+  })
+
+  afterEach(() => {
+    unmountComponentAtNode(node)
+    document.body.removeChild(node)
+    flush()
+  })
+  it('can parse some css and return a rule', () => {
+    css` color: red; `
+    expect(styleSheet.rules().map(x => x.cssText)).toEqual([ '.css-bf70yn, [data-css-bf70yn] { color: red; }' ])
+  })
+})
+
 
 // a useful utility for quickly tapping objects. use with the :: operator 
 // {x: 1}::log()
