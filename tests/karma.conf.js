@@ -62,7 +62,7 @@ const customLaunchers = {
 }
 
 module.exports = function (config) {
-  config.set({    
+  config.set({
     frameworks: [ 'mocha' ],
     browsers: allBrowsers ? [ 'PhantomJS', 'Firefox', 'Chrome', 'Safari' ] : [ 'PhantomJS' ],
     reporters: process.env.COVERAGE ? [ 'mocha', 'coverage' ] : [ 'mocha' ],
@@ -73,7 +73,8 @@ module.exports = function (config) {
     webpack: require('../webpack/tests'),
     webpackMiddleware: {
       stats: 'errors-only'
-    }
+    },
+    singleRun: true
   })
 
   if (process.env.USE_CLOUD) {
@@ -91,13 +92,11 @@ module.exports = function (config) {
         build: process.env.TRAVIS_BUILD_NUMBER,
         name: process.env.TRAVIS_JOB_NUMBER
       }
-
-      config.singleRun = true
     } else {
       config.browserStack = {
         project: projectName
       }
     }
-    
+
   }
 }
