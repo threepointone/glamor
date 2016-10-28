@@ -1,5 +1,5 @@
 import React from 'react' //eslint-disable-line
 import { render } from 'react-dom'
-import { App } from './classes'
+import { App } from './tweet'
 render(<App/>,
   document.querySelector('#demo'))
