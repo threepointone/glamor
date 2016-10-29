@@ -261,7 +261,12 @@ function peg$parse(input, options) {
           },
       peg$c50 = "-",
       peg$c51 = peg$literalExpectation("-", false),
-      peg$c52 = function(stub_id) { return { type:'Stub', id: stub_id.join('').trim() } },
+      peg$c52 = function(stub_id) { 
+          return { 
+            type:'Stub', 
+            id: stub_id.join('').trim() 
+            } 
+          },
       peg$c53 = function() { return { type: 'Contextual' } },
       peg$c54 = function(id) { return { type: "IDSelector", id: id }; },
       peg$c55 = ".",

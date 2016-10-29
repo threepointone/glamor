@@ -1,13 +1,18 @@
 css
 ---
 
+[work in progress]
+
 tl:dr; 
   - you can now write 'real' css in your javascript
-  - with syntax highlighting and linting (via [styled components'](https://github.com/styled-components/styled-components) work)
+  - with syntax highlighting and linting
   - that can be precompiled / extracted 
-  - all glamor goodies apply 
+  - glamor goodies apply 
 
 ```jsx
+import { css } from 'glamor/lib/css'
+
+
 let rule = css`
   color: red;
   font-family: helvetica, sans-serif
@@ -61,13 +66,22 @@ let rule = css`
 `
 ```
 
+syntax highlighting 
+---
+atom - via [language-babel](https://github.com/styled-components/styled-components#syntax-highlighting)
+sublime text - [open PR](https://github.com/babel/babel-sublime/pull/289)
+
+linting
+---
+via [stylelint-processor-styled-components](https://github.com/styled-components/stylelint-processor-styled-components)
+
 
 babel plugin
 ---
 
-While the css literal syntax is great for developing, it nearly doubles the library size, 
-and is slower than we'd like for production. By using the babel plugin, we can strip out the tagged literal syntax,
-and replaces with a glamor friendly json form. everybody wins! this - 
+While the css literal syntax is great for DX, it's slower / heavier 
+than we'd like for runtime. The babel plugin replaces the inline css with a 
+glamor friendly json form. Everybody wins! This - 
 ```jsx
 css` color: red `
 ```
@@ -77,13 +91,19 @@ css({ color: 'red' })
 ```
 eliminating the need for the css parser in the js bundle. wowzah.
 
+To use, add 'glamor/lib/css/babel' to the `plugins` field in your babel config. 
+
+
 
 todo
+---
 
+- move to [rework](https://github.com/reworkcss/css)/anything else for parsing 
 - direct selectors `> h1 {...}`
-- attribute selectors 
 - match more of the css spec (currently ~2.1)
+- leading comments
 - fallback values
 - more interpolation points
 - better parsing errors
 - tests!!!
+- guidance for difference types of 'static' css extraction

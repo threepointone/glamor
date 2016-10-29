@@ -67,8 +67,8 @@ export const conversions = {
   PseudoSelector(node, ctx) {
     return ':' + node.value
   },
-  AttributeSelector() {
-
+  AttributeSelector(node, ctx) {
+    return `[${node.attribute}${node.operator ? node.operator + node.value : ''}]`
   },
   Function() {
 
@@ -103,8 +103,12 @@ export const conversions = {
   }
 }
 
-
 export function css(strings, ...values) {
+  return merge(_css(strings, ...values))
+}
+
+export function _css(strings, ...values) {
+
   let stubs = {}, ctr = 0
   strings = strings.reduce((arr, x, i) => {
     arr.push(x)
@@ -120,5 +124,5 @@ export function css(strings, ...values) {
 
 
   let parsed = parse(strings)
-  return merge(convert(parsed, { stubs }))
+  return convert(parsed, { stubs })
 }

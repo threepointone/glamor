@@ -167,7 +167,12 @@ stubs = stubsHead:stub
       };
     }
 
-stub = stub_id:(S_ P U R "-" num) S*  { return { type:'Stub', id: stub_id.join('').trim() } }
+stub = stub_id:(S_ P U R "-" num) S*  { 
+    return { 
+      type:'Stub', 
+      id: stub_id.join('').trim() 
+      } 
+    }
 
 contextual
   = AMP { return { type: 'Contextual' } }

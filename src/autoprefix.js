@@ -12,7 +12,7 @@ function includes(obj, search) {
 }
 
 function values(obj) {
-  return Object.keys(obj).map(function (key) {return obj[key] })
+  return Object.keys(obj).map(key => obj[key])
 }
 
 let webkitPrefix = 'Webkit'

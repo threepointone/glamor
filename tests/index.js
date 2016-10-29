@@ -735,7 +735,7 @@ describe('jsxstyle', () => {
   })
 })
 
-import { css } from '../src/css'
+import { _css, css } from '../src/css'
 describe('css', () => {
   // how to test the plugin?
   let node
@@ -750,10 +750,85 @@ describe('css', () => {
     flush()
   })
   it('can parse some css and return a rule', () => {
-    css` color: red; `
-    expect(styleSheet.rules().map(x => x.cssText)).toEqual([ '.css-bf70yn, [data-css-bf70yn] { color: red; }' ])
+    // css` color: red `
+    let red = 'red'
+    let rule = _css` 
+      /* 'real' css syntax */
+      color: yellow; 
+      font-weight: bold;
+      /* pseudo classes */  
+      :hover {
+        /* just javascript */
+        color: ${ red };
+      }
+      
+      /* contextual selectors */
+      & > h1 { color: purple }  
+      html.ie9 & span { padding: 300px }
+      & [type='checked'] { border: 1px dashed black }
+      
+      /* compose with objects */
+      ${{ color: 'red' }}
+      
+      /* or more rules */
+      ${ _css`color: greenish` }
+      
+      /* media queries */
+      @media (min-width: 300px) {
+        color: orange;
+        border: 1px solid blue;
+        ${{ color: 'brown' }}
+        /* increase specificity */
+        && {
+          color: blue;
+          ${{ color: 'browner' }}
+        }
+      }
+    `
+    expect(rule).toEqual([
+      { 'color': 'yellow' },
+      { 'fontWeight': 'bold' },
+      { ':hover': { 'color': 'red' } },
+      { '&>h1': { 'color': 'purple' } },
+      { 'html.ie9 & span': { 'padding': '300px' } },
+      { '& [type=checked]': { 'border': '1px dashed black' } },
+      [ { 'color': 'red' } ],
+      [ [ { color: 'greenish' } ] ],
+      { '@media (min-width:300px)': [
+        { 'color': 'orange' },
+        { 'border': '1px solid blue' },
+        [ { 'color': 'brown' } ],
+        { '&&': { 'color': 'browner' } } 
+      ] }
+    ])
+    
   })
 })
+
+// comments everywhere 
+
+// declarations - 
+// color: blue
+// fontWeight: 200 vs width: 300 (px)
+// multiword - border: 1px solid blue - check units
+// !important 
+// functions???
+
+// non ascii, base 64 encoded data uris, etc
+
+
+// selectors -
+// pseudo
+// direct
+// element id class attribute pseudo
+// contextual 
+
+// media queries 
+
+
+// custom vars/props?
+
+// fallbacks 
 
 
 // a useful utility for quickly tapping objects. use with the :: operator 

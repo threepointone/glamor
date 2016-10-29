@@ -8,7 +8,7 @@
 // print back, replacing stubs with interpolations
 // tada?
 
-// let template = require('babel-template')
+// todo - custom function instead of merge
 let { parse } = require('./spec.js')
 
 function convert(node, ctx, interpolated) {
@@ -79,8 +79,8 @@ let conversions = {
   PseudoSelector(node, ctx) {
     return ':' + node.value
   },
-  AttributeSelector() {
-
+  AttributeSelector(node, ctx) {
+    return `[${node.attribute}${node.operator ? node.operator + node.value : ''}]`
   },
   Function() {
 
