@@ -752,9 +752,8 @@ describe('css', () => {
   it('can parse some css and return a rule', () => {
     // css` color: red `
     let red = 'red'
-    let rule = _css` 
-      /* 'real' css syntax */
-      color: yellow; 
+    let rule = _css`       
+      color: yellow; /* 'real' css syntax */
       font-weight: bold;
       /* pseudo classes */  
       :hover {
