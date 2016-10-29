@@ -1,5 +1,5 @@
 import { parse } from './spec.js'
-import { merge } from '../../src'
+import { merge } from './index.js'
 
 function log(x) {
 
