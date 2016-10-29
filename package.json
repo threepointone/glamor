@@ -1,6 +1,6 @@
 {
   "name": "glamor",
-  "version": "2.17.13",
+  "version": "2.17.14",
   "description": "inline css for component systems",
   "main": "lib/index.js",
   "typings": "index.d.ts",
@@ -10,17 +10,17 @@
     "umd",
     "aphrodite.js",
     "css.js",
-    "jsxstyle.js",    
+    "jsxstyle.js",
     "ous.js",
     "react.js",
     "reset.js",
     "server.js",
-    "utils.js",    
+    "utils.js",
     "index.d.ts",
     "aphrodite.d.ts",
     "jsxstyle.d.ts",
     "react.d.ts",
-    "ous.d.ts",    
+    "ous.d.ts",
     "utils.d.ts"
   ],
   "scripts": {
