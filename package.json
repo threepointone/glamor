@@ -1,6 +1,6 @@
 {
   "name": "glamor",
-  "version": "2.17.12",
+  "version": "2.17.13",
   "description": "inline css for component systems",
   "main": "lib/index.js",
   "typings": "index.d.ts",
@@ -33,7 +33,7 @@
     "build:umd-prod": "NODE_ENV=production npm run build:umd",
     "build:umd-react": "echo 'react build not implemented'",
     "size": "cat umd/index.min.js | gzip | wc -c",
-    "test": "karma start tests/karma.conf.js",    
+    "test": "karma start tests/karma.conf.js",
     "test:server": "NODE_ENV=test babel-node tests/server.js --presets es2015,stage-0,react",
     "test:watch": "npm test -- --no-single-run",
     "coverage": "rm -rf tests/coverage && COVERAGE=1 npm test && open tests/coverage/*/index.html",
