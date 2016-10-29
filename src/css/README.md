@@ -32,9 +32,8 @@ let rule = css`
 longer 
 
 ```jsx
-let rule = css`
-  /* 'real' css syntax */
-  color: yellow; 
+let rule = css`  
+  color: yellow; /* 'real' css syntax */
   
   /* pseudo classes */  
   :hover {
