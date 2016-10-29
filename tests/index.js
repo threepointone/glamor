@@ -651,21 +651,21 @@ describe('StyleSheet', () => {
     
   })
 
-  it('can replace css', () => {
-    sheet.insert('.abc { color: red; }')
-    sheet.insert('.abc { color: blue; }')
-    let peg1 = sheet.insert('.xyz { color: yellow; }')
-    sheet.insert('.abc { color: orange; }')
-    sheet.insert('.abc { color: green; }')
+  // it('can replace css', () => {
+  //   sheet.insert('.abc { color: red; }')
+  //   sheet.insert('.abc { color: blue; }')
+  //   let peg1 = sheet.insert('.xyz { color: yellow; }')
+  //   sheet.insert('.abc { color: orange; }')
+  //   sheet.insert('.abc { color: green; }')
 
-    sheet.replace(peg1, '.xyz { color: black; }')
-    sheet.replace(peg1, '.xyz { color: gray; }')
+  //   sheet.replace(peg1, '.xyz { color: black; }')
+  //   sheet.replace(peg1, '.xyz { color: gray; }')
 
-    let rules = sheet.rules()
-    expect(rules.length).toEqual(5)
-    expect(rules[2].cssText).toEqual('.xyz { color: gray; }')
+  //   let rules = sheet.rules()
+  //   expect(rules.length).toEqual(5)
+  //   expect(rules[2].cssText).toEqual('.xyz { color: gray; }')
     
-  })
+  // })
   
   it('can flush all the css', () => {
     
