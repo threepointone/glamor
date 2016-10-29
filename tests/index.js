@@ -651,21 +651,21 @@ describe('StyleSheet', () => {
     
   })
 
-  it('can replace css', () => {
-    sheet.insert('.abc { color: red; }')
-    sheet.insert('.abc { color: blue; }')
-    let peg1 = sheet.insert('.xyz { color: yellow; }')
-    sheet.insert('.abc { color: orange; }')
-    sheet.insert('.abc { color: green; }')
+  // it('can replace css', () => {
+  //   sheet.insert('.abc { color: red; }')
+  //   sheet.insert('.abc { color: blue; }')
+  //   let peg1 = sheet.insert('.xyz { color: yellow; }')
+  //   sheet.insert('.abc { color: orange; }')
+  //   sheet.insert('.abc { color: green; }')
 
-    sheet.replace(peg1, '.xyz { color: black; }')
-    sheet.replace(peg1, '.xyz { color: gray; }')
+  //   sheet.replace(peg1, '.xyz { color: black; }')
+  //   sheet.replace(peg1, '.xyz { color: gray; }')
 
-    let rules = sheet.rules()
-    expect(rules.length).toEqual(5)
-    expect(rules[2].cssText).toEqual('.xyz { color: gray; }')
+  //   let rules = sheet.rules()
+  //   expect(rules.length).toEqual(5)
+  //   expect(rules[2].cssText).toEqual('.xyz { color: gray; }')
     
-  })
+  // })
   
   it('can flush all the css', () => {
     
@@ -734,6 +734,100 @@ describe('jsxstyle', () => {
     })
   })
 })
+
+import { _css, css } from '../src/css'
+describe('css', () => {
+  // how to test the plugin?
+  let node
+  beforeEach(() => {
+    node = document.createElement('div')
+    document.body.appendChild(node)
+  })
+
+  afterEach(() => {
+    unmountComponentAtNode(node)
+    document.body.removeChild(node)
+    flush()
+  })
+  it('can parse some css and return a rule', () => {
+    // css` color: red `
+    let red = 'red'
+    let rule = _css`       
+      color: yellow; /* 'real' css syntax */
+      font-weight: bold;
+      /* pseudo classes */  
+      :hover {
+        /* just javascript */
+        color: ${ red };
+      }
+      
+      /* contextual selectors */
+      & > h1 { color: purple }  
+      html.ie9 & span { padding: 300px }
+      & [type='checked'] { border: 1px dashed black }
+      
+      /* compose with objects */
+      ${{ color: 'red' }}
+      
+      /* or more rules */
+      ${ _css`color: greenish` }
+      
+      /* media queries */
+      @media (min-width: 300px) {
+        color: orange;
+        border: 1px solid blue;
+        ${{ color: 'brown' }}
+        /* increase specificity */
+        && {
+          color: blue;
+          ${{ color: 'browner' }}
+        }
+      }
+    `
+    expect(rule).toEqual([
+      { 'color': 'yellow' },
+      { 'fontWeight': 'bold' },
+      { ':hover': { 'color': 'red' } },
+      { '&>h1': { 'color': 'purple' } },
+      { 'html.ie9 & span': { 'padding': '300px' } },
+      { '& [type=checked]': { 'border': '1px dashed black' } },
+      [ { 'color': 'red' } ],
+      [ [ { color: 'greenish' } ] ],
+      { '@media (min-width:300px)': [
+        { 'color': 'orange' },
+        { 'border': '1px solid blue' },
+        [ { 'color': 'brown' } ],
+        { '&&': { 'color': 'browner' } } 
+      ] }
+    ])
+    
+  })
+})
+
+// comments everywhere 
+
+// declarations - 
+// color: blue
+// fontWeight: 200 vs width: 300 (px)
+// multiword - border: 1px solid blue - check units
+// !important 
+// functions???
+
+// non ascii, base 64 encoded data uris, etc
+
+
+// selectors -
+// pseudo
+// direct
+// element id class attribute pseudo
+// contextual 
+
+// media queries 
+
+
+// custom vars/props?
+
+// fallbacks 
 
 
 // a useful utility for quickly tapping objects. use with the :: operator 

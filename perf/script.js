@@ -1,3 +1,21 @@
+// hashes per second 
+
+// sheet inserts per second 
+// 
+
+
+// unique rules per second - 1kv
+// unique rules per second - complicated objects 
+// merge( simple / complicated) - small / large batches
+// autoprefix rules per second 
+// - without plugin 
+// - with plugin, no affected keys 
+// - with plugin, affected keys 
+// - browser specific perfs?
+
+// selector performance - growth rate from few to many 
+
+
 // /* eslint-disable no-console */
 
 // import React from 'react'

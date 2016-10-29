@@ -1,17 +1,44 @@
 // inline css prop
 
 import React from 'react'
+import { cssFor, merge } from 'glamor'
+import { css } from 'glamor/css'
 
-import { createElement } from '../src/react' // eslint-disable-line no-unused-vars
-/** @jsx createElement */
-
-import { hover } from '../src'
-
-export class App extends React.Component {
-  render() {
-    return <div css={hover({ color: 'red', label: 'woo' })}>
-      what what
-    </div>
-  }
+function log(x) {
+  console.log((x || ''), this) // eslint-disable-line no-console
+  return this
 }
 
+
+let someTag = '.xyz:hover'
+
+let rule = css`
+  color: yellow;
+  :hover {
+    /* with interpolations */
+    color: ${ Math.random() > 0.5 ? 'red' : 'blue' };
+  }
+
+  & > h1 { color: purple }
+  html.ie9 & ${someTag} { padding: 300px }
+
+  /* and composition */
+  ${css`color: greenish`}
+
+  @media (min-width: 300px) {
+    color: orange;
+    border: 1px ${'solid'} blue;
+    ${{ color: 'brown' }}
+    && {
+      color: blue;
+      ${{ color: 'browner' }}
+    }
+  }
+`
+
+export const App = () => <div className={rule}>
+  ...
+</div>
+
+import beautify from 'cssbeautify'
+beautify(cssFor(rule))::log()

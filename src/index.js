@@ -4,54 +4,54 @@ import { StyleSheet } from './sheet.js'
 import { createMarkupForStyles } from './CSSPropertyOperations'
 import clean from './clean.js'
 
-export const styleSheet = new StyleSheet() 
-// an isomorphic StyleSheet shim. hides all the nitty gritty. 
+export const styleSheet = new StyleSheet()
+// an isomorphic StyleSheet shim. hides all the nitty gritty.
 
 // /**************** LIFTOFF IN 3... 2... 1... ****************/
                         styleSheet.inject()                     //eslint-disable-line indent
 // /****************      TO THE MOOOOOOON     ****************/
 
 // convenience function to toggle speedy
-export function speedy(bool) { 
+export function speedy(bool) {
   return styleSheet.speedy(bool)
 }
 
 
-// plugins 
-import { PluginSet, prefixes, fallbacks, bug20fix } from './plugins' // we include these by default 
+// plugins
+import { PluginSet, prefixes, fallbacks, bug20fix } from './plugins' // we include these by default
 export const plugins = styleSheet.plugins = new PluginSet(fallbacks, bug20fix, prefixes)
 plugins.media = new PluginSet() // neat! media, font-face, keyframes
 plugins.fontFace = new PluginSet()
 plugins.keyframes = new PluginSet(prefixes)
 
-// define some constants 
+// define some constants
 const isBrowser = typeof window !== 'undefined'
-const isDev = (x => (x === 'development') || !x)(process.env.NODE_ENV)
-const isTest = process.env.NODE_ENV === 'test' 
+const isDev = (process.env.NODE_ENV === 'development') || !process.env.NODE_ENV
+const isTest = process.env.NODE_ENV === 'test'
 
 /**** simulations  ****/
 
-// a flag to enable simulation meta tags on dom nodes 
-// defaults to true in dev mode. recommend *not* to 
-// toggle often. 
+// a flag to enable simulation meta tags on dom nodes
+// defaults to true in dev mode. recommend *not* to
+// toggle often.
 let canSimulate = isDev
 
-// we use these flags for issuing warnings when simulate is called 
-// in prod / in incorrect order 
+// we use these flags for issuing warnings when simulate is called
+// in prod / in incorrect order
 let warned1 = false, warned2 = false
 
-// toggles simulation activity. shouldn't be needed in most cases 
+// toggles simulation activity. shouldn't be needed in most cases
 export function simulations(bool = true) {
   canSimulate = !!bool
 }
 
 // use this on dom nodes to 'simulate' pseudoclasses
 // <div {...hover({ color: 'red' })} {...simulate('hover', 'visited')}>...</div>
-// you can even send in some weird ones, as long as it's in simple format 
-// and matches an existing rule on the element 
-// eg simulate('nthChild2', ':hover:active') etc 
+// you can even send in some weird ones, as long as it's in simple format
+// and matches an existing rule on the element
+// eg simulate('nthChild2', ':hover:active') etc
 export function simulate(...pseudos) {
-  pseudos = clean(pseudos) 
+  pseudos = clean(pseudos)
   if (!pseudos) return {}
   if(!canSimulate) {
     if(!warned1) {
@@ -68,7 +68,7 @@ export function simulate(...pseudos) {
 }
 
 /**** labels ****/
-// toggle for debug labels. 
+// toggle for debug labels.
 // *shouldn't* have to mess with this manually
 let hasLabels = isDev
 
@@ -78,17 +78,17 @@ export function cssLabels(bool) {
 
 // takes a string, converts to lowercase, strips out nonalphanumeric.
 function simple(str) {
-  return str.toLowerCase().replace(/[^a-z0-9]/g, '')    
+  return str.toLowerCase().replace(/[^a-z0-9]/g, '')
 }
 
-// flatten a nested array 
+// flatten a nested array
 function flatten(inArr) {
   let arr = []
   for(let i=0; i<inArr.length; i++) {
-    if(Array.isArray(inArr[i])) 
-      arr = arr.concat(flatten(inArr[i]))    
-    else 
-      arr = arr.concat(inArr[i])    
+    if(Array.isArray(inArr[i]))
+      arr = arr.concat(flatten(inArr[i]))
+    else
+      arr = arr.concat(inArr[i])
   }
   return arr
 }
@@ -106,35 +106,35 @@ function hashify(...objs) {
 export function isLikeRule(rule) {
   let keys = Object.keys(rule).filter(x => x !== 'toString')
   if(keys.length !== 1) {
-    return false 
+    return false
   }
   return !!/data\-css\-([a-zA-Z0-9]+)/.exec(keys[0])
 }
 
-// extracts id from a { 'data-css-<id>': ''} like object 
+// extracts id from a { 'data-css-<id>': ''} like object
 export function idFor(rule) {
   let keys = Object.keys(rule).filter(x => x !== 'toString')
   if(keys.length !== 1) throw new Error('not a rule')
   let regex = /data\-css\-([a-zA-Z0-9]+)/
   let match = regex.exec(keys[0])
   if(!match) throw new Error('not a rule')
-  return match[1]  
+  return match[1]
 }
 
 
-// a simple cache to store generated rules 
+// a simple cache to store generated rules
 let registered =  styleSheet.registered = {}
 function register(spec) {
   if(!registered[spec.id]) {
-    registered[spec.id] = spec    
-  }  
+    registered[spec.id] = spec
+  }
 }
 
-// semi-deeply merge 2 'mega' style objects 
+// semi-deeply merge 2 'mega' style objects
 function deepMergeStyles(dest, src) {
   Object.keys(src).forEach(expr => {
     dest[expr] = dest[expr] || {}
-    Object.keys(src[expr]).forEach(type => {       
+    Object.keys(src[expr]).forEach(type => {
       dest[expr][type] = dest[expr][type] || {}
       Object.assign(dest[expr][type], src[expr][type])
     })
@@ -146,14 +146,14 @@ function deepMergeStyles(dest, src) {
 function deconstruct(obj) {
   let ret = [], composesWith
   let plain = {}, hasPlain = false
-  let isSpecial = obj && find(Object.keys(obj), x => {
-    return (x.charAt(0) === ':') || // pseudos 
+  let isSpecial = obj && find(Object.keys(obj), x =>
+    (x.charAt(0) === ':') || // pseudos
     (x.charAt(0) === '@') || // media queries; todo - check @media
     (x.indexOf('&') >= 0) || // 'selects'
-    (x === 'composes')
-  }) // like css modules!
-  
-  if(isSpecial) { 
+    (x === 'composes') // like css modules!
+  )
+
+  if(isSpecial) {
     Object.keys(obj).forEach(key => {
       if(key === 'composes') {
         composesWith = obj[key]
@@ -175,7 +175,7 @@ function deconstruct(obj) {
       else if(key.indexOf('&') >= 0) {
         ret.push({
           type: 'select',
-          style: obj[key],
+          style: Array.isArray(obj[key]) ? Object.assign({}, ...obj[key]) : obj[key],
           selector: key
         })
       }
@@ -193,28 +193,35 @@ function deconstruct(obj) {
 }
 
 
+function _getRegistered(rule) {
+  if(isLikeRule(rule)) {
+    let ret = registered[idFor(rule)]
+    if(ret == null) {
+      throw new Error('[glamor] an unexpected rule cache miss occurred. This is probably a sign of multiple glamor instances in your app. See https://github.com/threepointone/glamor/issues/79')
+    }
+    return ret
+  }
+  return rule
+}
+
 // extracts and composes styles from a rule into a 'mega' style
 // with sub styles keyed by media query + 'path'
 function extractStyles(...rules) {
+
   rules = flatten(rules)
   let exprs = {}
-  // converts {[data-css-<id>]} to the backing rule 
-  rules = rules
-    .map(x => isLikeRule(x) ? registered[idFor(x)] : x)
-    .map(x => {
-      if(x != null) {
-        return x;
-      }
+  // converts {[data-css-<id>]} to the backing rule
 
-      throw new Error('[glamor] an unexpected rule cache miss occurred. This is probably a sign of multiple glamor instances in your app. See https://github.com/threepointone/glamor/issues/79')
-    })
-    .map(x => ((x.type === 'style') || !x.type) ? deconstruct(x.style || x) : x)
+  rules = rules
+    .map(_getRegistered)
+    .map(x =>((x.type === 'style') || !x.type) ? deconstruct(x.style || x) : x
+    )
 
   rules = flatten(rules)
-  .map(x => isLikeRule(x) ? registered[idFor(x)] : x) // sigh, this is to handle arrays in `composes`. must make better.
-  
-  rules.forEach(rule => { 
-    // avoid possible label. todo - cleaner 
+    .map(_getRegistered) // sigh, this is to handle arrays in `composes`. must make better.
+
+  rules.forEach(rule => {
+    // avoid possible label. todo - cleaner
     if(typeof rule === 'string') {
       return
     }
@@ -223,35 +230,35 @@ function extractStyles(...rules) {
       case 'font-face': throw new Error('not implemented')
       case 'keyframes': throw new Error('not implemented')
 
-      case 'merge': return deepMergeStyles(exprs, 
+      case 'merge': return deepMergeStyles(exprs,
         extractStyles(rule.rules))
-      
-      case 'pseudo': 
+
+      case 'pseudo':
         if((rule.selector === ':hover') && exprs._ && exprs._['%%%:active'] && !exprs._['%%%:hover']) {
           console.warn(':active must come after :hover to work correctly') //eslint-disable-line no-console
         }
-        return deepMergeStyles(exprs, 
+        return deepMergeStyles(exprs,
         { _: { ['%%%' + rule.selector]: rule.style } })
-      case 'select': return deepMergeStyles(exprs, 
+      case 'select': return deepMergeStyles(exprs,
         { _: { ['^^^' + rule.selector]: rule.style } })
-      case 'parent': return deepMergeStyles(exprs, 
+      case 'parent': return deepMergeStyles(exprs,
         { _: { ['***' + rule.selector]: rule.style } })
-      
-      case 'style': return deepMergeStyles(exprs, 
-        { _: { _: rule.style } })
-      
-      case 'media': return deepMergeStyles(exprs, 
-        { [rule.expr]: extractStyles(rule.rules)._ }) 
 
-      default: return deepMergeStyles(exprs, 
+      case 'style': return deepMergeStyles(exprs,
+        { _: { _: rule.style } })
+
+      case 'media': return deepMergeStyles(exprs,
+        { [rule.expr]: extractStyles(rule.rules)._ })
+
+      default: return deepMergeStyles(exprs,
         { _: { _: rule } })
-    }        
+    }
   })
   return exprs
 
 }
 
-// extract label from a rule / style 
+// extract label from a rule / style
 function extractLabel(rule) {
   if(isLikeRule(rule)) {
     rule = registered[idFor(rule)]
@@ -259,43 +266,43 @@ function extractLabel(rule) {
   return rule.label || '{:}'
 }
 
-// given an id / 'path', generate a css selector 
+// given an id / 'path', generate a css selector
 function selector(id, path) {
   if(path === '_') return `.css-${id},[data-css-${id}]`
 
   if(path.indexOf('%%%') === 0) {
-    let x =`.css-${id}${path.slice(3)},[data-css-${id}]${path.slice(3)}` 
+    let x =`.css-${id}${path.slice(3)},[data-css-${id}]${path.slice(3)}`
     if(canSimulate) x+= `,.css-${id}[data-simulate-${simple(path)}],[data-css-${id}][data-simulate-${simple(path)}]`
     return x
   }
-  
+
   if(path.indexOf('***') === 0) {
     return path.slice(3)
       .split(',')
       .map(x => `${x} .css-${id},${x} [data-css-${id}]`)
-      .join(',')    
+      .join(',')
   }
   if(path.indexOf('^^^') === 0) {
     return path.slice(3)
       .split(',')
-      .map(x => x.indexOf('&') >= 0 ? 
+      .map(x => x.indexOf('&') >= 0 ?
         [ x.replace(/\&/mg, `.css-${id}`), x.replace(/\&/mg, `[data-css-${id}]`) ].join(',') // todo - make sure each sub selector has an &
         : `.css-${id}${x},[data-css-${id}]${x}`)
-      .join(',')    
-  }  
+      .join(',')
+  }
 
 }
 
 
 function toCSS({ selector, style }) {
   let result = plugins.transform({ selector, style })
-  return `${result.selector}{${createMarkupForStyles(result.style) }}` 
+  return `${result.selector}{${createMarkupForStyles(result.style) }}`
 }
 
 function ruleToAst(rule) {
   let styles = extractStyles(rule)
   return Object.keys(styles).reduce((o, expr) => {
-    o[expr] = Object.keys(styles[expr]).map(s => 
+    o[expr] = Object.keys(styles[expr]).map(s =>
       ({ selector: selector(rule.id, s), style: styles[expr][s] }))
     return o
   }, {})
@@ -304,9 +311,9 @@ function ruleToAst(rule) {
 function ruleToCSS(spec) {
   let css = []
   let ast = ruleToAst(spec)
-  // plugins here 
+  // plugins here
   let { _, ...exprs } = ast
-  if(_) {      
+  if(_) {
     _.map(toCSS).forEach(str => css.push(str))
   }
   Object.keys(exprs).forEach(expr => {
@@ -315,7 +322,7 @@ function ruleToCSS(spec) {
   return css
 }
 
-// this cache to track which rules have 
+// this cache to track which rules have
 // been inserted into the stylesheet
 let inserted = styleSheet.inserted = {}
 
@@ -323,9 +330,9 @@ let inserted = styleSheet.inserted = {}
 function insert(spec) {
   if(!inserted[spec.id]) {
     inserted[spec.id] = true
-    ruleToCSS(spec).map(cssRule => 
-      styleSheet.insert(cssRule))    
-  }    
+    ruleToCSS(spec).map(cssRule =>
+      styleSheet.insert(cssRule))
+  }
 }
 
 export function insertRule(css) {
@@ -333,7 +340,7 @@ export function insertRule(css) {
     id: hashify(css),
     css,
     type: 'raw',
-    label: '^'    
+    label: '^'
   }
   register(spec)
   if(!inserted[spec.id]) {
@@ -354,21 +361,21 @@ function insertKeyframe(spec) {
     }).join('');
 
     [ '-webkit-', '-moz-', '-o-', '' ].forEach(prefix =>
-      styleSheet.insert(`@${ prefix }keyframes ${ spec.name + '_' + spec.id }{${ inner }}`))    
+      styleSheet.insert(`@${ prefix }keyframes ${ spec.name + '_' + spec.id }{${ inner }}`))
 
     inserted[spec.id] = true
-  }  
+  }
 }
 
-function insertFontFace(spec) {  
+function insertFontFace(spec) {
   if(!inserted[spec.id]) {
     styleSheet.insert(`@font-face{${createMarkupForStyles(spec.font)}}`)
     inserted[spec.id] = true
   }
 }
 
-// rehydrate the insertion cache with ids sent from 
-// renderStatic / renderStaticOptimized 
+// rehydrate the insertion cache with ids sent from
+// renderStatic / renderStaticOptimized
 export function rehydrate(ids) {
   // load up ids
   Object.assign(inserted, ids.reduce((o, i) => (o[i] = true, o), {}) )
@@ -394,11 +401,11 @@ function toRule(spec) {
 }
 
 // clears out the cache and empties the stylesheet
-// best for tests, though there might be some value for SSR. 
+// best for tests, though there might be some value for SSR.
 
 export function flush() {
   inserted = styleSheet.inserted = {}
-  registered = styleSheet.registered = {}  
+  registered = styleSheet.registered = {}
   ruleCache = {}
   styleSheet.flush()
   styleSheet.inject()
@@ -406,7 +413,7 @@ export function flush() {
 }
 
 
-function find(arr, fn) {  
+function find(arr, fn) {
   for(let i=0; i < arr.length; i++) {
     if(fn(arr[i]) === true) {
       return true
@@ -418,52 +425,52 @@ function find(arr, fn) {
 export function style(obj) {
   obj = clean(obj)
 
-  return obj ? toRule({    
-    id: hashify(obj), 
+  return obj ? toRule({
+    id: hashify(obj),
     type: 'style',
     style: obj,
     label: obj.label || '*'
   }) : {}
 }
 
-// unique feature 
+// unique feature
 // when you need to define 'real' css (whatever that may be)
 // https://twitter.com/threepointone/status/756585907877273600
 // https://twitter.com/threepointone/status/756986938033254400
-export function select(selector, obj) {  
+export function select(selector, obj) {
   if(typeof selector === 'object') {
     return style(selector)
   }
   obj = clean(obj)
 
-  return obj ? toRule({    
-    id: hashify(selector, obj), 
+  return obj ? toRule({
+    id: hashify(selector, obj),
     type: 'select',
-    selector, 
+    selector,
     style: obj,
     label: obj.label || '*'
-  }) : {} 
+  }) : {}
 }
 
 export const $ = select // bringin' jquery back
 
-export function parent(selector, obj) {  
+export function parent(selector, obj) {
   obj = clean(obj)
-  return obj ? toRule({    
-    id: hashify(selector, obj), 
+  return obj ? toRule({
+    id: hashify(selector, obj),
     type: 'parent',
-    selector, 
+    selector,
     style: obj,
     label: obj.label || '*'
-  }) : {} 
+  }) : {}
 }
 
 // we define a function to 'merge' styles together.
-// backstory - because of a browser quirk, multiple styles are applied in the order they're 
-// defined in the stylesheet, not in the order of application 
-// in most cases, this won't case an issue UNTIL IT DOES 
+// backstory - because of a browser quirk, multiple styles are applied in the order they're
+// defined in the stylesheet, not in the order of application
+// in most cases, this won't case an issue UNTIL IT DOES
 // instead, use merge() to merge styles,
-// with latter styles gaining precedence over former ones 
+// with latter styles gaining precedence over former ones
 
 export function merge(...rules) {
   rules = clean(rules)
@@ -482,13 +489,13 @@ export function media(expr, ...rules) {
   return rules ? toRule({
     id: hashify(expr, extractStyles(rules)),
     type: 'media',
-    rules, 
+    rules,
     expr,
     label: '*mq(' + rules.map(extractLabel).join(' + ') + ')'
   }) : {}
 }
 
-export const presets = {  
+export const presets = {
   mobile : '(min-width: 400px)',
   phablet : '(min-width: 550px)',
   tablet : '(min-width: 750px)',
@@ -500,7 +507,7 @@ export const presets = {
 
 // simplest implementation -
 // cycle through the cache, and for every media query
-// find matching elements and update the label 
+// find matching elements and update the label
 function updateMediaQueryLabels() {
   Object.keys(registered).forEach(id => {
     let { expr } = registered[id]
@@ -514,30 +521,30 @@ function updateMediaQueryLabels() {
   })
 }
 
-// saves a reference to the loop we trigger 
+// saves a reference to the loop we trigger
 let interval
 
 export function trackMediaQueryLabels(bool = true, period = 2000) {
   if(bool) {
     if(interval) {
-      console.warn('already tracking labels, call trackMediaQueryLabels(false) to stop') // eslint-disable-line no-console 
-      return 
+      console.warn('already tracking labels, call trackMediaQueryLabels(false) to stop') // eslint-disable-line no-console
+      return
     }
     interval = setInterval(() =>
-      updateMediaQueryLabels(), period) 
+      updateMediaQueryLabels(), period)
   }
   else {
     clearInterval(interval)
-    interval = null 
+    interval = null
   }
-  
+
 }
 
-// in dev mode, start this up immediately 
+// in dev mode, start this up immediately
 if(isDev && isBrowser) {
-  trackMediaQueryLabels(true)    
+  trackMediaQueryLabels(true)
   // todo - make sure hot loading isn't broken
-  // todo - clearInterval on browser close  
+  // todo - clearInterval on browser close
 }
 
 
@@ -554,185 +561,185 @@ export function pseudo(selector, obj) {
 
 // allllll the pseudoclasses
 
-export function active(x) { 
-  return pseudo(':active', x) 
+export function active(x) {
+  return pseudo(':active', x)
 }
 
-export function any(x) { 
-  return pseudo(':any', x) 
+export function any(x) {
+  return pseudo(':any', x)
 }
 
-export function checked(x) { 
-  return pseudo(':checked', x) 
+export function checked(x) {
+  return pseudo(':checked', x)
 }
 
-export function disabled(x) { 
-  return pseudo(':disabled', x) 
+export function disabled(x) {
+  return pseudo(':disabled', x)
 }
 
-export function empty(x) { 
-  return pseudo(':empty', x) 
+export function empty(x) {
+  return pseudo(':empty', x)
 }
 
-export function enabled(x) { 
-  return pseudo(':enabled', x) 
+export function enabled(x) {
+  return pseudo(':enabled', x)
 }
 
-export function _default(x) { 
-  return pseudo(':default', x) // note '_default' name  
+export function _default(x) {
+  return pseudo(':default', x) // note '_default' name
 }
 
-export function first(x) { 
-  return pseudo(':first', x) 
+export function first(x) {
+  return pseudo(':first', x)
 }
 
-export function firstChild(x) { 
-  return pseudo(':first-child', x) 
+export function firstChild(x) {
+  return pseudo(':first-child', x)
 }
 
-export function firstOfType(x) { 
-  return pseudo(':first-of-type', x) 
+export function firstOfType(x) {
+  return pseudo(':first-of-type', x)
 }
 
-export function fullscreen(x) { 
-  return pseudo(':fullscreen', x) 
+export function fullscreen(x) {
+  return pseudo(':fullscreen', x)
 }
 
-export function focus(x) { 
-  return pseudo(':focus', x) 
+export function focus(x) {
+  return pseudo(':focus', x)
 }
 
-export function hover(x) { 
-  return pseudo(':hover', x) 
+export function hover(x) {
+  return pseudo(':hover', x)
 }
 
-export function indeterminate(x) { 
-  return pseudo(':indeterminate', x) 
+export function indeterminate(x) {
+  return pseudo(':indeterminate', x)
 }
 
-export function inRange(x) { 
-  return pseudo(':in-range', x) 
+export function inRange(x) {
+  return pseudo(':in-range', x)
 }
 
-export function invalid(x) { 
-  return pseudo(':invalid', x) 
+export function invalid(x) {
+  return pseudo(':invalid', x)
 }
 
-export function lastChild(x) { 
-  return pseudo(':last-child', x) 
+export function lastChild(x) {
+  return pseudo(':last-child', x)
 }
 
-export function lastOfType(x) { 
-  return pseudo(':last-of-type', x) 
+export function lastOfType(x) {
+  return pseudo(':last-of-type', x)
 }
 
-export function left(x) { 
-  return pseudo(':left', x) 
+export function left(x) {
+  return pseudo(':left', x)
 }
 
-export function link(x) { 
-  return pseudo(':link', x) 
+export function link(x) {
+  return pseudo(':link', x)
 }
 
-export function onlyChild(x) { 
-  return pseudo(':only-child', x) 
+export function onlyChild(x) {
+  return pseudo(':only-child', x)
 }
 
-export function onlyOfType(x) { 
-  return pseudo(':only-of-type', x) 
+export function onlyOfType(x) {
+  return pseudo(':only-of-type', x)
 }
 
-export function optional(x) { 
-  return pseudo(':optional', x) 
+export function optional(x) {
+  return pseudo(':optional', x)
 }
 
-export function outOfRange(x) { 
-  return pseudo(':out-of-range', x) 
+export function outOfRange(x) {
+  return pseudo(':out-of-range', x)
 }
 
-export function readOnly(x) { 
-  return pseudo(':read-only', x) 
+export function readOnly(x) {
+  return pseudo(':read-only', x)
 }
 
-export function readWrite(x) { 
-  return pseudo(':read-write', x) 
+export function readWrite(x) {
+  return pseudo(':read-write', x)
 }
 
-export function required(x) { 
-  return pseudo(':required', x) 
+export function required(x) {
+  return pseudo(':required', x)
 }
 
-export function right(x) { 
-  return pseudo(':right', x) 
+export function right(x) {
+  return pseudo(':right', x)
 }
 
-export function root(x) { 
-  return pseudo(':root', x) 
+export function root(x) {
+  return pseudo(':root', x)
 }
 
-export function scope(x) { 
-  return pseudo(':scope', x) 
+export function scope(x) {
+  return pseudo(':scope', x)
 }
 
-export function target(x) { 
-  return pseudo(':target', x) 
+export function target(x) {
+  return pseudo(':target', x)
 }
 
-export function valid(x) { 
-  return pseudo(':valid', x) 
+export function valid(x) {
+  return pseudo(':valid', x)
 }
 
-export function visited(x) { 
-  return pseudo(':visited', x) 
+export function visited(x) {
+  return pseudo(':visited', x)
 }
 
 // parameterized pseudoclasses
-export function dir(p, x) { 
+export function dir(p, x) {
   return pseudo(`:dir(${p})`, x)
 }
-export function lang(p, x) { 
+export function lang(p, x) {
   return pseudo(`:lang(${p})`, x)
 }
-export function not(p, x) { 
+export function not(p, x) {
   // should this be a plugin?
   let selector = p.split(',').map(x => x.trim()).map(x => `:not(${x})`)
   if(selector.length === 1) {
-    return pseudo(`:not(${p})`, x)  
+    return pseudo(`:not(${p})`, x)
   }
   return select(selector.join(''), x)
-  
+
 }
-export function nthChild(p, x) { 
+export function nthChild(p, x) {
   return pseudo(`:nth-child(${p})`, x)
 }
-export function nthLastChild(p, x) { 
+export function nthLastChild(p, x) {
   return pseudo(`:nth-last-child(${p})`, x)
 }
-export function nthLastOfType(p, x) { 
+export function nthLastOfType(p, x) {
   return pseudo(`:nth-last-of-type(${p})`, x)
 }
-export function nthOfType(p, x) { 
+export function nthOfType(p, x) {
   return pseudo(`:nth-of-type(${p})`, x)
 }
 
 // pseudoelements
 export function after(x) {
-  return pseudo('::after', x) 
+  return pseudo('::after', x)
 }
 export function before(x) {
-  return pseudo('::before', x) 
+  return pseudo('::before', x)
 }
 export function firstLetter(x) {
-  return pseudo('::first-letter', x) 
+  return pseudo('::first-letter', x)
 }
 export function firstLine(x) {
-  return pseudo('::first-line', x) 
+  return pseudo('::first-line', x)
 }
 export function selection(x) {
-  return pseudo('::selection', x) 
+  return pseudo('::selection', x)
 }
 export function backdrop(x) {
-  return pseudo('::backdrop', x) 
+  return pseudo('::backdrop', x)
 }
 export function placeholder(x) {
   // https://github.com/threepointone/glamor/issues/14
@@ -744,14 +751,14 @@ export function placeholder(x) {
   )
 }
 
-// we can add keyframes in a similar manner, but still generating a unique name 
-// for including in styles. this gives us modularity, but still a natural api 
+// we can add keyframes in a similar manner, but still generating a unique name
+// for including in styles. this gives us modularity, but still a natural api
 export function keyframes(name, kfs) {
   if(!kfs) {
     kfs = name,
     name='animation'
   }
-  
+
   // do not ignore empty keyframe definitions for now.
   kfs = clean(kfs) || {}
   let spec = {
@@ -765,7 +772,7 @@ export function keyframes(name, kfs) {
   return name + '_' + spec.id
 }
 
-// we don't go all out for fonts as much, giving a simple font loading strategy 
+// we don't go all out for fonts as much, giving a simple font loading strategy
 // use a fancier lib if you need moar power
 export function fontFace(font) {
   font = clean(font)
@@ -776,7 +783,7 @@ export function fontFace(font) {
   }
   register(spec)
   insertFontFace(spec)
-  
+
   return font.fontFamily
 }
 
@@ -786,17 +793,17 @@ export function fontFace(font) {
 
 export function cssFor(...rules) {
   rules = clean(rules)
-  return rules ? flatten(rules.map(r => 
+  return rules ? flatten(rules.map(r =>
     registered[idFor(r)]).map(ruleToCSS)).join('') : ''
 }
 
 export function attribsFor(...rules) {
   rules = clean(rules)
   let htmlAttributes = rules ? rules.map(rule => {
-    idFor(rule) // throwaway check for rule 
+    idFor(rule) // throwaway check for rule
     let key = Object.keys(rule)[0], value = rule[key]
-    return `${key}="${value || ''}"`  
+    return `${key}="${value || ''}"`
   }).join(' ') : ''
-  
+
   return htmlAttributes
 }
