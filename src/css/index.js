@@ -11,7 +11,7 @@ function stringify() {
   return JSON.stringify(this, null, ' ')
 }
 
-function convert(node, ctx) {
+export function convert(node, ctx) {
   return conversions[node.type](node, ctx)
 }
 
@@ -96,21 +96,20 @@ export const conversions = {
     return convert(node.left, ctx) + (node.operator || ' ') + convert(node.right, ctx)
   },
   Stub(node, ctx) {
-    return ctx.stubs[node.id]
+    let ret = ctx.stubs[node.id]
+    // todo - how can you tell if it's a constructor?
+    return typeof ret === 'function' ? ret(...ctx.args) : ret
   },
   Stubs(node, ctx) {
     return node.stubs.map(x => convert(x, ctx))
   }
 }
 
-export function css(strings, ...values) {
-  return merge(_css(strings, ...values))
-}
 
-export function _css(strings, ...values) {
-
+// reusuable strategy 
+export function parser(strings, ...values) {
   let stubs = {}, ctr = 0
-  strings = strings.reduce((arr, x, i) => {
+  let src = strings.reduce((arr, x, i) => {
     arr.push(x)
     if(values[i] === undefined || values[i] === null) {
       return arr
@@ -123,6 +122,16 @@ export function _css(strings, ...values) {
   }, []).join('').trim()
 
 
-  let parsed = parse(strings)
+  let parsed = parse(src)
+  return { parsed, stubs }
+}
+
+// this is good for testing as well
+export function _css(strings, ...values) {
+  let { parsed, stubs } = parser(strings, ...values)  
   return convert(parsed, { stubs })
+}
+
+export function css(strings, ...values) {
+  return merge(_css(strings, ...values))
 }
