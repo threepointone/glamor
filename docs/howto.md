@@ -98,7 +98,7 @@ css
 
 glamor 
 ```jsx
-import {select as $} from 'glamor'
+import {merge, select as $} from 'glamor'
 
 let box = merge(
   { display: 'block' },
