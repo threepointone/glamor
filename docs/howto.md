@@ -15,6 +15,8 @@ css
 
 glamor 
 ```jsx 
+import {style} from 'glamor'
+
 let box = style({ color: 'red' })
 // ...
 <div {...box}>
@@ -39,6 +41,8 @@ css
 
 glamor
 ```jsx
+import {hover, style} from 'glamor'
+
 let boxHover = hover({ color: 'blue' })
 // or 
 let boxHover = style({ 
@@ -59,6 +63,8 @@ css
 
 glamor 
 ```jsx
+import {merge} from 'glamor'
+
 <div {...bold} {...myClass} />
 
 // or, unlike css, to maintain precendence order 
@@ -92,6 +98,8 @@ css
 
 glamor 
 ```jsx
+import {select as $} from 'glamor'
+
 let box = merge(
   { display: 'block' },
   $(' .bold', { fontWeight: 'bold' }),
@@ -132,6 +140,8 @@ css
 
 glamor 
 ```jsx
+import {parent} from 'glamor'
+
 let box = parent('.no-js .something', 
   { color: 'gray' })
 
@@ -160,6 +170,8 @@ css
 
 glamor
 ```jsx
+import {select as $} from 'glamor'
+
 let ul = $(' li:first-of-type + li', {
   color: 'red'
 })
@@ -211,6 +223,8 @@ css
 
 glamor
 ```jsx
+import {merge} from 'glamor'
+
 const container = merge(
   {
     position: 'relative',
