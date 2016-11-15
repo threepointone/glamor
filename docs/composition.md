@@ -104,4 +104,4 @@ const Component = ({ hidden }) =>
   ] }/>
 ```  
 
-any other ideas? share!
+any other ideas? [share!](https://github.com/threepointone/glamor/edit/master/docs/composition.md)
