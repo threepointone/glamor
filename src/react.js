@@ -101,3 +101,44 @@ export function makeTheme() {
   return fn
 
 }
+
+function toStyle(s) {
+  return s!= null && isLikeRule(s) ? s : style(s);
+}
+
+// propMerge will take an arbitrary object "props", filter out glamor data-css-* styles and merge it with "mergeStyle"
+// use it for react components composing
+export function propMerge(mergeStyle, props) {
+  const glamorStyleKeys = Object.keys(props).filter(x => !!/data\-css\-([a-zA-Z0-9]+)/.exec(x))
+
+  // no glamor styles in obj
+  if (glamorStyleKeys.length === 0) {
+    return {
+      ...props,
+      ...toStyle(mergeStyle)
+    }
+  }
+
+  if (glamorStyleKeys.length > 1) {
+    console.warn('[glamor] detected multiple data attributes on an element. This may lead to unexpected style because of css insertion order.');
+
+    // just append "mergeStyle" to props, because we dunno in which order glamor styles were added to props
+    return {
+      ...props,
+      ...toStyle(mergeStyle)
+    }
+  }
+
+  const dataCssKey= glamorStyleKeys[0]
+  const cssData = props[dataCssKey]
+
+  const mergedStyles = merge(mergeStyle, { [dataCssKey]: cssData })
+
+  const restProps = Object.assign({}, props)
+  delete restProps[dataCssKey]
+
+  return {
+    ...restProps,
+    ...mergedStyles
+  }
+}

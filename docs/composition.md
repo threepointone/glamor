@@ -40,6 +40,14 @@ let Button = ({ type, children, onClick = ::console.log }) =>
     <Button type='primary'>click me!</Button>
   </div>
 
+// compose glamor styled react components (with propMerge the order of css rules/styles doesn't matter 
+// because it will take care of a proper merge) 
+const specificStyle = style({ height: '100px' });
+const defaultStyle = style({ height: '200px' });
+
+let DefaultContainer = (props) => <div {...propMerge(defaultStyle, props)}/>
+let SpecificContainer = (props) => <DefaultContainer {...specificStyle}>{props.children}</div>
+
 // or make your own helper function alá aphrodite et al
 let sheet = createSheet({
   container: {...},
@@ -104,4 +112,4 @@ const Component = ({ hidden }) =>
   ] }/>
 ```  
 
-any other ideas? share!
+any other ideas? [share!](https://github.com/threepointone/glamor/edit/master/docs/composition.md)
