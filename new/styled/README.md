@@ -7,9 +7,9 @@ pros
 ---
 
 - all glamor goodies apply; SSR, composition, etc 
-- comes with a babel plugin to precompile source 
+- comes with a babel plugin to precompile source to objects
 
 
 cons 
 --- 
-- parser doesn't match all of the spec 
+- parser doesn't match all of the css spec (currently about ~2.1)
