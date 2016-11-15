@@ -16,7 +16,7 @@ import hyphenateStyleName from 'fbjs/lib/hyphenateStyleName'
 import memoizeStringOnly from 'fbjs/lib/memoizeStringOnly'
 import warning from 'fbjs/lib/warning'
 
-let processStyleName = memoizeStringOnly(hyphenateStyleName)
+export const processStyleName = memoizeStringOnly(hyphenateStyleName)
 
 
 if (process.env.NODE_ENV !== 'production') {

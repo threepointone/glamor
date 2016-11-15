@@ -105,6 +105,7 @@
     }
   },
   "dependencies": {
-    "fbjs": "^0.8.5"
+    "fbjs": "^0.8.5",
+    "inline-style-prefixer": "^2.0.4"
   }
 }

@@ -27,12 +27,14 @@ export class PluginSet {
   }
 }
 
-export function fallbacks(node) {
+import { processStyleName } from './CSSPropertyOperations'
+
+export function fallbacks(node) {  
   let hasArray = Object.keys(node.style).map(x => Array.isArray(node.style[x])).indexOf(true) >= 0
   if(hasArray) {
     let { style, ...rest } = node
     let flattened = Object.keys(style).reduce((o, key) => {
-      o[key] = Array.isArray(style[key]) ? style[key].join(`; ${key}: `): style[key]
+      o[key] = Array.isArray(style[key]) ? style[key].join(`; ${processStyleName(key)}: `): style[key]
       return o 
     }, {})
     // todo - 
@@ -42,9 +44,24 @@ export function fallbacks(node) {
   return node   
 }
 
-import { autoprefix } from './autoprefix'
+import prefixAll from 'inline-style-prefixer/static'
+
 export function prefixes({ style, ...rest }) {
-  return ({ style: autoprefix(style), ...rest })
+  return ({ style: prefixAll(style), ...rest })
+}
+
+export function positionSticky(node) {
+  if(node.style.position === 'sticky') {
+    let { style, ...rest } = node
+    return ({ 
+      style: { 
+        ...style, 
+        position: [ 'sticky', '-webkit-sticky' ] 
+      }, 
+      ...rest 
+    })
+  }
+  return node
 }
 
 export function bug20fix({ selector, style }) {
