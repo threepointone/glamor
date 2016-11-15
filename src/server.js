@@ -25,7 +25,7 @@ export function renderStaticOptimized(fn) {
     throw new Error('did you forget to return from renderToString?')
   }
   let o = { html, ids: [], css: '', rules: [] }
-  let regex = /css\-([a-zA-Z0-9]+)=/gm
+  let regex = /css\-([a-zA-Z0-9]+)/gm
   let match, ids = {} 
   while((match = regex.exec(html)) !== null) {
     if(!ids[match[1] + '']) {        

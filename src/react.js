@@ -3,17 +3,17 @@ import { isLikeRule, style, merge } from './index.js'
 
 export * from './index.js' // convenience
 
-// allows for dom elements to have a 'css' prop
+// allows for elements to have a 'css' prop
 export function createElement(tag, allProps, ...children) {
   // todo - pull ids from className as well?
-  if(typeof tag === 'string' && allProps && allProps.css) {
-    let { css, ...props } = allProps
-    return React.createElement(tag, {
-      ...props,
-      ...Array.isArray(css) ? merge(...css) :
+  if(allProps && allProps.css) {
+    let { css, className, ...props } = allProps
+    let rule = Array.isArray(css) ? merge(...css) :
         isLikeRule(css) ? css :
         style(css)
-    }, ...children)
+    className = className ? className + ' ' + rule : rule
+    props.className = className    
+    return React.createElement(tag, props, ...children)
   }
   return React.createElement(tag, allProps, ...children)
 }

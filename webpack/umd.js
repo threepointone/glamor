@@ -1,6 +1,7 @@
 let webpack = require('webpack')
 
 module.exports = {  
+  devtool: 'source-map',  
   entry: './src/index.js',
   output: {
     library: 'Glamor',
@@ -25,8 +26,6 @@ module.exports = {
 
 if(process.env.NODE_ENV === 'production') {  
   module.exports.output.filename = 'index.min.js' 
-  module.exports.plugins.push(new webpack.optimize.UglifyJsPlugin({ compress: true, mangle: true }))
+  module.exports.plugins.push(new webpack.optimize.UglifyJsPlugin({ compress: true, mangle: true, sourceMap: true }))
 } 
-else {
-  module.exports.devtool = 'source-map'  
-}
+
