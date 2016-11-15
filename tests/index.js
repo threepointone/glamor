@@ -415,9 +415,8 @@ describe('glamor', () => {
       blue = hover({ color: 'blue' }),
       merged = compose(red, blue)
 
-    expect(cssFor(red, merged)
-      .replace(':nth-child(1n)', ':nth-child(n)')) // dumb chrome 
-    .toEqual('.css-im3wl1,[data-css-im3wl1]{color:red;}.css-1lci705,[data-css-1lci705]{color:red;}.css-1lci705:hover:nth-child(n),[data-css-1lci705]:hover:nth-child(n){color:blue;}')
+    expect(cssFor(red, merged))
+      .toEqual('.css-im3wl1,[data-css-im3wl1]{color:red;}.css-1lci705,[data-css-1lci705]{color:red;}.css-1lci705:hover,[data-css-1lci705]:hover{color:blue;}')    
   })
 
   it('can generate html attributes from rules', () => {
