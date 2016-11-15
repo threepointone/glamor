@@ -120,7 +120,7 @@ describe('glamor', () => {
     })} {...simulate('hover')} ><span className='x' /></div>, node, () => {
       simulations(false)
       expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')  
-      expect(childStyle(node.childNodes[0]).color).toEqual('rgb(0, 0, 255)')  
+      expect(childStyle(node.childNodes[0]).color).toEqual('rgb(255, 255, 0)')  
     })
   })
 
