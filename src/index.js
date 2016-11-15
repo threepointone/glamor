@@ -172,13 +172,13 @@ function deconstruct(obj) {
           expr: key.substring(6)
         })
       }
-      else if(key.indexOf('&') >= 0) {
+      else if((key.indexOf('&') >= 0) || (typeof obj[key] === 'object')) {
         ret.push({
           type: 'select',
           style: Array.isArray(obj[key]) ? Object.assign({}, ...obj[key]) : obj[key],
           selector: key
         })
-      }
+      }      
       else {
         hasPlain = true
         plain[key] = obj[key]

@@ -112,9 +112,15 @@ describe('glamor', () => {
 
   it('accepts nested objects', () => {
     simulations(true)
-    render(<div {...style({ color: '#ccc', ':hover': { color: 'blue' }, '.a & .c': { color: 'green' } })} {...simulate('hover')} ></div>, node, () => {
+    render(<div {...style({ 
+      color: '#ccc', 
+      ':hover': { color: 'blue' }, 
+      '> .x' : { color: 'yellow' },
+      '.a & .c': { color: 'green' } 
+    })} {...simulate('hover')} ><span className='x' /></div>, node, () => {
       simulations(false)
       expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')  
+      expect(childStyle(node.childNodes[0]).color).toEqual('rgb(0, 0, 255)')  
     })
   })
 
