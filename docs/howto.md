@@ -223,7 +223,7 @@ css
 
 glamor
 ```jsx
-import {merge} from 'glamor'
+import {merge, after, media, nthChild} from 'glamor'
 
 const container = merge(
   {
