@@ -121,8 +121,8 @@ your components could also accept props to be merged into the component
 ```jsx
 let defaultStyle = { color: 'blue' }
 export const Button = ({ css, children, ...props }) => 
-  <button {...this.props} {merge(defaultStyle, css)}>
-    {this.props.children}
+  <button {...props} {merge(defaultStyle, css)}>
+    {children}
   </button>
 
 <Button css={hover({ color: 'red' })} />
@@ -223,7 +223,7 @@ css
 
 glamor
 ```jsx
-import {merge} from 'glamor'
+import {merge, after, media, nthChild} from 'glamor'
 
 const container = merge(
   {
