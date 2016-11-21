@@ -96,6 +96,11 @@ caveat
 - interpolations *may* fail for unaccounted patterns. open an issue if you find one. 
 
 
+styled-components
+---
+
+[right this way](https://github.com/threepointone/glamor/blob/master/docs/styled.md)
+
 todo
 ---
 
