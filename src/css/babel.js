@@ -152,7 +152,7 @@ module.exports = {
 
       if(tag.name === 'css') {
         let { parsed, stubs } = parser(path)        
-        let newSrc = 'merge(' + convert(parsed, { stubs }) + ')'
+        let newSrc = 'css(' + convert(parsed, { stubs }) + ')'
         path.replaceWithSourceString(newSrc)
       }
       else if(tag.type === 'CallExpression' && tag.callee.name === 'styled') {

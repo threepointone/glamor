@@ -44,7 +44,7 @@
 }
 
 start
-  = comment* stylesheet:stylesheet comment* { return stylesheet; }
+  = comment* S* stylesheet:stylesheet comment* { return stylesheet; }
 
 // ----- G.1 Grammar -----
 
