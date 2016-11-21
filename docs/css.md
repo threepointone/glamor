@@ -90,6 +90,10 @@ css({ color: 'red' })
 ```
 eliminating the need for the css parser in the js bundle. wowzah.
 
+caveat
+---
+
+- interpolations *may* fail for unaccounted patterns. open an issue if you find one. 
 
 
 todo
