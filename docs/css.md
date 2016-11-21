@@ -1,7 +1,7 @@
 css
 ---
 
-[work in progress]
+[experimental, buggy]
 
 tl:dr; 
   - you can now write 'real' css in your javascript
@@ -69,8 +69,8 @@ let rule = css`
 
 syntax highlighting 
 ---
-atom - via [language-babel](https://github.com/styled-components/styled-components#syntax-highlighting)
-sublime text - [open PR](https://github.com/babel/babel-sublime/pull/289)
+- atom - via [language-babel](https://github.com/styled-components/styled-components#syntax-highlighting)
+- sublime text - [open PR](https://github.com/babel/babel-sublime/pull/289)
 
 linting
 ---
@@ -92,16 +92,16 @@ eliminating the need for the css parser in the js bundle. wowzah.
 
 
 
-
-
 todo
 ---
 
 - move to [rework](https://github.com/reworkcss/css)/anything else for parsing 
 - direct selectors `> h1 {...}`
+- global css
 - match more of the css spec (currently ~2.1)
 - leading comments
 - fallback values
+- in-editor linting
 - more interpolation points
 - better parsing errors
 - tests!!!
