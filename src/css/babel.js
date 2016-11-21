@@ -24,12 +24,11 @@ function toCamel(x) {
 
 let conversions = {
   StyleSheet(node, ctx) {
-    return 'merge([ ' + node.rules.map(x => convert(x, ctx)).join(', ') + ' ])'
+    return '[ ' + node.rules.map(x => convert(x, ctx)).join(', ') + ' ]'
   },
   MediaRule(node, ctx) {
     let query = node.media.map(x => convert(x, ctx, true)).join(',')
     let mq = query.indexOf('${') >= 0 ? `[\`@media ${query}\`]` : `'@media ${query}'`
-    // return { [`@media ${query}`]: node.rules.map(x => convert(x, ctx)) }
     return `{ ${mq}: [ ${node.rules.map(x => convert(x, ctx)).join(', ')} ] }`
   },
   MediaQuery(node, ctx) {
@@ -117,34 +116,55 @@ let conversions = {
     return convert(node.left, ctx, true) + (node.operator || ' ') + convert(node.right, ctx, true)
   },
   Stub(node, ctx) {
+    if(ctx.withProps) {
+      return 'val(' + ctx.stubs[node.id] + ', props)'  
+    }
     return ctx.stubs[node.id]
+    
   },
   Stubs(node, ctx) {
     return node.stubs.map(x => convert(x, ctx))
   }
 }
 
+function parser(path) {
+  let code = path.hub.file.code
+  let stubs = path.node.quasi.expressions.map(x => code.substring(x.start, x.end))          
+  let stubCtx = stubs.reduce((o, stub, i) => (o['spur-' + i] = stub, o), {})
+  let ctr = 0
+  let strs = path.node.quasi.quasis.map(x => x.value.cooked)
+  let src = strs.reduce((arr, str, i) => {
+    arr.push(str)
+    if(i !== stubs.length) {
+      arr.push('spur-'+ctr++)
+    }
+    return arr
+  }, []).join('')
+  let parsed = parse(src.trim())
+  return { parsed, stubs: stubCtx }
+}
+
 module.exports = {
   visitor: {
     TaggedTemplateExpression(path) {
-      
-      let code = path.hub.file.code 
-      if(path.node.tag.name === 'css') {
-        let stubs = path.node.quasi.expressions.map(x => code.substring(x.start, x.end))          
-        let stubCtx = stubs.reduce((o, stub, i) => (o['spur-' + i] = stub, o), {})
-        let ctr = 0
-        let strs = path.node.quasi.quasis.map(x => x.value.cooked)
-        let src = strs.reduce((arr, str, i) => {
-          arr.push(str)
-          if(i !== stubs.length) {
-            arr.push('spur-'+ctr++)
-          }
-          return arr
-        }, []).join('')
-        let parsed = parse(src.trim())
-        let newSrc = convert(parsed, { stubs: stubCtx })      
+      let { tag } = path.node            
+      let code = path.hub.file.code
+
+      if(tag.name === 'css') {
+        let { parsed, stubs } = parser(path)        
+        let newSrc = 'merge(' + convert(parsed, { stubs }) + ')'
         path.replaceWithSourceString(newSrc)
       }
-    }    
+      else if(tag.type === 'CallExpression' && tag.callee.name === 'styled') {
+        let { parsed, stubs } = parser(path)
+        let newSrc = 'styled(' + code.substring(tag.arguments[0].start, tag.arguments[0].end) +', (val, props) => (' + convert(parsed, { stubs, withProps: true }) + '))'
+        path.replaceWithSourceString(newSrc)
+      }
+      else if(tag.type === 'MemberExpression' && tag.object.name === 'styled') {
+        let { parsed, stubs } = parser(path)
+        let newSrc = 'styled(\'' + tag.property.name +'\', (val, props) => (' + convert(parsed, { stubs, withProps: true }) + '))'
+        path.replaceWithSourceString(newSrc) 
+      }
+    }
   }
 }
