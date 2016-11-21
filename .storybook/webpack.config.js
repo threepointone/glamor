@@ -13,6 +13,6 @@ module.exports = {
   module: {
     loaders: [
       // add your custom loaders.
-    ],
-  },
-};
+    ]
+  }
+}

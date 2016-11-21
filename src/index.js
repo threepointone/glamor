@@ -811,7 +811,7 @@ export function attribsFor(...rules) {
 
 export function css(...rules) {
   if(rules[0] && rules[0].length && rules[0].raw) {
-    throw new Error('you forgot to include glamor/babel to your babel plugins.')
+    throw new Error('you forgot to include glamor/babel in your babel plugins.')
   }
   return merge(rules)
   // helper for transpiled inline literals 
