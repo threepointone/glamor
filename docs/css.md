@@ -98,6 +98,7 @@ todo
 - move to [rework](https://github.com/reworkcss/css)/anything else for parsing 
 - direct selectors `> h1 {...}`
 - global css
+- override pragma
 - match more of the css spec (currently ~2.1)
 - leading comments
 - fallback values
