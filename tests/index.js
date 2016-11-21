@@ -774,7 +774,7 @@ describe('jsxstyle', () => {
   })
 })
 
-import { _css, css } from '../src/css'
+import { _css, css } from '../src/css/raw'
 describe('css', () => {
   // how to test the plugin?
   let node
