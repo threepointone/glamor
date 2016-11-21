@@ -807,3 +807,13 @@ export function attribsFor(...rules) {
 
   return htmlAttributes
 }
+
+
+export function css(...rules) {
+  if(rules[0] && rules[0].length && rules[0].raw) {
+    throw new Error('you forgot to include glamor/babel to your babel plugins.')
+  }
+  return merge(rules)
+  // helper for transpiled inline literals 
+  // and eventually central api (#83)  
+}

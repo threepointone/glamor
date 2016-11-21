@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const buttonStyles = {
   border: '1px solid #eee',
@@ -7,8 +7,8 @@ const buttonStyles = {
   cursor: 'pointer',
   fontSize: 15,
   padding: '3px 10px',
-  margin: 10,
-};
+  margin: 10
+}
 
 const Button = ({ children, onClick }) => (
   <button
@@ -17,11 +17,11 @@ const Button = ({ children, onClick }) => (
   >
     {children}
   </button>
-);
+)
 
 Button.propTypes = {
   children: React.PropTypes.string.isRequired,
-  onClick: React.PropTypes.func,
-};
+  onClick: React.PropTypes.func
+}
 
-export default Button;
+export default Button

@@ -6,11 +6,11 @@ css
 tl:dr; 
   - you can now write 'real' css in your javascript
   - with syntax highlighting and linting
-  - that can be precompiled / extracted 
+  - that gets precompiled / extracted 
   - glamor goodies apply 
 
 ```jsx
-import { css } from 'glamor/lib/css'
+import { css } from 'glamor'
 
 
 let rule = css`
@@ -78,9 +78,7 @@ via [stylelint-processor-styled-components](https://github.com/styled-components
 babel plugin
 ---
 
-While the css literal syntax is great for DX, it's slower / heavier 
-than we'd like for runtime. The babel plugin replaces the inline css with a 
-glamor friendly json form. Everybody wins! This - 
+The babel plugin replaces the inline css with glamor friendly json. Everybody wins! This - 
 ```jsx
 css` color: red `
 ```
@@ -90,7 +88,7 @@ css({ color: 'red' })
 ```
 eliminating the need for the css parser in the js bundle. wowzah.
 
-To use, add 'glamor/lib/css/babel' to the `plugins` field in your babel config. 
+To use, add 'glamor/babel' to the `plugins` field in your babel config. 
 
 
 

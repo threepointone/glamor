@@ -10,6 +10,7 @@
     "umd",
     "aphrodite.js",
     "jsxstyle.js",
+    "babel.js",
     "ous.js",
     "react.js",
     "reset.js",
