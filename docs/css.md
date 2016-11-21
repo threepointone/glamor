@@ -100,7 +100,6 @@ todo
 - global css
 - override pragma
 - match more of the css spec (currently ~2.1)
-- leading comments
 - fallback values
 - in-editor linting
 - more interpolation points

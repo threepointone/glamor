@@ -1,7 +1,7 @@
 import React from 'react'
-import { merge, style } from '../../src'
+import { merge, style } from '../'
 
-import { parser, convert } from '../../src/css'
+import { parser, convert } from '../css/raw'
 let __val__ = (x, props) => typeof x === 'function' ? x(props) : x
 
 export function styled(Component, obj) { // todo - read style off Component if it exists 
