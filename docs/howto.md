@@ -183,7 +183,6 @@ let ul = $(' li:first-of-type + li', {
   <li>two - red!</li>
   <li>three</li>  
 </ul>
-
 ```
 
 
@@ -324,6 +323,24 @@ css reset / normalize
 
 ```jsx
 import `glamor/reset`
+```
+
+fallbacks
+---
+
+css
+```css
+.abc {
+  display: flex;
+  display: block;
+}
+```
+
+glamor
+```
+let abc = style({
+  display: ['flex', 'block']
+})
 ```
 
 grids
