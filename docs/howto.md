@@ -331,15 +331,15 @@ fallbacks
 css
 ```css
 .abc {
-  display: flex;
-  display: block;
+  color: #ccc;
+  color: rgba(0, 0, 0, 0.5);
 }
 ```
 
 glamor
 ```
 let abc = style({
-  display: ['flex', 'block']
+  color: ['#ccc', 'rgba(0, 0, 0, 0.5)']
 })
 ```
 
