@@ -118,16 +118,21 @@ if (process.env.NODE_ENV !== 'production') {
 export function createMarkupForStyles(styles, component) {
   let serialized = ''
   for (let styleName in styles) {
+    const isCustomProp = styleName.startsWith('--');
     if (!styles.hasOwnProperty(styleName)) {
       continue
     }
     let styleValue = styles[styleName]
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== 'production' && !isCustomProp) {
       warnValidStyle(styleName, styleValue, component)
     }
     if (styleValue != null) {
-      serialized += processStyleName(styleName) + ':'
-      serialized += dangerousStyleValue(styleName, styleValue, component) + ';'
+      if (isCustomProp) {
+        serialized += `${styleName}:${styleValue};`
+      } else {
+        serialized += processStyleName(styleName) + ':'
+        serialized += dangerousStyleValue(styleName, styleValue, component) + ';'
+      }
     }
   }
   return serialized || null

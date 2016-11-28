@@ -31,6 +31,8 @@ import clean from '../src/clean'
 
 import { View } from '../src/jsxstyle'
 
+import { createMarkupForStyles } from '../src/CSSPropertyOperations'
+
 function childStyle(node, p = null) {
   return window.getComputedStyle(node.childNodes[0], p)
 }
@@ -503,6 +505,13 @@ describe('clean', () => {
       expect(clean(sample)).toBe(null)
     })
   })
+
+  it('handles css variables', () => {
+    expect(createMarkupForStyles({'--myVar': 'value'})).toEqual('--myVar:value;');
+    expect(createMarkupForStyles({'--my-var': 'value'})).toEqual('--my-var:value;');
+    expect(createMarkupForStyles({'--myVar': 'value', fontSize: 20})).toEqual('--myVar:value;font-size:20px;');
+  })
+
 })
 
 describe('empty styles', () => {  
