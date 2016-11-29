@@ -1,6 +1,6 @@
 {
   "name": "glamor",
-  "version": "2.20.0-alpha.2",
+  "version": "2.20.0",
   "description": "inline css for component systems",
   "main": "lib/index.js",
   "typings": "index.d.ts",
@@ -115,6 +115,6 @@
     }
   },
   "dependencies": {
-    "fbjs": "^0.8.6"    
+    "fbjs": "^0.8.6"
   }
 }
