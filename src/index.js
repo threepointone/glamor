@@ -291,6 +291,9 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
       _src = reg.style
     }
     _src = clean(_src)
+    if(_src.composes) {
+      build(dest, { selector, mq, supp, src: _src.composes })
+    }
     Object.keys(_src).forEach(key => {
       if(isSelector(key)) {
         selector = 
@@ -305,6 +308,9 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
       }
       else if(isSupports(key)) {
         build(dest, { selector, mq, supp: joinSupports(supp, key), src: _src[key] })  
+      }
+      else if(key === 'composes') {
+        // ignore, we already dealth with it
       }
       else {
         let _dest = dest 
@@ -737,12 +743,7 @@ export function backdrop(x) {
 }
 export function placeholder(x) {
   // https://github.com/threepointone/glamor/issues/14
-  return merge(
-    pseudo('::placeholder', x),
-    pseudo('::-webkit-input-placeholder', x),
-    pseudo('::-moz-placeholder', x),
-    pseudo('::-ms-input-placeholder', x)
-  )
+  return css({ '::placeholder': x })    
 }
 
 
