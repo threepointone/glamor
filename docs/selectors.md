@@ -1,4 +1,4 @@
-v3 api, in development 
+selectors
 ---
 glamor uses objects to represent css rules, where 'sub'-rules can be defined with selectors/@media queries/@supports statements.
 
