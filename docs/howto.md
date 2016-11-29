@@ -81,6 +81,52 @@ import { css } from 'glamor'
 
 [(more examples for composing rules)](https://github.com/threepointone/glamor/blob/master/src/ous.js)
 
+combined selectors
+---
+
+css
+```css
+.f1 { font-size: 1rem };
+.red { background: red };
+.f1.red { font-size: 2rem};
+```
+```html
+<div class="f1 red">
+  I'm red and 2rem!
+</div>
+```
+
+glamor
+```js
+// With regular selectors (not ideal for namespacing/isolation)
+const rule = style({
+  '&.f1' : { fontSize: '1rem' },
+  '&.red' : { background: 'red' },
+  '&.f1.red' : { fontSize: '2rem' }
+ })
+
+<div class={`${rule} f1 red`}></div>
+
+
+// Or use merge to output a single css selector
+const f1 = ({ fontSize: '1rem' });
+const red = ({ background: 'red' });
+const f1Red = merge(f1, red, { fontSize: '2rem' });
+
+<div class={rule}></div>
+
+
+// Or for a more traditional css approach...
+const f1 = ({ fontSize: '1rem' });
+const red = ({ background: 'red' });
+const f1Red = style({
+  [`&.${f1}.${red}`]: { fontSize: '2rem' }
+});
+
+// ...but you still have to use all three selectors
+<div class={`${f1} ${red} ${f1red}`}></div>
+```
+
 
 child selectors
 ---
