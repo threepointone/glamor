@@ -1,7 +1,7 @@
 api
 ---
 
-## css(...rules)
+## `css(...rules)`
 ---
 
 In glamor, css rules are treated as values. The `css` function lets you define these values. 
@@ -13,7 +13,7 @@ This a 'rule'
 
 These rules can be grouped to form more rules
 ```css
-// this is a combined rule for .abc
+/* this is a combined rule for .abc */
 .abc { color: red }
 .abc:hover { color: blue }
 html.ie9 .abc span.title { font-weight: bold }
@@ -135,7 +135,7 @@ let bounce = css.keyframes('bounce', { // optional name
   '100%': { transform: 'scale(1)' }
 })
 // ...
-<div {...style({
+<div {...css({
   animation: `${bounce} 2s`,
   width: 50, height: 50,
   backgroundColor: 'red'
@@ -160,13 +160,7 @@ in development, lets you trigger any pseudoclass on an element
 
 ## `speedy(true/false)`
 
-toggle speedy mode. By default, this is off when `NODE_ENV` is `development`, and on when 'production'.
+toggle speedy mode. By default, this is off when `NODE_ENV` is `development`, and on when `production`.
 
 
-articles
----
-
-- speedy 
-- performance
-- interfaces : SC, aphrodite, jsxstyle 
-- plugin system
+## `flush()`

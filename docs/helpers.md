@@ -15,9 +15,6 @@ and doesn't interfere with the element's `className` / `class`
 </div>
 ```
 
-protip - in dev mode, adding a `label` string prop will reflect its value in devtools.
-useful when debugging, and a good alternative to 'semantic' classnames.
-
 ---
 
 `<pseudo>(props)`

@@ -4,7 +4,7 @@
 
 ![build status](https://travis-ci.org/threepointone/glamor.svg)
 
-css for component systems
+css in your javascript
 
 `npm install glamor --save`
 
@@ -65,7 +65,7 @@ features
 - adds vendor prefixes / fallback values 
 - supports all the pseudo :classes/::elements
 - `@media` queries
-- '@supports' statements
+- `@supports` statements
 - `@font-face` / `@keyframes`
 - escape hatches for parent and child selectors 
 - dev helper to simulate pseudo classes like `:hover`, etc
