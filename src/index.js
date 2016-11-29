@@ -1,4 +1,4 @@
-
+/* stylesheet */
 import { StyleSheet } from './sheet.js'
 import { createMarkupForStyles } from './CSSPropertyOperations'
 import clean from './clean.js'
@@ -222,7 +222,6 @@ function _getRegistered(rule) {
   return rule
 }
 
-
 // todo - perf
 let ruleCache = {}
 function toRule(spec) {
@@ -242,20 +241,21 @@ function toRule(spec) {
 
 
 function isSelector(key) {
-  return [ ':', '.', '[', '>', ' ' ]
-    .map(x => key.charAt(0) === x)
-    .reduce((a, b) => a || b) 
-    || 
-    (key.indexOf('&') >= 0)
+  let possibles = [ ':', '.', '[', '>', ' ' ], found = false, ch = key.charAt(0)
+  for(let i=0;i< possibles.length;i++) {
+    if(ch === possibles[i]) {
+      found = true
+    }
+    break
+  }
+  return found ||  (key.indexOf('&') >= 0)
 }
+
 function joinSelectors(a, b) {
-  if(!(a.indexOf('&') >= 0)) {
-    a = '&' + a
-  }
-  if(!(b.indexOf('&') >= 0)) {
-    b = '&' + b
-  }
-  return b.replace(/\&/g, a)
+  let as = a.split(',').map(a => !(a.indexOf('&') >= 0) ? '&' + a : a)
+  let bs = b.split(',').map(b => !(b.indexOf('&') >= 0) ? '&' + b : b)
+
+  return bs.reduce((arr, b) => arr.concat(as.map(a => b.replace(/\&/g, a))), []).join(',')
 }
 
 function joinMediaQueries(a, b) {
@@ -274,11 +274,6 @@ function joinSupports(a, b) {
   return a ? `@supports ${a.substring(9)} and ${b.substring(9)}` : b
 }
 
-function log() {
-  console.log(this)
-  return this
-}
-
 // mutable! modifies dest.
 function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
 
@@ -291,8 +286,14 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
       if(reg.type !== 'css') { throw new Error('cannot merge this rule') }
       _src = reg.style
     }
+    _src = clean(_src)
     Object.keys(_src).forEach(key => {
       if(isSelector(key)) {
+        selector = 
+          selector === '::placeholder' ? 
+            '::placeholder, ::-webkit-input-placeholder, ::-moz-placeholder, ::-ms-input-placeholder' 
+            : selector
+
         build(dest, { selector: joinSelectors(selector, key), mq, supp, src: _src[key] })
       }
       else if(isMediaQuery(key)) {
@@ -318,7 +319,7 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
         
         if(key === 'label' && hasLabels) {
           dest.label = dest.label.concat(_src.label)
-        }
+        }        
         else {
           _dest[key] = _src[key]
         }
@@ -508,8 +509,11 @@ if(isDev && isBrowser) {
 
 export const style = css
 
-export function select(selector, style) {
-  return css({ [selector]: style })
+export function select(selector, _style) {
+  if(!selector) {
+    return style(_style)
+  }
+  return css({ [selector]: _style }) 
 }
 export const $ = select
 
@@ -525,9 +529,9 @@ export function media(query, ...rules) {
 }
 
 export function pseudo(selector, style) {
-  return css({ [selector]: style })
-}
 
+  return css({ [selector]: style }) 
+}
 
 // allllll the pseudoclasses
 
@@ -725,8 +729,7 @@ export function placeholder(x) {
 /*** helpers for web components ***/
 // https://github.com/threepointone/glamor/issues/16
 
-export function cssFor(...rules) {
-  
+export function cssFor(...rules) {  
   rules = clean(rules)
   return rules ? rules.map(r => {
     let style = { label: [] }

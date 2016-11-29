@@ -1,5 +1,8 @@
 import React from 'react'
-import { css, speedy } from '../src'
+console.profile('start')
+let glamor = require('glamor')
+console.profileEnd('start')
+let { css, speedy } = glamor
 speedy(true)
 
 function getRandomColor() {
@@ -23,14 +26,14 @@ export class Runner extends React.Component {
   static defaultProps = { count: 100 }
   state = { time: -1 }
   componentWillMount() {
-    console.profile()
+    console.profile('run')
     let start = Date.now()    
     for(let i = 0; i < this.props.count; i++) {
       css({ 
-        color: getRandomColor()        
+        color: getRandomColor()
       })
     }    
-    console.profileEnd()
+    console.profileEnd('run')
     this.setState({
       time: Date.now() - start
     })

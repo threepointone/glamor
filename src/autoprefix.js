@@ -208,7 +208,7 @@ function checkAndAddPrefix(styleObj, key, val, allVendors) {
           else if(val === 'spaceBetween') { prefixedProperties.msFlexLinePack = 'justify' }
           else { prefixedProperties.msFlexLinePack = valWithoutFlex() }
           break
-        case 'justifyContent':
+        case 'justifyContent':          
           if(val === 'spaceAround') { prefixedProperties.msFlexPack = 'distribute' }
           else if(val === 'spaceBetween') { prefixedProperties.WebkitBoxPack = prefixedProperties.msFlexPack = 'justify' }
           else { prefixedProperties.WebkitBoxPack = prefixedProperties.msFlexPack = valWithoutFlex() }
@@ -242,18 +242,8 @@ function autoPrefixer(obj, allVendors) {
   return obj
 }
 
-function gate(objOrBool, optionalBoolean = false) {
-
-  if (typeof objOrBool === 'boolean') {
-    return obj => autoPrefixer(obj, objOrBool)
-  }
-  if (!objOrBool) {
-    return {}
-  }
-  else {
-    return autoPrefixer(objOrBool, optionalBoolean) 
-  } // default: don't include all browsers
-}
-
 let isBrowser = typeof window !== 'undefined'
-export const autoprefix = gate(!isBrowser)
+
+export function autoprefix(obj) {
+  return autoPrefixer(obj, !isBrowser)
+}

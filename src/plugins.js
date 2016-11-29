@@ -44,10 +44,10 @@ export function fallbacks(node) {
   return node   
 }
 
-import prefixAll from 'inline-style-prefixer/static'
+import { autoprefix } from './autoprefix'
 
 export function prefixes({ style, ...rest }) {
-  return ({ style: prefixAll(style), ...rest })
+  return ({ style: autoprefix(style), ...rest })
 }
 
 export function positionSticky(node) {

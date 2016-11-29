@@ -277,7 +277,7 @@ describe('glamor', () => {
     render(<div {...media('(min-width: 300px)', style({ color: 'red' }))}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
       expect(last(styleSheet.rules()).cssText.replace(/\s/g,'').replace('alland', '')) // ie quirk
-        .toEqual('@media(min-width:300px){.css-akwl3q,[data-css-akwl3q]{color:red;}}'.replace(/\s/g,''))
+        .toEqual('@media(min-width:300px){.css-1qc7hkg,[data-css-1qc7hkg]{color:red;}}'.replace(/\s/g,''))
         // ugh
     })
 
@@ -287,7 +287,7 @@ describe('glamor', () => {
     simulations(true)
     render(<div {...media('(min-width: 300px)', hover({ color: 'red' }))} {...simulate('hover')}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
-      expect(styleSheet.inserted).toEqual({ 'omf2yv': true, 'vnqrqn': true })
+      expect(styleSheet.inserted).toEqual({ 'sxm4ry': true, 'vnqrqn': true })
       simulations(false)
     })
 
@@ -412,7 +412,7 @@ describe('glamor', () => {
         }
       })
       expect(styleSheet.rules()[0].cssText.replace(/\s/g,''))
-        .toEqual(`@-webkit-keyframes bounce_zhy6v5 { \n  0% { opacity: 0; -webkit-transform: scale(0.1); }\n  60% { opacity: 1; -webkit-transform: scale(1.2); }\n  100% { -webkit-transform: scale(1); }\n}`.replace(/\s/g,''))
+        .toEqual('@-webkit-keyframes bounce_zhy6v5 { \n  0% { opacity: 0; -webkit-transform: scale(0.1); }\n  60% { opacity: 1; -webkit-transform: scale(1.2); }\n  100% { -webkit-transform: scale(1); }\n}'.replace(/\s/g,''))
       expect(animate).toEqual('bounce_zhy6v5')
 
     })
@@ -507,9 +507,9 @@ describe('clean', () => {
   })
 
   it('handles css variables', () => {
-    expect(createMarkupForStyles({'--myVar': 'value'})).toEqual('--myVar:value;');
-    expect(createMarkupForStyles({'--my-var': 'value'})).toEqual('--my-var:value;');
-    expect(createMarkupForStyles({'--myVar': 'value', fontSize: 20})).toEqual('--myVar:value;font-size:20px;');
+    expect(createMarkupForStyles({ '--myVar': 'value' })).toEqual('--myVar:value;')
+    expect(createMarkupForStyles({ '--my-var': 'value' })).toEqual('--my-var:value;')
+    expect(createMarkupForStyles({ '--myVar': 'value', fontSize: 20 })).toEqual('--myVar:value;font-size:20px;')
   })
 
 })

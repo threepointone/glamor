@@ -8,18 +8,15 @@ function log() {
 }
 
 let complex = css({
-  color: 'red',
-  ':hover': {
-    color: 'blue'
-  },
-  '@media(min-width: 300px)': {
-    color: 'green',
-    ':hover': {
-      color: 'yellow'
-    },
-    '.a & .c': { color: 'wheat' },
-    '&&': { color: 'ivory' }
-  }
+  display: 'flex',
+  justifyContent: 'space-between',
+  width: '100%',
+  height: '46px',
+  padding: '0.625em',
+  boxSizing: 'border-box',
+  backgroundColor: 'rgba(255,255,255, 0.97)',
+  boxShadow: '0px 0px 20px 0px transparent',
+  transition: 'box-shadow .5s ease-in-out'
 })
 
 // let error = css({
