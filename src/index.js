@@ -239,16 +239,20 @@ function toRule(spec) {
   return ret
 }
 
+function log(){
+  console.log(this)
+  return this
+}
 
 function isSelector(key) {
   let possibles = [ ':', '.', '[', '>', ' ' ], found = false, ch = key.charAt(0)
   for(let i=0;i< possibles.length;i++) {
     if(ch === possibles[i]) {
       found = true
-    }
-    break
+      break
+    }    
   }
-  return found ||  (key.indexOf('&') >= 0)
+  return found || (key.indexOf('&') >= 0)
 }
 
 function joinSelectors(a, b) {

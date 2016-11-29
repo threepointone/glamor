@@ -75,7 +75,7 @@ let gray = css({
 is equivalent to
 ```css
 .gray {
-  color: #ccc,
+  color: #ccc;
   color: rgba(0, 0, 0, 0.5)
 }
 ```
