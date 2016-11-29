@@ -312,8 +312,6 @@ describe('glamor', () => {
     simulations(false)
   })
 
-  // how to test media queries?
-  it('can simulate media queries')
 
   it('has an escape hatch', () => {
     render(<div {...select(' .item', { color: 'red' }) }>
