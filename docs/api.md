@@ -1,180 +1,113 @@
 api
 ---
 
-`style(props)`
+## css(...rules)
+---
 
-defines a `rule` with the given key-value pairs. returns an object (of shape `{'data-css-<id>': ''}`),
-to be added to an element's attributes. This is *not* the same as element's `style`,
-and doesn't interfere with the element's `className` / `class`
+In glamor, css rules are treated as values. The `css` function lets you define these values. 
 
+This a 'rule'
+```css
+.abc { color: red }
+```
+
+These rules can be grouped to form more rules
+```css
+// this is a combined rule for .abc
+.abc { color: red }
+.abc:hover { color: blue }
+html.ie9 .abc span.title { font-weight: bold }
+@media(min-width: 300px) { 
+  .abc { font-size: 20 }
+} 
+```
+
+We can write this in javascript
 ```jsx
-<div {...style({ backgroundColor: '#ccc', borderRadius: 10 })}>
-  <a {...style({ label: 'blueText', color: 'blue' })} href='github.com'>
-    click me
-  </a>
+import { css } from 'glamor'
+
+let abc = css({
+  color: 'red',
+  ':hover': { color: 'blue' },  
+  'html.ie9 & span.title': { fontWeight: 'bold' }, 
+  '@media(min-width: 300px)': { fontSize: 20 }
+})
+```
+
+
+Combine multiple rules
+```jsx
+let combined = css(
+  abc, 
+  { color: 'blue', ':after': { content: '"..."'} }, 
+  { ':hover': { textDecoration: 'underline' } },
+  someOtherRule,
+  // ...more
+)
+```
+
+- glamor will make sure that rules are merged in the correct order, 
+managing nesting and precedence for you. [(Learn more about selectors and nesting)](https://github.com/threepointone/glamor/blob/master/docs/selectors.md) 
+- There are a number of helpers to simplify creating rules. [See the full list here](https://github.com/threepointone/glamor/blob/master/docs/helpers.md)
+- in dev mode, adding a `label` string prop will reflect its value in devtools. useful when debugging.
+
+
+You can use these rules with elements 
+```jsx
+// as classes
+<div className={abc}>
+  hello world
+</div>
+
+// or props
+<div {...abc}>
+  hello world
 </div>
 ```
 
-protip - in dev mode, adding a `label` string prop will reflect its value in devtools.
-useful when debugging, and a good alternative to 'semantic' classnames.
+
+Define fallback values for browsers that don't support features
+```jsx
+let gray = css({
+  color: ['#ccc', 'rgba(0, 0, 0, 0.5)']
+})
+```
+is equivalent to
+```css
+.gray {
+  color: #ccc,
+  color: rgba(0, 0, 0, 0.5)
+}
+```
+
 
 ---
 
-`<pseudo>(props)`
 
-where `<pseudo>` is one of :
-```
-active      any           checked     _default    disabled    empty
-enabled     first         firstChild  firstOfType fullscreen  focus
-hover       indeterminate inRange     invalid     lastChild   lastOfType
-left        link          onlyChild   onlyOfType  optional    outOfRange
-readOnly    readWrite     required    right root  scope       target
-valid       visited
-```
+## `css.global(selector, style)`/ `css.insert(css)` 
 
-defines a `rule` for the given pseudoclass selector
+append a raw css rule at most once to the stylesheet. the ultimate escape hatch.
 
 ```jsx
-<div {...hover({ backgroundColor: '#ccc', display: 'block'})}>
-  <input
-    {...style({ color: 'gray', fontSize: 12 })}
-    {...focus({ color: 'black' })}
-    {...hover({ fontSize: 16 })} />
-</div>
+// these don't 'return' anything, 
+// can't nest selectors, do
+// *cannot* be combined with other rules.
+
+css.global('html, body', { padding: 0 })
+// or if prefer raw css and/or need media queries etc 
+// send one rule at a time 
+css.insert('html, body { padding: 0 }')
+css.insert('@media print {...}')
+
 ```
 
----
 
-`<pseudo>(param, props)`
-
-where `<pseudo>` is one of :
-```
-dir  lang  not  nthChild  nthLastChild  nthLastOfType  nthOfType
-```
-
-like the above, but parameterized with a number / string
-
-```jsx
-dir('ltr', props), dir('rtl', props)
-lang('en', props), lang('fr', props), lang('hi', props) /* etc... */
-not(/* selector */, props)
-nthChild(2, props), nthChild('3n-1', props), nthChild('even', props) /* etc... */
-nthLastChild(/* expression */, props)
-nthLastOfType(/* expression */, props)
-nthOfType(/* expression */, props)
-```
-
----
-
-`<pseudo>(props)`
-
-where `<pseudo>` is one of
-```
-after  before  firstLetter  firstLine  selection  backdrop  placeholder
-```
-
-similar to the above, but for pseudo elements.
-
-```jsx
-<div {...before({ content: '"hello "' })}>
-  world!
-</div>
-// note the quotes for `content`'s value
-```
-
----
-
-`select(selector, props)` / `$(selector, props)`
-
-an escape hatch to define styles for arbitrary css selectors. your selector is appended 
-directly to the css rule, letting you define 'whatever' you want. use sparingly!
-
-```jsx
-<div {...$(':hover ul li:nth-child(even)', { color: 'red' })}>
-  <ul>
-    <li>one</li>
-    <li>two - red!</li>
-    <li>three</li>
-  </ul>
-</div>
-```
-
-(nb1: don't forget to add a leading space for 'child' selectors. eg - `$(' .item', {...})`. 
-(nb2: `simulate()` does not work on these selectors yet.)
-
----
-
-
-`parent(selector, style)`
-
-an escape hatch to target elements based on it's parent 
-
-```jsx
-<div {...parent('.no-js', { backgroundColor: '#ccc' })}> 
-  this is gray when js is disabled   
-</div>
-
-TODO - pseudo selectors for the same
-```
----
-
-`compose(...rules)` / `merge(...rules)`
-
-combine rules, with latter styles taking precedence over previous ones.
-
-```jsx
-<div {...
-  compose(
-    style(props),
-    hover(props),
-    { color: 'red' },
-    hover(props)) }>
-      mix it up!
-</div>
-```
-
----
-
-`media(query, ...rules)`
-
-media queries!
-
-```jsx
-<div {...media('(min-width: 500px) and (orientation: landscape)', 
-            { color: 'blue' }, hover({ color: 'red' }))}>
-  resize away
-</div>
-```
-
-also included are some presets 
-
-`presets.mobile` - `(min-width: 400px)`
-`presets.phablet` - `(min-width: 550px)`
-`presets.tablet` - `(min-width: 750px)`
-`presets.desktop` - `(min-width: 1000px)`
-`presets.hd` - `(min-width: 1200px)`
-
-and use as -
-```jsx
-media(presets.tablet, {...})
-```
-
----
-
-`simulate(...pseudoclasses)`
-
-![hover](http://i.imgur.com/mW7J8kg.gif)
-
-in development, lets you trigger any pseudoclass on an element
-
----
-
-`fontFace(font)`
+## `css.fontFace(font)`
 
 loads the given font-face at most once into the document, returns the font family name
 
 ```jsx
-let family = fontFace({
+let family = css.fontFace({
   fontFamily: 'Open Sans',
   fontStyle: 'normal',
   fontWeight: 400,
@@ -191,12 +124,12 @@ for anything more complicated, use something like [typography.js](https://kyleam
 
 ---
 
-`keyframes(timeline)`
+## `css.keyframes(timeline)`
 
 adds animation keyframes into the document, with an optional name.
 
 ```jsx
-let bounce = keyframes('bounce', { // optional name
+let bounce = css.keyframes('bounce', { // optional name
   '0%': { transform: 'scale(0.1)', opacity: 0 },
   '60%': { transform: 'scale(1.2)', opacity: 1 },
   '100%': { transform: 'scale(1)' }
@@ -215,37 +148,25 @@ use sparingly! for granular control, use javascript and pencil and paper.
 
 ---
 
-`insertRule(css)`
 
-append a raw css rule at most once to the stylesheet. the ultimate escape hatch.
+## `simulate(...pseudoclasses)`
 
-```jsx
-insertRule(`body { margin: 0; }`)
-insertRule(`body { margin: 0; }`)
-insertRule(`body { margin: 0; }`)
+![hover](http://i.imgur.com/mW7J8kg.gif)
 
-// the above inserts the rule just once 
-```
-
+in development, lets you trigger any pseudoclass on an element
 
 ---
 
 
-`cssFor(...rules)`
+## `speedy(true/false)`
 
-a helper to extract the css for given rules. useful for debugging, and [webcomponents](https://github.com/threepointone/glamor/issues/16)
-
-```jsx
-let red = style({ color: 'red' })
-let blue = style({ border: 'blue' })
-console.log(cssFor(red, blue))
-
-/* 
-[data-css-16y7vsu]{ color:red; } 
-[data-css-1el9v42]{ border:blue; } 
-*/
-```
+toggle speedy mode. By default, this is off when `NODE_ENV` is `development`, and on when 'production'.
 
 
-`speedy`
-`insertGlobal`
+articles
+---
+
+- speedy 
+- performance
+- interfaces : SC, aphrodite, jsxstyle 
+- plugin system

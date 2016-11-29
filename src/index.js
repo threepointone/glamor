@@ -1,4 +1,3 @@
-/**** stylesheet  ****/
 
 import { StyleSheet } from './sheet.js'
 import { createMarkupForStyles } from './CSSPropertyOperations'
@@ -15,7 +14,6 @@ export const styleSheet = new StyleSheet()
 export function speedy(bool) {
   return styleSheet.speedy(bool)
 }
-
 
 // plugins
 import { PluginSet, prefixes, fallbacks, positionSticky } from './plugins' // we include these by default
@@ -81,18 +79,6 @@ function simple(str) {
   return str.toLowerCase().replace(/[^a-z0-9]/g, '')
 }
 
-// flatten a nested array
-function flatten(inArr) {
-  let arr = []
-  for(let i=0; i<inArr.length; i++) {
-    if(Array.isArray(inArr[i]))
-      arr = arr.concat(flatten(inArr[i]))
-    else
-      arr = arr.concat(inArr[i])
-  }
-  return arr
-}
-
 // hashes a string to something 'unique'
 // we use this to generate ids for styles
 import hash from './hash'
@@ -102,7 +88,7 @@ function hashify(...objs) {
 }
 
 
-// of shape { 'data-css-<id>': ''}
+// of shape { 'data-css-<id>': '' }
 export function isLikeRule(rule) {
   let keys = Object.keys(rule).filter(x => x !== 'toString')
   if(keys.length !== 1) {
@@ -121,175 +107,24 @@ export function idFor(rule) {
   return match[1]
 }
 
-
-// a simple cache to store generated rules
-let registered =  styleSheet.registered = {}
-function register(spec) {
-  if(!registered[spec.id]) {
-    registered[spec.id] = spec
-  }
-}
-
-// semi-deeply merge 2 'mega' style objects
-function deepMergeStyles(dest, src) {
-  Object.keys(src).forEach(expr => {
-    dest[expr] = dest[expr] || {}
-    Object.keys(src[expr]).forEach(type => {
-      dest[expr][type] = dest[expr][type] || {}
-      Object.assign(dest[expr][type], src[expr][type])
-    })
-  })
-}
-
-
-//todo - prevent nested media queries
-function deconstruct(obj) {
-  let ret = [], composesWith
-  let plain = {}, hasPlain = false
-  let isSpecial = obj && find(Object.keys(obj), x =>
-    (x.charAt(0) === ':') || // pseudos
-    (x.charAt(0) === '@') || // media queries; todo - check @media
-    (x.indexOf('&') >= 0) || // 'selects'
-    (x === 'composes') // like css modules!
-  )
-
-  if(isSpecial) {
-    Object.keys(obj).forEach(key => {
-      if(key === 'composes') {
-        composesWith = obj[key]
-      }
-      else if(key.charAt(0) === ':') {
-        ret.push({
-          type: 'pseudo',
-          style: obj[key],
-          selector: key
-        })
-      }
-      else if (key.charAt(0) === '@') {
-        ret.push({
-          type: 'media',
-          rules: deconstruct(obj[key]),
-          expr: key.substring(6)
-        })
-      }
-      else if((key.indexOf('&') >= 0) || (typeof obj[key] === 'object')) {
-        ret.push({
-          type: 'select',
-          style: Array.isArray(obj[key]) ? Object.assign({}, ...obj[key]) : obj[key],
-          selector: key
-        })
-      }      
-      else {
-        hasPlain = true
-        plain[key] = obj[key]
-      }
-    })
-    ret = hasPlain ? [ plain, ...ret ] : ret
-    ret = composesWith ? [ composesWith, ...ret ] : ret
-    return ret
-  }
-  return obj
-
-}
-
-
-function _getRegistered(rule) {
-  if(isLikeRule(rule)) {
-    let ret = registered[idFor(rule)]
-    if(ret == null) {
-      throw new Error('[glamor] an unexpected rule cache miss occurred. This is probably a sign of multiple glamor instances in your app. See https://github.com/threepointone/glamor/issues/79')
-    }
-    return ret
-  }
-  return rule
-}
-
-// extracts and composes styles from a rule into a 'mega' style
-// with sub styles keyed by media query + 'path'
-function extractStyles(...rules) {
-
-  rules = flatten(rules)
-  let exprs = {}
-  // converts {[data-css-<id>]} to the backing rule
-
-  rules = rules
-    .map(_getRegistered)
-    .map(x =>((x.type === 'style') || !x.type) ? deconstruct(x.style || x) : x
-    )
-
-  rules = flatten(rules)
-    .map(_getRegistered) // sigh, this is to handle arrays in `composes`. must make better.
-
-  rules.forEach(rule => {
-    // avoid possible label. todo - cleaner
-    if(typeof rule === 'string') {
-      return
-    }
-    switch(rule.type) {
-      case 'raw': throw new Error('not implemented')
-      case 'font-face': throw new Error('not implemented')
-      case 'keyframes': throw new Error('not implemented')
-
-      case 'merge': return deepMergeStyles(exprs,
-        extractStyles(rule.rules))
-
-      case 'pseudo':
-        if((rule.selector === ':hover') && exprs._ && exprs._['%%%:active'] && !exprs._['%%%:hover']) {
-          console.warn(':active must come after :hover to work correctly') //eslint-disable-line no-console
-        }
-        return deepMergeStyles(exprs,
-        { _: { ['%%%' + rule.selector]: rule.style } })
-      case 'select': return deepMergeStyles(exprs,
-        { _: { ['^^^' + rule.selector]: rule.style } })
-      case 'parent': return deepMergeStyles(exprs,
-        { _: { ['***' + rule.selector]: rule.style } })
-
-      case 'style': return deepMergeStyles(exprs,
-        { _: { _: rule.style } })
-
-      case 'media': return deepMergeStyles(exprs,
-        { [rule.expr]: extractStyles(rule.rules)._ })
-
-      default: return deepMergeStyles(exprs,
-        { _: { _: rule } })
-    }
-  })
-  return exprs
-
-}
-
-// extract label from a rule / style
-function extractLabel(rule) {
-  if(isLikeRule(rule)) {
-    rule = registered[idFor(rule)]
-  }
-  return rule.label || '{:}'
-}
-
-// given an id / 'path', generate a css selector
 function selector(id, path) {
-  if(path === '_') return `.css-${id},[data-css-${id}]`
+  
+  if(!id) {
+    return path.replace(/\&/g, '')
+  }
+  if(!path) return `.css-${id},[data-css-${id}]`
 
-  if(path.indexOf('%%%') === 0) {
-    let x =`.css-${id}${path.slice(3)},[data-css-${id}]${path.slice(3)}`
-    if(canSimulate) x+= `,.css-${id}[data-simulate-${simple(path)}],[data-css-${id}][data-simulate-${simple(path)}]`
-    return x
-  }
+  let x = path
+    .split(',')
+    .map(x => x.indexOf('&') >= 0 ?
+      [ x.replace(/\&/mg, `.css-${id}`), x.replace(/\&/mg, `[data-css-${id}]`) ].join(',') // todo - make sure each sub selector has an &
+      : `.css-${id}${x},[data-css-${id}]${x}`)
+    .join(',')
 
-  if(path.indexOf('***') === 0) {
-    return path.slice(3)
-      .split(',')
-      .map(x => `${x} .css-${id},${x} [data-css-${id}]`)
-      .join(',')
+  if(canSimulate && /^\&\:/.exec(path) && !/\s/.exec(path)) {
+    x += `,.css-${id}[data-simulate-${simple(path)}],[data-css-${id}][data-simulate-${simple(path)}]`
   }
-  if(path.indexOf('^^^') === 0) {
-    return path.slice(3)
-      .split(',')
-      .map(x => x.indexOf('&') >= 0 ?
-        [ x.replace(/\&/mg, `.css-${id}`), x.replace(/\&/mg, `[data-css-${id}]`) ].join(',') // todo - make sure each sub selector has an &
-        : `.css-${id}${x},[data-css-${id}]${x}`)
-      .join(',')
-  }
+  return x
 
 }
 
@@ -299,26 +134,57 @@ function toCSS({ selector, style }) {
   return `${result.selector}{${createMarkupForStyles(result.style) }}`
 }
 
-function ruleToAst(rule) {
-  let styles = extractStyles(rule)
-  return Object.keys(styles).reduce((o, expr) => {
-    o[expr] = Object.keys(styles[expr]).map(s =>
-      ({ selector: selector(rule.id, s), style: styles[expr][s] }))
-    return o
-  }, {})
+
+function deconstruct(style) {
+  // we can be sure it's not infinitely nested here 
+  let plain, selects, medias, supports
+  Object.keys(style).forEach(key => {
+    if(key.indexOf('&') >= 0) {
+      selects = selects || {}
+      selects[key] = style[key]
+    }
+    else if(key.indexOf('@media') === 0) {
+      medias = medias || {}
+      medias[key] = deconstruct(style[key])
+    }
+    else if(key.indexOf('@supports') === 0) {
+      supports = supports || {}
+      supports[key] = deconstruct(style[key])
+    }
+    else if(key === 'label') {
+      if(style.label.length > 0) {
+        plain = plain || {}
+        plain.label = style.label.join('.')  
+      }      
+    }
+    else {
+      plain = plain || {}
+      plain[key] = style[key]
+    }
+  })
+  return { plain, selects, medias, supports }
 }
 
-function ruleToCSS(spec) {
+function deconstructedStyleToCSS(id, style) {
   let css = []
-  let ast = ruleToAst(spec)
+  
   // plugins here
-  let { _, ...exprs } = ast
-  if(_) {
-    _.map(toCSS).forEach(str => css.push(str))
+  let { plain, selects, medias, supports } = style
+  if(plain) {
+    css.push(toCSS({ style: plain, selector: selector(id) }))
   }
-  Object.keys(exprs).forEach(expr => {
-    css.push(`@media ${expr}{${exprs[expr].map(toCSS).join('')}}`)
-  })
+  if(selects) {
+    Object.keys(selects).forEach(key => 
+      css.push(toCSS({ style: selects[key], selector: selector(id, key) })))
+  }
+  if(medias) {
+    Object.keys(medias).forEach(key => 
+      css.push(`${key}{${ deconstructedStyleToCSS(id, medias[key]).join('')}}`))
+  }
+  if(supports) {
+    Object.keys(supports).forEach(key => 
+      css.push(`${key}{${ deconstructedStyleToCSS(id, supports[key]).join('')}}`))    
+  }
   return css
 }
 
@@ -330,56 +196,30 @@ let inserted = styleSheet.inserted = {}
 function insert(spec) {
   if(!inserted[spec.id]) {
     inserted[spec.id] = true
-    ruleToCSS(spec).map(cssRule =>
+    let deconstructed = deconstruct(spec.style)
+    deconstructedStyleToCSS(spec.id, deconstructed).map(cssRule =>
       styleSheet.insert(cssRule))
   }
 }
 
-export function insertRule(css) {
-  let spec = {
-    id: hashify(css),
-    css,
-    type: 'raw',
-    label: '^'
-  }
-  register(spec)
-  if(!inserted[spec.id]) {
-    styleSheet.insert(spec.css)
-    inserted[spec.id] = true
+
+// a simple cache to store generated rules
+let registered =  styleSheet.registered = {}
+function register(spec) {
+  if(!registered[spec.id]) {
+    registered[spec.id] = spec
   }
 }
 
-export function insertGlobal(selector, style) {
-  return insertRule(`${selector}{${createMarkupForStyles(style)}}`)
-}
-
-function insertKeyframe(spec) {
-  if(!inserted[spec.id]) {
-    let inner = Object.keys(spec.keyframes).map(kf => {
-      let result = plugins.keyframes.transform({ id: spec.id, name: kf, style: spec.keyframes[kf] })
-      return `${result.name}{${ createMarkupForStyles(result.style) }}`
-    }).join('');
-
-    [ '-webkit-', '-moz-', '-o-', '' ].forEach(prefix =>
-      styleSheet.insert(`@${ prefix }keyframes ${ spec.name + '_' + spec.id }{${ inner }}`))
-
-    inserted[spec.id] = true
+function _getRegistered(rule) {
+  if(isLikeRule(rule)) {
+    let ret = registered[idFor(rule)]
+    if(ret == null) {
+      throw new Error('[glamor] an unexpected rule cache miss occurred. This is probably a sign of multiple glamor instances in your app. See https://github.com/threepointone/glamor/issues/79')
+    }
+    return ret
   }
-}
-
-function insertFontFace(spec) {
-  if(!inserted[spec.id]) {
-    styleSheet.insert(`@font-face{${createMarkupForStyles(spec.font)}}`)
-    inserted[spec.id] = true
-  }
-}
-
-// rehydrate the insertion cache with ids sent from
-// renderStatic / renderStaticOptimized
-export function rehydrate(ids) {
-  // load up ids
-  Object.assign(inserted, ids.reduce((o, i) => (o[i] = true, o), {}) )
-  // assume css loaded separately
+  return rule
 }
 
 
@@ -400,6 +240,203 @@ function toRule(spec) {
   return ret
 }
 
+
+function isSelector(key) {
+  return [ ':', '.', '[', '>', ' ' ]
+    .map(x => key.charAt(0) === x)
+    .reduce((a, b) => a || b) 
+    || 
+    (key.indexOf('&') >= 0)
+}
+function joinSelectors(a, b) {
+  if(!(a.indexOf('&') >= 0)) {
+    a = '&' + a
+  }
+  if(!(b.indexOf('&') >= 0)) {
+    b = '&' + b
+  }
+  return b.replace(/\&/g, a)
+}
+
+function joinMediaQueries(a, b) {
+  return a ? `@media ${a.substring(6)} and ${b.substring(6)}` : b
+}
+
+function isMediaQuery(key) {
+  return key.indexOf('@media') === 0
+}
+
+function isSupports(key) {
+  return key.indexOf('@supports') === 0
+}
+
+function joinSupports(a, b) {
+  return a ? `@supports ${a.substring(9)} and ${b.substring(9)}` : b
+}
+
+function log() {
+  console.log(this)
+  return this
+}
+
+// mutable! modifies dest.
+function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
+
+  if(!Array.isArray(src)) {
+    src = [ src ]
+  }
+  src.forEach(_src => {
+    if(isLikeRule(_src)) {
+      let reg = _getRegistered(_src)
+      if(reg.type !== 'css') { throw new Error('cannot merge this rule') }
+      _src = reg.style
+    }
+    Object.keys(_src).forEach(key => {
+      if(isSelector(key)) {
+        build(dest, { selector: joinSelectors(selector, key), mq, supp, src: _src[key] })
+      }
+      else if(isMediaQuery(key)) {
+        build(dest, { selector, mq: joinMediaQueries(mq, key), supp, src: _src[key] })          
+      }
+      else if(isSupports(key)) {
+        build(dest, { selector, mq, supp: joinSupports(supp, key), src: _src[key] })  
+      }
+      else {
+        let _dest = dest 
+        if(supp) {
+          _dest[supp] = _dest[supp] || {}
+          _dest = _dest[supp]
+        }
+        if(mq) {
+          _dest[mq] = _dest[mq] || {}
+          _dest = _dest[mq]
+        }
+        if(selector) {
+          _dest[selector] = _dest[selector] || {}
+          _dest = _dest[selector]
+        }
+        
+        if(key === 'label' && hasLabels) {
+          dest.label = dest.label.concat(_src.label)
+        }
+        else {
+          _dest[key] = _src[key]
+        }
+        
+      }
+    })  
+  }) 
+}
+
+
+export function css(...rules) {
+  if(rules[0] && rules[0].length && rules[0].raw) {
+    throw new Error('you forgot to include glamor/babel in your babel plugins.')
+  }
+  
+  rules = clean(rules)
+  if(!rules) {
+    return {} // todo - nullrule 
+  }
+  
+  let style = { label: [] }
+  build(style, { src: rules }) // mutative! but worth it. 
+
+  let spec = {
+    id: hashify(style),
+    style, label: style.label.join('.'),
+    type: 'css'    
+  }
+  return toRule(spec)  
+}
+
+css.insert = (css) => {
+  let spec = {
+    id: hashify(css),
+    css,
+    type: 'raw'
+  }
+  register(spec)
+  if(!inserted[spec.id]) {
+    styleSheet.insert(spec.css)
+    inserted[spec.id] = true
+  }
+}
+
+css.global = (selector, style) => {
+  return css.insert(`${selector}{${createMarkupForStyles(style)}}`)
+}
+
+
+function insertKeyframe(spec) {
+  if(!inserted[spec.id]) {
+    let inner = Object.keys(spec.keyframes).map(kf => {
+      let result = plugins.keyframes.transform({ id: spec.id, name: kf, style: spec.keyframes[kf] })
+      return `${result.name}{${ createMarkupForStyles(result.style) }}`
+    }).join('');
+
+    [ '-webkit-', '-moz-', '-o-', '' ].forEach(prefix =>
+      styleSheet.insert(`@${ prefix }keyframes ${ spec.name + '_' + spec.id }{${ inner }}`))
+
+    inserted[spec.id] = true
+  }
+}
+css.keyframes = (name, kfs) => {
+  if(!kfs) {
+    kfs = name,
+    name='animation'
+  }
+
+  // do not ignore empty keyframe definitions for now.
+  kfs = clean(kfs) || {}
+  let spec = {
+    id: hashify(name, kfs),
+    type: 'keyframes',
+    name,
+    keyframes: kfs
+  }
+  register(spec)
+  insertKeyframe(spec)
+  return name + '_' + spec.id
+}
+
+export const fontFace = css.fontFace
+export const keyframes = css.keyframes
+
+
+function insertFontFace(spec) {
+  if(!inserted[spec.id]) {
+    styleSheet.insert(`@font-face{${createMarkupForStyles(spec.font)}}`)
+    inserted[spec.id] = true
+  }
+}
+
+
+// we don't go all out for fonts as much, giving a simple font loading strategy
+// use a fancier lib if you need moar power
+css.fontFace = (font) => {
+  font = clean(font)
+  let spec = {
+    id: hashify(font),
+    type:'font-face',
+    font
+  }
+  register(spec)
+  insertFontFace(spec)
+
+  return font.fontFamily
+}
+
+
+// rehydrate the insertion cache with ids sent from
+// renderStatic / renderStaticOptimized
+export function rehydrate(ids) {
+  // load up ids
+  Object.assign(inserted, ids.reduce((o, i) => (o[i] = true, o), {}) )
+  // assume css loaded separately
+}
+
+
 // clears out the cache and empties the stylesheet
 // best for tests, though there might be some value for SSR.
 
@@ -412,89 +449,6 @@ export function flush() {
 
 }
 
-
-function find(arr, fn) {
-  for(let i=0; i < arr.length; i++) {
-    if(fn(arr[i]) === true) {
-      return true
-    }
-  }
-  return false
-}
-
-export function style(obj) {
-  obj = clean(obj)
-
-  return obj ? toRule({
-    id: hashify(obj),
-    type: 'style',
-    style: obj,
-    label: obj.label || '*'
-  }) : {}
-}
-
-// unique feature
-// when you need to define 'real' css (whatever that may be)
-// https://twitter.com/threepointone/status/756585907877273600
-// https://twitter.com/threepointone/status/756986938033254400
-export function select(selector, obj) {
-  if(typeof selector === 'object') {
-    return style(selector)
-  }
-  obj = clean(obj)
-
-  return obj ? toRule({
-    id: hashify(selector, obj),
-    type: 'select',
-    selector,
-    style: obj,
-    label: obj.label || '*'
-  }) : {}
-}
-
-export const $ = select // bringin' jquery back
-
-export function parent(selector, obj) {
-  obj = clean(obj)
-  return obj ? toRule({
-    id: hashify(selector, obj),
-    type: 'parent',
-    selector,
-    style: obj,
-    label: obj.label || '*'
-  }) : {}
-}
-
-// we define a function to 'merge' styles together.
-// backstory - because of a browser quirk, multiple styles are applied in the order they're
-// defined in the stylesheet, not in the order of application
-// in most cases, this won't case an issue UNTIL IT DOES
-// instead, use merge() to merge styles,
-// with latter styles gaining precedence over former ones
-
-export function merge(...rules) {
-  rules = clean(rules)
-  return rules ? toRule({
-    id: hashify(extractStyles(rules)),
-    type: 'merge',
-    rules,
-    label: '[' + (typeof rules[0] === 'string' ? rules[0] : rules.map(extractLabel).join(' + '))  + ']'
-  }) : {}
-}
-
-export const compose = merge
-
-export function media(expr, ...rules) {
-  rules = clean(rules)
-  return rules ? toRule({
-    id: hashify(expr, extractStyles(rules)),
-    type: 'media',
-    rules,
-    expr,
-    label: '*mq(' + rules.map(extractLabel).join(' + ') + ')'
-  }) : {}
-}
-
 export const presets = {
   mobile : '(min-width: 400px)',
   phablet : '(min-width: 550px)',
@@ -502,6 +456,7 @@ export const presets = {
   desktop : '(min-width: 1000px)',
   hd : '(min-width: 1200px)'
 }
+
 
 /**** live media query labels ****/
 
@@ -547,17 +502,30 @@ if(isDev && isBrowser) {
   // todo - clearInterval on browser close
 }
 
-
-export function pseudo(selector, obj) {
-  obj = clean(obj)
-  return obj ? toRule({
-    id: hashify(selector, obj),
-    type: 'pseudo',
-    selector,
-    style: obj,
-    label: obj.label || ':*'
-  }) : {}
+export function style(o) {
+  return css(o)
 }
+
+export function select(selector, style) {
+  return css({ [selector]: style })
+}
+export const $ = select
+
+export function parent(selector, style) {
+  return css({ [`${selector} &`]: style })
+}
+
+export const merge = css 
+export const compose = css 
+
+export function media(query, ...rules) {
+  return css({ [`@media ${query}`]: rules })
+}
+
+export function pseudo(selector, style) {
+  return css({ [selector]: style })
+}
+
 
 // allllll the pseudoclasses
 
@@ -751,50 +719,18 @@ export function placeholder(x) {
   )
 }
 
-// we can add keyframes in a similar manner, but still generating a unique name
-// for including in styles. this gives us modularity, but still a natural api
-export function keyframes(name, kfs) {
-  if(!kfs) {
-    kfs = name,
-    name='animation'
-  }
-
-  // do not ignore empty keyframe definitions for now.
-  kfs = clean(kfs) || {}
-  let spec = {
-    id: hashify(name, kfs),
-    type: 'keyframes',
-    name,
-    keyframes: kfs
-  }
-  register(spec)
-  insertKeyframe(spec)
-  return name + '_' + spec.id
-}
-
-// we don't go all out for fonts as much, giving a simple font loading strategy
-// use a fancier lib if you need moar power
-export function fontFace(font) {
-  font = clean(font)
-  let spec = {
-    id: hashify(font),
-    type:'font-face',
-    font
-  }
-  register(spec)
-  insertFontFace(spec)
-
-  return font.fontFamily
-}
-
 
 /*** helpers for web components ***/
 // https://github.com/threepointone/glamor/issues/16
 
 export function cssFor(...rules) {
+  
   rules = clean(rules)
-  return rules ? flatten(rules.map(r =>
-    registered[idFor(r)]).map(ruleToCSS)).join('') : ''
+  return rules ? rules.map(r => {
+    let style = { label: [] }
+    build(style, { src: r }) // mutative! but worth it.   
+    return deconstructedStyleToCSS(hashify(style), deconstruct(style)).join('')
+  }).join('') : ''
 }
 
 export function attribsFor(...rules) {
@@ -806,14 +742,4 @@ export function attribsFor(...rules) {
   }).join(' ') : ''
 
   return htmlAttributes
-}
-
-
-export function css(...rules) {
-  if(rules[0] && rules[0].length && rules[0].raw) {
-    throw new Error('you forgot to include glamor/babel in your babel plugins.')
-  }
-  return merge(rules)
-  // helper for transpiled inline literals 
-  // and eventually central api (#83)  
 }

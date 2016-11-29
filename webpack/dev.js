@@ -12,7 +12,9 @@ module.exports = {
       exclude: /node_modules/,
       loader: 'babel',
       query: {
-        plugins: [ path.join(__dirname, '../src/css/babel.js') ]
+        plugins: [ 
+          path.join(__dirname, '../src/css/babel.js')
+        ]
       }
     } ]  
   },

@@ -107,6 +107,7 @@ todo
 - move to [rework](https://github.com/reworkcss/css)/anything else for parsing 
 - direct selectors `> h1 {...}`
 - global css
+- keyframes, font faces
 - override pragma
 - match more of the css spec (currently ~2.1)
 - fallback values

@@ -10,10 +10,10 @@ css for component systems
 
 usage 
 ```jsx
-import { style, merge } from 'glamor'
+import { css } from 'glamor'
 
 // make css rules 
-let rule = style({ 
+let rule = css({ 
   color: 'red',
   ':hover': {
     color: 'pink'
@@ -36,16 +36,16 @@ let rule = style({
   zomg
 </div>
 
-// compose rules for great justice 
-let mono = style({
+// merge rules for great justice 
+let mono = css({
   fontFamily: 'monospace'
 })
 
-let bolder = style({
+let bolder = css({
   fontWeight: 'bolder'
 })
 
-<div {...merge(mono, bolder)}>
+<div {...css(mono, bolder)}>
   bold code!
 </div>
 
@@ -65,6 +65,7 @@ features
 - adds vendor prefixes / fallback values 
 - supports all the pseudo :classes/::elements
 - `@media` queries
+- '@supports' statements
 - `@font-face` / `@keyframes`
 - escape hatches for parent and child selectors 
 - dev helper to simulate pseudo classes like `:hover`, etc
@@ -86,7 +87,8 @@ extras
 ---
 
 - `glamor/reset` - include a css reset
-- `glamor/react` - helpers for [themes](https://github.com/threepointone/glamor/blob/master/docs/themes.md), [inline 'css' prop](https://github.com/threepointone/glamor/blob/master/docs/createElement.md), [`@vars`](https://github.com/threepointone/glamor/blob/master/docs/vars.md)
+- [use a `css` prop on *all* your react elements](https://github.com/threepointone/glamor/blob/master/docs/createElement.md)
+- `glamor/react` - helpers for [themes](https://github.com/threepointone/glamor/blob/master/docs/themes.md), [`@vars`](https://github.com/threepointone/glamor/blob/master/docs/vars.md)
 - `glamor/jsxstyle` - [react integration](https://github.com/threepointone/glamor/blob/master/docs/jsxstyle.md), à la [jsxstyle](https://github.com/petehunt/jsxstyle/)
 - `glamor/aphrodite` - [shim](https://github.com/threepointone/glamor/blob/master/docs/aphrodite.md) for [aphrodite](https://github.com/Khan/aphrodite) stylesheets
 - `glamor/utils` - a port of [postcss-utilities](https://github.com/ismamz/postcss-utilities)

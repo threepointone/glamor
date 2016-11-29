@@ -17,12 +17,12 @@ import { render, unmountComponentAtNode } from 'react-dom'
 
 import { style, hover, nthChild, firstLetter, media, merge, compose,  select, visited, 
   parent,
-  fontFace, keyframes,
+  // fontFace, keyframes,
   cssLabels,
   simulations, simulate,
   cssFor, attribsFor, idFor,
   presets,
-  flush, styleSheet, rehydrate }
+  flush, styleSheet, rehydrate, css }
 from '../src'
 
 import { propMerge } from '../src/react'
@@ -71,7 +71,7 @@ describe('glamor', () => {
     
     render(el, node, () => {
       expect(childStyle(node).backgroundColor).toEqual('rgb(0, 255, 0)')
-      expect(el).toEqual(<div data-css-1j3zyhl=""/>)
+      expect(el).toEqualJSX(<div data-css-1xre5mc=""/>)
     })
   })
 
@@ -80,7 +80,7 @@ describe('glamor', () => {
     
     render(el, node, () => {
       expect(childStyle(node).backgroundColor).toEqual('rgb(0, 255, 0)')
-      expect(el).toEqual(<div className="css-1j3zyhl wellnow"/>)
+      expect(el).toEqualJSX(<div className="css-1xre5mc wellnow"/>)
     })
   })
 
@@ -142,21 +142,21 @@ describe('glamor', () => {
     })
 
 
-    expect(styleSheet.rules().map(x => x.cssText).join('\n').replace(/\:nth\-child\(n\)/g, '')).toEqual(
-`.css-w732o9, [data-css-w732o9] { color: red; }
-.css-w732o9:hover, [data-css-w732o9]:hover { color: blue; }
+    expect(styleSheet.rules().map(x => x.cssText).join('\n')).toEqual(
+`.css-1j2tyha, [data-css-1j2tyha] { color: red; }
+.css-1j2tyha:hover, [data-css-1j2tyha]:hover { color: blue; }
 @media (min-width: 300px) { 
-  .css-w732o9, [data-css-w732o9] { color: green; }
-  .css-w732o9:hover, [data-css-w732o9]:hover { color: yellow; }
-  .a .css-w732o9 .c, .a [data-css-w732o9] .c { color: rgb(245, 222, 179); }
-  .css-w732o9.css-w732o9, [data-css-w732o9][data-css-w732o9] { color: rgb(255, 255, 240); }
+  .css-1j2tyha, [data-css-1j2tyha] { color: green; }
+  .css-1j2tyha:hover, [data-css-1j2tyha]:hover { color: yellow; }
+  .a .css-1j2tyha .c, .a [data-css-1j2tyha] .c { color: rgb(245, 222, 179); }
+  .css-1j2tyha.css-1j2tyha, [data-css-1j2tyha][data-css-1j2tyha] { color: rgb(255, 255, 240); }
 }`)
   })
 
   it('nested objects can compose with `composes`', () => {
     let rule1 = style({ color: 'red' })
     let rule2 = style({ color: 'blue' })
-    let rule3 = style({ color: 'green' })
+    // let rule3 = style({ color: 'green' })
     let rule4 = style({
       composes: [ rule1, rule2 ],
       fontWeight: 'bold'
@@ -214,7 +214,7 @@ describe('glamor', () => {
     render(<div {...hover({ color: 'red' })}/>, node, () => {
       // console.log(childStyle(node, ':hover').getPropertyValue('color'))
       // ^ this doesn't work as I want
-      expect(styleSheet.inserted).toEqual({ '28rtqh': true })
+      expect(styleSheet.inserted).toEqual({ 'vnqrqn': true })
         // any ideas on a better test for this?
     })
   })
@@ -262,7 +262,7 @@ describe('glamor', () => {
   it('can style pseudo elements', () => {
     render(<div {...firstLetter({ color:'red' })} />, node, () => {
       expect(styleSheet.rules()[0].cssText)
-        .toEqual('.css-1gza2g7::first-letter, [data-css-1gza2g7]::first-letter { color: red; }')
+        .toEqual('.css-dde0vi::first-letter, [data-css-dde0vi]::first-letter { color: red; }')
     })
   }) // how do I test this?
 
@@ -275,7 +275,7 @@ describe('glamor', () => {
     render(<div {...media('(min-width: 300px)', style({ color: 'red' }))}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
       expect(last(styleSheet.rules()).cssText.replace(/\s/g,'').replace('alland', '')) // ie quirk
-        .toEqual('@media(min-width:300px){.css-18m9kj,[data-css-18m9kj]{color:red;}}'.replace(/\s/g,''))
+        .toEqual('@media(min-width:300px){.css-akwl3q,[data-css-akwl3q]{color:red;}}'.replace(/\s/g,''))
         // ugh
     })
 
@@ -285,7 +285,7 @@ describe('glamor', () => {
     simulations(true)
     render(<div {...media('(min-width: 300px)', hover({ color: 'red' }))} {...simulate('hover')}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
-      expect(styleSheet.inserted).toEqual({ '18lme2n': true, '28rtqh': true })
+      expect(styleSheet.inserted).toEqual({ 'omf2yv': true, 'vnqrqn': true })
       simulations(false)
     })
 
@@ -335,7 +335,7 @@ describe('glamor', () => {
       </div>, node, () => {
         expect(window.getComputedStyle(node.querySelector('.down')).color).toEqual('rgb(255, 0, 0)')
         expect(window.getComputedStyle(node.querySelector('.notdown')).color).toEqual('rgb(0, 0, 0)')
-        expect(styleSheet.rules().map(x => x.cssText).join('').replace(/\s/g,'')).toEqual('.up.css-1dfn10h.down,.up[data-css-1dfn10h].down{color:red;}')
+        expect(styleSheet.rules().map(x => x.cssText).join('').replace(/\s/g,'')).toEqual('.up.css-1sk4o1x.down,.up[data-css-1sk4o1x].down{color:red;}')
       })
   })
 
@@ -356,11 +356,11 @@ describe('glamor', () => {
       </ul>
     </div>
     
-    expect(el).toEqual(<div data-css-dysmjn="[[red + blue] + :* + {:}]">
-      <ul data-css-36ngum="mylist">
-        <li data-css-12ttild=":*">one</li>
-        <li >two</li>
-        <li data-css-1oj4iwd="*mq([red + blue])">three</li>
+    expect(el).toEqualJSX(<div data-css-1kmgssg="red.blue">
+      <ul data-css-2n5rz6="mylist">
+        <li data-css-165e3g5="">one</li>
+        <li>two</li>
+        <li data-css-1tjidk0="red.blue">three</li>
       </ul>
     </div>)
     cssLabels(false)
@@ -374,7 +374,7 @@ describe('glamor', () => {
     it('adds vendor prefixes', () => {
       render(<div {...style({ color: 'red', transition: 'width 2s' })} />, node, () => {
         expect(styleSheet.rules()[0].cssText)
-          .toEqual('.css-1roj518, [data-css-1roj518] { color: red; -webkit-transition: width 2s; transition: width 2s; }')
+          .toEqual('.css-19hf94w, [data-css-19hf94w] { color: red; -webkit-transition: width 2s; transition: width 2s; }')
       })
     })
 
@@ -388,7 +388,7 @@ describe('glamor', () => {
         src: "local('Open Sans'), local('OpenSans'), url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format('woff2')"
       }
 
-      let f = fontFace(latin)
+      let f = css.fontFace(latin)
       expect(styleSheet.rules()[0].cssText.replace(/\s/g,''))
         .toEqual("@font-face { font-family: 'Open Sans'; font-style: normal; font-weight: 400; src: local(Open Sans), local(OpenSans), url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format(woff2); }".replace(/\s/g,''))
       expect(f).toEqual('Open Sans')
@@ -396,7 +396,7 @@ describe('glamor', () => {
     })
 
     it('can add animation keyframes', () => {
-      let animate = keyframes('bounce', {
+      let animate = css.keyframes('bounce', {
         '0%': {
           transform: 'scale(0.1)',
           opacity: 0
@@ -422,7 +422,7 @@ describe('glamor', () => {
       merged = compose(red, blue)
 
     expect(cssFor(red, merged))
-      .toEqual('.css-im3wl1,[data-css-im3wl1]{color:red;}.css-1lci705,[data-css-1lci705]{color:red;}.css-1lci705:hover,[data-css-1lci705]:hover{color:blue;}')    
+      .toEqual('.css-1ezp9xe,[data-css-1ezp9xe]{color:red;}.css-11t3bx0,[data-css-11t3bx0]{color:red;}.css-11t3bx0:hover,[data-css-11t3bx0]:hover{color:blue;}')    
   })
 
   it('can generate html attributes from rules', () => {
@@ -431,20 +431,20 @@ describe('glamor', () => {
       blue = hover({ color: 'blue' }),
       merged = compose(red, blue)
 
-    expect(attribsFor(red, merged)).toEqual('data-css-im3wl1="" data-css-1lci705=""')    
+    expect(attribsFor(red, merged)).toEqual('data-css-1ezp9xe="" data-css-11t3bx0=""')    
     cssLabels(true)
   })
 
   it('can extract an id from a rule', () => {
     let red = style({ color: 'red' })
 
-    expect(idFor(red)).toEqual('im3wl1')      
+    expect(idFor(red)).toEqual('1ezp9xe')      
   })
 
   it('checks for a cache miss', () => {
     const myObscureStyle = { 'data-css-obscureclass': '"*"' }
 
-    expect(() => merge(myObscureStyle)).toThrow('[glamor] an unexpected rule cache miss occurred. This is probably a sign of multiple glamor instances in your app. See https://github.com/threepointone/glamor/issues/79');
+    expect(() => merge(myObscureStyle)).toThrow('[glamor] an unexpected rule cache miss occurred. This is probably a sign of multiple glamor instances in your app. See https://github.com/threepointone/glamor/issues/79')
   })
 })
 
@@ -567,15 +567,15 @@ describe('falsy values', () => {
       [ 'hover', falsy ],
       [ 'hover' ]
     )
-    check(fontFace,
+    check(css.fontFace,
       [ { fontFamily: 'Open Sans', fontStyle: falsy } ],
       [ { fontFamily: 'Open Sans' } ]
     )
-    check(keyframes,
+    check(css.keyframes,
       [ 'bounce', { '0%': { width: 0, height: falsy } } ],
       [ 'bounce', { '0%': { width: 0 } } ]
     )
-    check(keyframes,
+    check(css.keyframes,
       [ 'bounce', { '0%': { width: 0 }, '100%': falsy } ],
       [ 'bounce', { '0%': { width: 0 } } ]
     )
@@ -611,18 +611,17 @@ describe('server', () => {
 
     let styleTag = document.createElement('style')
     if (styleTag.styleSheet) {
-      styleTag.styleSheet.cssText += '[data-css-im3wl1]{ color:red; }'
+      styleTag.styleSheet.cssText += '[data-css-1ezp9xe]{ color:red; }'
     } else {
-      styleTag.appendChild(document.createTextNode('[data-css-im3wl1]{ color:red; }'))
+      styleTag.appendChild(document.createTextNode('[data-css-1ezp9xe]{ color:red; }'))
     }
     document.head.appendChild(styleTag)
-    node.innerHTML = '<div data-css-im3wl1=""></div>'
+    node.innerHTML = '<div data-css-1ezp9xe=""></div>'
     expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
-    rehydrate([ 'im3wl1' ])
+    rehydrate([ '1ezp9xe' ])
 
     style({ color: 'red' })
     style({ color: 'blue' })
-
     expect(styleSheet.rules().length).toEqual(1)
     document.head.removeChild(styleTag)
 
@@ -769,12 +768,12 @@ describe('jsxstyle', () => {
       onClick={() => console.log('whutwhut')} // eslint-disable-line no-console
 
     />, node, () => {      
-      expect(styleSheet.inserted).toEqual({ '10yhhz1': true, '13imxhw': true, '1jtt596': true, '1rhjrui': true })
+      expect(styleSheet.inserted).toEqual({ '1v0yc9d': true, '1v1ok9d': true, 'o6qtyr': true, 'r1q63t': true })
     })
   })
 })
 
-import { _css, css } from '../src/css/raw'
+import { _css } from '../src/css/raw'
 describe('css', () => {
   // how to test the plugin?
   let node

@@ -1,5 +1,5 @@
 import React from 'react'
-import { style } from '../src'
+import { css } from '../src'
 import { vars } from '../src/react'            
 
 
@@ -20,7 +20,7 @@ export class App extends React.Component {
 class Button extends React.Component {                                      //eslint-disable-line
   render() { // use available vars ath this point
     let { bgColor = 'gray', color ='white' } = this.props.vars
-    return <button {...style({ backgroundColor: bgColor, color })}>
+    return <button {...css({ backgroundColor: bgColor, color })}>
       {this.props.children}
     </button>
   }

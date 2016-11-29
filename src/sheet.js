@@ -177,10 +177,10 @@ export class StyleSheet {
   //     this.sheet.cssRules = [ ...rules.slice(0, index), { cssText: rule }, ...rules.slice(index + 1) ]
   //   }
   // }
-  // delete(index) {
-  //   // we insert a blank rule when 'deleting' so previously returned indexes remain stable
-  //   return this.replace(index, '')
-  // }
+  delete(index) {
+    // we insert a blank rule when 'deleting' so previously returned indexes remain stable
+    return this.replace(index, '')
+  }
   flush() {
     if(isBrowser) {
       this.tags.forEach(tag => tag.parentNode.removeChild(tag))

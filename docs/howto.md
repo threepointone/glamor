@@ -15,9 +15,9 @@ css
 
 glamor 
 ```jsx 
-import {style} from 'glamor'
+import { css } from 'glamor'
 
-let box = style({ color: 'red' })
+let box = css({ color: 'red' })
 // ...
 <div {...box}>
   this is a nice box. 
@@ -41,15 +41,18 @@ css
 
 glamor
 ```jsx
-import {hover, style} from 'glamor'
+import { css } from 'glamor'
 
-let boxHover = hover({ color: 'blue' })
-// or 
-let boxHover = style({ 
+let boxHover = css({ 
   ':hover': {
     color: 'blue' 
   } 
 })
+
+// or 
+
+import { hover } from 'glamor'
+let boxHover = hover({ color: 'blue' })
 ```
 
 
@@ -63,17 +66,17 @@ css
 
 glamor 
 ```jsx
-import {merge} from 'glamor'
+import { css } from 'glamor'
 
 <div {...bold} {...myClass} />
 
 // or, unlike css, to maintain precendence order 
 
-<div {...merge(bold, myClass)} />
+<div {...css(bold, myClass)} />
 
 // also works with classes
 
-<div className={merge(bold, myClass)} />
+<div className={css(bold, myClass)} />
 ```
 
 [(more examples for composing rules)](https://github.com/threepointone/glamor/blob/master/src/ous.js)
@@ -98,14 +101,24 @@ css
 
 glamor 
 ```jsx
-import {merge, select as $} from 'glamor'
+import { css } from 'glamor'
 
-let box = merge(
+let box = css({
+  display: 'block',
+  '& .bold': { fontWeight: 'bold' },
+  '& .one': { color: 'blue' },
+  ':hover .two': { color: 'red' }
+})
+
+// or 
+import { css, select as $ } from 'glamor'
+let box = css(
   { display: 'block' },
-  $(' .bold', { fontWeight: 'bold' }),
-  $(' .one', { color: 'blue' }),
+  $('& .bold', { fontWeight: 'bold' }),
+  $('& .one', { color: 'blue' }),
   $(':hover .two', { color: 'red' }),  
 )
+
 
 // ...
 
@@ -140,7 +153,15 @@ css
 
 glamor 
 ```jsx
-import {parent} from 'glamor'
+import {css, parent} from 'glamor'
+
+let box = css({
+  '.no-js .something &': { color: 'gray' }
+})
+
+// or 
+
+import { css, parent } from 'glamor'
 
 let box = parent('.no-js .something', 
   { color: 'gray' })
@@ -172,7 +193,7 @@ glamor
 ```jsx
 import {select as $} from 'glamor'
 
-let ul = $(' li:first-of-type + li', {
+let ul = $('& li:first-of-type + li', {
   color: 'red'
 })
 
@@ -222,9 +243,9 @@ css
 
 glamor
 ```jsx
-import {merge, after, media, nthChild} from 'glamor'
+import {css, after, media, nthChild} from 'glamor'
 
-const container = merge(
+const container = css(
   {
     position: 'relative',
     width: '100%',
@@ -238,10 +259,13 @@ const container = merge(
     display: 'table',
     clear: 'both'
   }),
-  media('(min-width: 400px)', {
-    width: '85%',
-    padding: 0
-  }),
+  { 
+    '@media('(min-width: 400px)': {
+      width: '85%',
+      padding: 0
+    }
+  },
+  // or use helpers 
   media('(min-width: 550px)', nthChild('2n', {
     width: '80%'    
   }))  
@@ -259,7 +283,11 @@ html, body { padding: 0 }
 
 glamor 
 ```jsx
-insertRule('html, body { padding: 0 }')
+import { css } from 'glamor'
+
+css.global('html, body',  { padding: 0 })
+// or as raw css
+css.insert('html, body { padding: 0 }')
 ```
 
 fallback values
@@ -305,13 +333,13 @@ css
 
 glamor
 ```jsx
-let bounce = keyframes({ 
+let bounce = css.keyframes({ 
   '0%': { transform: 'scale(0.1)', opacity: 0 },
   '60%': { transform: 'scale(1.2)', opacity: 1 },
   '100%': { transform: 'scale(1)' }
 })
 
-let box = style({
+let box = css({
   animation: `${bounce} 2s`,
   width: 50, height: 50,
   backgroundColor: 'red'
@@ -338,7 +366,7 @@ css
 
 glamor
 ```
-let abc = style({
+let abc = css({
   color: ['#ccc', 'rgba(0, 0, 0, 0.5)']
 })
 ```

@@ -1,12 +1,12 @@
 import React from 'react'
-import { style, merge, hover } from '../src'
+import { css, hover } from '../src'
 
 import '../src/reset' // css reset!
 
 import { base, container, row, columns, half, oneThird, twoThirds, fullWidth } from '../src/ous'
 
-let grayBg = style({ backgroundColor: '#eee', textAlign: 'center', borderRadius: 4 })
-let grayCols = n => merge(columns(n), grayBg)
+let grayBg = css({ backgroundColor: '#eee', textAlign: 'center', borderRadius: 4 })
+let grayCols = n => css(columns(n), grayBg)
 
 
 export class App extends React.Component {
@@ -124,7 +124,7 @@ class Forms extends React.Component {
       </div>
       <label htmlFor="exampleMessage">Message</label>
       <textarea {...fullWidth} placeholder="Hi Dave!" id="exampleMessage"></textarea>
-      <label {...style({ float: 'right', marginTop: 12 })}>
+      <label {...css({ float: 'right', marginTop: 12 })}>
         <input type="checkbox"/>
         <span {...labelBody}>Send a copy to yourself</span>
       </label>

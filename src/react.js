@@ -89,7 +89,7 @@ export function makeTheme() {
             [key]: [ typeof _style === 'function' ?
               _style(this.props) :
               _style,
-            ...this.context[key] || [] ]
+              ...this.context[key] || [] ]
           }
         }
         render() {
@@ -103,7 +103,7 @@ export function makeTheme() {
 }
 
 function toStyle(s) {
-  return s!= null && isLikeRule(s) ? s : style(s);
+  return s!= null && isLikeRule(s) ? s : style(s)
 }
 
 // propMerge will take an arbitrary object "props", filter out glamor data-css-* styles and merge it with "mergeStyle"

@@ -1,5 +1,5 @@
 import React from 'react'
-import { style, speedy } from '../src'
+import { css, speedy } from '../src'
 speedy(true)
 
 function getRandomColor() {
@@ -26,7 +26,7 @@ export class Runner extends React.Component {
     console.profile()
     let start = Date.now()    
     for(let i = 0; i < this.props.count; i++) {
-      style({ 
+      css({ 
         color: getRandomColor()        
       })
     }    

@@ -1,6 +1,6 @@
-import React from 'react' //eslint-disable-line
+import React from 'react'
 import { render } from 'react-dom'
 
-import { App } from './styled'
+import { App } from './12'
 render(<App/>,
   document.querySelector('#demo'))

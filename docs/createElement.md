@@ -1,6 +1,6 @@
 // how to install the createElement shim
 
-a drop-in replacement for React.createElement, allowing you to pass a `css` prop to dom elements. 
+a drop-in replacement for React.createElement, allowing you to pass a `css` prop to elements. The props is converted to a className and added to the element.
 
 usage 
 
@@ -11,6 +11,11 @@ import { createElement } from 'glamor/react'
 <div css={{ color: 'red' }}>
   I'm red!
 </div>
+```
+
+The props accepts arrays as well, so you could do 
+```jsx
+<div css={[{ color: 'red' }, someRule, { ... }]}> ... </div>div>
 ```
 
 Use the following settings to avoid the `createElement` boilerplate 
