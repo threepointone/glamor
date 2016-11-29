@@ -71,29 +71,29 @@ features
 - dev helper to simulate pseudo classes like `:hover`, etc
 - server side / static rendering
 - tests / coverage
-- experimental - [write real css](https://github.com/threepointone/glamor/blob/master/docs/css.md), with syntax highlighting and linting 
+- experimental - [write real css](https://github.com/threepointone/glamor/blob/v3/docs/css.md), with syntax highlighting and linting 
 
 
 (thanks to [BrowserStack](https://www.browserstack.com/) for providing the infrastructure that allows us to run our build in real browsers.)
 
 docs 
 ---
-- [api documentation](https://github.com/threepointone/glamor/blob/master/docs/api.md)
-- [howto](https://github.com/threepointone/glamor/blob/master/docs/howto.md) - a comparison of css techniques in glamor
-- [plugins](https://github.com/threepointone/glamor/blob/master/docs/plugins.md)
-- [server side rendering](https://github.com/threepointone/glamor/blob/master/docs/server.md)
+- [api documentation](https://github.com/threepointone/glamor/blob/v3/docs/api.md)
+- [howto](https://github.com/threepointone/glamor/blob/v3/docs/howto.md) - a comparison of css techniques in glamor
+- [plugins](https://github.com/threepointone/glamor/blob/v3/docs/plugins.md)
+- [server side rendering](https://github.com/threepointone/glamor/blob/v3/docs/server.md)
 
 extras 
 ---
 
 - `glamor/reset` - include a css reset
-- [use a `css` prop on *all* your react elements](https://github.com/threepointone/glamor/blob/master/docs/createElement.md)
-- `glamor/react` - helpers for [themes](https://github.com/threepointone/glamor/blob/master/docs/themes.md), [`@vars`](https://github.com/threepointone/glamor/blob/master/docs/vars.md)
-- `glamor/jsxstyle` - [react integration](https://github.com/threepointone/glamor/blob/master/docs/jsxstyle.md), à la [jsxstyle](https://github.com/petehunt/jsxstyle/)
-- `glamor/aphrodite` - [shim](https://github.com/threepointone/glamor/blob/master/docs/aphrodite.md) for [aphrodite](https://github.com/Khan/aphrodite) stylesheets
+- [use a `css` prop on *all* your react elements](https://github.com/threepointone/glamor/blob/v3/docs/createElement.md)
+- `glamor/react` - helpers for [themes](https://github.com/threepointone/glamor/blob/v3/docs/themes.md), [`@vars`](https://github.com/threepointone/glamor/blob/v3/docs/vars.md)
+- `glamor/jsxstyle` - [react integration](https://github.com/threepointone/glamor/blob/v3/docs/jsxstyle.md), à la [jsxstyle](https://github.com/petehunt/jsxstyle/)
+- `glamor/aphrodite` - [shim](https://github.com/threepointone/glamor/blob/v3/docs/aphrodite.md) for [aphrodite](https://github.com/Khan/aphrodite) stylesheets
 - `glamor/utils` - a port of [postcss-utilities](https://github.com/ismamz/postcss-utilities)
 - `glamor/ous` - a port of [the skeleton css framework](http://getskeleton.com)
-- [`glamor/styled`](https://github.com/threepointone/glamor/blob/master/docs/styled.md) - an experimental port of [styled-components](https://styled-components.com/)
+- [`glamor/styled`](https://github.com/threepointone/glamor/blob/v3/docs/styled.md) - an experimental port of [styled-components](https://styled-components.com/)
 
 
 characteristics

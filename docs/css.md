@@ -99,7 +99,7 @@ caveat
 styled-components
 ---
 
-[right this way](https://github.com/threepointone/glamor/blob/master/docs/styled.md)
+[right this way](https://github.com/threepointone/glamor/blob/v3/docs/styled.md)
 
 todo
 ---
