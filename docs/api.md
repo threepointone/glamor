@@ -47,8 +47,8 @@ let combined = css(
 ```
 
 - glamor will make sure that rules are merged in the correct order, 
-managing nesting and precedence for you. [(Learn more about selectors and nesting)](https://github.com/threepointone/glamor/blob/v3/docs/selectors.md) 
-- There are a number of helpers to simplify creating rules. [See the full list here](https://github.com/threepointone/glamor/blob/v3/docs/helpers.md)
+managing nesting and precedence for you. [(Learn more about selectors and nesting)](https://github.com/threepointone/glamor/blob/master/docs/selectors.md) 
+- There are a number of helpers to simplify creating rules. [See the full list here](https://github.com/threepointone/glamor/blob/master/docs/helpers.md)
 - in dev mode, adding a `label` string prop will reflect its value in devtools. useful when debugging.
 
 

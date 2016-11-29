@@ -239,8 +239,8 @@ function toRule(spec) {
   return ret
 }
 
-function log(){
-  console.log(this)
+function log() { //eslint-disable-line no-unused-vars
+  console.log(this) //eslint-disable-line no-console
   return this
 }
 
@@ -333,17 +333,7 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
   }) 
 }
 
-
-export function css(...rules) {
-  if(rules[0] && rules[0].length && rules[0].raw) {
-    throw new Error('you forgot to include glamor/babel in your babel plugins.')
-  }
-  
-  rules = clean(rules)
-  if(!rules) {
-    return {} // todo - nullrule 
-  }
-  
+function _css(rules) {
   let style = { label: [] }
   build(style, { src: rules }) // mutative! but worth it. 
 
@@ -353,6 +343,27 @@ export function css(...rules) {
     type: 'css'    
   }
   return toRule(spec)  
+}
+
+let nullrule = {
+  // 'data-css-nil': ''
+}
+Object.defineProperty(nullrule, 'toString', {
+  enumerable: false, value() { return 'css-nil' }
+})
+
+
+export function css(...rules) {
+  if(rules[0] && rules[0].length && rules[0].raw) {
+    throw new Error('you forgot to include glamor/babel in your babel plugins.')
+  }
+  
+  rules = clean(rules)
+  if(!rules) {    
+    return nullrule // todo - nullrule 
+  }
+  
+  return _css(rules)
 }
 
 css.insert = (css) => {

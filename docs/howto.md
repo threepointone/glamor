@@ -79,7 +79,7 @@ import { css } from 'glamor'
 <div className={css(bold, myClass)} />
 ```
 
-[(more examples for composing rules)](https://github.com/threepointone/glamor/blob/v3/src/ous.js)
+[(more examples for composing rules)](https://github.com/threepointone/glamor/blob/master/src/ous.js)
 
 
 child selectors

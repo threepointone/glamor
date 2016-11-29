@@ -21,4 +21,4 @@ let styles = StyleSheet.create({
 ```
 
 
-a full example is [available](https://github.com/threepointone/glamor/blob/v3/examples/aphrodite.js).
+a full example is [available](https://github.com/threepointone/glamor/blob/master/examples/aphrodite.js).
