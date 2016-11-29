@@ -363,9 +363,13 @@ css.insert = (css) => {
   }
 }
 
+export const insertRule = css.insert
+
 css.global = (selector, style) => {
   return css.insert(`${selector}{${createMarkupForStyles(style)}}`)
 }
+
+export const insertGlobal = css.global
 
 
 function insertKeyframe(spec) {
@@ -502,9 +506,7 @@ if(isDev && isBrowser) {
   // todo - clearInterval on browser close
 }
 
-export function style(o) {
-  return css(o)
-}
+export const style = css
 
 export function select(selector, style) {
   return css({ [selector]: style })

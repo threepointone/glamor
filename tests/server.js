@@ -1,4 +1,4 @@
-import { style, merge, hover, flush, insertGlobal,
+import { style, css, hover, flush, styleSheet,
   cssLabels, simulations } from '../src'
 import { renderStatic, renderStaticOptimized } from '../src/server'
 import jade from 'pug'
@@ -9,19 +9,19 @@ import React from 'react' // eslint-disable-line
 import { renderToStaticMarkup } from 'react-dom/server'
 
 // make a throwaway style
-insertGlobal('html, body', {
+css.global('html, body', {
   padding: 20
 })
-style({ color: 'wheat' })
+css({ color: 'wheat' })
 
 // basic 
 {
   let { html, css, ids } = renderStatic(()=>
     renderToStaticMarkup(<div {...style({ color: 'red' })}/>))
 
-  expect(html).toEqual('<div data-css-im3wl1=""></div>')
-  expect(css).toEqual('html, body{padding:20px;}.css-92lrii,[data-css-92lrii]{color:wheat;}.css-im3wl1,[data-css-im3wl1]{color:red;}')
-  expect(ids).toEqual([ 'afsnj3', '92lrii', 'im3wl1' ])
+  expect(html).toEqual('<div data-css-1ezp9xe=""></div>')
+  expect(css).toEqual('html, body{padding:20px;}.css-17kdler,[data-css-17kdler]{color:wheat;}.css-1ezp9xe,[data-css-1ezp9xe]{color:red;}')
+  expect(ids).toEqual([ 'afsnj3', '17kdler', '1ezp9xe' ])
   cssLabels(true)
   simulations(true)
 }
@@ -31,11 +31,10 @@ style({ color: 'wheat' })
   cssLabels(false)
   simulations(false)
   let { html, css, ids } = renderStaticOptimized(() =>
-    renderToStaticMarkup(<div {...merge(style({ color: 'red' }), hover({ color: 'blue' }))}/>))
-
-  expect(html).toEqual('<div data-css-1lci705=""></div>')
-  expect(css).toEqual('html, body{padding:20px;}.css-1lci705,[data-css-1lci705]{color:red;}.css-1lci705:hover:nth-child(n),[data-css-1lci705]:hover:nth-child(n){color:blue;}')
-  expect(ids).toEqual([ 'afsnj3', '1lci705' ])
+    renderToStaticMarkup(<div {...style(style({ color: 'red' }), hover({ color: 'blue' }))}/>))
+  expect(html).toEqual('<div data-css-11t3bx0=""></div>')
+  expect(css).toEqual('html, body{padding:20px;}.css-11t3bx0,[data-css-11t3bx0]{color:red;}.css-11t3bx0:hover,[data-css-11t3bx0]:hover{color:blue;}')
+  expect(ids).toEqual([ 'afsnj3', '11t3bx0' ])
   cssLabels(true)
   simulations(true)
 }
@@ -51,6 +50,6 @@ div&attributes(style({ color: 'blue' }))
   | yay!
 `, { style })
   })
-  expect(html).toEqual('<div data-css-hxfs3d="*">yay!</div>')
-  expect(css).toEqual('.css-hxfs3d,[data-css-hxfs3d]{color:blue;}')
+  expect(html).toEqual('<div data-css-icjsl7="">yay!</div>')
+  expect(css).toEqual('.css-icjsl7,[data-css-icjsl7]{color:blue;}')
 }
