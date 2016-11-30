@@ -39,9 +39,7 @@
     "test:server": "NODE_ENV=test babel-node tests/server.js --presets es2015,stage-0,react",
     "test:watch": "npm test -- --no-single-run",
     "coverage": "rm -rf tests/coverage && COVERAGE=1 npm test && open tests/coverage/*/index.html",
-    "prepublish": "npm run build",
-    "docs": "webpack-dev-server --config docs/webpack.js",
-    "docs:build": "NODE_ENV=production webpack --config docs/webpack.js"
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
