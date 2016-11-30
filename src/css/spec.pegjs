@@ -122,7 +122,15 @@ ruleset
     }
 
 selector
-  = left:simple_selector S* combinator:combinator right:selector {
+  = combinator:combinator S* right:selector {
+    return {
+      type: "Selector",
+      combinator: combinator,
+      left: { type: 'Contextual' },
+      right: right
+    }
+  }
+  / left:simple_selector S* combinator:combinator right:selector {
       return {
         type: "Selector",
         combinator: combinator,

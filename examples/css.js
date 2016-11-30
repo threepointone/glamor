@@ -11,12 +11,12 @@ function log(x) {
 
 let someTag = '.xyz:hover'
 
-css({
-  '--myVar': 50
-})
+css`opacity: 0.5`
 
 let rule = css`
+
   /* real css! */
+  + h1 { backgroundColor: black }
   color: yellow;
   :hover {
     /* with interpolations */
