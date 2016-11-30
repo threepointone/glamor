@@ -216,7 +216,7 @@ pseudo
     { return { type: "PseudoSelector", value: value }; }
 
 declaration
-  = inter: stub { return inter } / name:property ':' S* value:expr prio:prio? {
+  = name:property ':' S* value:expr prio:prio? {
 
       return {
         type: "Declaration",
@@ -225,6 +225,7 @@ declaration
         important: prio !== null
       };
     }
+  / inter: stub { return inter } 
 
 prio
   = IMPORTANT_SYM S*
@@ -233,8 +234,7 @@ expr
   = head:term tail:(operator? term)* { return buildExpression(head, tail); }
 
 term
-  = inter: stub { return inter }
-  / quantity:(PERCENTAGE / LENGTH / EMS / EXS / ANGLE / TIME / FREQ / NUMBER)
+  = quantity:(PERCENTAGE / LENGTH / EMS / EXS / ANGLE / TIME / FREQ / NUMBER)
     S*
     {
       return {
@@ -247,7 +247,9 @@ term
   / value:URI S*    { return { type: "URI",    value: value }; }
   / function
   / hexcolor
+  / inter: stub { return inter }
   / value:IDENT S*  { return { type: "Ident",  value: value }; }
+  
 
 function
   = name:FUNCTION S* params:expr ")" S* {
@@ -300,7 +302,7 @@ comment
   = "/*" [^*]* "*"+ ([^/*] [^*]* "*"+)* "/"
 
 ident
-  = prefix:$"-"? start:nmstart chars:nmchar* {
+  = prefix:$"-"*  start:nmstart chars:nmchar* {
       return prefix + start + chars.join("");
     }
 
@@ -393,39 +395,39 @@ IMPORTANT_SYM "!important"
   = comment* "!" (s / comment)* I M P O R T A N T
 
 EMS "length"
-  = comment* value:num E M { return { value: value, unit: "em" }; }
+  = comment* value:(num / stub) E M { return { value: value, unit: "em" }; }
 
 EXS "length"
-  = comment* value:num E X { return { value: value, unit: "ex" }; }
+  = comment* value:(num / stub) E X { return { value: value, unit: "ex" }; }
 
 LENGTH "length"
-  = comment* value:num P X { return { value: value, unit: "px" }; }
-  / comment* value:num C M { return { value: value, unit: "cm" }; }
-  / comment* value:num M M { return { value: value, unit: "mm" }; }
-  / comment* value:num I N { return { value: value, unit: "in" }; }
-  / comment* value:num P T { return { value: value, unit: "pt" }; }
-  / comment* value:num P C { return { value: value, unit: "pc" }; }
-  / comment* value:num R E M { return { value: value, unit: "rem" }; }
-  / comment* value:num V H { return { value: value, unit: "vh" }; }
-  / comment* value:num V W { return { value: value, unit: "vw" }; }
-  / comment* value:num V M I N { return { value: value, unit: "vmin" }; }
-  / comment* value:num E X { return { value: value, unit: "ex" }; }
+  = comment* value:(num / stub) P X { return { value: value, unit: "px" }; }
+  / comment* value:(num / stub) C M { return { value: value, unit: "cm" }; }
+  / comment* value:(num / stub) M M { return { value: value, unit: "mm" }; }
+  / comment* value:(num / stub) I N { return { value: value, unit: "in" }; }
+  / comment* value:(num / stub) P T { return { value: value, unit: "pt" }; }
+  / comment* value:(num / stub) P C { return { value: value, unit: "pc" }; }
+  / comment* value:(num / stub) R E M { return { value: value, unit: "rem" }; }
+  / comment* value:(num / stub) V H { return { value: value, unit: "vh" }; }
+  / comment* value:(num / stub) V W { return { value: value, unit: "vw" }; }
+  / comment* value:(num / stub) V M I N { return { value: value, unit: "vmin" }; }
+  / comment* value:(num / stub) E X { return { value: value, unit: "ex" }; }
 
 ANGLE "angle"
-  = comment* value:num D E G   { return { value: value, unit: "deg"  }; }
-  / comment* value:num R A D   { return { value: value, unit: "rad"  }; }
-  / comment* value:num G R A D { return { value: value, unit: "grad" }; }
+  = comment* value:(num / stub) D E G   { return { value: value, unit: "deg"  }; }
+  / comment* value:(num / stub) R A D   { return { value: value, unit: "rad"  }; }
+  / comment* value:(num / stub) G R A D { return { value: value, unit: "grad" }; }
 
 TIME "time"
-  = comment* value:num M S_ { return { value: value, unit: "ms" }; }
-  / comment* value:num S_   { return { value: value, unit: "s"  }; }
+  = comment* value:(num / stub) M S_ { return { value: value, unit: "ms" }; }
+  / comment* value:(num / stub) S_   { return { value: value, unit: "s"  }; }
 
 FREQ "frequency"
-  = comment* value:num H Z   { return { value: value, unit: "hz" }; }
-  / comment* value:num K H Z { return { value: value, unit: "kh" }; }
+  = comment* value:(num / stub) H Z   { return { value: value, unit: "hz" }; }
+  / comment* value:(num / stub) K H Z { return { value: value, unit: "kh" }; }
 
 PERCENTAGE "percentage"
-  = comment* value:num "%" { return { value: value, unit: "%" }; }
+  = comment* value:(num / stub) "%" { return { value: value, unit: "%" }; }
 
 NUMBER "number"
   = comment* value:num { return { value: value, unit: null }; }

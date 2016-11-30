@@ -95,10 +95,10 @@ let conversions = {
     if(node.value.type === 'Stub') {
       val = convert(node.value, ctx)
     }
-    return `{ '${toCamel(node.name)}': ${val} }` // todo - numbers 
+    return `{ '${node.name.indexOf('--') === 0 ? node.name : toCamel(node.name)}': ${val} }` // todo - numbers 
   },
-  Quantity(node) {
-    return node.value + node.unit
+  Quantity(node, ctx) {
+    return (node.value.type === 'Stub' ? convert(node.value, ctx) : node.value)  + node.unit
   },
   String(node) {
     return node.value

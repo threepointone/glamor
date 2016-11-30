@@ -11,7 +11,12 @@ function log(x) {
 
 let someTag = '.xyz:hover'
 
+css({
+  '--myVar': 50
+})
+
 let rule = css`
+  /* real css! */
   color: yellow;
   :hover {
     /* with interpolations */
@@ -23,12 +28,13 @@ let rule = css`
 
   /* and composition  */
   ${css`color: greenish`}
-
+  --custom: --xyz;
   @media (min-width: 300px) {
     color: orange;
     height:100vh;
+    width: 300;
     
-    border: 1px ${'solid'} blue;
+    border: ${1}px ${'solid'} blue;
     ${{ color: 'brown' }}
     && {
       color: blue;

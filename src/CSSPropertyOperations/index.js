@@ -118,7 +118,7 @@ if (process.env.NODE_ENV !== 'production') {
 export function createMarkupForStyles(styles, component) {
   let serialized = ''
   for (let styleName in styles) {
-    const isCustomProp = styleName.startsWith('--');
+    const isCustomProp = (styleName.indexOf('--') === 0)
     if (!styles.hasOwnProperty(styleName)) {
       continue
     }
