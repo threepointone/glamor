@@ -17,10 +17,10 @@ export function speedy(bool) {
 
 // plugins
 import { PluginSet, prefixes, fallbacks } from './plugins' // we include these by default
-export const plugins = styleSheet.plugins = new PluginSet(prefixes, fallbacks)
+export const plugins = styleSheet.plugins = new PluginSet([ prefixes, fallbacks ])
 plugins.media = new PluginSet() // neat! media, font-face, keyframes
 plugins.fontFace = new PluginSet()
-plugins.keyframes = new PluginSet(prefixes)
+plugins.keyframes = new PluginSet([ prefixes ])
 
 // define some constants
 
