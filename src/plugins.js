@@ -44,24 +44,10 @@ export function fallbacks(node) {
   return node   
 }
 
-import { autoprefix } from './autoprefix'
+import * as prefixAll from './inline-style-prefix-all/index'
 
 export function prefixes({ style, ...rest }) {
-  return ({ style: autoprefix(style), ...rest })
-}
-
-export function positionSticky(node) {
-  if(node.style.position === 'sticky') {
-    let { style, ...rest } = node
-    return ({ 
-      style: { 
-        ...style, 
-        position: [ 'sticky', '-webkit-sticky' ] 
-      }, 
-      ...rest 
-    })
-  }
-  return node
+  return ({ style: prefixAll(style), ...rest })
 }
 
 export function bug20fix({ selector, style }) {
