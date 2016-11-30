@@ -29,6 +29,7 @@ let rule = css`
   /* and composition  */
   ${css`color: greenish`}
   --custom: --xyz;
+  background-color: var(--main-bg-color, something);
   @media (min-width: 300px) {
     color: orange;
     height:100vh;

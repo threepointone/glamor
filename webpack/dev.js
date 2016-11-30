@@ -29,6 +29,7 @@ module.exports = {
     })
   ],
   devServer: {
+    stats: 'errors-only',
     contentBase: 'examples/',
     historyApiFallback: true,
     compress: true, 

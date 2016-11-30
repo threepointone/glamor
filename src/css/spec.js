@@ -2762,10 +2762,7 @@ function peg$parse(input, options) {
     var s0, s1, s2, s3, s4, s5;
 
     s0 = peg$currPos;
-    s1 = peg$parsestub();
-    if (s1 === peg$FAILED) {
-      s1 = peg$parseproperty();
-    }
+    s1 = peg$parseproperty();
     if (s1 !== peg$FAILED) {
       if (input.charCodeAt(peg$currPos) === 58) {
         s2 = peg$c25;

@@ -81,8 +81,8 @@ let conversions = {
   AttributeSelector(node, ctx) {
     return `[${node.attribute}${node.operator ? node.operator + node.value : ''}]`
   },
-  Function() {
-
+  Function(node, ctx) {
+    return `${node.name}(${convert(node.params, ctx)})`
   },
   Declaration(node, ctx) {
     // todo - fallbacks
