@@ -105,6 +105,8 @@ todo
 ---
 
 - move to [rework](https://github.com/reworkcss/css)/anything else for parsing 
+- `@supports`
+- infinite nesting
 - global css
 - keyframes, font faces
 - override pragma

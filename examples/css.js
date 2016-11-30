@@ -14,9 +14,10 @@ let someTag = '.xyz:hover'
 css`opacity: 0.5`
 
 let rule = css`
-
   /* real css! */
   + h1 { backgroundColor: black }
+  h1.title & { color: blue }
+  [something^='123'] {color: blue}
   color: yellow;
   :hover {
     /* with interpolations */

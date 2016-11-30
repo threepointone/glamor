@@ -33,7 +33,7 @@ cons
 --- 
 - very feature incomplete 
 - parser doesn't match all of the css spec (currently about ~2.1)
-- just one level of nesting, like glamor 
+- shallow nesting (for now)
 - interpolations *may* fail for unaccounted patterns. open an issue if you find one. 
 
 todo 

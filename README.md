@@ -67,7 +67,7 @@ features
 - `@media` queries
 - `@supports` statements
 - `@font-face` / `@keyframes`
-- escape hatches for parent and child selectors 
+- escape hatches for parent / child / contextual selectors 
 - dev helper to simulate pseudo classes like `:hover`, etc
 - server side / static rendering
 - tests / coverage

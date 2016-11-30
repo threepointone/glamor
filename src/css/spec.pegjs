@@ -198,13 +198,17 @@ element_name
 attrib
   = "[" S*
     attribute:IDENT S*
-    operatorAndValue:(("=" / INCLUDES / DASHMATCH) S* (IDENT / STRING) S*)?
+    operatorAndValue:(("=" / INCLUDES / DASHMATCH / BEGINSWITH / ENDSWITH / CONTAINS) S* (IDENT / STRING) S*)?
     "]"
     {
+      let operator = extractOptional(operatorAndValue, 0)
+      if(Array.isArray(operator)){
+        operator = operator[1]
+      }
       return {
         type: "AttributeSelector",
         attribute: attribute,
-        operator: extractOptional(operatorAndValue, 0),
+        operator: operator,
         value: extractOptional(operatorAndValue, 2)
       };
     }
@@ -382,6 +386,15 @@ INCLUDES "~="
 
 DASHMATCH "|="
   = comment* "|="
+
+BEGINSWITH "^="
+  = comment* "^="
+
+ENDSWITH "$="
+  = comment* "$="  
+
+CONTAINS "*="
+  = comment* "*="
 
 STRING "string"
   = comment* string:string { return string; }
