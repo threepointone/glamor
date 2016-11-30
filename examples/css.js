@@ -21,11 +21,13 @@ let rule = css`
   & > h1 { color: purple }
   html.ie9 & ${someTag} { padding: 300px }
 
-  /* and composition */
+  /* and composition  */
   ${css`color: greenish`}
 
   @media (min-width: 300px) {
     color: orange;
+    height:100vh;
+    
     border: 1px ${'solid'} blue;
     ${{ color: 'brown' }}
     && {
@@ -33,6 +35,7 @@ let rule = css`
       ${{ color: 'browner' }}
     }
   }
+  margin: 0
 `
 
 export const App = () => <div className={rule}>

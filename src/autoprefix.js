@@ -8,6 +8,9 @@ function includes(obj, search) {
   if (typeof obj === 'number') {
     obj = obj.toString()
   }
+  if(!obj.indexOf) {
+    throw new Error('this seems to be an invalid value ' + JSON.stringify(obj))
+  }
   return obj.indexOf(search) !== -1
 }
 

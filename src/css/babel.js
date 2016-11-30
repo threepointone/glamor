@@ -88,8 +88,8 @@ let conversions = {
     // todo - fallbacks
     let val = convert(node.value, ctx, true)
     let icky = false;
-    [ '${', '\'', '"' ].forEach(x => {
-      icky = icky || (val.indexOf(x) >= 0)
+    [ '${', '\'', '"' ].forEach(x => {      
+      icky = icky || ((val + '').indexOf(x) >= 0)
     })
     val = icky ? `\`${val}\`` : `'${val}'`
     if(node.value.type === 'Stub') {

@@ -308,7 +308,7 @@ name
   = chars:nmchar+ { return chars.join(""); }
 
 num
-  = [+-]? ([0-9]+ / [0-9]* "." [0-9]+) ("e" [+-]? [0-9]+)? {
+  = [+-]? (([0-9]* "." [0-9]+) / [0-9]+ ) ("e" [+-]? [0-9]+)? {
       return parseFloat(text());
     }
 
@@ -348,6 +348,8 @@ R  = "r"i / "\\" "0"? "0"? "0"? "0"? [\x52\x72] ("\r\n" / [ \t\r\n\f])? / "\\r"i
 S_ = "s"i / "\\" "0"? "0"? "0"? "0"? [\x53\x73] ("\r\n" / [ \t\r\n\f])? / "\\s"i { return "s"; }
 T  = "t"i / "\\" "0"? "0"? "0"? "0"? [\x54\x74] ("\r\n" / [ \t\r\n\f])? / "\\t"i { return "t"; }
 U  = "u"i / "\\" "0"? "0"? "0"? "0"? [\x55\x75] ("\r\n" / [ \t\r\n\f])? / "\\u"i { return "u"; }
+V  = "v"i / "\\" "0"? "0"? "0"? "0"? [\x56\x76] ("\r\n" / [ \t\r\n\f])? / "\\v"i { return "v"; }
+W  = "w"i / "\\" "0"? "0"? "0"? "0"? [\x57\x77] ("\r\n" / [ \t\r\n\f])? / "\\w"i { return "w"; }
 X  = "x"i / "\\" "0"? "0"? "0"? "0"? [\x58\x78] ("\r\n" / [ \t\r\n\f])? / "\\x"i { return "x"; }
 Z  = "z"i / "\\" "0"? "0"? "0"? "0"? [\x5a\x7a] ("\r\n" / [ \t\r\n\f])? / "\\z"i { return "z"; }
 
@@ -403,6 +405,11 @@ LENGTH "length"
   / comment* value:num I N { return { value: value, unit: "in" }; }
   / comment* value:num P T { return { value: value, unit: "pt" }; }
   / comment* value:num P C { return { value: value, unit: "pc" }; }
+  / comment* value:num R E M { return { value: value, unit: "rem" }; }
+  / comment* value:num V H { return { value: value, unit: "vh" }; }
+  / comment* value:num V W { return { value: value, unit: "vw" }; }
+  / comment* value:num V M I N { return { value: value, unit: "vmin" }; }
+  / comment* value:num E X { return { value: value, unit: "ex" }; }
 
 ANGLE "angle"
   = comment* value:num D E G   { return { value: value, unit: "deg"  }; }
