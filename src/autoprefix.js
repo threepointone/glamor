@@ -101,6 +101,7 @@ let clientPrefix = (() => {
 })()
 
 function checkAndAddPrefix(styleObj, key, val, allVendors) {
+
   let oldFlex = true
   
   function valueWithPrefix(cssVal, prefix) {
@@ -204,13 +205,13 @@ function checkAndAddPrefix(styleObj, key, val, allVendors) {
         case 'alignSelf': prefixedProperties.msFlexItemAlign = valWithoutFlex(); break
         case 'alignItems': prefixedProperties.WebkitBoxAlign = prefixedProperties.msFlexAlign = valWithoutFlex(); break
         case 'alignContent':
-          if(val === 'spaceAround') { prefixedProperties.msFlexLinePack = 'distribute' }
-          else if(val === 'spaceBetween') { prefixedProperties.msFlexLinePack = 'justify' }
+          if(val === 'space-around') { prefixedProperties.msFlexLinePack = 'distribute' }
+          else if(val === 'space-between') { prefixedProperties.msFlexLinePack = 'justify' }
           else { prefixedProperties.msFlexLinePack = valWithoutFlex() }
           break
         case 'justifyContent':          
-          if(val === 'spaceAround') { prefixedProperties.msFlexPack = 'distribute' }
-          else if(val === 'spaceBetween') { prefixedProperties.WebkitBoxPack = prefixedProperties.msFlexPack = 'justify' }
+          if(val === 'space-around') { prefixedProperties.msFlexPack = 'distribute' }
+          else if(val === 'space-between') { prefixedProperties.WebkitBoxPack = prefixedProperties.msFlexPack = 'justify' }
           else { prefixedProperties.WebkitBoxPack = prefixedProperties.msFlexPack = valWithoutFlex() }
           break
         case 'flexBasis': prefixedProperties.msFlexPreferredSize = val; break

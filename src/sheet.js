@@ -61,21 +61,21 @@ function makeStyleTag() {
   return tag
 }
 
-
-export class StyleSheet {
-  constructor({ 
+export function StyleSheet({ 
     speedy = !isDev && !isTest, 
     maxLength = (isBrowser && oldIE) ? 4000 : 65000 
   } = {}) {
-    this.isSpeedy = speedy // the big drawback here is that the css won't be editable in devtools
-    this.sheet = undefined
-    this.tags = []
-    this.maxLength = maxLength
-    this.ctr = 0
-  }
+  this.isSpeedy = speedy // the big drawback here is that the css won't be editable in devtools
+  this.sheet = undefined
+  this.tags = []
+  this.maxLength = maxLength
+  this.ctr = 0
+}
+
+Object.assign(StyleSheet.prototype, {
   getSheet() {
     return sheetForTag(last(this.tags))  
-  }
+  },
   inject() {
     if(this.injected) {
       throw new Error('already injected stylesheet!') 
@@ -95,13 +95,13 @@ export class StyleSheet {
       }
     } 
     this.injected = true
-  }
+  },
   speedy(bool) {
     if(this.ctr !== 0) {
       throw new Error(`cannot change speedy mode after inserting any rule to sheet. Either call speedy(${bool}) earlier in your app, or call flush() before speedy(${bool})`)
     }
     this.isSpeedy = !!bool
-  }
+  },
   _insert(rule) {
     // this weirdness for perf, and chrome's weird bug 
     // https://stackoverflow.com/questions/20007992/chrome-suddenly-stopped-accepting-insertrule
@@ -116,7 +116,7 @@ export class StyleSheet {
       }          
     }          
 
-  }
+  },
   insert(rule) {    
     
     if(isBrowser) {
@@ -142,7 +142,7 @@ export class StyleSheet {
       this.tags.push(makeStyleTag())
     }
     return this.ctr -1
-  }
+  },
   // commenting this out till we decide on v3's decision 
   // _replace(index, rule) {
   //   // this weirdness for perf, and chrome's weird bug 
@@ -180,7 +180,7 @@ export class StyleSheet {
   delete(index) {
     // we insert a blank rule when 'deleting' so previously returned indexes remain stable
     return this.replace(index, '')
-  }
+  },
   flush() {
     if(isBrowser) {
       this.tags.forEach(tag => tag.parentNode.removeChild(tag))
@@ -194,7 +194,7 @@ export class StyleSheet {
       this.sheet.cssRules = []
     }
     this.injected = false
-  }  
+  },  
   rules() {
     if(!isBrowser) {
       return this.sheet.cssRules
@@ -205,4 +205,4 @@ export class StyleSheet {
       )))
     return arr
   }
-}
+})
