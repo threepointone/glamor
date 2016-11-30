@@ -23,7 +23,7 @@ plugins.fontFace = new PluginSet()
 plugins.keyframes = new PluginSet(prefixes)
 
 // define some constants
-const isBrowser = typeof window !== 'undefined'
+
 const isDev = (process.env.NODE_ENV === 'development') || !process.env.NODE_ENV
 const isTest = process.env.NODE_ENV === 'test'
 
@@ -501,51 +501,6 @@ export const presets = {
   Desktop : '@media (min-width: 1000px)',
   hd : '(min-width: 1200px)',
   Hd : '@media (min-width: 1200px)'
-}
-
-
-/**** live media query labels ****/
-
-// simplest implementation -
-// cycle through the cache, and for every media query
-// find matching elements and update the label
-function updateMediaQueryLabels() {
-  Object.keys(registered).forEach(id => {
-    let { expr } = registered[id]
-    if(expr && hasLabels && window.matchMedia) {
-      let els = document.querySelectorAll(`[data-css-${id}]`)
-      let match = window.matchMedia(expr).matches ? '✓': '✕'
-      let regex = /^(✓|✕|\*)mq/;
-      [ ...els ].forEach(el => el.setAttribute(`data-css-${id}`,
-        el.getAttribute(`data-css-${id}`).replace(regex, `${match}mq`)))
-    }
-  })
-}
-
-// saves a reference to the loop we trigger
-let interval
-
-export function trackMediaQueryLabels(bool = true, period = 2000) {
-  if(bool) {
-    if(interval) {
-      console.warn('already tracking labels, call trackMediaQueryLabels(false) to stop') // eslint-disable-line no-console
-      return
-    }
-    interval = setInterval(() =>
-      updateMediaQueryLabels(), period)
-  }
-  else {
-    clearInterval(interval)
-    interval = null
-  }
-
-}
-
-// in dev mode, start this up immediately
-if(isDev && isBrowser) {
-  trackMediaQueryLabels(true)
-  // todo - make sure hot loading isn't broken
-  // todo - clearInterval on browser close
 }
 
 export const style = css
