@@ -278,12 +278,27 @@ function joinSupports(a, b) {
   return a ? `@supports ${a.substring(9)} and ${b.substring(9)}` : b
 }
 
+// flatten a nested array
+function flatten(inArr) {
+  let arr = []
+  for(let i=0; i<inArr.length; i++) {
+    if(Array.isArray(inArr[i]))
+      arr = arr.concat(flatten(inArr[i]))
+    else
+      arr = arr.concat(inArr[i])
+  }
+  return arr
+}
+
+
 // mutable! modifies dest.
 function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
 
   if(!Array.isArray(src)) {
     src = [ src ]
   }
+  src = flatten(src)
+
   src.forEach(_src => {
     if(isLikeRule(_src)) {
       let reg = _getRegistered(_src)
@@ -535,16 +550,16 @@ if(isDev && isBrowser) {
 
 export const style = css
 
-export function select(selector, _style) {
+export function select(selector, ...styles) {
   if(!selector) {
-    return style(_style)
+    return style(styles)
   }
-  return css({ [selector]: _style }) 
+  return css({ [selector]: styles }) 
 }
 export const $ = select
 
-export function parent(selector, style) {
-  return css({ [`${selector} &`]: style })
+export function parent(selector, ...styles) {
+  return css({ [`${selector} &`]: styles })
 }
 
 export const merge = css 
@@ -554,9 +569,8 @@ export function media(query, ...rules) {
   return css({ [`@media ${query}`]: rules })
 }
 
-export function pseudo(selector, style) {
-
-  return css({ [selector]: style }) 
+export function pseudo(selector, ...styles) {
+  return css({ [selector]: styles }) 
 }
 
 // allllll the pseudoclasses
