@@ -44,16 +44,8 @@ export function fallbacks(node) {
   return node   
 }
 
-import * as prefixAll from './inline-style-prefix-all/index'
+const prefixAll = require('./inline-style-prefix-all/index.js')
 
 export function prefixes({ style, ...rest }) {
   return ({ style: prefixAll(style), ...rest })
 }
-
-export function bug20fix({ selector, style }) {
-  // https://github.com/threepointone/glamor/issues/20
-  // todo - only on chrome versions and server side   
-  return { selector: selector.replace(/\:hover/g, ':hover:nth-child(n)') , style }
-  
-}
-
