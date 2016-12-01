@@ -60,7 +60,8 @@ We introduce an api to annotate arbitrary dom nodes with style definitions ("rul
 features
 ---
 
-- really small / fast / efficient, with a fluent api
+- fast / efficient, with a fluent api
+- ~8k gz, including the [prefixer](https://github.com/rofrischmann/inline-style-prefixer/) 
 - framework independent
 - adds vendor prefixes / fallback values 
 - supports all the pseudo :classes/::elements
