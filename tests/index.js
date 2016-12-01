@@ -374,7 +374,7 @@ describe('glamor', () => {
     it('adds vendor prefixes', () => {
       render(<div {...style({ color: 'red', transition: 'width 2s' })} />, node, () => {
         expect(styleSheet.rules()[0].cssText)
-          .toEqual('.css-19hf94w, [data-css-19hf94w] { color: red; -webkit-transition: width 2s; transition: width 2s; }')
+          .toEqual('.css-19hf94w, [data-css-19hf94w] { color: red; transition: width 2s; -webkit-transition: width 2s; }')
       })
     })
 
@@ -410,7 +410,7 @@ describe('glamor', () => {
         }
       })
       expect(styleSheet.rules()[0].cssText.replace(/\s/g,''))
-        .toEqual('@-webkit-keyframes bounce_zhy6v5 { \n  0% { opacity: 0; -webkit-transform: scale(0.1); }\n  60% { opacity: 1; -webkit-transform: scale(1.2); }\n  100% { -webkit-transform: scale(1); }\n}'.replace(/\s/g,''))
+        .toEqual('@-webkit-keyframesbounce_zhy6v5{0%{-webkit-transform:scale(0.1);opacity:0;}60%{-webkit-transform:scale(1.2);opacity:1;}100%{-webkit-transform:scale(1);}}')
       expect(animate).toEqual('bounce_zhy6v5')
 
     })
