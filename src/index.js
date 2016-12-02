@@ -306,7 +306,7 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
       _src = reg.style
     }
     _src = clean(_src)
-    if(_src.composes) {
+    if(_src && _src.composes) {
       build(dest, { selector, mq, supp, src: _src.composes })
     }
     Object.keys(_src).forEach(key => {
