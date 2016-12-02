@@ -309,7 +309,7 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
     if(_src && _src.composes) {
       build(dest, { selector, mq, supp, src: _src.composes })
     }
-    Object.keys(_src).forEach(key => {
+    Object.keys(_src || {}).forEach(key => {
       if(isSelector(key)) {
         selector = 
           selector === '::placeholder' ? 
