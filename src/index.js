@@ -154,7 +154,7 @@ function deconstruct(style) {
     else if(key === 'label') {
       if(style.label.length > 0) {
         plain = plain || {}
-        plain.label = style.label.join('.')  
+        plain.label = hasLabels ? style.label.join('.') : ''
       }      
     }
     else {
@@ -342,8 +342,11 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
           _dest = _dest[selector]
         }
         
-        if(key === 'label' && hasLabels) {
-          dest.label = dest.label.concat(_src.label)
+        if(key === 'label') {
+          if(hasLabels) {
+            dest.label = dest.label.concat(_src.label)  
+          }
+          
         }        
         else {
           _dest[key] = _src[key]
@@ -360,7 +363,7 @@ function _css(rules) {
 
   let spec = {
     id: hashify(style),
-    style, label: style.label.join('.'),
+    style, label: hasLabels ? style.label.join('.') : '',
     type: 'css'    
   }
   return toRule(spec)  
