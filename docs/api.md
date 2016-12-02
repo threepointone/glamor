@@ -98,7 +98,11 @@ css.global('html, body', { padding: 0 })
 // send one rule at a time 
 css.insert('html, body { padding: 0 }')
 css.insert('@media print {...}')
+```
 
+*Note*: You have to insert rules one by one! The following will not work in production mode:
+```
+css.insert('html, body { padding: 0 } strong{ padding: 10p }')
 ```
 
 
