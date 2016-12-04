@@ -81,4 +81,4 @@ with glamor, rules are first class values, and can be used at any point in an ob
 css-in-js gives us an opportunity to compose css and styles in ways we haven't been able to before, and in a fluent, accessible manner. I recommend you try it!
 
 
-To get to my point - I think 'css frameworks' in the future will consist of more decoupling between selectors and styles, and we'll be functionally creating values to apply on elements. That's... good, I guess?
+To get to my point - I think 'css frameworks' in the future will consist of more decoupling between selectors and styles, and we'll be functionally creating values to apply on elements. Exporting them as regular js objects can benefit the entire css-in-js ecosystem (and perhaps even compile other css targets like postcss/sass/etc). That's... good, I guess?
