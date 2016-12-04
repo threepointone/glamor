@@ -45,6 +45,8 @@ rehydrate(window._glam)
 ReactDOM.render(<App/>, document.getElementById('root'))
 ```
 
+- if using `rehydrate`, it HAS to execute before you run any code that defines any styles. [This can get tricky with es6 imports.](https://github.com/threepointone/glamor/issues/37#issuecomment-257831193)
+
 caveat: the above will include all the css that's been generated in the app's lifetime.
 This should be fine in most cases. If you seem to be including too many unused styles,
 use `renderStaticOptimized` instead of `renderStatic`. This will parse the generated
