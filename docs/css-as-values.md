@@ -28,7 +28,7 @@ Anyway. What possible solutions do we have?
 .x { color: var(--error-color); font-weight: var(--error-weight) }
 .y:hover { color: var(--error-color); font-weight: var(--error-weight); font-style: italic }
 ```
-- this allows us to have 'references' and share variables, though it's only available for property values. Further, these can't really be dynamic values, and have to declared in advance.
+- this allows us to have 'references' and share variables, though it's only available for property values. If your browser supports it, these can be dynamic! (Thanks @davidkpiano!)
 
 
 - the [`@apply rule` spec](https://tabatkins.github.io/specs/css-apply-rule/) 
@@ -40,9 +40,9 @@ Anyway. What possible solutions do we have?
 .x { @apply --error }
 .y:hover { @apply --error; font-style: italic }
 ```
-This is great! `@apply` allows custom property sets, which can be further composed. Like regular css, it's not 'dynamic', and you'll have to get consumers to compile to this spec.
+This is great! `@apply` allows custom property sets, which can be further composed. You'll have to get consumers to compile to this spec, but it seems like a good feature to land.
 
-- similarly, your favorite css preprocessor might have some form of mixin construct to apply rules(eg - [sass](http://sass-lang.com/documentation/file.SASS_REFERENCE.html#mixins), [less](http://lesscss.org/features/#mixins-feature). These are nice too, but can't be dynamic, but have the mental overhead of having to learn a custom DSL. Speaking of which...
+- similarly, your favorite css preprocessor might have some form of mixin construct to apply rules(eg - [sass](http://sass-lang.com/documentation/file.SASS_REFERENCE.html#mixins), [less](http://lesscss.org/features/#mixins-feature). sass also has [an extend construct](http://www.sass-lang.com/documentation/file.SASS_REFERENCE.html#_in_directives) that's very close to what we need. These are nice too, but can't be dynamic, and have the mental overhead of having to learn a custom DSL. Speaking of which...
 
 css-in-js has the advantage of being able to leverage javascript, and gives us good alternatives. Some examples - 
 
