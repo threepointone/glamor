@@ -101,7 +101,7 @@ speedy mode
 ---
 
 there are two methods by which the library adds styles to the document -
-- by appending css 'rules' to a browser backed styledsheet. This is really fast, but has the disadvantage of making the styles uneditable in the devtools sidebar.
+- by appending css 'rules' to a browser backed stylesheet. This is really fast, but has the disadvantage of making the styles uneditable in the devtools sidebar.
 - by appending text nodes to a style tag. This is fairly slow, but doesn't have the editing drawback.
 
 as a compromise, we enable the former 'speedy' mode `NODE_ENV=production`, and disable it otherwise. You can manually toggle this with the `speedy()` function. 
