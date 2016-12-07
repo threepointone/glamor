@@ -444,17 +444,6 @@ css.keyframes = (name, kfs) => {
   return name + '_' + spec.id
 }
 
-export const fontFace = css.fontFace
-export const keyframes = css.keyframes
-
-
-function insertFontFace(spec) {
-  if(!inserted[spec.id]) {
-    styleSheet.insert(`@font-face{${createMarkupForStyles(spec.font)}}`)
-    inserted[spec.id] = true
-  }
-}
-
 
 // we don't go all out for fonts as much, giving a simple font loading strategy
 // use a fancier lib if you need moar power
@@ -469,6 +458,18 @@ css.fontFace = (font) => {
   insertFontFace(spec)
 
   return font.fontFamily
+}
+
+
+export const fontFace = css.fontFace
+export const keyframes = css.keyframes
+
+
+function insertFontFace(spec) {
+  if(!inserted[spec.id]) {
+    styleSheet.insert(`@font-face{${createMarkupForStyles(spec.font)}}`)
+    inserted[spec.id] = true
+  }
 }
 
 
