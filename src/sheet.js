@@ -41,9 +41,9 @@ function sheetForTag(tag) {
   }
 }
 
-const isBrowser = typeof window !== 'undefined' 
+const isBrowser = typeof window !== 'undefined'
 const isDev = (process.env.NODE_ENV === 'development') || (!process.env.NODE_ENV) //(x => (x === 'development') || !x)(process.env.NODE_ENV)
-const isTest = process.env.NODE_ENV === 'test' 
+const isTest = process.env.NODE_ENV === 'test'
 
 const oldIE = (() => {  
   if(isBrowser) {
@@ -54,7 +54,7 @@ const oldIE = (() => {
 })()
 
 function makeStyleTag() {
-  let tag = document.createElement('style')        
+  let tag = document.createElement('style')
   tag.type = 'text/css'
   tag.appendChild(document.createTextNode(''));
   (document.head || document.getElementsByTagName('head')[0]).appendChild(tag)
@@ -106,8 +106,8 @@ Object.assign(StyleSheet.prototype, {
     // this weirdness for perf, and chrome's weird bug 
     // https://stackoverflow.com/questions/20007992/chrome-suddenly-stopped-accepting-insertrule
     try {  
-      let sheet = this.getSheet()        
-      sheet.insertRule(rule, sheet.cssRules.length) // todo - correct index here     
+      let sheet = this.getSheet()
+      sheet.insertRule(rule, rule.indexOf('@import') !== -1 ? 0 : sheet.cssRules.length)
     }
     catch(e) {
       if(isDev) {
@@ -129,12 +129,17 @@ Object.assign(StyleSheet.prototype, {
       //   this.tags::last().styleSheet.cssText+= rule
       // }
       else{
-        last(this.tags).appendChild(document.createTextNode(rule))
+        if(rule.indexOf('@import') !== -1) {
+          const tag = last(this.tags)
+          tag.insertBefore(document.createTextNode(rule), tag.firstChild)
+        } else {
+          last(this.tags).appendChild(document.createTextNode(rule))
+        }
       }      
     }
     else{
       // server side is pretty simple         
-      this.sheet.insertRule(rule)
+      this.sheet.insertRule(rule, rule.indexOf('@import') !== -1 ? 0 : sheet.cssRules.length)
     }
     
     this.ctr++

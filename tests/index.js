@@ -431,7 +431,7 @@ describe('glamor', () => {
       blue = hover({ color: 'blue' }),
       merged = compose(red, blue)
 
-    expect(attribsFor(red, merged)).toEqual('data-css-1ezp9xe="" data-css-11t3bx0=""')    
+    expect(attribsFor(red, merged)).toEqual('data-css-1ezp9xe="" data-css-11t3bx0=""')
     cssLabels(true)
   })
 
@@ -663,6 +663,17 @@ describe('StyleSheet', () => {
     document.body.removeChild(node)
     
   })
+
+  it('prepends @import rules', () => {
+    sheet.insert('#bar { color: red; }')
+    sheet.insert('@import url();')
+
+    const rules = sheet.rules().map(x => x.cssText)
+    expect(rules.length).toBe(2)
+    expect(rules[0].includes('@import')).toBeTruthy()
+    expect(rules[1].includes('#bar')).toBeTruthy()
+  })
+
 
   // it('can replace css', () => {
   //   sheet.insert('.abc { color: red; }')
