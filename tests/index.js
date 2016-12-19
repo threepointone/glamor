@@ -112,6 +112,29 @@ describe('glamor', () => {
     
   })
 
+  it('shorthand styles can be combined with long form', () => {
+
+    // when you need fine grained control over which keys get prcedence,
+    // manually merge your styles together
+    render(<div {...style({
+            boxSizing: 'border-box',
+            borderWidth: 0,
+            borderStyle: 'solid',
+            background: 'blue',
+            padding: 0,
+            font: 'inherit',
+            textTransform: 'inherit',
+            textDecoration: 'none',
+            left: 5,
+          }, {
+            fontSize: 50,
+          } )} />, node, () => {
+      expect(childStyle(node).fontSize).toEqual('50px');
+    })
+
+    
+  })
+
   it('accepts nested objects', () => {
     simulations(true)
     render(<div {...style({ 
