@@ -139,7 +139,7 @@ Object.assign(StyleSheet.prototype, {
     }
     else{
       // server side is pretty simple         
-      this.sheet.insertRule(rule, rule.indexOf('@import') !== -1 ? 0 : sheet.cssRules.length)
+      this.sheet.insertRule(rule, rule.indexOf('@import') !== -1 ? 0 : this.sheet.cssRules.length)
     }
     
     this.ctr++
