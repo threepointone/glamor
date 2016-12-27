@@ -7,3 +7,4 @@ umd/*
 examples/node_modules
 es6/*
 tests/coverage
+.DS_Store

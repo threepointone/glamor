@@ -1,70 +1,225 @@
 import { insertRule } from './index.js'
 
-
-/*! normalize.css v3.0.2 | MIT License | git.io/normalize */
+/*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
 
 /**
- * 1. Set default font family to sans-serif.
- * 2. Prevent iOS text size adjust after orientation change, without disabling
- *    user zoom.
+ * 1. Change the default font family in all browsers (opinionated).
+ * 2. Correct the line height in all browsers.
+ * 3. Prevent adjustments of font size after orientation changes in
+ *    IE on Windows Phone and in iOS.
  */
+
+/* Document
+   ========================================================================== */
 
 insertRule(`html {
   font-family: sans-serif; /* 1 */
-  -ms-text-size-adjust: 100%; /* 2 */
-  -webkit-text-size-adjust: 100%; /* 2 */
+  line-height: 1.15; /* 2 */
+  -ms-text-size-adjust: 100%; /* 3 */
+  -webkit-text-size-adjust: 100%; /* 3 */
 }`)
 
+/* Sections
+   ========================================================================== */
+
 /**
- * Remove default margin.
+ * Remove the margin in all browsers (opinionated).
  */
 
 insertRule(`body {
   margin: 0;
 }`)
 
-/* HTML5 display definitions
-   ========================================================================== */
-
 /**
- * Correct `block` display not defined for any HTML5 element in IE 8/9.
- * Correct `block` display not defined for `details` or `summary` in IE 10/11
- * and Firefox.
- * Correct `block` display not defined for `main` in IE 11.
+ * Add the correct display in IE 9-.
  */
 
 insertRule(`article,
 aside,
-details,
-figcaption,
-figure,
 footer,
 header,
-hgroup,
-main,
-menu,
 nav,
-section,
-summary {
+section {
   display: block;
 }`)
 
 /**
- * 1. Correct `inline-block` display not defined in IE 8/9.
- * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
+ * Correct the font size and margin on `h1` elements within `section` and
+ * `article` contexts in Chrome, Firefox, and Safari.
  */
 
-insertRule(`audio,
-canvas,
-progress,
-video {
-  display: inline-block; /* 1 */
-  vertical-align: baseline; /* 2 */
+insertRule(`h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}`)
+
+/* Grouping content
+   ========================================================================== */
+
+/**
+ * Add the correct display in IE 9-.
+ * 1. Add the correct display in IE.
+ */
+
+insertRule(`figcaption,
+figure,
+main { /* 1 */
+  display: block;
 }`)
 
 /**
- * Prevent modern browsers from displaying `audio` without controls.
- * Remove excess height in iOS 5 devices.
+ * Add the correct margin in IE 8.
+ */
+
+insertRule(`figure {
+  margin: 1em 40px;
+}`)
+
+/**
+ * 1. Add the correct box sizing in Firefox.
+ * 2. Show the overflow in Edge and IE.
+ */
+
+insertRule(`hr {
+  box-sizing: content-box; /* 1 */
+  height: 0; /* 1 */
+  overflow: visible; /* 2 */
+}`)
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+
+insertRule(`pre {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}`)
+
+/* Text-level semantics
+   ========================================================================== */
+
+/**
+ * 1. Remove the gray background on active links in IE 10.
+ * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.
+ */
+
+insertRule(`a {
+  background-color: transparent; /* 1 */
+  -webkit-text-decoration-skip: objects; /* 2 */
+}`)
+
+/**
+ * Remove the outline on focused links when they are also active or hovered
+ * in all browsers (opinionated).
+ */
+
+insertRule(`a:active,
+a:hover {
+  outline-width: 0;
+}`)
+
+/**
+ * 1. Remove the bottom border in Firefox 39-.
+ * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
+ */
+
+insertRule(`abbr[title] {
+  border-bottom: none; /* 1 */
+  text-decoration: underline; /* 2 */
+  text-decoration: underline dotted; /* 2 */
+}`)
+
+/**
+ * Prevent the duplicate application of `bolder` by the next rule in Safari 6.
+ */
+
+insertRule(`b,
+strong {
+  font-weight: inherit;
+}`)
+
+/**
+ * Add the correct font weight in Chrome, Edge, and Safari.
+ */
+
+insertRule(`b,
+strong {
+  font-weight: bolder;
+}`)
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+
+insertRule(`code,
+kbd,
+samp {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}`)
+
+/**
+ * Add the correct font style in Android 4.3-.
+ */
+
+insertRule(`dfn {
+  font-style: italic;
+}`)
+
+/**
+ * Add the correct background and color in IE 9-.
+ */
+
+insertRule(`mark {
+  background-color: #ff0;
+  color: #000;
+}`)
+
+/**
+ * Add the correct font size in all browsers.
+ */
+
+insertRule(`small {
+  font-size: 80%;
+}`)
+
+/**
+ * Prevent `sub` and `sup` elements from affecting the line height in
+ * all browsers.
+ */
+
+insertRule(`sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}`)
+
+/* Embedded content
+   ========================================================================== */
+
+/**
+ * Add the correct display in IE 9-.
+ */
+
+insertRule(`audio,
+video {
+  display: inline-block;
+}`)
+
+/**
+ * Add the correct display in iOS 4-7.
  */
 
 insertRule(`audio:not([controls]) {
@@ -73,179 +228,27 @@ insertRule(`audio:not([controls]) {
 }`)
 
 /**
- * Address `[hidden]` styling not present in IE 8/9/10.
- * Hide the `template` element in IE 8/9/11, Safari, and Firefox < 22.
- */
-
-insertRule(`[hidden], template {
-  display: none;
-}`)
-
-/* Links
-   ========================================================================== */
-
-/**
- * Remove the gray background color from active links in IE 10.
- */
-
-insertRule(`a {
-  background-color: transparent;
-}`)
-
-/**
- * Improve readability when focused and also mouse hovered in all browsers.
- */
-
-insertRule(`a:active,
-a:hover {
-  outline: 0;
-}`)
-
-/* Text-level semantics
-   ========================================================================== */
-
-/**
- * Address styling not present in IE 8/9/10/11, Safari, and Chrome.
- */
-
-insertRule(`abbr[title] {
-  border-bottom: 1px dotted;
-}`)
-
-/**
- * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
- */
-
-insertRule(`b,
-strong {
-  font-weight: bold;
-}`)
-
-/**
- * Address styling not present in Safari and Chrome.
- */
-
-insertRule(`dfn {
-  font-style: italic;
-}`)
-
-/**
- * Address variable `h1` font-size and margin within `section` and `article`
- * contexts in Firefox 4+, Safari, and Chrome.
- */
-
-
-insertRule(`h1 {
-  font-size: 2em;
-  margin: 0.67em 0;
-}`)
-
-/**
- * Address styling not present in IE 8/9.
- */
-
-insertRule(`mark {
-  background: #ff0;
-  color: #000;
-}`)
-
-/**
- * Address inconsistent and variable font size in all browsers.
- */
-
-insertRule(`small {
-  font-size: 80%;
-}`)
-
-/**
- * Prevent `sub` and `sup` affecting `line-height` in all browsers.
- */
-
-insertRule(`sub, sup {
-  font-size: 75%;
-  line-height: 0;
-  position: relative;
-  vertical-align: baseline;
-}`)
-
-insertRule(`sup {
-  top: -0.5em;
-}`)
-
-insertRule(`sub {
-  bottom: -0.25em;
-}`)
-
-/* Embedded content
-   ========================================================================== */
-
-/**
- * Remove border when inside `a` element in IE 8/9/10.
+ * Remove the border on images inside links in IE 10-.
  */
 
 insertRule(`img {
-  border: 0;
+  border-style: none;
 }`)
 
 /**
- * Correct overflow not hidden in IE 9/10/11.
+ * Hide the overflow in IE.
  */
 
 insertRule(`svg:not(:root) {
   overflow: hidden;
 }`)
 
-/* Grouping content
-   ========================================================================== */
-
-/**
- * Address margin not present in IE 8/9 and Safari.
- */
-
-insertRule(`figure {
-  margin: 1em 40px;
-}`)
-
-/**
- * Address differences between Firefox and other browsers.
- */
-
-insertRule(`hr {
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
-  height: 0;
-}`)
-
-/**
- * Contain overflow in all browsers.
- */
-
-insertRule(`pre {
-  overflow: auto;
-}`)
-
-/**
- * Address odd `em`-unit font size rendering in all browsers.
- */
-
-insertRule(`code, kbd, pre, samp {
-  font-family: monospace, monospace;
-  font-size: 1em;
-}`)
-
 /* Forms
    ========================================================================== */
 
 /**
- * Known limitation: by default, Chrome and Safari on OS X allow very limited
- * styling of `select`, unless a `border` property is set.
- */
-
-/**
- * 1. Correct color not being inherited.
- *    Known issue: affects color of disabled elements.
- * 2. Correct font properties not being inherited.
- * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
+ * 1. Change the font styles in all browsers (opinionated).
+ * 2. Remove the margin in Firefox and Safari.
  */
 
 insertRule(`button,
@@ -253,124 +256,70 @@ input,
 optgroup,
 select,
 textarea {
-  color: inherit; /* 1 */
-  font: inherit; /* 2 */
-  margin: 0; /* 3 */
+  font-family: sans-serif; /* 1 */
+  font-size: 100%; /* 1 */
+  line-height: 1.15; /* 1 */
+  margin: 0; /* 2 */
 }`)
 
 /**
- * Address `overflow` set to `hidden` in IE 8/9/10/11.
+ * Show the overflow in IE.
+ * 1. Show the overflow in Edge.
  */
 
-insertRule(`button {
+insertRule(`button,
+input { /* 1 */
   overflow: visible;
 }`)
 
 /**
- * Address inconsistent `text-transform` inheritance for `button` and `select`.
- * All other form control elements do not inherit `text-transform` values.
- * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.
- * Correct `select` style inheritance in Firefox.
+ * Remove the inheritance of text transform in Edge, Firefox, and IE.
+ * 1. Remove the inheritance of text transform in Firefox.
  */
 
-insertRule(`button, select {
+insertRule(`button,
+select { /* 1 */
   text-transform: none;
 }`)
 
 /**
- * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
- *    and `video` controls.
- * 2. Correct inability to style clickable `input` types in iOS.
- * 3. Improve usability and consistency of cursor style between image-type
- *    `input` and others.
+ * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`
+ *    controls in Android 4.
+ * 2. Correct the inability to style clickable types in iOS and Safari.
  */
 
 insertRule(`button,
-html input[type="button"], /* 1 */
-input[type="reset"],
-input[type="submit"] {
+html [type="button"], /* 1 */
+[type="reset"],
+[type="submit"] {
   -webkit-appearance: button; /* 2 */
-  cursor: pointer; /* 3 */
 }`)
 
 /**
- * Re-set default cursor for disabled elements.
- */
-
-insertRule(`button[disabled],
-html input[disabled] {
-  cursor: default;
-}`)
-
-/**
- * Remove inner padding and border in Firefox 4+.
+ * Remove the inner border and padding in Firefox.
  */
 
 insertRule(`button::-moz-focus-inner,
-input::-moz-focus-inner {
-  border: 0;
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
+  border-style: none;
   padding: 0;
 }`)
 
 /**
- * Address Firefox 4+ setting `line-height` on `input` using `!important` in
- * the UA stylesheet.
+ * Restore the focus styles unset by the previous rule.
  */
 
-insertRule(`input {
-  line-height: normal;
+insertRule(`button:-moz-focusring,
+[type="button"]:-moz-focusring,
+[type="reset"]:-moz-focusring,
+[type="submit"]:-moz-focusring {
+  outline: 1px dotted ButtonText;
 }`)
 
 /**
- * It's recommended that you don't attempt to style these elements.
- * Firefox's implementation doesn't respect box-sizing, padding, or width.
- *
- * 1. Address box sizing set to `content-box` in IE 8/9/10.
- * 2. Remove excess padding in IE 8/9/10.
- */
-
-insertRule(`input[type="checkbox"], input[type="radio"] {
-  box-sizing: border-box; /* 1 */
-  padding: 0; /* 2 */
-}`)
-
-/**
- * Fix the cursor style for Chrome's increment/decrement buttons. For certain
- * `font-size` values of the `input`, it causes the cursor style of the
- * decrement button to change from `default` to `text`.
- */
-
-insertRule(`input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  height: auto;
-}`)
-
-/**
- * 1. Address `appearance` set to `searchfield` in Safari and Chrome.
- * 2. Address `box-sizing` set to `border-box` in Safari and Chrome
- *    (include `-moz` to future-proof).
- */
-
-insertRule(`input[type="search"] {
-  -webkit-appearance: textfield; /* 1 */
-  -moz-box-sizing: content-box;
-  -webkit-box-sizing: content-box; /* 2 */
-  box-sizing: content-box;
-}`)
-
-/**
- * Remove inner padding and search cancel button in Safari and Chrome on OS X.
- * Safari (but not Chrome) clips the cancel button when the search input has
- * padding (and `textfield` appearance).
- */
-
-insertRule(`input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-decoration {
-  -webkit-appearance: none;
-}`)
-
-/**
- * Define consistent border, margin, and padding.
+ * Change the border, margin, and padding in all browsers (opinionated).
  */
 
 insertRule(`fieldset {
@@ -380,17 +329,33 @@ insertRule(`fieldset {
 }`)
 
 /**
- * 1. Correct `color` not being inherited in IE 8/9/10/11.
- * 2. Remove padding so people aren't caught out if they zero out fieldsets.
+ * 1. Correct the text wrapping in Edge and IE.
+ * 2. Correct the color inheritance from `fieldset` elements in IE.
+ * 3. Remove the padding so developers are not caught out when they zero out
+ *    `fieldset` elements in all browsers.
  */
 
 insertRule(`legend {
-  border: 0; /* 1 */
-  padding: 0; /* 2 */
+  box-sizing: border-box; /* 1 */
+  color: inherit; /* 2 */
+  display: table; /* 1 */
+  max-width: 100%; /* 1 */
+  padding: 0; /* 3 */
+  white-space: normal; /* 1 */
 }`)
 
 /**
- * Remove default vertical scrollbar in IE 8/9/10/11.
+ * 1. Add the correct display in IE 9-.
+ * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.
+ */
+
+insertRule(`progress {
+  display: inline-block; /* 1 */
+  vertical-align: baseline; /* 2 */
+}`)
+
+/**
+ * Remove the default vertical scrollbar in IE.
  */
 
 insertRule(`textarea {
@@ -398,26 +363,101 @@ insertRule(`textarea {
 }`)
 
 /**
- * Don't inherit the `font-weight` (applied by a rule above).
- * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
+ * 1. Add the correct box sizing in IE 10-.
+ * 2. Remove the padding in IE 10-.
  */
 
-insertRule(`optgroup {
-  font-weight: bold;
+insertRule(`[type="checkbox"],
+[type="radio"] {
+  box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
 }`)
 
-/* Tables
+/**
+ * Correct the cursor style of increment and decrement buttons in Chrome.
+ */
+
+insertRule(`[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}`)
+
+/**
+ * 1. Correct the odd appearance in Chrome and Safari.
+ * 2. Correct the outline style in Safari.
+ */
+
+insertRule(`[type="search"] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}`)
+
+/**
+ * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.
+ */
+
+insertRule(`[type="search"]::-webkit-search-cancel-button,
+[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}`)
+
+/**
+ * 1. Correct the inability to style clickable types in iOS and Safari.
+ * 2. Change font properties to `inherit` in Safari.
+ */
+
+insertRule(`::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}`)
+
+/* Interactive
+   ========================================================================== */
+
+/*
+ * Add the correct display in IE 9-.
+ * 1. Add the correct display in Edge, IE, and Firefox.
+ */
+
+insertRule(`details, /* 1 */
+menu {
+  display: block;
+}`)
+
+/*
+ * Add the correct display in all browsers.
+ */
+
+insertRule(`summary {
+  display: list-item;
+}`)
+
+/* Scripting
    ========================================================================== */
 
 /**
- * Remove most spacing between table cells.
+ * Add the correct display in IE 9-.
  */
 
-insertRule(`table {
-  border-collapse: collapse;
-  border-spacing: 0;
+insertRule(`canvas {
+  display: inline-block;
 }`)
 
-insertRule(`td, th {
-  padding: 0;
+/**
+ * Add the correct display in IE.
+ */
+
+insertRule(`template {
+  display: none;
+}`)
+
+/* Hidden
+   ========================================================================== */
+
+/**
+ * Add the correct display in IE 10-.
+ */
+
+insertRule(`[hidden] {
+  display: none;
 }`)
