@@ -683,13 +683,13 @@ describe('StyleSheet', () => {
   it('prepends @import rules', done => {
     sheet.insert('#bar { color: red; }')
     sheet.insert('@import url();')
-    setTimeout(() => {
+    setTimeout(() => { // https://github.com/threepointone/glamor/issues/142
       const rules = sheet.rules().map(x => x.cssText)
       expect(rules.length).toBe(2)
       expect(rules[0].includes('@import')).toBeTruthy()
       expect(rules[1].includes('#bar')).toBeTruthy()
       done()  
-    }, 0)    
+    }, 100)    
   })
 
 
