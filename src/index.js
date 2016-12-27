@@ -407,7 +407,7 @@ css.insert = (css) => {
 export const insertRule = css.insert
 
 css.global = (selector, style) => {
-  return css.insert(`${selector}{${createMarkupForStyles(style)}}`)
+  return css.insert(toCSS({ selector, style }))
 }
 
 export const insertGlobal = css.global
