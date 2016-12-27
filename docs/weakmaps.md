@@ -64,12 +64,56 @@ Consider the core function, `css(...rules)`
 
 ### What about multiple arguments?
 
-[ todo - implementation of non-commutative multiple argument cache with WeakMaps ] 
+`css()` is non commutative; ie - `css(a, b) != css(b, a)` (or rather, might not be equal). This is a good opportunity to build a 'tree' of WeakMap nodes, keyed at levels by their respective arguments, terminating in the value of the `css()` call itself. 
+
+That's quite a mouthful. Here's some code to wash it down. 
+```jsx
+const caches = [null, new WeakMap(), new WeakMap()]
+
+function multiIndexCachify(fn) {
+  return (...args) => {
+    if(caches[args.length]) {
+      let cache = caches[args.length]
+      let ctr = 0
+      while(ctr < args.length - 1) {      
+        if(!cache.has(args[ctr])) {
+          cache.set(args[ctr], new WeakMap())        
+        }
+        cache = cache.get(args[ctr])
+        ctr++
+      }
+      if(cache.has(args[args.length - 1])) { 
+        return cache.get(args[ctr])
+      }
+    }
+    let value = fn(...args)
+    if(caches[args.length]) {
+      let ctr = 0, cache = caches[args.length]
+      while(ctr < args.length - 1) {
+        cache = cache.get(args[ctr])      
+        ctr++
+      }
+      cache.set(args[ctr], value)
+    }
+    return value
+
+  }
+}
+let $css = cachify(css)
+$css(a, b); 
+$css(a, b); // cache hit!
+```
 
 ### This sounds great! Any caveats?
 
-- this isn't useful in pathological cases, when you're defining many tens of thousands of _unique_ rules in your css. So unless you're a tumblr/blogspot rendering every site on the same server, you should be good
+- you'll need to polyfill WeakMap on older browsers for the above to kick in
+- this isn't useful in pathological cases, when you're dynamically defining many tens of thousands of _unique_ rules in multiple combinations. So unless you're actually geocities.com, rendering every site on the same server, you should be good. (Even then, it's not too bad, you'll hit the hash caches instead of the WeakMap ones.)
 - we only maintain these caches for 1, 2 and 3 argument inputs. This means that the behavior isn't very explicit, and *might* lead to strange perf characteristics with more arguments passed in a single `css()` call. buyer beware!
+
+### About that tweet...
+- I [tweeted a couple of screenshots](https://twitter.com/threepointone/status/813804426989182976/photo/1) showing how with the above work, glamor blows past other libraries in the [css-in-js peformance benchmark](https://github.com/hellofresh/css-in-js-perf-tests) that's floating around. This is kind of cheating though, and I implied that pretty heavily. What's happening there, is that the test passes in shared objects for every run, and keeps picking up the cached rule, thereby defeating the purpose of the benchmark. I contend, however, that the benchmark itself is flawed. For one, it measures server side rendering performance... sort of. Further, caching input objects sounds like a great idea :) In the css context, expecting 'static' objects isn't strange at all, and the optimization works well.
+- keen observers will note that glamor fails the nested rule test pretty hard. That's because [that test generates unique objects for every run](https://github.com/hellofresh/css-in-js-perf-tests/blob/master/src/nested-test/styles.js), missing the WeakMap cache (despite having the same 'value'). It would be interesting to be able to detect such behavior, and warn in dev mode. An idea for another day...
+
 
 
 
