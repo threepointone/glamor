@@ -312,12 +312,13 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
     }
     Object.keys(_src || {}).forEach(key => {
       if(isSelector(key)) {
-        selector = 
-          selector === '::placeholder' ? 
-            '::placeholder, ::-webkit-input-placeholder, ::-moz-placeholder, ::-ms-input-placeholder' 
-            : selector
 
-        build(dest, { selector: joinSelectors(selector, key), mq, supp, src: _src[key] })
+        let _key = 
+          key === '::placeholder' ? 
+            '::placeholder,::-webkit-input-placeholder,::-moz-placeholder,::-ms-input-placeholder' 
+            : key
+        
+        build(dest, { selector: joinSelectors(selector, _key), mq, supp, src: _src[key] })
       }
       else if(isMediaQuery(key)) {
         build(dest, { selector, mq: joinMediaQueries(mq, key), supp, src: _src[key] })          
