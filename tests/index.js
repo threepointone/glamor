@@ -385,6 +385,7 @@ describe('glamor', () => {
   // plain rules
   // merged rules
   // media query wrap / override?
+  it('uses WeakMaps to cache input objects')
 
   if(isPhantom) {
     it('adds vendor prefixes', () => {

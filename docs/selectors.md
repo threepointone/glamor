@@ -36,9 +36,12 @@ css({
   color: 'red',
   '@media (min-width: 300px)': {
     color: 'blue'
-  }
+  },
+  // you can use some presets
+  [presets.Tablet]: { ... } // also -  Hd, Mobile, Desktop, Tablet, Phablet
 })
 ```
+
 
 - `@supports` statements are predictably similar (note - does not work in IE, UC browsers)
 ```jsx

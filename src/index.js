@@ -228,9 +228,12 @@ let ruleCache = {}
 function toRule(spec) {
   register(spec)
   insert(spec)
+  
   if(ruleCache[spec.id]) {
     return ruleCache[spec.id]
   }
+
+  
 
   let ret = { [`data-css-${spec.id}`]: hasLabels ? spec.label || '' : '' }
   Object.defineProperty(ret, 'toString', {
@@ -359,6 +362,8 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
   }) 
 }
 
+
+
 function _css(rules) {
   let style = { label: [] }
   build(style, { src: rules }) // mutative! but worth it. 
@@ -379,6 +384,43 @@ Object.defineProperty(nullrule, 'toString', {
 })
 
 
+let inputCaches = [ nullrule ]
+if(typeof WeakMap !== 'undefined' ) {
+  inputCaches = [ nullrule, new WeakMap(), new WeakMap(), new WeakMap() ]
+}
+
+function multiIndexCache(fn) {
+  return function (args) {
+    if(inputCaches[args.length]) {
+      let coi = inputCaches[args.length]
+      let ctr = 0
+      while(ctr < args.length - 1) {      
+        if(!coi.has(args[ctr])) {
+          coi.set(args[ctr], new WeakMap())        
+        }
+        coi = coi.get(args[ctr])
+        ctr++
+      }
+      if(coi.has(args[args.length - 1])) { 
+        return coi.get(args[ctr])
+      }
+    }
+    let value = fn(args)
+    if(inputCaches[args.length]) {
+      let ctr = 0, coi = inputCaches[args.length]
+      while(ctr < args.length - 1) {
+        coi = coi.get(args[ctr])      
+        ctr++
+      }
+      coi.set(args[ctr], value)
+    }
+    return value
+
+  }
+}
+
+let cachedCss = (typeof WeakMap !== 'undefined') ? multiIndexCache(_css) : _css
+
 export function css(...rules) {
   if(rules[0] && rules[0].length && rules[0].raw) {
     throw new Error('you forgot to include glamor/babel in your babel plugins.')
@@ -386,10 +428,10 @@ export function css(...rules) {
   
   rules = clean(rules)
   if(!rules) {    
-    return nullrule // todo - nullrule 
+    return nullrule
   }
-  
-  return _css(rules)
+    
+  return cachedCss(rules)    
 }
 
 css.insert = (css) => {
