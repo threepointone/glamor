@@ -114,22 +114,15 @@ describe('glamor', () => {
 
   it('shorthand styles can be combined with long form', () => {
 
-    // when you need fine grained control over which keys get prcedence,
-    // manually merge your styles together
-    render(<div {...style({
-            boxSizing: 'border-box',
-            borderWidth: 0,
-            borderStyle: 'solid',
-            background: 'blue',
-            padding: 0,
-            font: 'inherit',
-            textTransform: 'inherit',
-            textDecoration: 'none',
-            left: 5,
-          }, {
-            fontSize: 50,
-          } )} />, node, () => {
-      expect(childStyle(node).fontSize).toEqual('50px');
+    let rule = css({
+      border: '10px solid black'
+    }, {
+      borderLeftWidth: 50
+    })
+
+    render(<div {...rule} />, node, () => {
+      expect(childStyle(node).borderLeftWidth).toEqual('50px')
+      expect(childStyle(node).borderRightWidth).toEqual('10px')
     })
 
     
@@ -687,14 +680,16 @@ describe('StyleSheet', () => {
     
   })
 
-  it('prepends @import rules', () => {
+  it('prepends @import rules', done => {
     sheet.insert('#bar { color: red; }')
     sheet.insert('@import url();')
-
-    const rules = sheet.rules().map(x => x.cssText)
-    expect(rules.length).toBe(2)
-    expect(rules[0].includes('@import')).toBeTruthy()
-    expect(rules[1].includes('#bar')).toBeTruthy()
+    setTimeout(() => {
+      const rules = sheet.rules().map(x => x.cssText)
+      expect(rules.length).toBe(2)
+      expect(rules[0].includes('@import')).toBeTruthy()
+      expect(rules[1].includes('#bar')).toBeTruthy()
+      done()  
+    }, 0)    
   })
 
 
