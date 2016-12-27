@@ -1,4 +1,5 @@
 // forked from https://www.npmjs.com/package/auto-prefixer
+import assign from 'object-assign'
 
 function capitalize(str) {
   return str && str.charAt(0).toUpperCase() + str.substring(1)
@@ -227,7 +228,7 @@ function checkAndAddPrefix(styleObj, key, val, allVendors) {
       }
     }
 
-    Object.assign(styleObj, prefixedProperties)
+    assign(styleObj, prefixedProperties)
   }
 
   //if valueWithPrefixes were not added before

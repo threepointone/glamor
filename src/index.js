@@ -1,3 +1,4 @@
+import assign from 'object-assign'
 /* stylesheet */
 import { StyleSheet } from './sheet.js'
 import { createMarkupForStyles } from './CSSPropertyOperations'
@@ -477,7 +478,7 @@ function insertFontFace(spec) {
 // renderStatic / renderStaticOptimized
 export function rehydrate(ids) {
   // load up ids
-  Object.assign(inserted, ids.reduce((o, i) => (o[i] = true, o), {}) )
+  assign(inserted, ids.reduce((o, i) => (o[i] = true, o), {}) )
   // assume css loaded separately
 }
 

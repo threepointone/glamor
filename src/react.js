@@ -1,3 +1,4 @@
+import assign from 'object-assign'
 import React, { PropTypes } from 'react'
 import { isLikeRule, style, merge } from './index.js'
 
@@ -134,7 +135,7 @@ export function propMerge(mergeStyle, props) {
 
   const mergedStyles = merge(mergeStyle, { [dataCssKey]: cssData })
 
-  const restProps = Object.assign({}, props)
+  const restProps = assign({}, props)
   delete restProps[dataCssKey]
 
   return {

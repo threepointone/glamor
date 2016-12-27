@@ -1,3 +1,4 @@
+import assign from 'object-assign'
 import React from 'react'
 import * as glamor from './index'
 
@@ -106,7 +107,7 @@ const splitStyles = (combinedProps) => {
       style[key] = combinedProps[key]  
     }
     else if(key === 'css') {
-      Object.assign(style, combinedProps[key])
+      assign(style, combinedProps[key])
     }
     else if (pseudos[key] >= 0) {
       gStyle.push(glamor[key](combinedProps[key]))
@@ -126,7 +127,7 @@ const splitStyles = (combinedProps) => {
       props[key] = combinedProps[key]  
     }
     else if (key === 'props') {
-      Object.assign(props, combinedProps[key])
+      assign(props, combinedProps[key])
     }
     else if(key === 'style' || key === 'className' || key === 'children') {
       props[key] = combinedProps[key]  

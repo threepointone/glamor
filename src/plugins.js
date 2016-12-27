@@ -1,10 +1,11 @@
+import assign from 'object-assign'
 const isDev = (x => (x === 'development') || !x)(process.env.NODE_ENV)
 
 export function PluginSet(initial) {
   this.fns = initial || []
 }
 
-Object.assign(PluginSet.prototype, {  
+assign(PluginSet.prototype, {  
   add(...fns) {
     fns.forEach(fn => {
       if(this.fns.indexOf(fn) >= 0) {
@@ -40,7 +41,7 @@ export function fallbacks(node) {
     }, {})
     // todo - 
     // flatten arrays which haven't been flattened yet 
-    return Object.assign({}, node, { style: flattened })
+    return assign({}, node, { style: flattened })
   }
   return node   
 }
@@ -48,5 +49,5 @@ export function fallbacks(node) {
 const prefixAll = require('./inline-style-prefix-all/index.js')
 
 export function prefixes(node) {
-  return Object.assign({}, node, { style: prefixAll(node.style) })
+  return assign({}, node, { style: prefixAll(node.style) })
 }

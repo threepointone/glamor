@@ -1,3 +1,4 @@
+import assign from 'object-assign'
 /* 
 
 high performance StyleSheet for css-in-js systems 
@@ -72,7 +73,7 @@ export function StyleSheet({
   this.ctr = 0
 }
 
-Object.assign(StyleSheet.prototype, {
+assign(StyleSheet.prototype, {
   getSheet() {
     return sheetForTag(last(this.tags))  
   },

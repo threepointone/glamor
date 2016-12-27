@@ -1,3 +1,4 @@
+import assign from 'object-assign'
 import { parse } from './spec.js'
 import { merge } from '../index.js'
 
@@ -44,7 +45,7 @@ export const conversions = {
   },
   RuleSet(node, ctx) {
     let selector = node.selectors.map(x => convert(x, ctx)).join('')
-    let x = { [selector]:  Object.assign({}, ...node.declarations.map(x => convert(x, ctx))) } // todo - more nesting, accept rules, etc 
+    let x = { [selector]:  assign({}, ...node.declarations.map(x => convert(x, ctx))) } // todo - more nesting, accept rules, etc 
 
     return x
   },
