@@ -115,6 +115,7 @@
   },
   "dependencies": {
     "babel-runtime": "^6.18.0",
-    "fbjs": "^0.8.8"
+    "fbjs": "^0.8.8",
+    "object-assign": "^4.1.0"
   }
 }
