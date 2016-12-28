@@ -83,6 +83,7 @@ docs
 - [howto](https://github.com/threepointone/glamor/blob/master/docs/howto.md) - a comparison of css techniques in glamor
 - [plugins](https://github.com/threepointone/glamor/blob/master/docs/plugins.md)
 - [server side rendering](https://github.com/threepointone/glamor/blob/master/docs/server.md)
+- [performance tips](https://github.com/threepointone/glamor/blob/master/docs/performance.md)
 
 extras 
 ---
