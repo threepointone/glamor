@@ -428,8 +428,18 @@ describe('glamor', () => {
       })
       expect(styleSheet.rules()[0].cssText.replace(/\s/g,''))
         .toEqual('@-webkit-keyframesbounce_zhy6v5{0%{-webkit-transform:scale(0.1);opacity:0;}60%{-webkit-transform:scale(1.2);opacity:1;}100%{-webkit-transform:scale(1);}}')
-      expect(animate).toEqual('bounce_zhy6v5')
+      expect(animate).toEqual('bounce')
 
+    })
+
+    it('will autocreate an animation name', () => {
+      let animate = css.keyframes({
+        '0%': { opacity: 0 },
+        '100%': { opacity: 1 }
+      })
+      expect(styleSheet.rules()[0].cssText.replace(/\s/g,''))
+        .toEqual('@-webkit-keyframesanimation_15qjrhp{0%{opacity:0;}100%{opacity:1;}}')
+      expect(animate).toEqual('animation_15qjrhp')
     })
   }
 
