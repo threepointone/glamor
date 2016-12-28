@@ -668,6 +668,7 @@ describe('StyleSheet', () => {
 
   it('can initialize', () => {    
     expect([ ...document.styleSheets ].filter(s => s.ownerNode === sheet.tags[0]).length).toEqual(1)    
+    expect(sheet.tags[0].hasAttribute('data-glamor')).toEqual(true)
   })
   
   it('can add css', () => {
