@@ -85,7 +85,11 @@ function simple(str) {
 import hash from './hash'
 
 function hashify(...objs) {
-  return hash(objs.map(x => JSON.stringify(x)).join('')).toString(36)
+  let str =''
+  for(let i=0;i<objs.length;i++) {
+    str += JSON.stringify(objs[i])    
+  }
+  return hash(str).toString(36)
 }
 
 
@@ -389,6 +393,7 @@ if(typeof WeakMap !== 'undefined' ) {
   inputCaches = [ nullrule, new WeakMap(), new WeakMap(), new WeakMap() ]
 }
 
+let warnedWeakMapError = false 
 function multiIndexCache(fn) {
   return function (args) {
     if(inputCaches[args.length]) {
@@ -412,7 +417,17 @@ function multiIndexCache(fn) {
         coi = coi.get(args[ctr])      
         ctr++
       }
-      coi.set(args[ctr], value)
+      try {
+        coi.set(args[ctr], value)  
+      }
+      catch(err) {
+        if(isDev && !warnedWeakMapError) {
+          warnedWeakMapError = true
+          console.warn('failed setting the WeakMap cache for args:', ...args) // eslint-disable-line no-console
+          console.warn('this should NOT happen, please file a bug on the github repo.') // eslint-disable-line no-console
+        }
+      }
+      
     }
     return value
 
