@@ -1,0 +1,5 @@
+- NODE_ENV=production and/or speedy(true)
+- reuse objects (or use the babel-hoist plugin)
+- SSR / renderStaticOptimized 
+- don't generate js animations with glamor rules 
+- flush() memory
