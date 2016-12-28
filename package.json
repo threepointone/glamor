@@ -11,6 +11,7 @@
     "aphrodite.js",
     "jsxstyle.js",
     "babel.js",
+    "babel-hoist.js",
     "styled.js",
     "ous.js",
     "react.js",
