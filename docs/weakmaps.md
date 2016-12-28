@@ -60,7 +60,7 @@ Consider the core function, `css(...rules)`
   // ...
   <div className={red} />  
   ```
-- indeed, we could write a babel plugin (TODO) that recognizes `css()` calls with 'static' objects, and hoist those objects up to the highest scope possible. DX!!!
+- indeed, we could use a babel plugin that recognizes `css()` calls with 'static' objects, and hoist those objects up to the highest scope possible. This plugin exists in glamor as `glamor/babel-hoist`. DX!!!
 
 ### What about multiple arguments?
 
