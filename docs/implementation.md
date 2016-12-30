@@ -12,10 +12,10 @@ Phases, in order -
 - hashify
 - check hash cache `->`
 - check insertion cache 
--- split into css rule objects 
--- apply plugins (vendor prefixing, etc)
--- generate css
--- insert into stylesheet, update insertion cache 
+  - split into css rule objects 
+  - apply plugins (vendor prefixing, etc)
+  - generate css
+  - insert into stylesheet, update insertion cache 
 - create rule 
 - update hash, weakmap caches
 - `->`
