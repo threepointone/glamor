@@ -89,7 +89,7 @@ function hashify(...objs) {
   for(let i=0;i<objs.length;i++) {
     str += JSON.stringify(objs[i])    
   }
-  return hash(str).toString(36)
+  return hash(str).toString(36)  
 }
 
 
@@ -236,7 +236,6 @@ function toRule(spec) {
   if(ruleCache[spec.id]) {
     return ruleCache[spec.id]
   }
-
   
 
   let ret = { [`data-css-${spec.id}`]: hasLabels ? spec.label || '' : '' }
@@ -366,8 +365,6 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
   }) 
 }
 
-
-
 function _css(rules) {
   let style = { label: [] }
   build(style, { src: rules }) // mutative! but worth it. 
@@ -388,10 +385,9 @@ Object.defineProperty(nullrule, 'toString', {
 })
 
 
-let inputCaches = [ nullrule ]
-if(typeof WeakMap !== 'undefined' ) {
-  inputCaches = [ nullrule, new WeakMap(), new WeakMap(), new WeakMap() ]
-}
+let inputCaches = typeof WeakMap !== 'undefined'  ? 
+  [ nullrule, new WeakMap(), new WeakMap(), new WeakMap() ] :
+  [ nullrule ]
 
 let warnedWeakMapError = false 
 function multiIndexCache(fn) {
@@ -407,7 +403,11 @@ function multiIndexCache(fn) {
         ctr++
       }
       if(coi.has(args[args.length - 1])) { 
-        return coi.get(args[ctr])
+        let ret = coi.get(args[ctr])
+
+        if(registered[ret.toString().substring(4)]) { // make sure it hasn't been flushed 
+          return ret
+        }        
       }
     }
     let value = fn(args)
@@ -426,8 +426,7 @@ function multiIndexCache(fn) {
           console.warn('failed setting the WeakMap cache for args:', ...args) // eslint-disable-line no-console
           console.warn('this should NOT happen, please file a bug on the github repo.') // eslint-disable-line no-console
         }
-      }
-      
+      }      
     }
     return value
 
@@ -801,4 +800,5 @@ export function attribsFor(...rules) {
 
   return htmlAttributes
 }
+
 
