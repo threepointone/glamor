@@ -237,8 +237,6 @@ function toRule(spec) {
     return ruleCache[spec.id]
   }
 
-  
-
   let ret = { [`data-css-${spec.id}`]: hasLabels ? spec.label || '' : '' }
   Object.defineProperty(ret, 'toString', {
     enumerable: false, value() { return 'css-' + spec.id }
@@ -365,8 +363,6 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
     })  
   }) 
 }
-
-
 
 function _css(rules) {
   let style = { label: [] }
@@ -500,7 +496,13 @@ css.keyframes = (name, kfs) => {
   }
   register(spec)
   insertKeyframe(spec)
-  return name + '_' + spec.id
+
+  // only append id if a name was not provided
+  if (name === 'animation') {
+    return name + '_' + spec.id
+  }
+
+  return name
 }
 
 
@@ -801,4 +803,3 @@ export function attribsFor(...rules) {
 
   return htmlAttributes
 }
-
