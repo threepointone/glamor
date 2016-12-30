@@ -7,10 +7,10 @@ what hapens when I call `css(...rules)`?
 
 In order - 
 
-- check weakmap caches `->`
+- check weakmap cache `->`
 - recursively normalize / flatten / merge 
 - hashify
-- check hash caches `->`
+- check hash cache `->`
 - check insertion cache `->`
 - split into css rule objects 
 - apply plugins (vendor prefixing, etc)
@@ -35,12 +35,12 @@ we accept different types of inputs - objects, arrays, other rules, and nested v
 hashify
 ---
 
-the big idea here - 2 separate calls to css({color: 'red'}) should refer to the same css rule. So unlike 'real' css where one has to decide the name of the class in advance, we let our computers figure out a unique classname for the given input. The simplest way (I think), is to generate a hash (I use murmur2) for the given input, and save the generated rule against it; so any time we use an input that maches the hash, we can return the cached rule instead.
+the big idea here - 2 separate calls to `css({color: 'red'})` should refer to the same css rule. So unlike 'real' css where one has to decide the name of the class in advance, we let our computers figure out a unique classname for the given input. The simplest way (I think), is to generate a hash (I use murmur2) for the given input, and save the generated rule against it; so any time we use an input that maches the hash, we can return the cached rule instead.
 
 insertion cache 
 ---
 
-This cache simply checks whether a rule with a given id/hash has been inserted into the stylesheet yet. you might be wondering why we have both the hash and insertion caches. This comes into play when interacting with SSR prerendered css. When rehyrating styles, we want to indicate to glamor which rules have already been inserted, to avoid inserting them again. However, we don't know / can't replace `css()` calls in the source code with just the plain rule, especially in cases with dynamic styles, themes, etc. Thus we need those bits to still 'run' to populate the hash caches. 
+This cache simply checks whether a rule with a given id/hash has been inserted into the stylesheet yet. You might be wondering why we have both the hash and insertion caches. This comes into play when interacting with SSR prerendered css. We want to be able to populate the hash caches etc, yet skip inserting the css for rules that have already been rehydrated. So... yeah, this is why. Simple :) 
 
 plugins
 ---
@@ -50,7 +50,7 @@ plugins
 generate css
 ---
 
-[todo]
+This is as straightforward as you'd imagine. The normalized style is broken into different bits, corresponding to individual css rules. Of note, We use a vendored version of React's `CSSPropertyOperations` to convert the object into a css string. 
 
 insert into stylesheet 
 ---
@@ -60,4 +60,12 @@ insert into stylesheet
 create rule 
 ---
 
-[todo]
+Finally, we create an object to return. It has the shape - 
+```jsx
+{
+  'data-css-<hash>': 'possible label',
+  toString = () => 'css-<hash>' // marked non-enumerable 
+}
+```
+
+All 3 caches get updated with this rule. It's a funny looking thing, but has the advantage of being able to be spread on the props of an element, or coerced into a string to be used a classname. For the curious, it's actually 'expensive' to create this object, since it creates a new Hidden Class in the JS VM for each rule because they all have unique keys. Bet you're happy we use the caches now, huh? :)
