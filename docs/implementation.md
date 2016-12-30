@@ -68,7 +68,7 @@ Finally, we create an object to return. It has the shape -
 }
 ```
 
-All 3 caches get updated with this rule. It's a funny looking thing, but has the advantage of being able to be spread on the props of an element, or coerced into a string to be used a classname. For the curious, it's actually 'expensive' to create this object, causing a deoptimization because they all have unique keys. Bet you're happy we use the caches now, huh? :)
+It's a funny looking thing, but has the advantage of being able to be spread on the props of an element, or coerced into a string to be used a classname. For the curious, it's actually 'expensive' to create this object, causing a deoptimization because they all have unique keys. Bet you're happy we use the caches now, huh? :)
 
 
 Further possible enhancements 
