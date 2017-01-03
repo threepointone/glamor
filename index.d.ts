@@ -12,7 +12,8 @@ export interface StyleAttribute {
   [attributeName: string]: '';
 }
 
-type Rule = StyleAttribute | CSSProperties | null;
+type FalsyValues = null | undefined | false;
+type Rule = StyleAttribute | CSSProperties | FalsyValues;
 
 /**
  * Defines a `rule` with the given key-value pairs. Returns an object (of shape
