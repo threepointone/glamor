@@ -15,7 +15,7 @@ import { createElement } from 'glamor/react'
 
 The props accepts arrays as well, so you could do 
 ```jsx
-<div css={[{ color: 'red' }, someRule, { ... }]}> ... </div>div>
+<div css={[{ color: 'red' }, someRule, { ... }]}> ... </div>
 ```
 
 Use the following settings to avoid the `createElement` boilerplate 
