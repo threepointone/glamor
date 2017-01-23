@@ -249,6 +249,11 @@ export function merge(...rules: Array<Rule>): StyleAttribute;
  */
 export function css(...rules: Array<Rule>): StyleAttribute;
 
+export namespace css {
+  export function insert(css: string): void;
+  export function global(selector: string, style: CSSProperties): void;
+}
+
 /**
  * Media queries!
  */
