@@ -27,9 +27,8 @@
   ],
   "scripts": {
     "start": "webpack-dev-server --config webpack/dev.js",
-    "parser": "pegjs src/css/spec.pegjs",
     "clean": "rimraf lib es6 umd",
-    "build": "npm-run-all -s clean -s parser -p build:** -s size",
+    "build": "npm-run-all -s clean -p build:** -s size",
     "build:lib": "babel src -d lib --presets es2015,stage-0,react",
     "build:es6": "babel src -d es6",
     "build:umd": "mkdirp umd && webpack --config webpack/umd.js",

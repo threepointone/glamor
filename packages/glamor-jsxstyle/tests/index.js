@@ -1,6 +1,10 @@
 import { View } from '../src'
+import { render, unmountComponentAtNode } from 'react-dom'
+import { flush, presets, styleSheet } from 'glamor';
+import React from 'react';
+import expect from 'expect'
 
-describe('jsxstyle', () => {
+describe('glamor-jsxstyle', () => {
   let node
   beforeEach(() => {
     node = document.createElement('div')

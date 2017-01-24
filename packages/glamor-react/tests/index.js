@@ -1,6 +1,14 @@
 import { propMerge } from '../src'
+import React from 'react';
+import { render, unmountComponentAtNode } from 'react-dom'
+import { style, flush } from 'glamor';
+import expect from 'expect'
 
-describe('react', () => {
+function childStyle(node, p = null) {
+  return window.getComputedStyle(node.childNodes[0], p)
+}
+
+describe('glamor-react', () => {
   let node
   beforeEach(() => {
     node = document.createElement('div')

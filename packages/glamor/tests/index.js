@@ -25,7 +25,6 @@ import { style, hover, nthChild, firstLetter, media, merge, compose,  select, vi
   flush, styleSheet, rehydrate, css }
 from '../src'
 
-
 import clean from '../src/clean'
 
 import { createMarkupForStyles } from '../src/CSSPropertyOperations'
@@ -160,7 +159,7 @@ describe('glamor', () => {
     expect(styleSheet.rules().map(x => x.cssText).join('\n')).toEqual(
 `.css-1j2tyha, [data-css-1j2tyha] { color: red; }
 .css-1j2tyha:hover, [data-css-1j2tyha]:hover { color: blue; }
-@media (min-width: 300px) {
+@media (min-width: 300px) { 
   .css-1j2tyha, [data-css-1j2tyha] { color: green; }
   .css-1j2tyha:hover, [data-css-1j2tyha]:hover { color: yellow; }
   .a .css-1j2tyha .c, .a [data-css-1j2tyha] .c { color: rgb(245, 222, 179); }

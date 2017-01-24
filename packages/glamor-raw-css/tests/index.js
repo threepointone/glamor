@@ -1,5 +1,9 @@
 import { _css } from '../src/raw'
-describe('css', () => {
+import expect from 'expect'
+import { unmountComponentAtNode } from 'react-dom'
+import { flush } from 'glamor';
+
+describe('glamor-raw-css', () => {
   // how to test the plugin?
   let node
   beforeEach(() => {
