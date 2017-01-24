@@ -67,9 +67,9 @@ module.exports = function (config) {
     browsers: allBrowsers ? [ 'PhantomJS', 'Firefox', 'Chrome', 'Safari' ] : [ 'PhantomJS' ],
     reporters: process.env.COVERAGE ? [ 'mocha', 'coverage' ] : [ 'mocha' ],
     preprocessors: {
-      'index.js': [ 'webpack' ]
+      '../packages/*/tests/*.js': [ 'webpack' ]
     },
-    files: [ 'index.js' ],
+    files: [ '../packages/*/tests/*.js' ],
     webpack: require('../webpack/tests'),
     webpackMiddleware: {
       stats: 'errors-only'
