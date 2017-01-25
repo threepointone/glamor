@@ -26,6 +26,7 @@
     "utils.d.ts"
   ],
   "scripts": {
+    "bootstrap": "lerna bootstrap",
     "test": "karma start tests/karma.conf.js",
     "test:server": "cross-env NODE_ENV=test babel-node tests/server.js --presets es2015,stage-0,react",
     "test:watch": "npm test -- --no-single-run",
