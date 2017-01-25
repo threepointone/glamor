@@ -6,13 +6,12 @@ node_js:
 
 before_install:
 
-install:
-  - yarn
-  - yarn run bootstrap
 after_success:
 
 branches:
   only:
     - master
+
+before_script: yarn run bootstrap
 
 script: yarn run test
