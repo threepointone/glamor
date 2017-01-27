@@ -34,7 +34,7 @@ type InsertKeyframes = (name: string, keyFrame: KeyFrameStyleRule) => string;
 
 interface CSSFunction {
   (...rules: CSSProperties[]): StyleAttribute;
-  (...attrs: (StyleAttribute | FalsyValue)[]): StyleAttribute;
+  (...attrs: (CSSProperties | StyleAttribute | FalsyValue)[]): StyleAttribute;
 
   insert: InsertCSS;
   global: InsertGlobal;
