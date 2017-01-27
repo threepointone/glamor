@@ -6,10 +6,10 @@ export interface CSSProperties extends ReactCSSProperties {
   label?: string;
 }
 
-// shape of { 'data-css-<id>': '' }.
-// This is used as element's attributes (not the same as element's style).
-// If this is used for className, This object will called .toString() in rendering process.
 export interface StyleAttribute {
+  // shape of { 'data-css-<id>': '' }.
+  // This is used as element's attributes (not the same as element's style).
+  // If this is used for `className`, This object will called `.toString()` in rendering process.
   [dataCssId: string]: '';
 }
 
@@ -124,6 +124,7 @@ export function cssFor(...rules: StyleRule[]): string;
 export function attribsFor(...rules: StyleRule[]): string;
 
 // deprecated aliases
+export const style: CSSFunction;
 export const merge: CSSFunction;
 export const compose: CSSFunction;
 export const insertRule: InsertCSS;
@@ -135,7 +136,6 @@ export const fontFace: InsertFontFace;
 
 // An escape hatch to define styles for arbitrary CSS selectors. Your selector is appended
 // directly to the css rule, letting you define 'whatever' you want. Use sparingly!
-//
 // (nb1: don't forget to add a leading space for 'child' selectors. eg - `$(' .item', {...}`).
 // (nb2: `simulate()` does not work on these selectors yet.)
 type Select = (selector: string, ...rules: StyleRule[]) => StyleAttribute;
