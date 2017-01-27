@@ -1,12 +1,12 @@
-export interface CSSProperties {
+import * as React from 'react';
+
+export type CSSProperties = React.CSSProperties & {
   /**
    * In dev mode, adding a `label` string prop will reflect its value in devtools. Useful
    * when debugging, and a good alternative to 'semantic' classnames.
    */
   label?: string;
-  // for now just allow everything
-  [propertyName: string]: any;
-}
+};
 
 export interface StyleAttribute {
   [attributeName: string]: '';
