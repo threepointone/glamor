@@ -1,4 +1,8 @@
-import { CSSProperties } from 'react';
+import { CSSProperties as ReactCSSProperties } from 'react';
+
+export interface CSSProperties extends ReactCSSProperties {
+  label?: string;
+}
 
 export interface StyleAttribute {
   [key: string]: any;
