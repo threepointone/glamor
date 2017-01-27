@@ -1,11 +1,16 @@
 import { CSSProperties as ReactCSSProperties } from 'react';
 
 export interface CSSProperties extends ReactCSSProperties {
+  // In dev mode, adding a `label` string prop will reflect its value in devtools. Useful
+  // when debugging, and a good alternative to 'semantic' classnames.
   label?: string;
 }
 
+// shape of { 'data-css-<id>': '' }.
+// This is used as element's attributes (not the same as element's style).
+// If this is used for className, This object will called .toString() in rendering process.
 export interface StyleAttribute {
-  [key: string]: any;
+  [dataCssId: string]: '';
 }
 
 interface StyleRule extends CSSProperties {
@@ -30,6 +35,7 @@ type InsertKeyframes = (name: string, keyFrame: KeyFrameStyleRule) => string;
 interface CSSFunction {
   (...rules: CSSProperties[]): StyleAttribute;
   (...attrs: (StyleAttribute | FalsyValue)[]): StyleAttribute;
+
   insert: InsertCSS;
   global: InsertGlobal;
   fontFace: InsertFontFace;
@@ -113,6 +119,7 @@ export function backdrop(rule: StyleRule): StyleAttribute;
 export function placeholder(rule: StyleRule): StyleAttribute;
 
 // helper apis for web components
+// https://github.com/threepointone/glamor/issues/16
 export function cssFor(...rules: StyleRule[]): string;
 export function attribsFor(...rules: StyleRule[]): string;
 
@@ -125,6 +132,12 @@ export const keyframes: InsertKeyframes;
 export const fontFace: InsertFontFace;
 
 // deprecated apis and there aliases
+
+// An escape hatch to define styles for arbitrary CSS selectors. Your selector is appended
+// directly to the css rule, letting you define 'whatever' you want. Use sparingly!
+//
+// (nb1: don't forget to add a leading space for 'child' selectors. eg - `$(' .item', {...}`).
+// (nb2: `simulate()` does not work on these selectors yet.)
 type Select = (selector: string, ...rules: StyleRule[]) => StyleAttribute;
 export const select: Select;
 export function parent(selector: string, ...rules: StyleRule[]): StyleAttribute;
