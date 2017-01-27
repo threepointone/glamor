@@ -1,319 +1,127 @@
-export interface CSSProperties {
-  /**
-   * In dev mode, adding a `label` string prop will reflect its value in devtools. Useful
-   * when debugging, and a good alternative to 'semantic' classnames.
-   */
-  label?: string;
-  // for now just allow everything
-  [propertyName: string]: any;
-}
+import { CSSProperties } from 'react';
 
 export interface StyleAttribute {
-  [attributeName: string]: '';
+  [key: string]: any;
 }
 
-type FalsyValues = null | undefined | false;
-type Rule = StyleAttribute | CSSProperties | FalsyValues;
-
-/**
- * Defines a `rule` with the given key-value pairs. Returns an object (of shape
- * `{'data-css-<id>': ''}`), to be added to an element's attributes. This is not the same
- * as element's style, and doesn't interfere with the element's `className` / `class`.
- */
-export function style(props: CSSProperties): StyleAttribute;
-
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function active(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function any(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function checked(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function _default(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function disabled(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function empty(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function enabled(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function first(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function firstChild(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function firstOfType(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function fullscreen(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function focus(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function hover(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function indeterminate(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function inRange(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function invalid(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function lastChild(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function lastOfType(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function left(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function link(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function onlyChild(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function onlyOfType(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function optional(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function outOfRange(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function readOnly(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function readWrite(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function required(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function right(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function root(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function scope(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function target(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function valid(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function visited(props: CSSProperties): StyleAttribute;
-
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function dir(param: string, props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function lang(param: string, props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function not(param: string, props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function nthChild(param: string | number, props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function nthLastChild(param: string | number, props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function nthLastOfType(param: string | number, props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function nthOfType(param: string | number, props: CSSProperties): StyleAttribute;
-
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function after(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function before(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function firstLetter(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function firstLine(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function selection(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function backdrop(props: CSSProperties): StyleAttribute;
-/**
- * Defines a rule for the given pseudoclass selector.
- */
-export function placeholder(props: CSSProperties): StyleAttribute;
-
-/**
- * An escape hatch to define styles for arbitrary CSS selectors. Your selector is appended
- * directly to the css rule, letting you define 'whatever' you want. Use sparingly!
- *
- * (nb1: don't forget to add a leading space for 'child' selectors. eg - `$(' .item', {...}`).
- * (nb2: `simulate()` does not work on these selectors yet.)
- */
-export function select(selector: string, props: CSSProperties): StyleAttribute;
-/**
- * An escape hatch to define styles for arbitrary CSS selectors. Your selector is appended
- * directly to the css rule, letting you define 'whatever' you want. Use sparingly!
- *
- * (nb1: don't forget to add a leading space for 'child' selectors. eg - `$(' .item', {...}`).
- * (nb2: `simulate()` does not work on these selectors yet.)
- */
-export function $(selector: string, props: CSSProperties): StyleAttribute;
-
-/**
- * An escape hatch to target elements based on it's parent.
- */
-export function parent(selector: string, props: CSSProperties): StyleAttribute;
-
-/**
- * Combine rules, with latter styles taking precedence over previous ones.
- */
-export function compose(...rules: Array<Rule>): StyleAttribute;
-/**
- * Combine rules, with latter styles taking precedence over previous ones.
- */
-export function merge(...rules: Array<Rule>): StyleAttribute;
-
-/**
- * In glamor, css rules are treated as values. The css function lets you define these values.
- */
-export function css(...rules: Array<Rule>): StyleAttribute;
-
-export namespace css {
-  export function insert(css: string): void;
-  export function global(selector: string, style: CSSProperties): void;
+interface StyleRule extends CSSProperties {
+  [selector: string]: any;
 }
 
-/**
- * Media queries!
- */
-export function media(query: string, ...rules: Array<Rule>): StyleAttribute;
+interface FontStyleRule extends StyleRule {
+  fontFamily: string;
+}
 
-/**
- * Included Media query presets.
- */
+interface KeyFrameStyleRule extends StyleRule {
+  [key: string]: any;
+}
+
+type FalsyValue = null | undefined | false;
+
+type InsertCSS = (css: string) => void;
+type InsertGlobal = (selector: string, rule: StyleRule) => void;
+type InsertFontFace = (font: FontStyleRule) => string;
+type InsertKeyframes = (name: string, keyFrame: KeyFrameStyleRule) => string;
+
+interface CSSFunction {
+  (...rules: CSSProperties[]): StyleAttribute;
+  (...attrs: (StyleAttribute | FalsyValue)[]): StyleAttribute;
+  insert: InsertCSS;
+  global: InsertGlobal;
+  fontFace: InsertFontFace;
+  keyframes: InsertKeyframes;
+}
+
+export const css: CSSFunction;
+
 export const presets: {
-  mobile: '(min-width: 400px)';
-  phablet: '(min-width: 550px)';
-  tablet: '(min-width: 750px)';
-  desktop: '(min-width: 1000px)';
-  hd: '(min-width: 1200px)';
+  mobile: string;
+  Mobile: string;
+  phablet: string;
+  Phablet: string;
+  tablet: string;
+  Tablet: string;
+  desktop: string;
+  Desktop: string;
+  hd: string;
+  Hd: string;
 };
 
-/**
- * In development, lets you trigger any pseudoclass on an element.
- */
-export function simulate(...pseudoclasses: Array<string>): StyleAttribute;
+export function simulate(...pseudos: string[]): void;
+export function speedy(isActive: boolean): void;
+export function rehydrate(ids: any[]): void;
+export function flush(): void;
 
-export interface FontProperties {
-  [propertyName: string]: any;
-}
+export function media(query: string, ...rules: StyleRule[]): StyleAttribute;
+export function pseudo(selector: string, ...rules: StyleRule[]): StyleAttribute;
 
-/**
- * Loads the given font-face at most once into the document, returns the font family name.
- */
-export function fontFace(font: FontProperties): string;
+// pseudo classes
+export function active(rule: StyleRule): StyleAttribute;
+export function any(rule: StyleRule): StyleAttribute;
+export function checked(rule: StyleRule): StyleAttribute;
+export function disabled(rule: StyleRule): StyleAttribute;
+export function empty(rule: StyleRule): StyleAttribute;
+export function enabled(rule: StyleRule): StyleAttribute;
+export function _default(rule: StyleRule): StyleAttribute;
+export function first(rule: StyleRule): StyleAttribute;
+export function firstChild(rule: StyleRule): StyleAttribute;
+export function firstOfType(rule: StyleRule): StyleAttribute;
+export function fullscreen(rule: StyleRule): StyleAttribute;
+export function focus(rule: StyleRule): StyleAttribute;
+export function hover(rule: StyleRule): StyleAttribute;
+export function indeterminate(rule: StyleRule): StyleAttribute;
+export function inRange(rule: StyleRule): StyleAttribute;
+export function invalid(rule: StyleRule): StyleAttribute;
+export function lastChild(rule: StyleRule): StyleAttribute;
+export function lastOfType(rule: StyleRule): StyleAttribute;
+export function left(rule: StyleRule): StyleAttribute;
+export function link(rule: StyleRule): StyleAttribute;
+export function onlyChild(rule: StyleRule): StyleAttribute;
+export function onlyOfType(rule: StyleRule): StyleAttribute;
+export function optional(rule: StyleRule): StyleAttribute;
+export function outOfRange(rule: StyleRule): StyleAttribute;
+export function readOnly(rule: StyleRule): StyleAttribute;
+export function readWrite(rule: StyleRule): StyleAttribute;
+export function required(rule: StyleRule): StyleAttribute;
+export function right(rule: StyleRule): StyleAttribute;
+export function root(rule: StyleRule): StyleAttribute;
+export function scope(rule: StyleRule): StyleAttribute;
+export function target(rule: StyleRule): StyleAttribute;
+export function valid(rule: StyleRule): StyleAttribute;
+export function visited(rule: StyleRule): StyleAttribute;
 
-export interface TimeLine {
-  [timelineValue: string]: CSSProperties;
-}
+// parameterized pseudo classes
+export function dir(param: any, rule: StyleRule): StyleAttribute;
+export function lang(param: any, rule: StyleRule): StyleAttribute;
+export function not(param: any, rule: StyleRule): StyleAttribute;
+export function nthChild(param: any, rule: StyleRule): StyleAttribute;
+export function nthLastChild(param: any, rule: StyleRule): StyleAttribute;
+export function nthLastOfType(param: any, rule: StyleRule): StyleAttribute;
+export function nthOfType(param: any, rule: StyleRule): StyleAttribute;
 
-/**
- * Adds animation keyframes into the document, with an optional name.
- */
-export function keyframes(timeline: TimeLine): string;
-/**
- * Adds animation keyframes into the document, with an optional name.
- */
-export function keyframes(name: string, timeline: TimeLine): string;
+// pseudo elements
+export function after(rule: StyleRule): StyleAttribute;
+export function before(rule: StyleRule): StyleAttribute;
+export function firstLetter(rule: StyleRule): StyleAttribute;
+export function firstLine(rule: StyleRule): StyleAttribute;
+export function selection(rule: StyleRule): StyleAttribute;
+export function backdrop(rule: StyleRule): StyleAttribute;
+export function placeholder(rule: StyleRule): StyleAttribute;
 
-/**
- * Append a raw css rule at most once to the stylesheet. The ultimate escape hatch.
- */
-export function insertRule(css: string): void;
+// helper apis for web components
+export function cssFor(...rules: StyleRule[]): string;
+export function attribsFor(...rules: StyleRule[]): string;
 
-/**
- * Append a css rule as a key-value object at most once to the stylesheet. The ultimate escape hatch.
- */
-export function insertGlobal(selector: string, style: CSSProperties): void;
+// deprecated aliases
+export const merge: CSSFunction;
+export const compose: CSSFunction;
+export const insertRule: InsertCSS;
+export const insertGlobal: InsertGlobal;
+export const keyframes: InsertKeyframes;
+export const fontFace: InsertFontFace;
 
-/**
- * A helper to extract the css for given rules. useful for debugging, and webcomponents.
- */
-export function cssFor(...rules: Array<StyleAttribute>): string;
-
-/**
- * Another helper for webcomponents, this generates the attributes to be included when
- * constructing an element's html.
- */
-export function attribsFor(...rules: Array<StyleAttribute>): string;
+// deprecated apis and there aliases
+type Select = (selector: string, ...rules: StyleRule[]) => StyleAttribute;
+export const select: Select;
+export function parent(selector: string, ...rules: StyleRule[]): StyleAttribute;
+export const $: Select;

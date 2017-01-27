@@ -1,4 +1,5 @@
-import { CSSProperties, StyleAttribute } from './index';
+import { CSSProperties } from 'react';
+import { StyleAttribute } from './index';
 
 export const createElement: any;
 export const dom: any;
