@@ -85,6 +85,7 @@ docs
 - [server side rendering](https://github.com/threepointone/glamor/blob/master/docs/server.md)
 - [performance tips](https://github.com/threepointone/glamor/blob/master/docs/performance.md)
 - [what happens when I call css(...rules)?](https://github.com/threepointone/glamor/blob/master/docs/implementation.md)
+- [use with typescript](https://github.com/threepointone/glamor/blob/master/docs/typescript.md)
 
 extras 
 ---
