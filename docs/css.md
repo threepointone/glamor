@@ -14,14 +14,13 @@ To use, add 'glamor/babel' to the `plugins` field in your babel config.
 ```jsx
 import { css } from 'glamor'
 
-
 let rule = css`
   color: red;
-  font-family: helvetica, sans-serif
-  :hover: {
+  font-family: helvetica, sans-serif;
+  :hover {
     color: blue
   }
-  @media(min-width: 300px){
+  @media(min-width: 300px) {
     color: green
   }
 `
