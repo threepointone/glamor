@@ -196,13 +196,13 @@ sup {
   line-height: 0;
   position: relative;
   vertical-align: baseline;
-}
+}`)
 
-sub {
+insertRule(`sub {
   bottom: -0.25em;
-}
+}`)
 
-sup {
+insertRule(`sup {
   top: -0.5em;
 }`)
 
