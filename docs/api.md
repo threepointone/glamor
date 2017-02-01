@@ -6,7 +6,7 @@ api
 
 In glamor, css rules are treated as values. The `css` function lets you define these values. 
 
-This a 'rule'
+This is a 'rule'
 ```css
 .abc { color: red }
 ```
