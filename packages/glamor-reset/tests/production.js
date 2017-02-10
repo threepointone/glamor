@@ -8,7 +8,6 @@ require('..');
 describe('glamor-reset:production', () => {
 
   it('inserts normalize styles', () => {
-    console.log(styleSheet.rules().map((x, ctx) => x.cssText).join('\n'));
     expect(styleSheet.rules().map((x, ctx) => x.cssText).join('\n')).toEqual(`html { font-family: sans-serif; line-height: 1.15; }
 body { margin: 0px; }
 article, aside, footer, header, nav, section { display: block; }
