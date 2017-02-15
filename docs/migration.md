@@ -6,7 +6,7 @@ Migrations are shown as diffs so you can see what you need to replace. Lines pre
 
 ## Independent packages
 
-Glamor was converted to a monorepo. See https://github.com/threepointone/glamor/issues/204 for the motivation behind this. If you required or imported one of the following files before, you should read this migration step:
+Glamor was converted to a monorepo. See [#204](https://github.com/threepointone/glamor/issues/204) for the motivation behind this. If you required or imported one of the following files before, you should read this migration step:
 
 - `glamor/aphrodite`
 - `glamor/jsxstyle`
