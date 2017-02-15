@@ -1,10 +1,8 @@
-/coverage
-/lib
-/node_modules
-npm-debug.log
+node_modules/
+umd/
+es6/
+lib/
+coverage/
 examples/bundle.js
-umd/*
-examples/node_modules
-es6/*
-tests/coverage
+*.log
 .DS_Store
