@@ -1,5 +1,5 @@
 {
-  "name": "glamor-reset",
+  "name": "glamor-styled",
   "version": "2.20.22",
   "description": "inline css for component systems",
   "main": "lib/index.js",
@@ -15,17 +15,18 @@
     "build:umd": "../../node_modules/.bin/mkdirp umd && ../../node_modules/.bin/webpack --config ../../webpack/umd.js",
     "build:umd-prod": "../../node_modules/.bin/cross-env NODE_ENV=production npm run build:umd",
     "size": "cat umd/index.min.js | gzip | wc -c",
-    "test": "../../node_modules/.bin/karma start ../../karma.conf.js",
-    "test:server": "../../node_modules/.bin/cross-env NODE_ENV=test ../../node_modules/.bin/babel-node tests/server.js --presets es2015,stage-0,react",
-    "test:watch": "npm test -- --no-single-run",
-    "coverage": "rm -rf tests/coverage && COVERAGE=1 npm test && open tests/coverage/*/index.html",
-    "prepublish": "npm run build"
+    "test": "echo \"Write more tests :)\" && exit 0"
   },
   "keywords": [
     "css",
     "inline"
   ],
   "dependencies": {
-    "glamor": "*"
+    "object-assign": "^4.1.0",
+    "glamor": "*",
+    "glamor-raw-css": "*"
+  },
+  "devDependencies": {
+    "react": "^15.4.1"
   }
 }

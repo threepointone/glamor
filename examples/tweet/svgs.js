@@ -1,4 +1,4 @@
-import { createElement } from '../../src/react' // eslint-disable-line no-unused-vars
+import { createElement } from 'glamor-react' // eslint-disable-line no-unused-vars
 /** @jsx createElement */
 
 import React from 'react'

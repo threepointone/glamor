@@ -1,12 +1,12 @@
-import { createElement } from '../../src/react' // eslint-disable-line no-unused-vars
+import { createElement } from 'glamor-react' // eslint-disable-line no-unused-vars
 /** @jsx createElement */
 
 import React from 'react'
 
-import { insertRule, merge, media } from '../../src'
-import '../../src/reset'
+import 'glamor-reset'
+import { insertRule, merge, media } from 'glamor'
 
-import { vars } from '../../src/react'
+import { vars } from 'glamor-react'
 
 import { Tweet } from './tweet'
 import data from './data.js'

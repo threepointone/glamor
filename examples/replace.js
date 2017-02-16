@@ -1,5 +1,5 @@
 // import React from 'react'
-import { StyleSheet } from '../src/sheet'
+import { StyleSheet } from 'glamor'
 
 let sheet = new StyleSheet()
 sheet.inject()

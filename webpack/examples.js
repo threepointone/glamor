@@ -13,14 +13,20 @@ module.exports = {
       loader: 'babel',
       query: {
         plugins: [ 
-          path.join(__dirname, '../src/css/babel.js')
+          path.join(__dirname, '../packages/glamor-raw-css/src/babel.js')
         ]
       }
     } ]  
   },
   resolve: {
     alias: {
-      'glamor': '../src'
+      'glamor': '../packages/glamor',
+      'glamor-reset': '../packages/glamor-reset',
+      'glamor-ous': '../packages/glamor-ous',
+      'glamor-aphrodite': '../packages/glamor-aphrodite',
+      'glamor-jsxstyle': '../packages/glamor-jsxstyle',
+      'glamor-react': '../packages/glamor-react',
+      'glamor-styled': '../packages/glamor-styled'
     }
   },
   plugins: [

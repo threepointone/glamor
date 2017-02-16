@@ -1,5 +1,5 @@
 import React from 'react'
-import { style, hover } from '../src'
+import { style, hover } from 'glamor'
 
 
 let hoverBlue = style({

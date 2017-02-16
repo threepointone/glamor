@@ -1,9 +1,10 @@
+import 'babel-polyfill';
 import { render, unmountComponentAtNode } from 'react-dom'
 import { speedy, flush, presets, styleSheet } from 'glamor';
 speedy(true);
 import React from 'react';
 import expect from 'expect'
-require('..');
+require('../src');
 
 describe('glamor-reset:production', () => {
 

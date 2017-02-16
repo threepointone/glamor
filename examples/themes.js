@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeTheme } from '../src/react'
+import { makeTheme } from 'glamor-react'
 
 export class App extends React.Component {
   render() {

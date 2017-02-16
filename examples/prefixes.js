@@ -1,5 +1,5 @@
 import React from 'react'
-import { placeholder, css } from '../src'
+import { placeholder, css } from 'glamor'
 
 
 export class App extends React.Component {

@@ -1,11 +1,11 @@
-import { createElement } from '../../src/react' // eslint-disable-line no-unused-vars
+import { createElement } from 'glamor-react' // eslint-disable-line no-unused-vars
 /** @jsx createElement */
 
 
 // @value primary, secondary from 'styles/colors.css';
 import React, { PropTypes } from 'react'
-import { merge, select, before } from '../../src'
-import { vars } from '../../src/react'
+import { merge, select, before } from 'glamor'
+import { vars } from 'glamor-react'
 
 @vars()
 export class Header extends React.Component {

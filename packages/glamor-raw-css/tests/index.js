@@ -1,4 +1,4 @@
-import { _css } from '../src/raw'
+import { _css } from '../src'
 import expect from 'expect'
 import { unmountComponentAtNode } from 'react-dom'
 import { flush } from 'glamor';

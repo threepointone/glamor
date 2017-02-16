@@ -1,9 +1,9 @@
 import React from 'react'
-import { css, hover } from '../src'
+import { css, hover } from 'glamor'
 
-import '../src/reset' // css reset!
+import 'glamor-reset' // css reset!
 
-import { base, container, row, columns, half, oneThird, twoThirds, fullWidth } from '../src/ous'
+import { base, container, row, columns, half, oneThird, twoThirds, fullWidth } from 'glamor-ous'
 
 let grayBg = css({ backgroundColor: '#eee', textAlign: 'center', borderRadius: 4 })
 let grayCols = n => css(columns(n), grayBg)

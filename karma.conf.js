@@ -1,5 +1,6 @@
+var path = require('path');
 var allBrowsers = process.env.ALL
-var projectName = require('../package').name
+var projectName = require('./package').name
 
 const customLaunchers = {
   BS_Chrome: {
@@ -67,10 +68,10 @@ module.exports = function (config) {
     browsers: allBrowsers ? [ 'PhantomJS', 'Firefox', 'Chrome', 'Safari' ] : [ 'PhantomJS' ],
     reporters: process.env.COVERAGE ? [ 'mocha', 'coverage' ] : [ 'mocha' ],
     preprocessors: {
-      '../packages/*/tests/*.js': [ 'webpack' ]
+      [path.join(process.cwd(), 'tests', '*.js')]: [ 'webpack' ]
     },
-    files: [ '../packages/*/tests/*.js' ],
-    webpack: require('../webpack/tests'),
+    files: [ path.join(process.cwd(), 'tests', '*.js') ],
+    webpack: require('./webpack/tests'),
     webpackMiddleware: {
       stats: 'errors-only'
     },

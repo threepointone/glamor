@@ -1,4 +1,4 @@
-import { style } from './index.js'
+import { style } from 'glamor'
 
 // todo 
 // - animations 

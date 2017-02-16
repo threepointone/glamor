@@ -1,7 +1,7 @@
 // https://bugs.chromium.org/p/chromium/issues/detail?id=639561
 
 import React from 'react'
-import { css } from '../src'
+import { css } from 'glamor'
 
 css.insert('[data-abc]:hover { color: red; }')
 

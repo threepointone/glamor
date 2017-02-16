@@ -1,4 +1,4 @@
-import { style, media, merge, firstChild, after, select, hover, idFor, insertRule } from './index.js'
+import { style, media, merge, firstChild, after, select, hover, idFor, insertRule } from 'glamor'
 
 function log() {
   console.log(this) // eslint-disable-line

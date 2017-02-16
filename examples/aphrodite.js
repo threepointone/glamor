@@ -1,7 +1,7 @@
 import React from 'react'
-import { StyleSheet, css } from '../src/aphrodite' //eslint-disable-line no-unused-vars
+import { StyleSheet, css } from 'glamor-aphrodite' //eslint-disable-line no-unused-vars
 
-import { keyframes } from '../src'
+import { keyframes } from 'glamor'
 
 let kfs = keyframes({
   'from': {

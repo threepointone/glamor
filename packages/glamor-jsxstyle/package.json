@@ -8,6 +8,20 @@
   "homepage": "https://github.com/threepointone/glamor",
   "license": "MIT",
   "repository": "https://github.com/threepointone/glamor",
+  "scripts": {
+    "clean": "../../node_modules/.bin/rimraf lib es6 umd",
+    "build": "../../node_modules/.bin/npm-run-all -s clean -p build:** -s size",
+    "build:lib": "../../node_modules/.bin/babel src -d lib --presets es2015,stage-0,react",
+    "build:es6": "../../node_modules/.bin/babel src -d es6",
+    "build:umd": "../../node_modules/.bin/mkdirp umd && ../../node_modules/.bin/webpack --config ../../webpack/umd.js",
+    "build:umd-prod": "../../node_modules/.bin/cross-env NODE_ENV=production npm run build:umd",
+    "size": "cat umd/index.min.js | gzip | wc -c",
+    "test": "../../node_modules/.bin/karma start ../../karma.conf.js",
+    "test:server": "../../node_modules/.bin/cross-env NODE_ENV=test ../../node_modules/.bin/babel-node tests/server.js --presets es2015,stage-0,react",
+    "test:watch": "npm test -- --no-single-run",
+    "coverage": "rm -rf tests/coverage && COVERAGE=1 npm test && open tests/coverage/*/index.html",
+    "prepublish": "npm run build"
+  },
   "keywords": [
     "css",
     "inline"

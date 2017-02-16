@@ -1,12 +1,12 @@
-import { createElement } from '../../src/react' // eslint-disable-line no-unused-vars
+import { createElement } from 'glamor-react' // eslint-disable-line no-unused-vars
 /** @jsx createElement */
 
 import React, { Component, PropTypes } from 'react' // eslint-disable-line no-unused-vars
 
 import { reply, retweet, like, more } from './svgs'
 
-import { keyframes, style } from '../../src'
-import { vars } from '../../src/react'
+import { keyframes, style } from 'glamor'
+import { vars } from 'glamor-react'
 
 
 let liked = keyframes({

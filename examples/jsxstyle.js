@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Row, Column } from '../src/jsxstyle'
+import { View, Row, Column } from 'glamor-jsxstyle'
 
 export class App extends React.Component {
   render() {

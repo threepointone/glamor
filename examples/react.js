@@ -1,5 +1,5 @@
 import React from 'react'
-import { createElement } from '../src/react' // eslint-disable-line
+import { createElement } from 'glamor-react' // eslint-disable-line
 /* @jsx createElement */
 
 export class App extends React.Component {

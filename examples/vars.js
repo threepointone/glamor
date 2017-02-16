@@ -1,6 +1,6 @@
 import React from 'react'
-import { css } from '../src'
-import { vars } from '../src/react'            
+import { css } from 'glamor'
+import { vars } from 'glamor-react'            
 
 
 @vars({

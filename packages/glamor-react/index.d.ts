@@ -1,4 +1,4 @@
-import { CSSProperties, StyleAttribute } from './index';
+import { CSSProperties, StyleAttribute } from 'glamor';
 
 export const createElement: any;
 export const dom: any;
