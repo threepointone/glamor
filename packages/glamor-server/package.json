@@ -1,0 +1,34 @@
+{
+  "name": "glamor-server",
+  "version": "2.20.22",
+  "description": "inline css for component systems",
+  "main": "lib/index.js",
+  "typings": "index.d.ts",
+  "author": "Sunil Pai <threepointone@gmail.com>",
+  "homepage": "https://github.com/threepointone/glamor",
+  "license": "MIT",
+  "repository": "https://github.com/threepointone/glamor",
+  "scripts": {
+    "clean": "../../node_modules/.bin/rimraf lib es6 umd",
+    "build": "../../node_modules/.bin/npm-run-all -s clean -p build:** -s size",
+    "build:lib": "../../node_modules/.bin/babel src -d lib --presets es2015,stage-0,react",
+    "build:es6": "../../node_modules/.bin/babel src -d es6",
+    "build:umd": "../../node_modules/.bin/mkdirp umd && ../../node_modules/.bin/webpack --config ../../webpack/umd.js",
+    "build:umd-prod": "../../node_modules/.bin/cross-env NODE_ENV=production npm run build:umd",
+    "size": "cat umd/index.min.js | gzip | wc -c",
+    "test": "../../node_modules/.bin/cross-env NODE_ENV=test ../../node_modules/.bin/babel-node tests/server.js --presets es2015,stage-0,react",
+    "prepublish": "npm run build"
+  },
+  "keywords": [
+    "css",
+    "inline"
+  ],
+  "dependencies": {
+    "glamor": "*"
+  },
+  "devDependencies": {
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1",
+    "pug": "^2.0.0-beta6"
+  }
+}

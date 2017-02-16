@@ -1,11 +1,8 @@
-import { style, css, hover, flush, styleSheet,
-  cssLabels, simulations } from '../src'
-import { renderStatic, renderStaticOptimized } from '../src/server'
+import { style, css, hover, flush, styleSheet, cssLabels, simulations } from 'glamor'
+import { renderStatic, renderStaticOptimized } from '../src'
 import jade from 'pug'
-
 import expect from 'expect'
 import React from 'react' // eslint-disable-line
-
 import { renderToStaticMarkup } from 'react-dom/server'
 
 // make a throwaway style
@@ -40,7 +37,6 @@ css({ color: 'wheat' })
 }
 
 flush()
-
 
 // jade
 {

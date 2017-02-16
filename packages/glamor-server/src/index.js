@@ -1,4 +1,4 @@
-import { styleSheet } from './index.js'
+import { styleSheet } from 'glamor'
 
 
 /**** serverside stuff ****/
