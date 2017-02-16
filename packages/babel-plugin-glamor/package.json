@@ -1,0 +1,17 @@
+{
+  "name": "babel-plugin-glamor",
+  "version": "2.20.22",
+  "description": "inline css for component systems",
+  "main": "src/babel-hoist.js",
+  "author": "Sunil Pai <threepointone@gmail.com>",
+  "homepage": "https://github.com/threepointone/glamor",
+  "license": "MIT",
+  "repository": "https://github.com/threepointone/glamor",
+  "keywords": [
+    "css",
+    "inline"
+  ],
+  "scripts": {
+    "test": "echo \"Write more tests :)\" && exit 0"
+  }
+}

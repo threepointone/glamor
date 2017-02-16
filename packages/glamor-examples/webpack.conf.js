@@ -14,7 +14,7 @@ module.exports = {
       loader: 'babel',
       query: {
         plugins: [ 
-          path.join(__dirname, 'node_modules', 'glamor-raw-css', 'src', 'babel.js')
+          path.join(__dirname, 'node_modules', 'glamor-raw-css', 'babel')
         ]
       }
     } ]  
