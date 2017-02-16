@@ -1,8 +1,8 @@
-import { propMerge } from '../src'
 import React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom'
 import { style, flush } from 'glamor';
 import expect from 'expect'
+import { propMerge } from '../src'
 
 function childStyle(node, p = null) {
   return window.getComputedStyle(node.childNodes[0], p)

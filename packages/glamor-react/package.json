@@ -28,10 +28,12 @@
   ],
   "dependencies": {
     "object-assign": "^4.1.0",
+    "react": "^15.4.1",
     "glamor": "*"
   },
   "devDependencies": {
-    "react": "^15.4.1",
-    "pegjs": "^0.10.0"
+    "expect": "^1.20.2",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
   }
 }

@@ -27,8 +27,9 @@
     "glamor": "*"
   },
   "devDependencies": {
+    "expect": "^1.20.2",
+    "pug": "^2.0.0-beta6",
     "react": "^15.4.1",
-    "react-dom": "^15.4.1",
-    "pug": "^2.0.0-beta6"
+    "react-dom": "^15.4.1"
   }
 }
