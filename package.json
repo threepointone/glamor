@@ -6,7 +6,7 @@
   "files": [],
   "scripts": {
     "examples": "lerna run --scope glamor-examples start",
-    "test": "lerna run test",
+    "test": "lerna run --concurrency 1 test",
     "build": "lerna run build",
     "bootstrap": "lerna bootstrap",
     "postinstall": "npm run bootstrap"
