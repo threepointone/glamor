@@ -1,5 +1,5 @@
 {
-  "name": "glamor-react",
+  "name": "glamor-ous",
   "version": "2.20.22",
   "description": "inline css for component systems",
   "main": "lib/index.js",
@@ -16,9 +16,7 @@
     "build:umd": "../../node_modules/.bin/mkdirp umd && ../../node_modules/.bin/webpack --config ../../webpack/umd.js",
     "build:umd-prod": "../../node_modules/.bin/cross-env NODE_ENV=production npm run build:umd",
     "size": "cat umd/index.min.js | gzip | wc -c",
-    "test": "../../node_modules/.bin/karma start ../../karma.conf.js",
-    "test:watch": "npm test -- --no-single-run",
-    "coverage": "rm -rf tests/coverage && COVERAGE=1 npm test && open tests/coverage/*/index.html",
+    "test": "echo \"Write more tests :)\" && exit 0",
     "prepublish": "npm run build"
   },
   "keywords": [
@@ -26,13 +24,6 @@
     "inline"
   ],
   "dependencies": {
-    "object-assign": "^4.1.0",
-    "react": "^15.4.1",
     "glamor": "*"
-  },
-  "devDependencies": {
-    "expect": "^1.20.2",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2"
   }
 }

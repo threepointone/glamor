@@ -8,34 +8,17 @@
     "es6",
     "lib",
     "umd",
-    "aphrodite.js",
-    "jsxstyle.js",
-    "babel.js",
-    "babel-hoist.js",
-    "styled.js",
-    "ous.js",
-    "react.js",
-    "reset.js",
-    "server.js",
-    "utils.js",
-    "index.d.ts",
-    "aphrodite.d.ts",
-    "jsxstyle.d.ts",
-    "react.d.ts",
-    "ous.d.ts",
-    "utils.d.ts"
+    "index.d.ts"
   ],
   "scripts": {
-    "start": "webpack-dev-server --config webpack/dev.js",
-    "clean": "rimraf lib es6 umd",
-    "build": "npm-run-all -s clean -p build:** -s size",
-    "build:lib": "babel src -d lib --presets es2015,stage-0,react",
-    "build:es6": "babel src -d es6",
-    "build:umd": "mkdirp umd && webpack --config webpack/umd.js",
-    "build:umd-prod": "cross-env NODE_ENV=production npm run build:umd",
+    "clean": "../../node_modules/.bin/rimraf lib es6 umd",
+    "build": "../../node_modules/.bin/npm-run-all -s clean -p build:** -s size",
+    "build:lib": "../../node_modules/.bin/babel src -d lib --presets es2015,stage-0,react",
+    "build:es6": "../../node_modules/.bin/babel src -d es6",
+    "build:umd": "../../node_modules/.bin/mkdirp umd && ../../node_modules/.bin/webpack --config ../../webpack/umd.js",
+    "build:umd-prod": "../../node_modules/.bin/cross-env NODE_ENV=production npm run build:umd",
     "size": "cat umd/index.min.js | gzip | wc -c",
-    "test": "karma start tests/karma.conf.js",
-    "test:server": "cross-env NODE_ENV=test babel-node tests/server.js --presets es2015,stage-0,react",
+    "test": "../../node_modules/.bin/karma start ../../karma.conf.js",
     "test:watch": "npm test -- --no-single-run",
     "coverage": "rm -rf tests/coverage && COVERAGE=1 npm test && open tests/coverage/*/index.html",
     "prepublish": "npm run build"
@@ -65,5 +48,11 @@
     "babel-runtime": "^6.18.0",
     "fbjs": "^0.8.8",
     "object-assign": "^4.1.0"
+  },
+  "devDependencies": {
+    "expect": "^1.20.2",
+    "expect-jsx": "^2.6.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
   }
 }

@@ -1,37 +1,15 @@
 {
   "name": "glamor",
   "version": "2.20.22",
+  "private": true,
   "description": "inline css for component systems",
-  "main": "lib/index.js",
-  "typings": "index.d.ts",
-  "files": [
-    "es6",
-    "lib",
-    "umd",
-    "aphrodite.js",
-    "jsxstyle.js",
-    "babel.js",
-    "babel-hoist.js",
-    "styled.js",
-    "ous.js",
-    "react.js",
-    "reset.js",
-    "server.js",
-    "utils.js",
-    "index.d.ts",
-    "aphrodite.d.ts",
-    "jsxstyle.d.ts",
-    "react.d.ts",
-    "ous.d.ts",
-    "utils.d.ts"
-  ],
+  "files": [],
   "scripts": {
+    "examples": "lerna run --scope glamor-examples start",
+    "test": "lerna run test",
+    "build": "lerna run build",
     "bootstrap": "lerna bootstrap",
-    "postinstall": "npm run bootstrap",
-    "test": "karma start tests/karma.conf.js",
-    "test:server": "cross-env NODE_ENV=test babel-node tests/server.js --presets es2015,stage-0,react",
-    "test:watch": "npm test -- --no-single-run",
-    "coverage": "rm -rf tests/coverage && COVERAGE=1 npm test && open tests/coverage/*/index.html"
+    "postinstall": "npm run bootstrap"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
@@ -42,18 +20,15 @@
     "babel-plugin-react-require": "^3.0.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-0": "^6.16.0",
-    "classnames": "^2.2.5",
     "cross-env": "^3.1.4",
     "cssbeautify": "^0.3.1",
     "eslint": "^3.12.2",
     "eslint-config-rackt": "^1.1.1",
     "eslint-plugin-react": "^6.8.0",
-    "expect": "^1.20.2",
-    "expect-jsx": "^2.6.0",
-    "fbjs": "^0.8.8",
     "karma": "^1.3.0",
     "karma-browserstack-launcher": "^1.1.1",
     "karma-chrome-launcher": "^2.0.0",
@@ -64,26 +39,17 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-safari-launcher": "^1.0.0",
     "karma-webpack": "^1.8.1",
+    "lerna": "2.0.0-beta.37",
     "markdown-in-js": "^1.1.3",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "mocha": "^3.2.0",
     "npm-run-all": "^3.1.2",
-    "object-assign": "^4.1.0",
-    "pegjs": "^0.10.0",
-    "preact": "^7.1.0",
-    "preact-compat": "^3.9.4",
-    "pug": "^2.0.0-beta6",
-    "react": "^15.4.1",
-    "react-addons-css-transition-group": "^15.4.1",
-    "react-dom": "^15.4.1",
     "rimraf": "^2.5.4",
     "stylelint": "^7.7.0",
     "stylelint-config-standard": "^15.0.1",
     "stylelint-processor-styled-components": "^0.0.4",
-    "webpack": "2.1.0-beta.25",
-    "webpack-dev-server": "2.1.0-beta.9",
-    "lerna": "2.0.0-beta.37"
+    "webpack": "2.1.0-beta.25"
   },
   "author": "Sunil Pai <threepointone@gmail.com>",
   "homepage": "https://github.com/threepointone/glamor",
@@ -106,9 +72,5 @@
       "jsx-quotes": 0
     }
   },
-  "dependencies": {
-    "babel-runtime": "^6.18.0",
-    "fbjs": "^0.8.8",
-    "object-assign": "^4.1.0"
-  }
+  "dependencies": {}
 }

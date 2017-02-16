@@ -1,4 +1,4 @@
-import '..';
+import '../src';
 import { render, unmountComponentAtNode } from 'react-dom'
 import { flush, presets, styleSheet } from 'glamor';
 import React from 'react';
