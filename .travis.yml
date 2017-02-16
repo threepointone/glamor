@@ -11,6 +11,7 @@ after_success:
 branches:
   only:
     - master
+    - v3
 
 before_script: yarn run bootstrap
 
