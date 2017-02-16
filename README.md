@@ -79,6 +79,7 @@ features
 
 docs
 ---
+
 - [api documentation](https://github.com/threepointone/glamor/blob/master/docs/api.md)
 - [howto](https://github.com/threepointone/glamor/blob/master/docs/howto.md) - a comparison of css techniques in glamor
 - [plugins](https://github.com/threepointone/glamor/blob/master/docs/plugins.md)
@@ -89,15 +90,15 @@ docs
 extras
 ---
 
-- `glamor/reset` - include a css reset
-- [use a `css` prop on *all* your react elements](https://github.com/threepointone/glamor/blob/master/docs/createElement.md)
-- `glamor/react` - helpers for [themes](https://github.com/threepointone/glamor/blob/master/docs/themes.md), [`@vars`](https://github.com/threepointone/glamor/blob/master/docs/vars.md)
-- `glamor/jsxstyle` - [react integration](https://github.com/threepointone/glamor/blob/master/docs/jsxstyle.md), à la [jsxstyle](https://github.com/petehunt/jsxstyle/)
-- `glamor/aphrodite` - [shim](https://github.com/threepointone/glamor/blob/master/docs/aphrodite.md) for [aphrodite](https://github.com/Khan/aphrodite) stylesheets
-- `glamor/utils` - a port of [postcss-utilities](https://github.com/ismamz/postcss-utilities)
-- `glamor/ous` - a port of [the skeleton css framework](http://getskeleton.com)
-- [`glamor/styled`](https://github.com/threepointone/glamor/blob/master/docs/styled.md) - an experimental port of [styled-components](https://styled-components.com/)
-
+Every extra is available as a standalone package.
+- `glamor-reset` - include a css reset
+- `glamor-react` - helpers for [themes](https://github.com/threepointone/glamor/blob/master/docs/themes.md), [`@vars`](https://github.com/threepointone/glamor/blob/master/docs/vars.md)
+  - [use a `css` prop on *all* your react elements](https://github.com/threepointone/glamor/blob/master/docs/createElement.md)
+- `glamor-jsxstyle` - [react integration](https://github.com/threepointone/glamor/blob/master/docs/jsxstyle.md), à la [jsxstyle](https://github.com/petehunt/jsxstyle/)
+- `glamor-aphrodite` - [shim](https://github.com/threepointone/glamor/blob/master/docs/aphrodite.md) for [aphrodite](https://github.com/Khan/aphrodite) stylesheets
+- `glamor-utils` - a port of [postcss-utilities](https://github.com/ismamz/postcss-utilities)
+- `glamor-ous` - a port of [the skeleton css framework](http://getskeleton.com)
+- [`glamor-styled`](https://github.com/threepointone/glamor/blob/master/docs/styled.md) - an experimental port of [styled-components](https://styled-components.com/)
 
 speedy mode
 ---
