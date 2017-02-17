@@ -3,7 +3,7 @@ import { css, hover } from 'glamor'
 
 import 'glamor-reset' // css reset!
 
-import { base, container, row, columns, half, oneThird, twoThirds, fullWidth } from 'glamor-ous'
+import { base, container, row, columns, half, oneThird, twoThirds, fullWidth, button, primary, labelBody } from 'glamor-ous'
 
 let grayBg = css({ backgroundColor: '#eee', textAlign: 'center', borderRadius: 4 })
 let grayCols = n => css(columns(n), grayBg)
@@ -82,7 +82,7 @@ class Typography extends React.Component {
   }
 }
 
-import { button, primary } from '../src/ous'
+
 
 class Buttons extends React.Component {
   render() {
@@ -102,8 +102,6 @@ class Buttons extends React.Component {
     </div>
   }
 }
-
-import { labelBody } from '../src/ous'
 
 class Forms extends React.Component {
   render() {
@@ -192,6 +190,6 @@ class Tables extends React.Component {
           </tr>
         </tbody>
       </table>
-    // </div>
+    </div>
   }
 }

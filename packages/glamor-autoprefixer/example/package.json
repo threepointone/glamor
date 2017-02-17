@@ -1,9 +1,10 @@
 {
-  "name": "glamor-examples",
+  "name": "glamor-autoprefixer-example",
   "private": true,
   "version": "2.20.22",
+  "description": "",
   "scripts": {
-    "start": "webpack-dev-server --config webpack.conf.js"
+    "start": "webpack-dev-server --config ../../../webpack/example.js"
   },
   "author": "Sunil Pai <threepointone@gmail.com>",
   "homepage": "https://github.com/threepointone/glamor",
@@ -15,15 +16,7 @@
   ],
   "dependencies": {
     "glamor": "*",
-    "glamor-aphrodite": "*",
-    "glamor-jsxstyle": "*",
-    "glamor-ous": "*",
-    "glamor-raw-css": "*",
-    "glamor-react": "*",
-    "glamor-reset": "*",
-    "glamor-styled": "*",
     "react": "^15.4.1",
-    "react-addons-css-transition-group": "^15.4.2",
     "react-dom": "^15.4.1"
   },
   "devDependencies": {

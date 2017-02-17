@@ -12,11 +12,11 @@ module.exports = {
       test: /\.js$/,
       exclude: /node_modules/,
       loader: 'babel',
-      query: {
-        plugins: [ 
-          path.join(__dirname, 'node_modules', 'glamor-raw-css', 'babel')
-        ]
-      }
+      // query: {
+      //   plugins: [ 
+      //     path.join(__dirname, 'node_modules', 'glamor-raw-css', 'babel')
+      //   ]
+      // }
     } ]  
   },
   plugins: [

@@ -1,7 +1,6 @@
 import React from 'react'
 import { css } from 'glamor'
 
-
 let styles = {
   blue: {
     color: 'blue'

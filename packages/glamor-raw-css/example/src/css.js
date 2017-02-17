@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { cssFor, css } from 'glamor'
+import beautify from 'cssbeautify'
 
 function log(x) {
   console.log((x || ''), this) // eslint-disable-line no-console
@@ -47,8 +48,7 @@ let rule = css`
 `
 
 export const App = () => <div className={rule}>
-  ...
+  {
+    beautify(cssFor(rule))
+  }
 </div>
-
-import beautify from 'cssbeautify'
-beautify(cssFor(rule))::log()

@@ -2,7 +2,7 @@ import { createElement } from 'glamor-react' // eslint-disable-line no-unused-va
 /** @jsx createElement */
 
 import React, { PropTypes } from 'react' //eslint-disable-line no-unused-vars
-import { merge, select } from 'glamor
+import { merge, select } from 'glamor'
 import { vars } from 'glamor-react'
 
 

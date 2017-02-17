@@ -13,6 +13,6 @@ branches:
     - master
     - v3
 
-before_script: yarn run bootstrap
+#before_script: yarn run bootstrap
 
 script: yarn run test

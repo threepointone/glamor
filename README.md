@@ -83,7 +83,6 @@ docs
 - [api documentation](https://github.com/threepointone/glamor/blob/master/docs/api.md)
 - [howto](https://github.com/threepointone/glamor/blob/master/docs/howto.md) - a comparison of css techniques in glamor
 - [plugins](https://github.com/threepointone/glamor/blob/master/docs/plugins.md)
-- [server side rendering](https://github.com/threepointone/glamor/blob/master/docs/server.md)
 - [performance tips](https://github.com/threepointone/glamor/blob/master/docs/performance.md)
 - [what happens when I call css(...rules)?](https://github.com/threepointone/glamor/blob/master/docs/implementation.md)
 
@@ -97,6 +96,8 @@ Every extra is available as a standalone package.
 - `glamor-jsxstyle` - [react integration](https://github.com/threepointone/glamor/blob/master/docs/jsxstyle.md), à la [jsxstyle](https://github.com/petehunt/jsxstyle/)
 - `glamor-aphrodite` - [shim](https://github.com/threepointone/glamor/blob/master/docs/aphrodite.md) for [aphrodite](https://github.com/Khan/aphrodite) stylesheets
 - `glamor-utils` - a port of [postcss-utilities](https://github.com/ismamz/postcss-utilities)
+- `glamor-server` - [server side rendering](https://github.com/threepointone/glamor/blob/master/docs/server.md)
+- `glamor-raw-css` - [write real css](https://github.com/threepointone/glamor/blob/master/docs/css.md)
 - `glamor-ous` - a port of [the skeleton css framework](http://getskeleton.com)
 - [`glamor-styled`](https://github.com/threepointone/glamor/blob/master/docs/styled.md) - an experimental port of [styled-components](https://styled-components.com/)
 
