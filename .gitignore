@@ -1,10 +1,9 @@
 /coverage
 /lib
-/node_modules
+node_modules/
 npm-debug.log
 examples/bundle.js
 umd/*
-examples/node_modules
 es6/*
 tests/coverage
 .DS_Store

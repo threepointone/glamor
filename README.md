@@ -4,16 +4,18 @@
 
 ![build status](https://travis-ci.org/threepointone/glamor.svg)
 
+> :bulb: Dear users and contributors. This is the documentation for `v2`. We started working on `v3` on the [`v3` branch](https://github.com/threepointone/glamor/tree/v3). If you want to follow discussions around `v3` look into [#83](https://github.com/threepointone/glamor/issues/83). Please don't make bigger pull request against `v2` anymore.
+
 css in your javascript
 
 `npm install glamor --save`
 
-usage 
+usage
 ```jsx
 import { css } from 'glamor'
 
-// make css rules 
-let rule = css({ 
+// make css rules
+let rule = css({
   color: 'red',
   ':hover': {
     color: 'pink'
@@ -31,12 +33,12 @@ let rule = css({
   zomg
 </div>
 
-// or as classes 
+// or as classes
 <div className={`${rule} ${another}`}>
   zomg
 </div>
 
-// merge rules for great justice 
+// merge rules for great justice
 let mono = css({
   fontFamily: 'monospace'
 })
@@ -61,23 +63,23 @@ features
 ---
 
 - fast / efficient, with a fluent api
-- ~8k gz, including the [prefixer](https://github.com/rofrischmann/inline-style-prefixer/) 
+- ~8k gz, including the [prefixer](https://github.com/rofrischmann/inline-style-prefixer/)
 - framework independent
-- adds vendor prefixes / fallback values 
+- adds vendor prefixes / fallback values
 - supports all the pseudo :classes/::elements
 - `@media` queries
 - `@supports` statements
 - `@font-face` / `@keyframes`
-- escape hatches for parent / child / contextual selectors 
+- escape hatches for parent / child / contextual selectors
 - dev helper to simulate pseudo classes like `:hover`, etc
 - server side / static rendering
 - tests / coverage
-- experimental - [write real css](https://github.com/threepointone/glamor/blob/master/docs/css.md), with syntax highlighting and linting 
+- experimental - [write real css](https://github.com/threepointone/glamor/blob/master/docs/css.md), with syntax highlighting and linting
 
 
 (thanks to [BrowserStack](https://www.browserstack.com/) for providing the infrastructure that allows us to run our build in real browsers.)
 
-docs 
+docs
 ---
 - [api documentation](https://github.com/threepointone/glamor/blob/master/docs/api.md)
 - [howto](https://github.com/threepointone/glamor/blob/master/docs/howto.md) - a comparison of css techniques in glamor
@@ -86,7 +88,7 @@ docs
 - [performance tips](https://github.com/threepointone/glamor/blob/master/docs/performance.md)
 - [what happens when I call css(...rules)?](https://github.com/threepointone/glamor/blob/master/docs/implementation.md)
 
-extras 
+extras
 ---
 
 - `glamor/reset` - include a css reset
@@ -106,7 +108,7 @@ there are two methods by which the library adds styles to the document -
 - by appending css 'rules' to a browser backed stylesheet. This is really fast, but has the disadvantage of making the styles uneditable in the devtools sidebar.
 - by appending text nodes to a style tag. This is fairly slow, but doesn't have the editing drawback.
 
-as a compromise, we enable the former 'speedy' mode `NODE_ENV=production`, and disable it otherwise. You can manually toggle this with the `speedy()` function. 
+as a compromise, we enable the former 'speedy' mode `NODE_ENV=production`, and disable it otherwise. You can manually toggle this with the `speedy()` function.
 
 characteristics
 ---
@@ -114,8 +116,8 @@ characteristics
 while glamor shares most common attributes of other inline style / css-in-js systems,
 here are some key differences -
 
-- uses 'real' stylesheets, so you can use all css features. 
-- rules can be used as data-attributes or classNames. 
+- uses 'real' stylesheets, so you can use all css features.
+- rules can be used as data-attributes or classNames.
 - simulate pseudo-classes with the `simulate` helper. very useful, especially when combined when hot-loading and/or editing directly in devtools.
 - really fast, by way of deduping rules, and using [insertRule](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet/insertRule) in production.
 
