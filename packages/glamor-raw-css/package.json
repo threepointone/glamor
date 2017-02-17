@@ -4,6 +4,7 @@
   "description": "inline css for component systems",
   "main": "lib/index.js",
   "scripts": {
+    "example": "../../node_modules/.bin/lerna exec --scope glamor-raw-css-example npm run start",
     "parser": "pegjs src/spec.pegjs",
     "clean": "../../node_modules/.bin/rimraf lib es6 umd",
     "build": "../../node_modules/.bin/npm-run-all -s clean -p build:** -s size",

@@ -1,0 +1,26 @@
+{
+  "name": "glamor-jsxstyle-example",
+  "private": true,
+  "version": "2.20.22",
+  "description": "",
+  "scripts": {
+    "start": "webpack-dev-server --config ../../../webpack/example.js"
+  },
+  "author": "Sunil Pai <threepointone@gmail.com>",
+  "homepage": "https://github.com/threepointone/glamor",
+  "license": "MIT",
+  "repository": "https://github.com/threepointone/glamor",
+  "keywords": [
+    "css",
+    "inline"
+  ],
+  "dependencies": {
+    "glamor": "*",
+    "glamor-jsxstyle": "*",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "2.1.0-beta.9"
+  }
+}

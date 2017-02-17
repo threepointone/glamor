@@ -5,7 +5,7 @@
   "description": "inline css for component systems",
   "files": [],
   "scripts": {
-    "examples": "lerna run --scope glamor-examples start",
+    "example": "lerna exec --scope glamor-example-app npm run start",
     "test": "lerna run --concurrency 1 test",
     "build": "lerna run build",
     "bootstrap": "lerna bootstrap",
@@ -25,7 +25,6 @@
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-0": "^6.16.0",
     "cross-env": "^3.1.4",
-    "cssbeautify": "^0.3.1",
     "eslint": "^3.12.2",
     "eslint-config-rackt": "^1.1.1",
     "eslint-plugin-react": "^6.8.0",

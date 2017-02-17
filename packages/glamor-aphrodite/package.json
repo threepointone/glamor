@@ -11,6 +11,7 @@
     "index.d.ts"
   ],
   "scripts": {
+    "example": "../../node_modules/.bin/lerna exec --scope glamor-aphrodite-example npm run start",
     "clean": "../../node_modules/.bin/rimraf lib es6 umd",
     "build": "../../node_modules/.bin/npm-run-all -s clean -p build:** -s size",
     "build:lib": "../../node_modules/.bin/babel src -d lib --presets es2015,stage-0,react",
