@@ -2,6 +2,10 @@ import assign from 'object-assign'
 import React, { PropTypes } from 'react'
 import { isLikeRule, style, merge } from './index.js'
 
+if(process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+  console.warn('[Deprecation] In glamor v3 this file will be published as a standalone package: "glamor-react". See https://github.com/threepointone/glamor/issues/204 for more information.')
+}
+
 export * from './index.js' // convenience
 
 // allows for elements to have a 'css' prop
@@ -13,7 +17,7 @@ export function createElement(tag, allProps, ...children) {
         isLikeRule(css) ? css :
         style(css)
     className = className ? className + ' ' + rule : rule
-    props.className = className    
+    props.className = className
     return React.createElement(tag, props, ...children)
   }
   return React.createElement(tag, allProps, ...children)

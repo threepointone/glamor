@@ -1,5 +1,9 @@
 import { style, media, merge, firstChild, after, select, hover, idFor, insertRule } from './index.js'
 
+if(process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+  console.warn('[Deprecation] In glamor v3 this file will be published as a standalone package: "glamor-ous". See https://github.com/threepointone/glamor/issues/204 for more information.')
+}
+
 function log() {
   console.log(this) // eslint-disable-line
   return this
@@ -21,7 +25,7 @@ export const container = merge(
     padding: 0
   }),
   media('(min-width: 550px)', {
-    width: '80%'    
+    width: '80%'
   }),
   after({
     content: '""',
@@ -30,10 +34,10 @@ export const container = merge(
   })
 )
 
-let widths = [ 
-  null, // 0 - don't even 
+let widths = [
+  null, // 0 - don't even
   '4.66666666667%', // 1
-  '13.3333333333%', // 2 
+  '13.3333333333%', // 2
   '22%',            // 3
   '30.6666666667%', // 4
   '39.3333333333%', // 5
@@ -43,7 +47,7 @@ let widths = [
   '74.0%',          // 9
   '82.6666666667%', // 10
   '91.3333333333%', // 11
-  '100%'            // 12 - don't forget the margin 
+  '100%'            // 12 - don't forget the margin
 ]
 
 let fractionalWidths = {
@@ -53,34 +57,34 @@ let fractionalWidths = {
 }
 
 let offsets = [
-  null, // 0 - don't even 
+  null, // 0 - don't even
   '8.66666666667%', // 1
   '17.3333333333%', // 2
   '26%',            // 3
-  '34.6666666667%', // 4 
-  '43.3333333333%', // 5 
-  '52%',            // 6 
+  '34.6666666667%', // 4
+  '43.3333333333%', // 5
+  '52%',            // 6
   '60.6666666667%', // 7
   '69.3333333333%', // 8
   '78.0%',          // 9
   '86.6666666667%', // 10
-  '95.3333333333%'  // 11  
+  '95.3333333333%'  // 11
 ]
 
 let fractionalOffsets = {
   half: '34.6666666667%',
   oneThird: '69.3333333333%',
-  twoThirds: '52%'  
+  twoThirds: '52%'
 }
 
-export const row = after({ 
+export const row = after({
   content: '""',
   display: 'table',
   clear: 'both'
 })
 
 export const columns = (n, offset) => merge(
-  { 
+  {
     width: '100%',
     float: 'left',
     boxSizing: 'border-box'
@@ -96,7 +100,7 @@ export const columns = (n, offset) => merge(
   } : {}, offset ? {
     marginLeft: typeof n === 'number' ? offsets[offset] : fractionalOffsets[offset]
   } : {})
-) 
+)
 
 export const half = offset => columns('half', offset)
 export const oneThird = offset => columns('oneThird', offset)
@@ -119,31 +123,31 @@ export const base = merge(
     fontWeight: 400,
     fontFamily: '"Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif',
     color: '#222'
-  }),  
+  }),
 
   // typography
   select(' h1, h2, h3, h4, h5, h6', {
     marginTop: 0,
     marginBottom: '2rem',
-    fontWeight: 300    
+    fontWeight: 300
   }),
-  ...[ 
+  ...[
     [ { fontSize: '4.0rem', lineHeight: 1.2,  letterSpacing: '-.1rem' }, 5.0 ],
     [ { fontSize: '3.6rem', lineHeight: 1.25,  letterSpacing: '-.1rem' }, 4.2 ],
     [ { fontSize: '3.0rem', lineHeight: 1.3,  letterSpacing: '-.1rem' }, 3.6 ],
     [ { fontSize: '2.4rem', lineHeight: 1.35, letterSpacing: '-.08rem' }, 3.0 ],
     [ { fontSize: '1.8rem', lineHeight: 1.5,  letterSpacing: '-.05rem' }, 2.4 ],
-    [ { fontSize: '1.5rem', lineHeight: 1.6,  letterSpacing: 0 }, 1.5 ] ].map((x, i) => 
+    [ { fontSize: '1.5rem', lineHeight: 1.6,  letterSpacing: 0 }, 1.5 ] ].map((x, i) =>
       merge(
         select(` h${i + 1}`,x[0]),
-        media('(min-width: 550px)', select(` h${i + 1}`, { // larger than phablet 
+        media('(min-width: 550px)', select(` h${i + 1}`, { // larger than phablet
           fontSize: `${x[1]}rem`
         })))),
   select(' p', {
     marginTop: 0
   }),
 
-  // links 
+  // links
   select(' a', {
     color: '#1EAEDB'
   }),
@@ -151,7 +155,7 @@ export const base = merge(
     color: '#0FA0CE'
   }),
 
-  // buttons 
+  // buttons
   select(` button, input[type="submit"], input[type="reset"], input[type="button"], ${buttonId}`, {
     display: 'inline-block',
     height: 38,
@@ -171,30 +175,30 @@ export const base = merge(
     cursor: 'pointer',
     boxSizing: 'border-box'
   }),
-  select(` ${buttonId}:hover, button:hover, input[type="submit"]:hover, 
-    input[type="reset"]:hover, input[type="button"]:hover, 
-    ${buttonId}:focus, button:focus, input[type="submit"]:focus, 
+  select(` ${buttonId}:hover, button:hover, input[type="submit"]:hover,
+    input[type="reset"]:hover, input[type="button"]:hover,
+    ${buttonId}:focus, button:focus, input[type="submit"]:focus,
     input[type="reset"]:focus, input[type="button"]:focus`, {
       color: '#333',
       borderColor: '#888',
-      outline: 0  
+      outline: 0
     }),
   select(` ${buttonId}${primaryId}, button${primaryId}, input[type="submit"]${primaryId}, input[type="reset"]${primaryId}, input[type="button"]${primaryId}`, {
     color: '#FFF',
     backgroundColor: '#33C3F0',
     borderColor: '#33C3F0'
   }),
-  select(` ${buttonId}${primaryId}:hover, button${primaryId}:hover, input[type="submit"]${primaryId}:hover, 
+  select(` ${buttonId}${primaryId}:hover, button${primaryId}:hover, input[type="submit"]${primaryId}:hover,
     input[type="reset"]${primaryId}:hover, input[type="button"]${primaryId}:hover,
-     ${buttonId}${primaryId}:focus, button${primaryId}:focus, input[type="submit"]${primaryId}:focus, 
+     ${buttonId}${primaryId}:focus, button${primaryId}:focus, input[type="submit"]${primaryId}:focus,
     input[type="reset"]${primaryId}:focus, input[type="button"]${primaryId}:focus`, {
       color: '#FFF',
       backgroundColor: '#1EAEDB',
       borderColor: '#1EAEDB'
     }),
 
-  // forms 
-  select(` input[type="email"], input[type="number"], input[type="search"], input[type="text"], 
+  // forms
+  select(` input[type="email"], input[type="number"], input[type="search"], input[type="text"],
     input[type="tel"], input[type="url"], input[type="password"], textarea, select`, {
       height: '38px',
       padding: '6px 10px', /* The 6px vertically centers text on FF, ignored by Webkit */
@@ -240,12 +244,12 @@ export const base = merge(
   }),
 
 
-  // lists 
+  // lists
   select(' ul', {
     listStyle: 'circle inside'
   }),
   select(' ol', {
-    listStyle: 'decimal inside'  
+    listStyle: 'decimal inside'
   }),
   select(' ol, ul', {
     paddingLeft: 0,
@@ -259,7 +263,7 @@ export const base = merge(
     marginBottom: '1rem'
   }),
 
-  // code 
+  // code
   select(' code', {
     padding: '.2rem .5rem',
     margin: '0 .2rem',
@@ -275,7 +279,7 @@ export const base = merge(
     whiteSpace: 'pre'
   }),
 
-  // tables 
+  // tables
   select(' th, td', {
     padding: '12px 15px',
     textAlign: 'left',
@@ -291,7 +295,7 @@ export const base = merge(
 
   // spacing
   select(' button', {
-    marginBottom: '1rem'    
+    marginBottom: '1rem'
   }),
   select(' input, textarea, select, fieldset', {
     marginBottom: '1.5rem'
@@ -300,7 +304,7 @@ export const base = merge(
     marginBottom: '2.5rem'
   }),
 
-  // misc 
+  // misc
   select(' hr', {
     marginTop: '3rem',
     marginBottom: '3.5rem',
@@ -310,7 +314,7 @@ export const base = merge(
 
 )
 
-// utilities 
+// utilities
 export const fullWidth = style({
   width: '100%',
   boxSizing: 'border-box'
@@ -332,7 +336,7 @@ export const pullLeft = style({
 export const clearfix = style({
   content: '""',
   display: 'table',
-  clear: 'both'  
+  clear: 'both'
 })
 
 

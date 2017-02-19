@@ -6,17 +6,20 @@ Migrations are shown as diffs so you can see what you need to replace. Lines pre
 
 ## Independent packages
 
-Glamor was converted to a monorepo. See [#204](https://github.com/threepointone/glamor/issues/204) for the motivation behind this. If you required or imported one of the following files before, you should read this migration step:
+Glamor was converted to a monorepo. See [#204](https://github.com/threepointone/glamor/issues/204) for the motivation behind this. If you required or imported one of the following files before, you should now install them as standalone package:
 
-- `glamor/aphrodite`
-- `glamor/jsxstyle`
-- `glamor/ous`
-- `glamor/react`
-- `glamor/reset`
-- `glamor/styled`
-- `glamor/utils`
+- `glamor/aphrodite` → `glamor-aphrodite`
+- `glamor/lib/autoprefix` → `glamor-autoprefixer`
+- `glamor/babel-hoist` → `babel-plugin-glamor`
+- `glamor/jsxstyle` → `glamor-jsxstyle`
+- `glamor/ous` → `glamor-ous`
+- `glamor/react` → `glamor-react`
+- `glamor/reset` → `glamor-reset`
+- `glamor/server` → `glamor-server`
+- `glamor/styled` → `glamor-styled`
+- `glamor/utils` → `glamor-utils`
 
-Everyone of this file is now a separate package which is prefixed with `glamor-`. E.g. `glamor/react` is now a package called `glamor-react`. You need to change your `require` or `import` accordingly and add the package as a new dependency in your `package.json`. The following diff shows the migration from `glamor/react` to `glamor-react`, but the step is similar for every other package, too.
+The following diff shows the migration from `glamor/react` to `glamor-react`, but the step is similar for every other package, too.
 
 ```diff
 {

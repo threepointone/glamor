@@ -2,6 +2,10 @@ import assign from 'object-assign'
 import { parse } from './spec.js'
 import { merge } from '../index.js'
 
+if(process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+  console.warn('[Deprecation] In glamor v3 this file will be published as a standalone package: "glamor-raw-css". See https://github.com/threepointone/glamor/issues/204 for more information.')
+}
+
 function log(x) {
 
   console.log((x || ''), this) // eslint-disable-line no-console
@@ -31,7 +35,7 @@ export const conversions = {
   },
   MediaQuery(node, ctx) {
     if(node.prefix) {
-      return `${node.prefix} ${node.type} ${node.exprs.map(x => convert(x, ctx)).join(' ')}` // todo - bug - "and" 
+      return `${node.prefix} ${node.type} ${node.exprs.map(x => convert(x, ctx)).join(' ')}` // todo - bug - "and"
     }
     else {
       return node.exprs.map(x => convert(x, ctx)).join(' ')
@@ -45,7 +49,7 @@ export const conversions = {
   },
   RuleSet(node, ctx) {
     let selector = node.selectors.map(x => convert(x, ctx)).join('')
-    let x = { [selector]:  assign({}, ...node.declarations.map(x => convert(x, ctx))) } // todo - more nesting, accept rules, etc 
+    let x = { [selector]:  assign({}, ...node.declarations.map(x => convert(x, ctx))) } // todo - more nesting, accept rules, etc
 
     return x
   },
