@@ -26,7 +26,6 @@ The following diff shows the migration from `glamor/react` to `glamor-react`, bu
   "name": "your-project",
   "dependencies": {
 -    "glamor": "^2.0.0"
-+    "glamor": "^3.0.0",
 +    "glamor-react": "^3.0.0"
   }
 }
