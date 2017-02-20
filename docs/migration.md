@@ -19,7 +19,7 @@ Glamor was converted to a monorepo. See [#204](https://github.com/threepointone/
 - `glamor/styled` → `glamor-styled`
 - `glamor/utils` → `glamor-utils`
 
-The following diff shows the migration from `glamor/react` to `glamor-react`, but the step is similar for every other package, too.
+The following diff shows the migration from `glamor/react` to `glamor-react`, but the step is similar for every other package, too. Note that  `glamor-react` re-exports `glamor` for convenience so you don't need to install `glamor` separately.
 
 ```diff
 {
