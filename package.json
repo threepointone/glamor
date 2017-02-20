@@ -7,6 +7,7 @@
   "scripts": {
     "example": "lerna exec --scope glamor-example-app npm run start",
     "test": "lerna run --concurrency 1 test",
+    "test:updated": "npm run test -- $(lerna updated | grep ^- | grep -v private | sed 's/^- /--scope /g')",
     "build": "lerna run build",
     "bootstrap": "lerna bootstrap",
     "postinstall": "npm run bootstrap"

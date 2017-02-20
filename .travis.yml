@@ -15,4 +15,4 @@ branches:
 
 #before_script: yarn run bootstrap
 
-script: yarn run test
+script: yarn run test:updated
