@@ -1,6 +1,6 @@
 import assign from 'object-assign'
 import { parse } from './spec.js'
-import { merge } from '../index.js'
+import { merge } from 'glamor'
 
 function log(x) {
 
@@ -31,7 +31,7 @@ export const conversions = {
   },
   MediaQuery(node, ctx) {
     if(node.prefix) {
-      return `${node.prefix} ${node.type} ${node.exprs.map(x => convert(x, ctx)).join(' ')}` // todo - bug - "and" 
+      return `${node.prefix} ${node.type} ${node.exprs.map(x => convert(x, ctx)).join(' ')}` // todo - bug - "and"
     }
     else {
       return node.exprs.map(x => convert(x, ctx)).join(' ')
@@ -45,7 +45,7 @@ export const conversions = {
   },
   RuleSet(node, ctx) {
     let selector = node.selectors.map(x => convert(x, ctx)).join('')
-    let x = { [selector]:  assign({}, ...node.declarations.map(x => convert(x, ctx))) } // todo - more nesting, accept rules, etc 
+    let x = { [selector]:  assign({}, ...node.declarations.map(x => convert(x, ctx))) } // todo - more nesting, accept rules, etc
 
     return x
   },

@@ -12,4 +12,6 @@ branches:
   only:
     - master
 
-script: npm run test
+before_script: yarn run bootstrap
+
+script: yarn run test

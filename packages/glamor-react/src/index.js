@@ -1,8 +1,8 @@
 import assign from 'object-assign'
 import React, { PropTypes } from 'react'
-import { isLikeRule, style, merge } from './index.js'
+import { isLikeRule, style, merge } from 'glamor'
 
-export * from './index.js' // convenience
+export * from 'glamor' // convenience
 
 // allows for elements to have a 'css' prop
 export function createElement(tag, allProps, ...children) {
@@ -13,7 +13,7 @@ export function createElement(tag, allProps, ...children) {
         isLikeRule(css) ? css :
         style(css)
     className = className ? className + ' ' + rule : rule
-    props.className = className    
+    props.className = className
     return React.createElement(tag, props, ...children)
   }
   return React.createElement(tag, allProps, ...children)

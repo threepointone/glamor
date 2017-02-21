@@ -1,4 +1,4 @@
-import { insertRule } from './index.js'
+import { insertRule } from 'glamor'
 
 /*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
 

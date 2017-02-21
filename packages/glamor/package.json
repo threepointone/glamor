@@ -1,0 +1,69 @@
+{
+  "name": "glamor",
+  "version": "2.20.22",
+  "description": "inline css for component systems",
+  "main": "lib/index.js",
+  "typings": "index.d.ts",
+  "files": [
+    "es6",
+    "lib",
+    "umd",
+    "aphrodite.js",
+    "jsxstyle.js",
+    "babel.js",
+    "babel-hoist.js",
+    "styled.js",
+    "ous.js",
+    "react.js",
+    "reset.js",
+    "server.js",
+    "utils.js",
+    "index.d.ts",
+    "aphrodite.d.ts",
+    "jsxstyle.d.ts",
+    "react.d.ts",
+    "ous.d.ts",
+    "utils.d.ts"
+  ],
+  "scripts": {
+    "start": "webpack-dev-server --config webpack/dev.js",
+    "clean": "rimraf lib es6 umd",
+    "build": "npm-run-all -s clean -p build:** -s size",
+    "build:lib": "babel src -d lib --presets es2015,stage-0,react",
+    "build:es6": "babel src -d es6",
+    "build:umd": "mkdirp umd && webpack --config webpack/umd.js",
+    "build:umd-prod": "cross-env NODE_ENV=production npm run build:umd",
+    "size": "cat umd/index.min.js | gzip | wc -c",
+    "test": "karma start tests/karma.conf.js",
+    "test:server": "cross-env NODE_ENV=test babel-node tests/server.js --presets es2015,stage-0,react",
+    "test:watch": "npm test -- --no-single-run",
+    "coverage": "rm -rf tests/coverage && COVERAGE=1 npm test && open tests/coverage/*/index.html",
+    "prepublish": "npm run build"
+  },
+  "author": "Sunil Pai <threepointone@gmail.com>",
+  "homepage": "https://github.com/threepointone/glamor",
+  "license": "MIT",
+  "repository": "https://github.com/threepointone/glamor",
+  "keywords": [
+    "css",
+    "inline"
+  ],
+  "eslintConfig": {
+    "extends": [
+      "rackt"
+    ],
+    "plugins": [
+      "react"
+    ],
+    "rules": {
+      "react/jsx-uses-vars": "error",
+      "react/jsx-uses-react": "error",
+      "jsx-quotes": 0
+    }
+  },
+  "dependencies": {
+    "babel-runtime": "^6.18.0",
+    "fbjs": "^0.8.8",
+    "object-assign": "^4.1.0"
+  }
+}

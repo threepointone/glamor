@@ -26,21 +26,11 @@
     "utils.d.ts"
   ],
   "scripts": {
-    "start": "webpack-dev-server --config webpack/dev.js",
-    "parser": "pegjs src/css/spec.pegjs",
-    "clean": "rimraf lib es6 umd",
-    "build": "npm-run-all -s clean -s parser -p build:** -s size",
-    "build:lib": "babel src -d lib --presets es2015,stage-0,react",
-    "build:es6": "babel src -d es6",
-    "build:umd": "mkdirp umd && webpack --config webpack/umd.js",
-    "build:umd-prod": "cross-env NODE_ENV=production npm run build:umd",
-    "build:umd-react": "echo 'react build not implemented'",
-    "size": "cat umd/index.min.js | gzip | wc -c",
+    "bootstrap": "lerna bootstrap",
     "test": "karma start tests/karma.conf.js",
     "test:server": "cross-env NODE_ENV=test babel-node tests/server.js --presets es2015,stage-0,react",
     "test:watch": "npm test -- --no-single-run",
-    "coverage": "rm -rf tests/coverage && COVERAGE=1 npm test && open tests/coverage/*/index.html",
-    "prepublish": "npm run build"
+    "coverage": "rm -rf tests/coverage && COVERAGE=1 npm test && open tests/coverage/*/index.html"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
@@ -91,7 +81,8 @@
     "stylelint-config-standard": "^15.0.1",
     "stylelint-processor-styled-components": "^0.0.4",
     "webpack": "2.1.0-beta.25",
-    "webpack-dev-server": "2.1.0-beta.9"
+    "webpack-dev-server": "2.1.0-beta.9",
+    "lerna": "2.0.0-beta.37"
   },
   "author": "Sunil Pai <threepointone@gmail.com>",
   "homepage": "https://github.com/threepointone/glamor",
