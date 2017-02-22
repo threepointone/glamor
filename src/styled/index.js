@@ -2,20 +2,25 @@ import React from 'react'
 import { merge, style } from '../'
 
 import { parser, convert } from '../css/raw'
+
+if(process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+  console.warn('[Deprecation] In glamor v3 this file will be published as a standalone package: "glamor-styled". See https://github.com/threepointone/glamor/issues/204 for more information.')
+}
+
 let __val__ = (x, props) => typeof x === 'function' ? x(props) : x
 
-export function styled(Component, obj) { // todo - read style off Component if it exists 
+export function styled(Component, obj) { // todo - read style off Component if it exists
   if(obj) {
-    // for when transpiled, and / or by hand 
+    // for when transpiled, and / or by hand
     return class StyledComponent extends React.Component {
 
       render() {
         let { css, ...props } = this.props
         let orig_css = typeof obj === 'function' ? obj(__val__, this.props) : obj
-        
-        return <Component {...props} {...this.props.css ? merge(orig_css, css) : style(orig_css)}/> // todo - isLikeRule 
+
+        return <Component {...props} {...this.props.css ? merge(orig_css, css) : style(orig_css)}/> // todo - isLikeRule
       }
-    }  
+    }
   }
   return function (strings, ...values) {
     // in-browser parsing
@@ -29,7 +34,7 @@ export function styled(Component, obj) { // todo - read style off Component if i
   }
 }
 
-// copied straight from styled-components 
+// copied straight from styled-components
 
 styled.a = styled('a')
 styled.abbr = styled('abbr')

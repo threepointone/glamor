@@ -1,5 +1,9 @@
 import { insertRule } from './index.js'
 
+if(process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+  console.warn('[Deprecation] In glamor v3 this file will be published as a standalone package: "glamor-reset". See https://github.com/threepointone/glamor/issues/204 for more information.')
+}
+
 /*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
 
 /**

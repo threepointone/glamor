@@ -1,6 +1,10 @@
 // forked from https://www.npmjs.com/package/auto-prefixer
 import assign from 'object-assign'
 
+if(process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+  console.warn('[Deprecation] In glamor v3 this file will be published as a standalone package: "glamor-autoprefixer". See https://github.com/threepointone/glamor/issues/204 for more information.')
+}
+
 function capitalize(str) {
   return str && str.charAt(0).toUpperCase() + str.substring(1)
 }
@@ -100,13 +104,13 @@ let clientPrefix = (() => {
   else if (includes(sUsrAg, 'Opera')) { return webkitO }
   else if (includes(sUsrAg, 'Firefox')) { return moz }
   else if (includes(sUsrAg, 'MSIE')) { return ms }
-  
+
   return []
 })()
 
 function checkAndAddPrefix(styleObj, key, val, allVendors) {
   let oldFlex = true
-  
+
   function valueWithPrefix(cssVal, prefix) {
     return includes(val, cssVal) && (allVendors || includes(clientPrefix, prefix)) ?
         val.replace(cssVal, [ '', prefix.toLowerCase(), cssVal ].join('-')) : null
@@ -240,7 +244,7 @@ function checkAndAddPrefix(styleObj, key, val, allVendors) {
 
 
 function autoPrefixer(obj, allVendors) {
-  Object.keys(obj).forEach(key => 
+  Object.keys(obj).forEach(key =>
     obj = checkAndAddPrefix({ ...obj }, key, obj[key], allVendors)
   )
   return obj
@@ -255,7 +259,7 @@ function gate(objOrBool, optionalBoolean = false) {
     return {}
   }
   else {
-    return autoPrefixer(objOrBool, optionalBoolean) 
+    return autoPrefixer(objOrBool, optionalBoolean)
   } // default: don't include all browsers
 }
 

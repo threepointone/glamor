@@ -1,12 +1,16 @@
 // a port of https://github.com/ismamz/postcss-utilities
 
 // todo -
-// - hd breakpoint 
+// - hd breakpoint
 // - sticky footers
 
 import { after, merge, select } from './index.js'
 
-export function aspectRatio(width = 16, height = 9) {  
+if(process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+  console.warn('[Deprecation] In glamor v3 this file will be published as a standalone package: "glamor-utils". See https://github.com/threepointone/glamor/issues/204 for more information.')
+}
+
+export function aspectRatio(width = 16, height = 9) {
   return {
     position: 'relative',
     display: 'block',
@@ -19,7 +23,7 @@ export function aspectRatio(width = 16, height = 9) {
 
 // border-radius
 
-export function borderBottomRadius(r) {  
+export function borderBottomRadius(r) {
   return {
     borderBottomLeftRadius: r,
     borderBottomRightRadius: r
@@ -41,7 +45,7 @@ export function borderLeftRadius(r) {
 }
 
 export function borderRightRadius(r) {
-  
+
   return {
     borderTopRightRadius: r,
     borderBottomRightRadius: r
@@ -49,7 +53,7 @@ export function borderRightRadius(r) {
 }
 
 
-function styleKeyed(prefix, key, { top, right, bottom, left }) {  
+function styleKeyed(prefix, key, { top, right, bottom, left }) {
   let o = {}
   if(top != undefined ) {
     o[prefix + 'Top' + key] = top
@@ -68,15 +72,15 @@ function styleKeyed(prefix, key, { top, right, bottom, left }) {
 
 
 export function borderColor(x) {
-  return styleKeyed('border', 'Color', x)  
+  return styleKeyed('border', 'Color', x)
 }
 
 export function borderStyle(x) {
-  return styleKeyed('border', 'Style', x)  
+  return styleKeyed('border', 'Style', x)
 }
 
 export function borderWidth(x) {
-  return styleKeyed('border', 'Width', x)  
+  return styleKeyed('border', 'Width', x)
 }
 
 export function center() {
@@ -99,9 +103,9 @@ export function centerBlock() {
 export function circle(radius, color = 'transparent') {
   return {
     height: radius,
-    width: radius, 
+    width: radius,
     borderRadius: '50%',
-    backgroundColor: color    
+    backgroundColor: color
   }
 }
 
@@ -174,7 +178,7 @@ export function resetText() {
   }
 }
 
-export function size(width, height = width) {  
+export function size(width, height = width) {
   return {
     width,
     height
@@ -190,7 +194,7 @@ export function size(width, height = width) {
 //     }, select(` ${selector}`, {
 //       display: 'table-row',
 //       height: 1
-//     }))  
+//     }))
 //   }
 //   return merge({
 //     minHeight: '100%',
@@ -199,7 +203,7 @@ export function size(width, height = width) {
 //     display: 'block',
 //     content: '',
 //     height: fixedHeight
-//   }), select(` ${selector}`, {    
+//   }), select(` ${selector}`, {
 //     height: fixedHeight
 //   }))
 // }
@@ -223,7 +227,7 @@ export function textHide(alternative = false) {
 
 
 export function triangle(size = 12, color = '#ccc', orientation = 'down') {
-  // let border 
+  // let border
   let border = (dir => {
     switch(dir) {
       case 'down': return [ true, 't', false, 't' ]
@@ -234,10 +238,10 @@ export function triangle(size = 12, color = '#ccc', orientation = 'down') {
       case 'up-left': return [ true, 't', false, false ]
       case 'down-right': return [ false, false, true, 't' ]
       case 'down-left': return [ false, 't', true, false ]
-      default: throw new Error('Circle orientation is not valid.')  
+      default: throw new Error('Circle orientation is not valid.')
     }
   })(orientation)
-  
+
   let o = {
     height: 0,
     width: 0
@@ -254,7 +258,7 @@ export function triangle(size = 12, color = '#ccc', orientation = 'down') {
   }
 
   if (border[3] === true) { // left
-    o.borderLeft = size + ' solid ' + color      
+    o.borderLeft = size + ' solid ' + color
   }
   if (border[0] === 't') { // top
     o.borderTop = size + ' solid transparent'
@@ -262,11 +266,11 @@ export function triangle(size = 12, color = '#ccc', orientation = 'down') {
 
   if (border[1] === 't') { // right
     o.borderRight = size + ' solid transparent'
-          
+
   }
 
   if (border[2] === 't') { // bottom
-    o.borderBottom = size + ' solid transparent'          
+    o.borderBottom = size + ' solid transparent'
   }
 
   if (border[3] === 't') { // left
@@ -296,7 +300,7 @@ export function truncate(lines = 0, lineHeight = 1, textOverflow = 'ellipsis') {
     overflow: 'hidden',
     textOverflow
   }
-  
+
 }
 
 export function wordWrap(wrap = 'break-word', wordBreak = wrap !== 'break-word' ? wrap : 'break-all') {
