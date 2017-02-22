@@ -6,10 +6,7 @@ import React from 'react';
 import expect from 'expect'
 require('../src');
 
-describe('glamor-reset:production', () => {
-
-  it('inserts normalize styles', () => {
-    expect(styleSheet.rules().map((x, ctx) => x.cssText).join('\n')).toEqual(`html { font-family: sans-serif; line-height: 1.15; }
+const expectedRulesCount = `html { font-family: sans-serif; line-height: 1.15; }
 body { margin: 0px; }
 article, aside, footer, header, nav, section { display: block; }
 h1 { font-size: 2em; margin: 0.67em 0px; }
@@ -50,6 +47,11 @@ details, menu { display: block; }
 summary { display: list-item; }
 canvas { display: inline-block; }
 template { display: none; }
-[hidden] { display: none; }`)
+[hidden] { display: none; }`.split('\n').length;
+
+describe('glamor-reset:production', () => {
+
+  it('inserts an appropriate number of normalize styles', () => {
+    expect(styleSheet.rules().length).toEqual(expectedRulesCount)
     })
 })
