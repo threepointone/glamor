@@ -22,7 +22,7 @@ describe('glamor-jsxstyle', () => {
                backgroundColor="#ccc"
                hover={{ color: 'blue' }}
                select={[ ' li', { textDecoration: 'underline' } ]}
-               media={[ presets.mobile, { color: 'green' } ]}
+               media={[ '(min-width: 400px)', { color: 'green' } ]}
                style={{ outline: '1px solid black' }}
                className="myView"
                onClick={() => console.log('whutwhut')} // eslint-disable-line no-console
