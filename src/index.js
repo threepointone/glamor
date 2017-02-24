@@ -553,17 +553,53 @@ export function flush() {
 
 }
 
+function warnAboutPresetsDeprecation() {
+  if(isDev) {
+    console.warn('[Deprecation] In glamor v3 the `presets` object will be removed. See https://github.com/threepointone/glamor/issues/213 for more information.')
+  }
+}
+
 export const presets = {
-  mobile : '(min-width: 400px)',
-  Mobile: '@media (min-width: 400px)',
-  phablet : '(min-width: 550px)',
-  Phablet : '@media (min-width: 550px)',
-  tablet : '(min-width: 750px)',
-  Tablet : '@media (min-width: 750px)',
-  desktop : '(min-width: 1000px)',
-  Desktop : '@media (min-width: 1000px)',
-  hd : '(min-width: 1200px)',
-  Hd : '@media (min-width: 1200px)'
+  get mobile() {
+    warnAboutPresetsDeprecation()
+    return '(min-width: 400px)'
+  },
+  get Mobile() {
+    warnAboutPresetsDeprecation()
+    return '@media (min-width: 400px)'
+  },
+  get phablet() {
+    warnAboutPresetsDeprecation()
+    return '(min-width: 550px)'
+  },
+  get Phablet() {
+    warnAboutPresetsDeprecation()
+    return '@media (min-width: 550px)'
+  },
+  get tablet() {
+    warnAboutPresetsDeprecation()
+    return '(min-width: 750px)'
+  },
+  get Tablet() {
+    warnAboutPresetsDeprecation()
+    return '@media (min-width: 750px)'
+  },
+  get desktop() {
+    warnAboutPresetsDeprecation()
+    return '(min-width: 1000px)'
+  },
+  get Desktop() {
+    warnAboutPresetsDeprecation()
+    return '@media (min-width: 1000px)'
+  },
+  get hd() {
+    warnAboutPresetsDeprecation()
+    return '(min-width: 1200px)'
+  },
+  get Hd() {
+    warnAboutPresetsDeprecation()
+    return '@media (min-width: 1200px)'
+  }
 }
 
 export const style = css
