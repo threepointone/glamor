@@ -21,7 +21,6 @@ import { style, hover, nthChild, firstLetter, media, merge, compose,  select, vi
   cssLabels,
   simulations, simulate,
   cssFor, attribsFor, idFor,
-  presets,
   flush, styleSheet, rehydrate, css }
 from '../src'
 
