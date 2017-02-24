@@ -35,3 +35,7 @@ The following diff shows the migration from `glamor/react` to `glamor-react`, bu
 -import { createElement } from 'glamor/react';
 +import { createElement } from 'glamor-react';
 ```
+
+## Removed `presets`
+
+Glamor `v2` exported a `presets` object containing preconfigured media queries. We removed this object. See [#213](https://github.com/threepointone/glamor/issues/213) for the motivation behind this. If you're looking for an opinionated design framework which contains preconfigured media queries you can look into `glamor-ous`.
