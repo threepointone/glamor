@@ -1,6 +1,6 @@
 {
   "name": "glamor-react",
-  "version": "2.20.22",
+  "version": "3.0.0-1",
   "description": "inline css for component systems",
   "main": "lib/index.js",
   "typings": "index.d.ts",
@@ -29,7 +29,7 @@
   "dependencies": {
     "object-assign": "^4.1.0",
     "react": "^15.4.1",
-    "glamor": "*"
+    "glamor": "^3.0.0-1"
   },
   "devDependencies": {
     "expect": "^1.20.2",

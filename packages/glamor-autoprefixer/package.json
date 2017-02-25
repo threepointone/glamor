@@ -1,6 +1,6 @@
 {
   "name": "glamor-autoprefixer",
-  "version": "2.20.22",
+  "version": "3.0.0-1",
   "description": "inline css for component systems",
   "main": "lib/index.js",
   "files": [
@@ -29,7 +29,7 @@
     "inline"
   ],
   "dependencies": {
-    "glamor": "*",
+    "glamor": "^3.0.0-1",
     "object-assign": "^4.1.0"
   }
 }

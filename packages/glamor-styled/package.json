@@ -1,6 +1,6 @@
 {
   "name": "glamor-styled",
-  "version": "2.20.22",
+  "version": "3.0.0-1",
   "description": "inline css for component systems",
   "main": "lib/index.js",
   "author": "Sunil Pai <threepointone@gmail.com>",
@@ -24,8 +24,8 @@
   ],
   "dependencies": {
     "object-assign": "^4.1.0",
-    "glamor": "*",
-    "glamor-raw-css": "*"
+    "glamor": "^3.0.0-1",
+    "glamor-raw-css": "^3.0.0-1"
   },
   "devDependencies": {
     "react": "^15.4.1"

@@ -1,7 +1,7 @@
 {
   "name": "glamor-example-app",
   "private": true,
-  "version": "2.20.22",
+  "version": "3.0.0-1",
   "scripts": {
     "start": "webpack-dev-server --config ../../webpack/example.js"
   },
@@ -14,9 +14,9 @@
     "inline"
   ],
   "dependencies": {
-    "glamor": "*",
-    "glamor-react": "*",
-    "glamor-reset": "*",
+    "glamor": "^3.0.0-1",
+    "glamor-react": "^3.0.0-1",
+    "glamor-reset": "^3.0.0-1",
     "react": "^15.4.1",
     "react-dom": "^15.4.1"
   },

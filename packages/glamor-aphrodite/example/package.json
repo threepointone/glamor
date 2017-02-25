@@ -1,7 +1,7 @@
 {
   "name": "glamor-aphrodite-example",
   "private": true,
-  "version": "2.20.22",
+  "version": "3.0.0-1",
   "description": "",
   "scripts": {
     "start": "webpack-dev-server --config ../../../webpack/example.js"
@@ -15,8 +15,8 @@
     "inline"
   ],
   "dependencies": {
-    "glamor": "*",
-    "glamor-aphrodite": "*",
+    "glamor": "^3.0.0-1",
+    "glamor-aphrodite": "^3.0.0-1",
     "react": "^15.4.1",
     "react-dom": "^15.4.1"
   },

@@ -1,7 +1,7 @@
 {
   "name": "glamor-raw-css-example",
   "private": true,
-  "version": "2.20.22",
+  "version": "3.0.0-1",
   "description": "",
   "scripts": {
     "start": "webpack-dev-server --config ../../../webpack/example-with-babel-plugin.js"
@@ -15,8 +15,8 @@
     "inline"
   ],
   "dependencies": {
-    "glamor": "*",
-    "glamor-raw-css": "*",
+    "glamor": "^3.0.0-1",
+    "glamor-raw-css": "^3.0.0-1",
     "cssbeautify": "^0.3.1",
     "react": "^15.4.1",
     "react-dom": "^15.4.1"

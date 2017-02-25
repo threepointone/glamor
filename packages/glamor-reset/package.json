@@ -1,6 +1,6 @@
 {
   "name": "glamor-reset",
-  "version": "2.20.22",
+  "version": "3.0.0-1",
   "description": "inline css for component systems",
   "main": "lib/index.js",
   "author": "Sunil Pai <threepointone@gmail.com>",
@@ -22,7 +22,7 @@
     "inline"
   ],
   "dependencies": {
-    "glamor": "*"
+    "glamor": "^3.0.0-1"
   },
   "devDependencies": {
     "expect": "^1.20.2",
