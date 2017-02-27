@@ -1,12 +1,16 @@
 # glamor
 
+css in your javascript
+
+hand rolled by [@threepointone](https://github.com/threepointone), [@donaldpipowitch](https://github.com/donaldpipowitch), [@otbe](https://github.com/otbe), and [@ChristopherBiscardi](https://github.com/ChristopherBiscardi)
+
 [![Join the chat at https://gitter.im/glamor-css/Lobby](https://badges.gitter.im/glamor-css/Lobby.svg)](https://gitter.im/glamor-css/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [![Build Status](https://travis-ci.org/threepointone/glamor.svg?branch=v3)](https://travis-ci.org/threepointone/glamor)
 
-css in your javascript
-
 `npm install glamor --save`
+
+
 
 usage
 ```jsx
