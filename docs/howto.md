@@ -260,7 +260,7 @@ const container = css(
     clear: 'both'
   }),
   { 
-    '@media('(min-width: 400px)': {
+    '@media(min-width: 400px)': {
       width: '85%',
       padding: 0
     }
