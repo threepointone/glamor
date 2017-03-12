@@ -71,7 +71,7 @@ export function inline(html) {
   let match, lastBackIndex = 0, idBuffer = [], result = [], insed = {}
 
   let plain = styleSheet.rules().filter(x => !(/css\-([a-zA-Z0-9]+)/gm.exec(x.cssText)));
-  (plain.length > 0) && result.push(`<style>${plain.map(x => x.cssText)}</style>`)
+  (plain.length > 0) && result.push(`<style>${plain.map(x => x.cssText).join('')}</style>`)
 
   while((match = regex.exec(html)) !== null) {
     if(match[0] === '<') {
