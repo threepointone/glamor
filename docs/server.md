@@ -13,7 +13,7 @@ to `rehydrate` the library for fast startup
 
 ```jsx
 // on the server
-import { renderStatic } from 'glamor/server'
+import { renderStatic } from 'glamor-server'
 let { html, css, ids } = renderStatic(() =>
   ReactDOMServer.renderToString(<App/>)) // or `renderToStaticMarkup`
 ```
@@ -53,3 +53,34 @@ use `renderStaticOptimized` instead of `renderStatic`. This will parse the gener
 html and include only the relevant used css / ids.
 
 WARNING: if you're bundling your *server side* code with webpack/browserify/etc (as opposed to just browser code), be warned of a subtle issue with excluding node_modules from the module. More details in [this twitter thread](https://twitter.com/andrewingram/status/771370174587043840), and [this issue](https://github.com/threepointone/glamor/issues/37). tldr - be certain to exclude *all* glamor modules, not just the root.
+
+
+(experimental) inlining
+---
+
+```jsx
+inline(html)
+```
+
+to take advantage of streaming rendering, we could also inline the css directly into the html. 
+```jsx
+// on the server
+import { inline } from 'glamor-server'
+import { renderToString } from 'react-dom/server'
+let html = inline(renderToString(<App/>)) 
+// ... that's it!
+```
+
+pros 
+--- 
+
+- progressively load just the precise css you need, precisely when you need it
+- based on ideas [in this post](https://jakearchibald.com/2016/link-in-body/)
+- doesn't break react checksums
+- great for statically rendered sites 
+
+cons
+---
+
+- hyper optimization 
+- unclear runtime characteristics
