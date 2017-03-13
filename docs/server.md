@@ -26,7 +26,7 @@ let { html, css, ids } = renderStatic(() =>
       we use dangerouslySetInnerHTML to inject our css
     -->
     <style dangerouslySetInnerHTML={{ __html: css }} />
-    <!-- alternately, you'd save the css to a file
+    <!-- alternatively, you'd save the css to a file
       and include it here with
     <link rel='stylesheet' href='path/to/css'/>
      -->
