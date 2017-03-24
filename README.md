@@ -104,6 +104,7 @@ Every extra is available as a standalone package.
 - `glamor-raw-css` - [write real css](https://github.com/threepointone/glamor/blob/master/docs/css.md)
 - `glamor-ous` - a port of [the skeleton css framework](http://getskeleton.com)
 - [`glamor-styled`](https://github.com/threepointone/glamor/blob/master/docs/styled.md) - an experimental port of [styled-components](https://styled-components.com/)
+- [`jest-glamor-react`](https://github.com/kentcdodds/jest-glamor-react) - get glamor's styles in your Jest snapshots
 
 speedy mode
 ---
