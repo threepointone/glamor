@@ -21,12 +21,8 @@ let { html, css, ids } = renderStatic(() =>
 <!-- when rendering your html -->
 <html>
   <head>
-    <!-- to avoid certain characters getting encoded
-      as html entities (like quotes in css 'content' property),
-      we use dangerouslySetInnerHTML to inject our css
-    -->
     <style dangerouslySetInnerHTML={{ __html: css }} />
-    <!-- alternatively, you'd save the css to a file
+    <!-- alternately, you'd save the css to a file
       and include it here with
     <link rel='stylesheet' href='path/to/css'/>
      -->
