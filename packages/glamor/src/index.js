@@ -87,9 +87,9 @@ import hash from './hash'
 function hashify(...objs) {
   let str =''
   for(let i=0;i<objs.length;i++) {
-    str += JSON.stringify(objs[i])    
+    str += JSON.stringify(objs[i])
   }
-  return hash(str).toString(36)  
+  return hash(str).toString(36)
 }
 
 
@@ -113,7 +113,7 @@ export function idFor(rule) {
 }
 
 function selector(id, path) {
-  
+
   if(!id) {
     return path.replace(/\&/g, '')
   }
@@ -141,7 +141,7 @@ function toCSS({ selector, style }) {
 
 
 function deconstruct(style) {
-  // we can be sure it's not infinitely nested here 
+  // we can be sure it's not infinitely nested here
   let plain, selects, medias, supports
   Object.keys(style).forEach(key => {
     if(key.indexOf('&') >= 0) {
@@ -160,7 +160,7 @@ function deconstruct(style) {
       if(style.label.length > 0) {
         plain = plain || {}
         plain.label = hasLabels ? style.label.join('.') : ''
-      }      
+      }
     }
     else {
       plain = plain || {}
@@ -172,23 +172,23 @@ function deconstruct(style) {
 
 function deconstructedStyleToCSS(id, style) {
   let css = []
-  
+
   // plugins here
   let { plain, selects, medias, supports } = style
   if(plain) {
     css.push(toCSS({ style: plain, selector: selector(id) }))
   }
   if(selects) {
-    Object.keys(selects).forEach(key => 
+    Object.keys(selects).forEach(key =>
       css.push(toCSS({ style: selects[key], selector: selector(id, key) })))
   }
   if(medias) {
-    Object.keys(medias).forEach(key => 
+    Object.keys(medias).forEach(key =>
       css.push(`${key}{${ deconstructedStyleToCSS(id, medias[key]).join('')}}`))
   }
   if(supports) {
-    Object.keys(supports).forEach(key => 
-      css.push(`${key}{${ deconstructedStyleToCSS(id, supports[key]).join('')}}`))    
+    Object.keys(supports).forEach(key =>
+      css.push(`${key}{${ deconstructedStyleToCSS(id, supports[key]).join('')}}`))
   }
   return css
 }
@@ -232,11 +232,11 @@ let ruleCache = {}
 function toRule(spec) {
   register(spec)
   insert(spec)
-  
+
   if(ruleCache[spec.id]) {
     return ruleCache[spec.id]
   }
-  
+
 
   let ret = { [`data-css-${spec.id}`]: hasLabels ? spec.label || '' : '' }
   Object.defineProperty(ret, 'toString', {
@@ -257,7 +257,7 @@ function isSelector(key) {
     if(ch === possibles[i]) {
       found = true
       break
-    }    
+    }
   }
   return found || (key.indexOf('&') >= 0)
 }
@@ -328,16 +328,16 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
         build(dest, { selector: joinSelectors(selector, key), mq, supp, src: _src[key] })
       }
       else if(isMediaQuery(key)) {
-        build(dest, { selector, mq: joinMediaQueries(mq, key), supp, src: _src[key] })          
+        build(dest, { selector, mq: joinMediaQueries(mq, key), supp, src: _src[key] })
       }
       else if(isSupports(key)) {
-        build(dest, { selector, mq, supp: joinSupports(supp, key), src: _src[key] })  
+        build(dest, { selector, mq, supp: joinSupports(supp, key), src: _src[key] })
       }
       else if(key === 'composes') {
         // ignore, we already dealth with it
       }
       else {
-        let _dest = dest 
+        let _dest = dest
         if(supp) {
           _dest[supp] = _dest[supp] || {}
           _dest = _dest[supp]
@@ -350,32 +350,32 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
           _dest[selector] = _dest[selector] || {}
           _dest = _dest[selector]
         }
-        
+
         if(key === 'label') {
           if(hasLabels) {
-            dest.label = dest.label.concat(_src.label)  
+            dest.label = dest.label.concat(_src.label)
           }
-          
-        }        
+
+        }
         else {
           _dest[key] = _src[key]
         }
-        
+
       }
-    })  
-  }) 
+    })
+  })
 }
 
 function _css(rules) {
   let style = { label: [] }
-  build(style, { src: rules }) // mutative! but worth it. 
+  build(style, { src: rules }) // mutative! but worth it.
 
   let spec = {
     id: hashify(style),
     style, label: hasLabels ? style.label.join('.') : '',
-    type: 'css'    
+    type: 'css'
   }
-  return toRule(spec)  
+  return toRule(spec)
 }
 
 let nullrule = {
@@ -386,40 +386,40 @@ Object.defineProperty(nullrule, 'toString', {
 })
 
 
-let inputCaches = typeof WeakMap !== 'undefined'  ? 
+let inputCaches = typeof WeakMap !== 'undefined'  ?
   [ nullrule, new WeakMap(), new WeakMap(), new WeakMap() ] :
   [ nullrule ]
 
-let warnedWeakMapError = false 
+let warnedWeakMapError = false
 function multiIndexCache(fn) {
   return function (args) {
     if(inputCaches[args.length]) {
       let coi = inputCaches[args.length]
       let ctr = 0
-      while(ctr < args.length - 1) {      
+      while(ctr < args.length - 1) {
         if(!coi.has(args[ctr])) {
-          coi.set(args[ctr], new WeakMap())        
+          coi.set(args[ctr], new WeakMap())
         }
         coi = coi.get(args[ctr])
         ctr++
       }
-      if(coi.has(args[args.length - 1])) { 
+      if(coi.has(args[args.length - 1])) {
         let ret = coi.get(args[ctr])
 
-        if(registered[ret.toString().substring(4)]) { // make sure it hasn't been flushed 
+        if(registered[ret.toString().substring(4)]) { // make sure it hasn't been flushed
           return ret
-        }        
+        }
       }
     }
     let value = fn(args)
     if(inputCaches[args.length]) {
       let ctr = 0, coi = inputCaches[args.length]
       while(ctr < args.length - 1) {
-        coi = coi.get(args[ctr])      
+        coi = coi.get(args[ctr])
         ctr++
       }
       try {
-        coi.set(args[ctr], value)  
+        coi.set(args[ctr], value)
       }
       catch(err) {
         if(isDev && !warnedWeakMapError) {
@@ -427,7 +427,7 @@ function multiIndexCache(fn) {
           console.warn('failed setting the WeakMap cache for args:', ...args) // eslint-disable-line no-console
           console.warn('this should NOT happen, please file a bug on the github repo.') // eslint-disable-line no-console
         }
-      }      
+      }
     }
     return value
 
@@ -440,13 +440,13 @@ export function css(...rules) {
   if(rules[0] && rules[0].length && rules[0].raw) {
     throw new Error('you forgot to include glamor/babel in your babel plugins.')
   }
-  
+
   rules = clean(rules)
-  if(!rules) {    
+  if(!rules) {
     return nullrule
   }
-    
-  return cachedCss(rules)    
+
+  return cachedCss(rules)
 }
 
 css.insert = (css) => {
@@ -553,227 +553,14 @@ export function flush() {
 
 }
 
-export const style = css
-
-export function select(selector, ...styles) {
-  if(!selector) {
-    return style(styles)
-  }
-  return css({ [selector]: styles }) 
-}
-export const $ = select
-
-export function parent(selector, ...styles) {
-  return css({ [`${selector} &`]: styles })
-}
-
-export const merge = css 
-export const compose = css 
-
-export function media(query, ...rules) {
-  return css({ [`@media ${query}`]: rules })
-}
-
-export function pseudo(selector, ...styles) {
-  return css({ [selector]: styles }) 
-}
-
-// allllll the pseudoclasses
-
-export function active(x) {
-  return pseudo(':active', x)
-}
-
-export function any(x) {
-  return pseudo(':any', x)
-}
-
-export function checked(x) {
-  return pseudo(':checked', x)
-}
-
-export function disabled(x) {
-  return pseudo(':disabled', x)
-}
-
-export function empty(x) {
-  return pseudo(':empty', x)
-}
-
-export function enabled(x) {
-  return pseudo(':enabled', x)
-}
-
-export function _default(x) {
-  return pseudo(':default', x) // note '_default' name
-}
-
-export function first(x) {
-  return pseudo(':first', x)
-}
-
-export function firstChild(x) {
-  return pseudo(':first-child', x)
-}
-
-export function firstOfType(x) {
-  return pseudo(':first-of-type', x)
-}
-
-export function fullscreen(x) {
-  return pseudo(':fullscreen', x)
-}
-
-export function focus(x) {
-  return pseudo(':focus', x)
-}
-
-export function hover(x) {
-  return pseudo(':hover', x)
-}
-
-export function indeterminate(x) {
-  return pseudo(':indeterminate', x)
-}
-
-export function inRange(x) {
-  return pseudo(':in-range', x)
-}
-
-export function invalid(x) {
-  return pseudo(':invalid', x)
-}
-
-export function lastChild(x) {
-  return pseudo(':last-child', x)
-}
-
-export function lastOfType(x) {
-  return pseudo(':last-of-type', x)
-}
-
-export function left(x) {
-  return pseudo(':left', x)
-}
-
-export function link(x) {
-  return pseudo(':link', x)
-}
-
-export function onlyChild(x) {
-  return pseudo(':only-child', x)
-}
-
-export function onlyOfType(x) {
-  return pseudo(':only-of-type', x)
-}
-
-export function optional(x) {
-  return pseudo(':optional', x)
-}
-
-export function outOfRange(x) {
-  return pseudo(':out-of-range', x)
-}
-
-export function readOnly(x) {
-  return pseudo(':read-only', x)
-}
-
-export function readWrite(x) {
-  return pseudo(':read-write', x)
-}
-
-export function required(x) {
-  return pseudo(':required', x)
-}
-
-export function right(x) {
-  return pseudo(':right', x)
-}
-
-export function root(x) {
-  return pseudo(':root', x)
-}
-
-export function scope(x) {
-  return pseudo(':scope', x)
-}
-
-export function target(x) {
-  return pseudo(':target', x)
-}
-
-export function valid(x) {
-  return pseudo(':valid', x)
-}
-
-export function visited(x) {
-  return pseudo(':visited', x)
-}
-
-// parameterized pseudoclasses
-export function dir(p, x) {
-  return pseudo(`:dir(${p})`, x)
-}
-export function lang(p, x) {
-  return pseudo(`:lang(${p})`, x)
-}
-export function not(p, x) {
-  // should this be a plugin?
-  let selector = p.split(',').map(x => x.trim()).map(x => `:not(${x})`)
-  if(selector.length === 1) {
-    return pseudo(`:not(${p})`, x)
-  }
-  return select(selector.join(''), x)
-
-}
-export function nthChild(p, x) {
-  return pseudo(`:nth-child(${p})`, x)
-}
-export function nthLastChild(p, x) {
-  return pseudo(`:nth-last-child(${p})`, x)
-}
-export function nthLastOfType(p, x) {
-  return pseudo(`:nth-last-of-type(${p})`, x)
-}
-export function nthOfType(p, x) {
-  return pseudo(`:nth-of-type(${p})`, x)
-}
-
-// pseudoelements
-export function after(x) {
-  return pseudo('::after', x)
-}
-export function before(x) {
-  return pseudo('::before', x)
-}
-export function firstLetter(x) {
-  return pseudo('::first-letter', x)
-}
-export function firstLine(x) {
-  return pseudo('::first-line', x)
-}
-export function selection(x) {
-  return pseudo('::selection', x)
-}
-export function backdrop(x) {
-  return pseudo('::backdrop', x)
-}
-export function placeholder(x) {
-  // https://github.com/threepointone/glamor/issues/14
-  return css({ '::placeholder': x })    
-}
-
-
 /*** helpers for web components ***/
 // https://github.com/threepointone/glamor/issues/16
 
-export function cssFor(...rules) {  
+export function cssFor(...rules) {
   rules = clean(rules)
   return rules ? rules.map(r => {
     let style = { label: [] }
-    build(style, { src: r }) // mutative! but worth it.   
+    build(style, { src: r }) // mutative! but worth it.
     return deconstructedStyleToCSS(hashify(style), deconstruct(style)).join('')
   }).join('') : ''
 }
@@ -788,5 +575,3 @@ export function attribsFor(...rules) {
 
   return htmlAttributes
 }
-
-
