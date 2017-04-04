@@ -1,4 +1,4 @@
-import { style, css, hover, flush, styleSheet, cssLabels, simulations } from 'glamor'
+import { css as _css, flush, styleSheet, cssLabels, simulations } from 'glamor'
 import { renderStatic, renderStaticOptimized } from '../src'
 import jade from 'pug'
 import expect from 'expect'
@@ -6,15 +6,15 @@ import React from 'react' // eslint-disable-line
 import { renderToStaticMarkup } from 'react-dom/server'
 
 // make a throwaway style
-css.global('html, body', {
+_css.global('html, body', {
   padding: 20
 })
-css({ color: 'wheat' })
+_css({ color: 'wheat' })
 
-// basic 
+// basic
 {
   let { html, css, ids } = renderStatic(()=>
-    renderToStaticMarkup(<div {...style({ color: 'red' })}/>))
+    renderToStaticMarkup(<div {..._css({ color: 'red' })}/>))
 
   expect(html).toEqual('<div data-css-1ezp9xe=""></div>')
   expect(css).toEqual('html, body{padding:20px;}.css-17kdler,[data-css-17kdler]{color:wheat;}.css-1ezp9xe,[data-css-1ezp9xe]{color:red;}')
@@ -23,12 +23,12 @@ css({ color: 'wheat' })
   simulations(true)
 }
 
-// optimized 
+// optimized
 {
   cssLabels(false)
   simulations(false)
   let { html, css, ids } = renderStaticOptimized(() =>
-    renderToStaticMarkup(<div {...style(style({ color: 'red' }), hover({ color: 'blue' }))}/>))
+    renderToStaticMarkup(<div {..._css(_css({ color: 'red' }), _css({ ':hover': { color: 'blue' }}))}/>))
   expect(html).toEqual('<div data-css-11t3bx0=""></div>')
   expect(css).toEqual('html, body{padding:20px;}.css-11t3bx0,[data-css-11t3bx0]{color:red;}.css-11t3bx0:hover,[data-css-11t3bx0]:hover{color:blue;}')
   expect(ids).toEqual([ 'afsnj3', '11t3bx0' ])
@@ -42,9 +42,9 @@ flush()
 {
   let { html, css } = renderStatic(() => {
     return jade.render(`
-div&attributes(style({ color: 'blue' }))
+div&attributes(_css({ color: 'blue' }))
   | yay!
-`, { style })
+`, { _css })
   })
   expect(html).toEqual('<div data-css-icjsl7="">yay!</div>')
   expect(css).toEqual('.css-icjsl7,[data-css-icjsl7]{color:blue;}')
