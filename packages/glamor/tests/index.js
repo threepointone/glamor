@@ -563,8 +563,8 @@ describe('falsy values', () => {
     )
     check(
       css,
-      [ '.foo & .bar', { fontSize: 10, color: falsy } ],
-      [ '.foo & .bar', { fontSize: 10 } ]
+      [ { '.foo & .bar': { fontSize: 10, color: falsy }} ],
+      [ {'.foo & .bar': { fontSize: 10 }} ]
     )
     check(css,
       [ {'@media ()': { fontSize: 10, color: falsy }} ],
