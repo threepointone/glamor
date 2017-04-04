@@ -1,6 +1,6 @@
 import assign from 'object-assign'
 import React, { PropTypes } from 'react'
-import { isLikeRule, style, merge } from 'glamor'
+import { isLikeRule, css } from 'glamor'
 
 export * from 'glamor' // convenience
 
@@ -9,9 +9,9 @@ export function createElement(tag, allProps, ...children) {
   // todo - pull ids from className as well?
   if(allProps && allProps.css) {
     let { css, className, ...props } = allProps
-    let rule = Array.isArray(css) ? merge(...css) :
+    let rule = Array.isArray(css) ? css(...css) :
         isLikeRule(css) ? css :
-        style(css)
+        css(css)
     className = className ? className + ' ' + rule : rule
     props.className = className
     return React.createElement(tag, props, ...children)
@@ -65,7 +65,7 @@ export function makeTheme() {
         render() {
           return React.createElement(Target, {
             ...this.props,
-            [key]: merge( typeof _default === 'function' ?
+            [key]: css( typeof _default === 'function' ?
                 _default(this.props) :
                 _default,
               ...(this.context[key] || []) )
@@ -104,7 +104,7 @@ export function makeTheme() {
 }
 
 function toStyle(s) {
-  return s!= null && isLikeRule(s) ? s : style(s)
+  return s!= null && isLikeRule(s) ? s : css(s)
 }
 
 // propMerge will take an arbitrary object "props", filter out glamor data-css-* styles and merge it with "mergeStyle"
@@ -133,7 +133,7 @@ export function propMerge(mergeStyle, props) {
   const dataCssKey= glamorStyleKeys[0]
   const cssData = props[dataCssKey]
 
-  const mergedStyles = merge(mergeStyle, { [dataCssKey]: cssData })
+  const mergedStyles = css(mergeStyle, { [dataCssKey]: cssData })
 
   const restProps = assign({}, props)
   delete restProps[dataCssKey]

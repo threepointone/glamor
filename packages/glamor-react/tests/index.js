@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom'
-import { style, flush } from 'glamor';
+import { css, flush } from 'glamor';
 import expect from 'expect'
 import { propMerge } from '../src'
 
@@ -28,9 +28,9 @@ describe('glamor-react', () => {
     it('propMerge will merge styles with react props', () => {
       // the order of the styles matter here
       // thats how css works :/
-      const specificStyle = style({ height: '100px' })
-        const defaultStyle = style({ height: '200px' })
-        const dummyStyle = style({ color: 'green' })
+      const specificStyle = css({ height: '100px' })
+        const defaultStyle = css({ height: '200px' })
+        const dummyStyle = css({ color: 'green' })
 
         let DefaultContainer = (props) => <div {...propMerge(defaultStyle, props)}/>
         let SpecificContainer = (props) => <DefaultContainer {...specificStyle} {...props}/>
