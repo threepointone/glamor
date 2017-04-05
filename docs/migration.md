@@ -11,7 +11,7 @@ Glamor was converted to a monorepo. See [#204](https://github.com/threepointone/
 - `glamor/aphrodite` → `glamor-aphrodite`
 - `glamor/lib/autoprefix` → `glamor-autoprefixer`
 - `glamor/babel-hoist` → `babel-plugin-glamor`
-- `glamor/jsxstyle` → `glamor-jsxstyle`
+- `glamor/jsxstyle` → [`glamorous`](https://github.com/kentcdodds/glamorous)
 - `glamor/ous` → `glamor-ous`
 - `glamor/react` → `glamor-react`
 - `glamor/reset` → `glamor-reset`
