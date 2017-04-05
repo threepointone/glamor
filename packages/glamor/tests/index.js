@@ -15,8 +15,7 @@ expect.extend(expectJSX)
 import React from 'react' //eslint-disable-line
 import { render, unmountComponentAtNode } from 'react-dom'
 
-import { style, hover, nthChild, firstLetter, media, merge, compose,  select, visited,
-  parent,
+import {
   // fontFace, keyframes,
   cssLabels,
   simulations, simulate,
@@ -58,13 +57,13 @@ describe('glamor', () => {
   })
 
   it('applies the style to a given node', () => {
-    render(<div {...style({ backgroundColor: 'red' })}/>, node, () => {
+    render(<div {...css({ backgroundColor: 'red' })}/>, node, () => {
       expect(childStyle(node).backgroundColor).toEqual('rgb(255, 0, 0)')
     })
   })
 
   it('only adds a data attribute to the node', () => {
-    let el = <div {...style({ backgroundColor: '#0f0' })} />
+    let el = <div {...css({ backgroundColor: '#0f0' })} />
 
     render(el, node, () => {
       expect(childStyle(node).backgroundColor).toEqual('rgb(0, 255, 0)')
@@ -73,7 +72,7 @@ describe('glamor', () => {
   })
 
   it('becomes a classname when treated as a string', () => {
-    let el = <div className={style({ backgroundColor: '#0f0' }) + ' wellnow'} />
+    let el = <div className={css({ backgroundColor: '#0f0' }) + ' wellnow'} />
 
     render(el, node, () => {
       expect(childStyle(node).backgroundColor).toEqual('rgb(0, 255, 0)')
@@ -84,7 +83,7 @@ describe('glamor', () => {
   it('correctly handles display:flex', () => {
     let d = document.documentElement.style
     if (('flexWrap' in d) || ('WebkitFlexWrap' in d) || ('msFlexWrap' in d)) {
-      render(<div {...style({ display: 'flex' })}/>, node, () => {
+      render(<div {...css({ display: 'flex' })}/>, node, () => {
         expect(childStyle(node).display).toMatch(/flex/)
       })
     }
@@ -95,12 +94,12 @@ describe('glamor', () => {
     // 2 methods
 
     // 1. when you don't expect key clashes and don't worry about precedence
-    render(<div {...style({ width: 100 })} {...style({ height: 100 })} {...hover({ height: 200 })}/>, node, () => {
+    render(<div {...css({ width: 100 })} {...css({ height: 100 })} {...css({ ':hover': { height: 200 }})}/>, node, () => {
       expect(childStyle(node).height).toEqual('100px')
     })
     // 2. when you need fine grained control over which keys get prcedence,
     // manually merge your styles together
-    render(<div {...style({ ...{ width: 100 }, ...{ height: 100 } } )} />, node, () => {
+    render(<div {...css({ ...{ width: 100 }, ...{ height: 100 } } )} />, node, () => {
       expect(childStyle(node).height).toEqual('100px')
     })
 
@@ -125,7 +124,7 @@ describe('glamor', () => {
 
   it('accepts nested objects', () => {
     simulations(true)
-    render(<div {...style({
+    render(<div {...css({
       color: '#ccc',
       ':hover': { color: 'blue' },
       '> .x' : { color: 'yellow' },
@@ -139,7 +138,7 @@ describe('glamor', () => {
 
   it('accepts nested media queries', () => {
     if(!isPhantom) return
-    style({
+   css({
       color: 'red',
       ':hover': {
         color: 'blue'
@@ -156,21 +155,14 @@ describe('glamor', () => {
 
 
     expect(styleSheet.rules().map(x => x.cssText).join('\n')).toEqual(
-`.css-1j2tyha, [data-css-1j2tyha] { color: red; }
-.css-1j2tyha:hover, [data-css-1j2tyha]:hover { color: blue; }
-@media (min-width: 300px) { 
-  .css-1j2tyha, [data-css-1j2tyha] { color: green; }
-  .css-1j2tyha:hover, [data-css-1j2tyha]:hover { color: yellow; }
-  .a .css-1j2tyha .c, .a [data-css-1j2tyha] .c { color: rgb(245, 222, 179); }
-  .css-1j2tyha.css-1j2tyha, [data-css-1j2tyha][data-css-1j2tyha] { color: rgb(255, 255, 240); }
-}`)
+`.css-1j2tyha, [data-css-1j2tyha] { color: red; }\n.css-1j2tyha:hover, [data-css-1j2tyha]:hover { color: blue; }\n@media (min-width: 300px) { \n  .css-1j2tyha, [data-css-1j2tyha] { color: green; }\n  .css-1j2tyha:hover, [data-css-1j2tyha]:hover { color: yellow; }\n  .a .css-1j2tyha .c, .a [data-css-1j2tyha] .c { color: rgb(245, 222, 179); }\n  .css-1j2tyha.css-1j2tyha, [data-css-1j2tyha][data-css-1j2tyha] { color: rgb(255, 255, 240); }\n}`)
   })
 
   it('nested objects can compose with `composes`', () => {
-    let rule1 = style({ color: 'red' })
-    let rule2 = style({ color: 'blue' })
-    // let rule3 = style({ color: 'green' })
-    let rule4 = style({
+    let rule1 =css({ color: 'red' })
+    let rule2 =css({ color: 'blue' })
+    // let rule3 =css({ color: 'green' })
+    let rule4 =css({
       composes: [ rule1, rule2 ],
       fontWeight: 'bold'
     })
@@ -182,7 +174,7 @@ describe('glamor', () => {
 
   it(':not() selector works for multiple selectors')
   it('can use a parent selector to target itself', () => {
-    let x = parent('.foo', { color: 'red' })
+    let x = css({'.foo &': { color: 'red' }})
     render(<div>
       <div className="foo">
         <span {...x}>target</span>
@@ -199,9 +191,9 @@ describe('glamor', () => {
 
   it('reuses common styles', () => {
     render(<div>
-        <div {...style({ backgroundColor: 'blue' })}></div>
-        <div {...style({ backgroundColor: 'red' })}></div>
-        <div {...style({ backgroundColor: 'blue' })}></div>
+        <div {...css({ backgroundColor: 'blue' })}></div>
+        <div {...css({ backgroundColor: 'red' })}></div>
+        <div {...css({ backgroundColor: 'blue' })}></div>
       </div>, node, () => {
 
         // only 2 rules get added to the stylesheet
@@ -217,14 +209,14 @@ describe('glamor', () => {
   })
 
   it('doesn\'t touch style/className', () => {
-    render(<div {...style({ color: 'red' })} className="whatever" style={{ color: 'blue' }}/>, node, () => {
+    render(<div {...css({ color: 'red' })} className="whatever" style={{ color: 'blue' }}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')
       expect(node.childNodes[0].className).toEqual('whatever')
     })
   })
 
   it('can style pseudo classes', () => {
-    render(<div {...hover({ color: 'red' })}/>, node, () => {
+    render(<div {...css({ ':hover': { color: 'red' }})}/>, node, () => {
       // console.log(childStyle(node, ':hover').getPropertyValue('color'))
       // ^ this doesn't work as I want
       expect(styleSheet.inserted).toEqual({ 'vnqrqn': true })
@@ -235,7 +227,7 @@ describe('glamor', () => {
   it('can simulate pseudo classes', () => {
     // start simulation mode
     simulations(true)
-    render(<div {...hover({ backgroundColor: 'red' })} {...simulate('hover')}/>, node, () => {
+    render(<div {...css({ ':hover': { backgroundColor: 'red' }})} {...simulate('hover')}/>, node, () => {
       simulations(false)
       expect(childStyle(node).backgroundColor).toEqual('rgb(255, 0, 0)')
       // turn it off
@@ -245,7 +237,7 @@ describe('glamor', () => {
   })
 
   it('can style parameterized pseudo classes', () => {
-    let rule = nthChild(2, { color: 'red ' })
+    let rule = css({ ':nth-child(2)': { color: 'red ' }})
     render(<div>
         <div {...rule} />
         <div {...rule} />
@@ -261,7 +253,7 @@ describe('glamor', () => {
   it('can simulate parameterized pseudo classes', () => {
     simulations(true)
     render(<div
-        {...nthChild(2, { backgroundColor: 'blue' })}
+        {...css({ ':nth-child(2)': { backgroundColor: 'blue' }})}
         {...simulate(':nth-child(2)')}
       />, node, () => {
         simulations(false)
@@ -273,7 +265,7 @@ describe('glamor', () => {
   })
 
   it('can style pseudo elements', () => {
-    render(<div {...firstLetter({ color:'red' })} />, node, () => {
+    render(<div {...css({ '::first-letter': { color:'red' }})} />, node, () => {
       expect(styleSheet.rules()[0].cssText)
         .toEqual('.css-dde0vi::first-letter, [data-css-dde0vi]::first-letter { color: red; }')
     })
@@ -285,7 +277,7 @@ describe('glamor', () => {
     function last(arr) {
       return arr[arr.length -1]
     }
-    render(<div {...media('(min-width: 300px)', style({ color: 'red' }))}/>, node, () => {
+    render(<div {...css({ '@media (min-width: 300px)': { color: 'red' }})}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
       expect(last(styleSheet.rules()).cssText.replace(/\s/g,'').replace('alland', '')) // ie quirk
         .toEqual('@media(min-width:300px){.css-1qc7hkg,[data-css-1qc7hkg]{color:red;}}'.replace(/\s/g,''))
@@ -296,27 +288,35 @@ describe('glamor', () => {
 
   it('can target pseudo classes/elements inside media queries', () => {
     simulations(true)
-    render(<div {...media('(min-width: 300px)', hover({ color: 'red' }))} {...simulate('hover')}/>, node, () => {
-      expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
-      expect(styleSheet.inserted).toEqual({ 'sxm4ry': true, 'vnqrqn': true })
-      simulations(false)
-    })
-
-
+      render(<div
+               {...css({
+                  '@media (min-width: 300px)': css({
+                    ':hover': {
+                      color: 'red'
+                    }
+                  })
+                })}
+               {...simulate('hover')}
+             />, node, () => {
+               expect(childStyle(node).color).toEqual('rgb(255, 0, 0)');
+               console.log(styleSheet.inserted);
+               expect(styleSheet.inserted).toEqual({ 'sxm4ry': true, 'vnqrqn': true });
+               simulations(false)
+             })
   })
 
   it('can merge rules', () => {
     simulations(true)
-    let blue = style({ backgroundColor: 'blue' }),
-      red = style({ backgroundColor: 'red', color: 'yellow' }),
-      hoverGn = hover({ color: 'green' })
+    let blue =css({ backgroundColor: 'blue' }),
+      red =css({ backgroundColor: 'red', color: 'yellow' }),
+      hoverGn = css({ ':hover': { color: 'green' }})
 
-    render(<div {...merge(red, blue, hoverGn)} />, node, () => {
+    render(<div {...css(red, blue, hoverGn)} />, node, () => {
       expect(childStyle(node).backgroundColor).toEqual('rgb(0, 0, 255)')
     })
     let sheetLength = styleSheet.rules().length
 
-    render(<div {...merge(red, blue, hoverGn)} {...simulate('hover')}/>, node, () => {
+    render(<div {...css(red, blue, hoverGn)} {...simulate('hover')}/>, node, () => {
       expect(childStyle(node).color).toEqual('rgb(0, 128, 0)')
       expect(styleSheet.rules().length).toEqual(sheetLength)
     })
@@ -325,7 +325,7 @@ describe('glamor', () => {
 
 
   it('has an escape hatch', () => {
-    render(<div {...select(' .item', { color: 'red' }) }>
+    render(<div {...css({ ' .item': { color: 'red' }}) }>
       <span>this is fine</span>
       <span className="item">this is red</span>
     </div>, node, () => {
@@ -337,9 +337,9 @@ describe('glamor', () => {
     })
     // todo - test classnames, operators combos
   })
-  it('select() accepts contextual selectors', () => {
+  it('css() accepts contextual selectors', () => {
     render(<div className='up'>
-        <div {...select('.up & .down', { color: 'red' })}>
+        <div {...css({'.up & .down': { color: 'red' }})}>
           <div className='down'>hello world</div>
           <div className='notdown'>hello world</div>
         </div>
@@ -352,16 +352,16 @@ describe('glamor', () => {
 
   it('generates debug labels', () => {
     cssLabels(true)
-    let red = style({ label: 'red', color: 'red' }),
-      hoverBlue = hover({ label: 'blue', color: 'blue' }),
-      text = merge(red, hoverBlue),
-      container = merge(text, visited({ fontWeight: 'bold' }),
+    let red =css({ label: 'red', color: 'red' }),
+      hoverBlue = css({ ':hover': { label: 'blue', color: 'blue' }}),
+      text = css(red, hoverBlue),
+      container = css(text, css({ ':visited': { fontWeight: 'bold' }}),
         { color: 'gray' }),
-      mq = media('(min-width: 500px)', text)
+      mq = css({ '@media (min-width: 500px)': text})
 
     let el = <div {...container}>
-      <ul {...style({ label: 'mylist' })}>
-        <li {...hover({ color: 'green' })}>one</li>
+      <ul {...css({ label: 'mylist' })}>
+        <li {...css({ ':hover': { color: 'green' }})}>one</li>
         <li >two</li>
         <li {...mq}>three</li>
       </ul>
@@ -384,7 +384,7 @@ describe('glamor', () => {
 
   if(isPhantom) {
     it('adds vendor prefixes', () => {
-      render(<div {...style({ color: 'red', transition: 'width 2s' })} />, node, () => {
+      render(<div {...css({ color: 'red', transition: 'width 2s' })} />, node, () => {
         expect(styleSheet.rules()[0].cssText)
           .toEqual('.css-19hf94w, [data-css-19hf94w] { color: red; transition: width 2s; -webkit-transition: width 2s; }')
       })
@@ -429,9 +429,9 @@ describe('glamor', () => {
   }
 
   it('can generate css from rules', () => {
-    let red = style({ color: 'red' }),
-      blue = hover({ color: 'blue' }),
-      merged = compose(red, blue)
+    let red =css({ color: 'red' }),
+      blue = css({ ':hover': { color: 'blue' }}),
+      merged = css(red, blue)
 
     expect(cssFor(red, merged))
       .toEqual('.css-1ezp9xe,[data-css-1ezp9xe]{color:red;}.css-11t3bx0,[data-css-11t3bx0]{color:red;}.css-11t3bx0:hover,[data-css-11t3bx0]:hover{color:blue;}')
@@ -439,16 +439,16 @@ describe('glamor', () => {
 
   it('can generate html attributes from rules', () => {
     cssLabels(false)
-    let red = style({ color: 'red' }),
-      blue = hover({ color: 'blue' }),
-      merged = compose(red, blue)
+    let red =css({ color: 'red' }),
+      blue = css({ ':hover': { color: 'blue' }}),
+      merged = css(red, blue)
 
     expect(attribsFor(red, merged)).toEqual('data-css-1ezp9xe="" data-css-11t3bx0=""')
     cssLabels(true)
   })
 
   it('can extract an id from a rule', () => {
-    let red = style({ color: 'red' })
+    let red =css({ color: 'red' })
 
     expect(idFor(red)).toEqual('1ezp9xe')
   })
@@ -456,7 +456,7 @@ describe('glamor', () => {
   it('checks for a cache miss', () => {
     const myObscureStyle = { 'data-css-obscureclass': '"*"' }
 
-    expect(() => merge(myObscureStyle)).toThrow('[glamor] an unexpected rule cache miss occurred. This is probably a sign of multiple glamor instances in your app. See https://github.com/threepointone/glamor/issues/79')
+    expect(() => css(myObscureStyle)).toThrow('[glamor] an unexpected rule cache miss occurred. This is probably a sign of multiple glamor instances in your app. See https://github.com/threepointone/glamor/issues/79')
   })
 })
 
@@ -534,13 +534,9 @@ describe('empty styles', () => {
     })
   }
 
-  shouldIgnore(style, {})
-  shouldIgnore(select, ' a', {})
-  shouldIgnore(parent, '', {})
-  shouldIgnore(merge)
-  shouldIgnore(merge, {})
-  shouldIgnore(media, '()')
-  shouldIgnore(media, '()', {})
+  shouldIgnore(css, {})
+  shouldIgnore(css, {' a': {}})
+  shouldIgnore(css)
 
   // TODO test simulate, fontFace, keyframes, cssFor, attribsFor
 })
@@ -561,26 +557,18 @@ describe('falsy values', () => {
       })
     }
 
-    check(style,
+    check(css,
      [ { fontSize: 10, color: falsy } ],
      [ { fontSize: 10 } ]
     )
-    check(select,
-      [ '', { fontSize: 10, color: falsy } ],
-      [ '', { fontSize: 10 } ]
-    )
     check(
-      parent,
-      [ '', { fontSize: 10, color: falsy } ],
-      [ '', { fontSize: 10 } ]
+      css,
+      [ { '.foo & .bar': { fontSize: 10, color: falsy }} ],
+      [ {'.foo & .bar': { fontSize: 10 }} ]
     )
-    check(merge,
-      [ { fontSize: 10 }, falsy ],
-      [ { fontSize: 10 } ]
-    )
-    check(media,
-      [ '()', { fontSize: 10, color: falsy } ],
-      [ '()', { fontSize: 10 } ]
+    check(css,
+      [ {'@media ()': { fontSize: 10, color: falsy }} ],
+      [ {'@media ()': { fontSize: 10 }} ]
     )
     check(simulate,
       [ 'hover', falsy ],
@@ -639,8 +627,8 @@ describe('server', () => {
     expect(childStyle(node).color).toEqual('rgb(255, 0, 0)')
     rehydrate([ '1ezp9xe' ])
 
-    style({ color: 'red' })
-    style({ color: 'blue' })
+   css({ color: 'red' })
+   css({ color: 'blue' })
     expect(styleSheet.rules().length).toEqual(1)
     document.head.removeChild(styleTag)
 
