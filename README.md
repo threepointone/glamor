@@ -97,7 +97,6 @@ Every extra is available as a standalone package.
 - `glamor-reset` - include a css reset
 - `glamor-react` - helpers for [themes](https://github.com/threepointone/glamor/blob/master/docs/themes.md), [`@vars`](https://github.com/threepointone/glamor/blob/master/docs/vars.md)
   - [use a `css` prop on *all* your react elements](https://github.com/threepointone/glamor/blob/master/docs/createElement.md)
-- `glamor-jsxstyle` - [react integration](https://github.com/threepointone/glamor/blob/master/docs/jsxstyle.md), à la [jsxstyle](https://github.com/petehunt/jsxstyle/)
 - `glamor-aphrodite` - [shim](https://github.com/threepointone/glamor/blob/master/docs/aphrodite.md) for [aphrodite](https://github.com/Khan/aphrodite) stylesheets
 - `glamor-utils` - a port of [postcss-utilities](https://github.com/ismamz/postcss-utilities)
 - `glamor-server` - [server side rendering](https://github.com/threepointone/glamor/blob/master/docs/server.md)
@@ -105,6 +104,7 @@ Every extra is available as a standalone package.
 - `glamor-ous` - a port of [the skeleton css framework](http://getskeleton.com)
 - [`glamor-styled`](https://github.com/threepointone/glamor/blob/master/docs/styled.md) - an experimental port of [styled-components](https://styled-components.com/)
 - [`jest-glamor-react`](https://github.com/kentcdodds/jest-glamor-react) - get glamor's styles in your Jest snapshots
+- [`glamorous`](https://github.com/kentcdodds/glamorous) - React component styling solved with an elegant (inspired) API, small footprint (<5kb gzipped), and great performance (via glamor).
 
 speedy mode
 ---
