@@ -387,7 +387,7 @@ Object.defineProperty(nullrule, 'toString', {
 
 
 let inputCaches = typeof WeakMap !== 'undefined'  ?
-  [ nullrule, new WeakMap(), new WeakMap(), new WeakMap() ] :
+  [ nullrule, new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap() ] :
   [ nullrule ]
 
 let warnedWeakMapError = false
