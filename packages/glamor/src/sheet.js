@@ -46,26 +46,32 @@ const isBrowser = typeof window !== 'undefined'
 const isDev = (process.env.NODE_ENV === 'development') || (!process.env.NODE_ENV) //(x => (x === 'development') || !x)(process.env.NODE_ENV)
 const isTest = process.env.NODE_ENV === 'test'
 
-const oldIE = (() => {  
+const oldIE = (() => {
   if(isBrowser) {
     let div = document.createElement('div')
     div.innerHTML = '<!--[if lt IE 10]><i></i><![endif]-->'
     return div.getElementsByTagName('i').length === 1
-  }  
+  }
 })()
 
-function makeStyleTag() {
-  let tag = document.createElement('style')
-  tag.type = 'text/css'
-  tag.setAttribute('data-glamor', '')
+function makeStyleTag(prepend) {
+  let tag = document.createElement('style');
+  tag.type = 'text/css';
+  tag.setAttribute('data-glamor', '');
   tag.appendChild(document.createTextNode(''));
-  (document.head || document.getElementsByTagName('head')[0]).appendChild(tag)
+  const head = (document.head || document.getElementsByTagName('head')[0]);
+  if (!prepend) {
+    head.appendChild(tag)
+  } else {
+    head.insertBefore(tag, head.firstChild);
+  }
+
   return tag
 }
 
-export function StyleSheet({ 
-    speedy = !isDev && !isTest, 
-    maxLength = (isBrowser && oldIE) ? 4000 : 65000 
+export function StyleSheet({
+    speedy = !isDev && !isTest,
+    maxLength = (isBrowser && oldIE) ? 4000 : 65000
   } = {}) {
   this.isSpeedy = speedy // the big drawback here is that the css won't be editable in devtools
   this.sheet = undefined
@@ -76,26 +82,27 @@ export function StyleSheet({
 
 assign(StyleSheet.prototype, {
   getSheet() {
-    return sheetForTag(last(this.tags))  
+    return sheetForTag(last(this.tags))
   },
-  inject() {
+  inject(opts) {
+    const prepend = opts && opts.prepend || false;
     if(this.injected) {
-      throw new Error('already injected stylesheet!') 
+      throw new Error('already injected stylesheet!')
     }
-    if(isBrowser) {      
-      this.tags[0] = makeStyleTag()        
-    } 
+    if(isBrowser) {
+      this.tags[0] = makeStyleTag(prepend)
+    }
     else {
       // server side 'polyfill'. just enough behavior to be useful.
-      this.sheet  = {         
+      this.sheet  = {
         cssRules: [],
         insertRule: rule => {
-          // enough 'spec compliance' to be able to extract the rules later  
-          // in other words, just the cssText field 
-          this.sheet.cssRules.push({ cssText: rule }) 
+          // enough 'spec compliance' to be able to extract the rules later
+          // in other words, just the cssText field
+          this.sheet.cssRules.push({ cssText: rule })
         }
       }
-    } 
+    }
     this.injected = true
   },
   speedy(bool) {
