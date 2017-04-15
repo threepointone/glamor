@@ -1,6 +1,6 @@
 import assign from 'object-assign'
 /* stylesheet */
-import { StyleSheet } from './sheet.js'
+import { StyleSheet } from 'glamor-stylesheet'
 import { createMarkupForStyles } from './CSSPropertyOperations'
 import clean from './clean.js'
 
