@@ -72,3 +72,8 @@ export function cssFor(...rules: Array<StyleAttribute>): string;
  * constructing an element's html.
  */
 export function attribsFor(...rules: Array<StyleAttribute>): string;
+
+/**
+ * Rehydrate
+ */
+export function rehydrate(ids: any): void
