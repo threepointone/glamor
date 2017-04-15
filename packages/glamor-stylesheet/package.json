@@ -1,5 +1,5 @@
 {
-  "name": "glamor",
+  "name": "glamor-stylesheet",
   "version": "3.0.0-1",
   "description": "inline css for component systems",
   "main": "lib/index.js",
@@ -11,12 +11,11 @@
     "index.d.ts"
   ],
   "scripts": {
-    "example": "../../node_modules/.bin/lerna exec --scope glamor-example npm run start",
     "clean": "../../node_modules/.bin/rimraf lib es6 umd",
     "build": "../../node_modules/.bin/npm-run-all -s clean -p build:** -s size",
     "build:lib": "../../node_modules/.bin/babel src -d lib --presets es2015,stage-0,react",
     "build:es6": "../../node_modules/.bin/babel src -d es6",
-    "build:umd": "../../node_modules/.bin/mkdirp umd && ../../node_modules/.bin/webpack --config ../../webpack/umd.js",
+    "build:umd": "../../node_modules/.bin/mkdirp umd && ../../node_modules/.bin/webpack --config ./webpack.umd.js",
     "build:umd-prod": "../../node_modules/.bin/cross-env NODE_ENV=production npm run build:umd",
     "size": "cat umd/index.min.js | gzip | wc -c",
     "test": "../../node_modules/.bin/karma start ../../karma.conf.js",
@@ -46,15 +45,10 @@
     }
   },
   "dependencies": {
-    "babel-runtime": "^6.18.0",
-    "glamor-stylesheet": "^3.0.0-1",
-    "fbjs": "^0.8.8",
     "object-assign": "^4.1.0"
   },
   "devDependencies": {
     "expect": "^1.20.2",
-    "expect-jsx": "^2.6.0",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "expect-jsx": "^2.6.0"
   }
 }
