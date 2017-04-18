@@ -41,7 +41,7 @@ export function vars(value = {}) {
         return {
           glamorCssVars: {
             ...this.context.glamorCssVars,
-            ...((typeof value === 'function' ? value(this.props) : value))
+            ...typeof value === 'function' ? value(this.props) : value
           }
         }
       }
@@ -95,7 +95,7 @@ export function makeTheme() {
             [key]: [ typeof _style === 'function' ?
               _style(this.props) :
               _style,
-              ...(this.context[key] || []) ]
+              ...this.context[key] || [] ]
           }
         }
         render() {
