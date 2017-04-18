@@ -1,7 +1,8 @@
 import { createElement } from '../../src/react' // eslint-disable-line no-unused-vars
 /** @jsx createElement */
 
-import React, { PropTypes } from 'react' //eslint-disable-line no-unused-vars
+import PropTypes from 'prop-types'
+import React from 'react'
 import { merge, select } from '../../src'
 import { vars } from '../../src/react'
 
@@ -13,7 +14,7 @@ export class Content extends React.Component {
     text: PropTypes.string
   }
   styles = {
-    text: merge({ 
+    text: merge({
       fontSize: '1.25rem',
       fontWeight: 300,
       lineHeight: '1.5em',
@@ -35,7 +36,7 @@ export class Content extends React.Component {
   }
   render() {
     let { media, text } = this.props
-    let styles = this.styles 
+    let styles = this.styles
     return <div>
       <p css={styles.text} dangerouslySetInnerHTML={{ __html: text }} />
       <a css={styles.media} href={media.expanded_url}>
@@ -44,4 +45,3 @@ export class Content extends React.Component {
     </div>
   }
 }
-

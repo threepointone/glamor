@@ -1,8 +1,8 @@
 import { createElement } from '../../src/react' // eslint-disable-line no-unused-vars
 /** @jsx createElement */
 
-
-import React, { PropTypes } from 'react'
+import PropTypes from 'prop-types'
+import React from 'react' // eslint-disable-line no-unused-vars
 
 import { Header } from './header'
 import { Content } from './content'
