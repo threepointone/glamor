@@ -1,9 +1,10 @@
 import assign from 'object-assign'
-import React, { PropTypes } from 'react'
+import PropTypes from 'prop-types'
+import React from 'react'
 import { isLikeRule, style, merge } from './index.js'
 
 if(process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
-  console.warn('[Deprecation] In glamor v3 this file will be published as a standalone package: "glamor-react". See https://github.com/threepointone/glamor/issues/204 for more information.')
+  console.warn('[Deprecation] In glamor v3 this file will be published as a standalone package: "glamor-react". See https://github.com/threepointone/glamor/issues/204 for more information.') // eslint-disable-line no-console
 }
 
 export * from './index.js' // convenience
@@ -125,7 +126,7 @@ export function propMerge(mergeStyle, props) {
   }
 
   if (glamorStyleKeys.length > 1) {
-    console.warn('[glamor] detected multiple data attributes on an element. This may lead to unexpected style because of css insertion order.');
+    console.warn('[glamor] detected multiple data attributes on an element. This may lead to unexpected style because of css insertion order.') // eslint-disable-line no-console
 
     // just append "mergeStyle" to props, because we dunno in which order glamor styles were added to props
     return {

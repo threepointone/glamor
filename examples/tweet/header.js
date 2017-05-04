@@ -3,7 +3,8 @@ import { createElement } from '../../src/react' // eslint-disable-line no-unused
 
 
 // @value primary, secondary from 'styles/colors.css';
-import React, { PropTypes } from 'react'
+import PropTypes from 'prop-types'
+import React from 'react'
 import { merge, select, before } from '../../src'
 import { vars } from '../../src/react'
 
@@ -70,7 +71,6 @@ export class Header extends React.Component {
           <span css={styles.screenName}>@{screenName}</span>
         </a>
       </div>
-    </div>  
+    </div>
   }
 }
-

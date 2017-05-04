@@ -1,7 +1,8 @@
 import { createElement } from '../../src/react' // eslint-disable-line no-unused-vars
 /** @jsx createElement */
 
-import React, { Component, PropTypes } from 'react' // eslint-disable-line no-unused-vars
+import PropTypes from 'prop-types'
+import React, { Component } from 'react' // eslint-disable-line no-unused-vars
 
 import { reply, retweet, like, more } from './svgs'
 
@@ -68,7 +69,7 @@ export class Footer extends Component {
       flexGrow: 1,
       justifyContent: 'center',
       textAlign: 'center',
-      
+
       background: 'none',
       border: 'none',
       color: 'inherit',
@@ -81,7 +82,7 @@ export class Footer extends Component {
       color: this.props.vars.animation
     }
   }
-  
+
   handleClick = () => {
     this.setState({
       liked: !this.state.liked
@@ -91,7 +92,7 @@ export class Footer extends Component {
   render() {
     const { createdAt, favoriteCount, retweetCount } = this.props
     const { liked } = this.state
-    let { styles } = this 
+    let { styles } = this
 
     return (
       <div>
@@ -116,7 +117,7 @@ export class Footer extends Component {
             {retweet}
           </div>
           <button css={styles.button} onClick={this.handleClick}>
-            {like(liked && style(styles.liked))}          
+            {like(liked && style(styles.liked))}
           </button>
           <div css={styles.icon}>
             {more}
