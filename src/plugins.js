@@ -46,7 +46,7 @@ export function fallbacks(node) {
   return node   
 }
 
-const prefixAll = require('./inline-style-prefix-all/index.js')
+import prefixAll from './inline-style-prefix-all'
 
 export function prefixes(node) {
   return assign({}, node, { style: prefixAll(node.style) })
