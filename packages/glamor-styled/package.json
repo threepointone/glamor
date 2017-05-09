@@ -3,6 +3,7 @@
   "version": "3.0.0-1",
   "description": "inline css for component systems",
   "main": "lib/index.js",
+  "module": "es6/index.js",
   "author": "Sunil Pai <threepointone@gmail.com>",
   "homepage": "https://github.com/threepointone/glamor",
   "license": "MIT",
