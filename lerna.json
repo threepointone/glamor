@@ -1,5 +1,7 @@
 {
   "lerna": "2.0.0-beta.37",
+  "npmClient":"yarn",
+  "hoist":"true",
   "packages": [
     "packages/*",
     "packages/*/example"
