@@ -1,12 +1,14 @@
 // Returns true for null, false, undefined and {}
-function isFalsy(value) {
+
+
+function isFalsy(value):boolean {
   return value === null || 
       value === undefined || 
       value === false || 
       (typeof value === 'object' && Object.keys(value).length === 0)
 }
 
-function cleanObject(object) {
+function cleanObject(object):any {
   if (isFalsy(object)) return null
   if (typeof object !== 'object') return object
    
