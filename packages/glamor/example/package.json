@@ -4,7 +4,7 @@
   "version": "3.0.0-1",
   "description": "",
   "scripts": {
-    "start": "webpack-dev-server --config ../../../webpack/example.js"
+    "start": "webpack-dev-server --config example.js"
   },
   "author": "Sunil Pai <threepointone@gmail.com>",
   "homepage": "https://github.com/threepointone/glamor",
@@ -15,12 +15,13 @@
     "inline"
   ],
   "dependencies": {
-    "glamor": "^3.0.0-1",
+    "glamor": "file:../",
     "react": "^15.4.1",
     "react-addons-css-transition-group": "^15.4.2",
     "react-dom": "^15.4.1"
   },
   "devDependencies": {
-    "webpack-dev-server": "2.1.0-beta.9"
+    "webpack": "^2.5.1",
+    "webpack-dev-server": "^2.4.5"
   }
 }
