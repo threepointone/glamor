@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { css, insertRule } from 'glamor'
+import { css } from 'glamor'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 const Button = (props) => {
@@ -15,14 +15,14 @@ let emptyStyleSheet = {
   leaveActive: {}
 }
 
-insertRule(`body {
+css.insert(`body {
     width: 100vw;
     height: 100vh;
     margin: 0;
     padding: 0;
 }`)
 
-insertRule(`.button {
+css.insert(`.button {
     position: absolute;
     height: 32px;
     line-height: 32px;
@@ -34,17 +34,17 @@ insertRule(`.button {
     cursor: pointer;
 }`)
 
-insertRule(`.button:first-child {
+css.insert(`.button:first-child {
     top: 64px;
     left: 64px;
 }`)
 
-insertRule(`.button:nth-child(2) {
+css.insert(`.button:nth-child(2) {
     top: 264px;
     left: 264px;
 }`)
 
-insertRule(`.dialog {
+css.insert(`.dialog {
     box-sizing: border-box;
     padding: 150px;
     position: absolute;
@@ -74,7 +74,7 @@ class UnicornDialog extends React.Component {
 
     let viewportRect = document.body.getBoundingClientRect()
     let sourceRect = nextProps.startRect
-        
+
     let viewportCenterX = viewportRect.left + (viewportRect.width / 2)
     let viewportCenterY = viewportRect.top + (viewportRect.height / 2)
 
@@ -83,25 +83,25 @@ class UnicornDialog extends React.Component {
 
     let dx = sourceCenterX - viewportCenterX
     let dy = sourceCenterY - viewportCenterY
-        
+
     let sheet = css({
-      '&.enter': { 
-        opacity: 0, 
-        transform: `translate(${dx}px, ${dy}px) scale(0.01)` 
+      '&.enter': {
+        opacity: 0,
+        transform: `translate(${dx}px, ${dy}px) scale(0.01)`
       },
-      '&.enter-active': { 
-        opacity: 1, 
-        transform: 'translate(0, 0) scale(1)', 
-        transition: 'transform 750ms cubic-bezier(0, 0, 0.2, 1), opacity 750ms cubic-bezier(0, 0, 0.2, 1)' 
+      '&.enter-active': {
+        opacity: 1,
+        transform: 'translate(0, 0) scale(1)',
+        transition: 'transform 750ms cubic-bezier(0, 0, 0.2, 1), opacity 750ms cubic-bezier(0, 0, 0.2, 1)'
       },
       '&.leave': {
-        opacity: 1, 
+        opacity: 1,
         transform: 'translate(0, 0) scale(1)'
       },
-      '&.leave.leave-active': { 
-        opacity: 0, 
-        transform: `translate(${dx}px, ${dy}px) scale(0.01)`, 
-        transition: 'transform 750ms cubic-bezier(0, 0, 0.2, 1), opacity 750ms cubic-bezier(0, 0, 0.2, 1)' 
+      '&.leave.leave-active': {
+        opacity: 0,
+        transform: `translate(${dx}px, ${dy}px) scale(0.01)`,
+        transition: 'transform 750ms cubic-bezier(0, 0, 0.2, 1), opacity 750ms cubic-bezier(0, 0, 0.2, 1)'
       }
     })
 

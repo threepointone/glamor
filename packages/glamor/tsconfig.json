@@ -1,16 +1,26 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "sourceMap": true,
-        "declaration": true,
-        "moduleResolution": "node",
-        "types": [
-            "mocha"
-        ]
-    }
-,
-"exclude": [
+  "compilerOptions": {
+    "target": "es5",
+    "sourceMap": true,
+    "declaration": true,
+    "noImplicitAny": false,
+    "jsx": "react",
+    "moduleResolution": "node",
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "types": [
+      "mocha",
+      "node"
+    ]
+  },
+  "files": [
+    "src/index.ts"
+  ],
+  "exclude": [
     "node_modules",
-    "example"
-]
+    "example",
+    "tests"
+  ]
 }

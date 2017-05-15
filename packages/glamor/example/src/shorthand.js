@@ -7,11 +7,12 @@ let styles = {
   },
   red: {
     color: 'red'
-  }, 
+  },
   green: {
     color: 'green'
   }
 }
+console.log(css)
 
 let mix = css(styles.red, styles.blue, styles.green, styles.red)
 let redder = css(styles.red, styles.blue, styles.green, styles.red)

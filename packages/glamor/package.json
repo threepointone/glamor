@@ -12,13 +12,12 @@
   ],
   "scripts": {
     "example": "lerna exec --scope glamor-example npm run start",
-    "clean": "rimraf lib es6 umd",
-    "build": "tsc --project ./tsconfig.json --outDir umd -m UMD && tsc --project ./tsconfig.json --outDir es6 -m commonjs",
+    "clean": "rimraf lib umd",
+    "build": "npm run clean clean && tsc --project tsconfig.json -m es6 --outDir es6 && webpack --config webpack.lib.js && webpack --config webpack.umd.js",
     "build:test": "webpack --config webpack.test.js",
     "size": "cat umd/index.min.js | gzip | wc -c",
     "test": "npm run build:test && karma start ./karma.conf.js",
     "test:watch": "npm test -- --no-single-run",
-    "coverage": "rm -rf tests/coverage && COVERAGE=1 test && open tests/coverage/*/index.html",
     "prepublish": "npm run build"
   },
   "author": "Sunil Pai <threepointone@gmail.com>",
@@ -29,30 +28,20 @@
     "css",
     "inline"
   ],
-  "eslintConfig": {
-    "extends": [
-      "rackt"
-    ],
-    "plugins": [
-      "react"
-    ],
-    "rules": {
-      "react/jsx-uses-vars": "error",
-      "react/jsx-uses-react": "error",
-      "jsx-quotes": 0
-    }
-  },
   "dependencies": {
-    "babel-runtime": "^6.18.0",
-    "fbjs": "^0.8.8",
-    "object-assign": "^4.1.0"
+    "fbjs": "^0.8.12",
+    "inline-style-prefixer": "^3.0.3",
+    "react-css-property-operations": "^15.4.1"
   },
   "devDependencies": {
+    "@types/expect": "^1.20.1",
     "@types/mocha": "^2.2.41",
+    "@types/node": "^7.0.18",
     "awesome-typescript-loader": "^3.1.3",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
     "babel-polyfill": "^6.23.0",
+    "caniuse-api": "^2.0.0",
     "cross-env": "^4.0.0",
     "expect": "^1.20.2",
     "expect-jsx": "^2.6.0",
