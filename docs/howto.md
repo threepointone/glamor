@@ -379,7 +379,7 @@ css
 ```css
 .f1 { font-size: 1rem };
 .red { background: red };
-.f1.red { font-size: 2rem};
+.f1.red { font-size: 2rem };
 ```
 ```html
 <div class="f1 red">
