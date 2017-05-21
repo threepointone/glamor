@@ -162,6 +162,16 @@ export class Block extends React.Component {
   }
 }
 
+export class Inline extends React.Component {
+  static defaultProps = {
+    component: 'span'
+  }
+
+  render() {
+    return <View display="inline" {...this.props} />
+  }
+}
+
 export class InlineBlock extends React.Component {
   render() {
     return <View display="inline-block" {...this.props} />
