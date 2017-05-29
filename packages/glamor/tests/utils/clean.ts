@@ -1,9 +1,9 @@
-import { clean } from '../src/utils/clean';
+import { clean } from '../../src/utils/clean';
 import * as expect from 'expect';
 
 describe('clean.ts', () => {
   it('keeps normal objects', () => {
-    const sample = { a: 'b' };
+    const sample = { a: '' };
     Object.freeze(sample);
     expect(clean(sample)).toBe(sample);
   });

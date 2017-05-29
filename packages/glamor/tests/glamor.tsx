@@ -412,30 +412,30 @@ describe('glamor', () => {
     // });
   }
 
-  it('can generate css from rules', () => {
-    let red = css({ color: 'red' }),
-      blue = css({ ':hover': { color: 'blue' } }),
-      merged = css(red, blue);
+  // it('can generate css from rules', () => {
+  //   let red = css({ color: 'red' }),
+  //     blue = css({ ':hover': { color: 'blue' } }),
+  //     merged = css(red, blue);
 
-    expect(cssFor(red, merged))
-      .toEqual('.css-1ezp9xe,[data-css-1ezp9xe]{color:red;}.css-11t3bx0,[data-css-11t3bx0]{color:red;}.css-11t3bx0:hover,[data-css-11t3bx0]:hover{color:blue;}');
-  });
+  //   expect(cssFor(red, merged))
+  //     .toEqual('.css-1ezp9xe,[data-css-1ezp9xe]{color:red;}.css-11t3bx0,[data-css-11t3bx0]{color:red;}.css-11t3bx0:hover,[data-css-11t3bx0]:hover{color:blue;}');
+  // });
 
-  it('can generate html attributes from rules', () => {
-    cssLabels(false);
-    let red = css({ color: 'red' }),
-      blue = css({ ':hover': { color: 'blue' } }),
-      merged = css(red, blue);
+  // it('can generate html attributes from rules', () => {
+  //   cssLabels(false);
+  //   let red = css({ color: 'red' }),
+  //     blue = css({ ':hover': { color: 'blue' } }),
+  //     merged = css(red, blue);
 
-    expect(attribsFor(red, merged)).toEqual('data-css-1ezp9xe="" data-css-11t3bx0=""');
-    cssLabels(true);
-  });
+  //   expect(attribsFor(red, merged)).toEqual('data-css-1ezp9xe="" data-css-11t3bx0=""');
+  //   cssLabels(true);
+  // });
 
-  it('can extract an id from a rule', () => {
-    let red = css({ color: 'red' });
+  // it('can extract an id from a rule', () => {
+  //   let red = css({ color: 'red' });
 
-    expect(idFor(red)).toEqual('1ezp9xe');
-  });
+  //   expect(idFor(red)).toEqual('1ezp9xe');
+  // });
 
   it('checks for a cache miss', () => {
     const myObscureStyle = { 'data-css-obscureclass': '"*"' };
