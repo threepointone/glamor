@@ -1,6 +1,6 @@
 export class GenericCache<T> {
   private inserted: { [key: string]: T } = {};
-
+  
   add(key: string, val: T) {
     if (!this.has(key)) {
       this.inserted[key] = val;
@@ -17,5 +17,13 @@ export class GenericCache<T> {
 
   flush() {
     this.inserted = {};
+  }
+
+  isEmpty(){
+    return Object.keys(this.inserted).length >0 ? false : true
+  }
+
+  counts(){
+    return Object.keys(this.inserted).length
   }
 }

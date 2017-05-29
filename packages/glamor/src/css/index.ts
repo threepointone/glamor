@@ -3,7 +3,7 @@ import { plugins, styleSheet, keyframesPlugins } from '../index';
 import { createMarkupForStyles } from 'react-css-property-operations';
 import { inserted, registered, ruleCache, getRegistered } from '../cache';
 import { hashify } from '../utils/hash';
-import { isSelector, joinSelectors, isMediaQuery, joinMediaQueries, joinSupports, isSupports } from './heper';
+import { isSelector, joinSelectors, isMediaQuery, joinMediaQueries, joinSupports, isSupports } from './helper';
 
 export interface DeconstrucedStyles {
   plain?: CSSProperties;
@@ -30,6 +30,32 @@ export type FalsyValues = null | undefined | false;
 export type Rule = StyleAttribute | CSSProperties | FalsyValues;
 export type CleanRule = StyleAttribute | CSSProperties;
 
+
+/**
+ * A Style object will be destructured into new object style with four main keys { plain:, selects:, medias:, supports:}
+ * 
+ * 1- 'plain' contains the plain css styles like (color: red)
+ * 
+ * 2- 'selects' contains all css styles that depend on selectors like (. , & , : , > ) ex: &:hover { }
+ * 
+ * 3- 'medias' contains all css styles that depend on @media selectors 
+ * 
+ * 4- 'supports' contains all css styles that depend on @support selectors 
+ * @param style 
+ * 
+ * example:
+ * input {label: [], color: 'red', 
+ *        &:hover: {color: 'blue'}, 
+ *        @media(min-width: 300px): {color: 'green', &:hover: {color: ...}, .a & .c:{color: ...}}}
+ * 
+ * output {plain: {color: 'red'},
+ *          selects: {&:hover: {color: 'blue'}},
+ *          medias: {@media(min-width: 300px): {plain: {color: ...}, selects: {&:hover: ..., .a & .c: ...}, medias: null, supports: null}},
+ *          supports: null}
+ *
+ * Notice the deep destructuring in the medias object
+ *
+ */
 function deconstruct(style: CSSProperties): DeconstrucedStyles {
   // we can be sure it's not infinitely nested here
   let plain: {[key: string]: keyof CSSProperties } | null = null;
@@ -57,13 +83,20 @@ function deconstruct(style: CSSProperties): DeconstrucedStyles {
       plain[key] = style[key];
     }
   });
-
   return { plain, selects, medias, supports };
 }
 
+/**
+ * create an array of strings which contains the different styles with its selectors.
+ * 
+ * The result could look like:
+ * 
+ *  ['.css-1j2tyha,[data-css-1j2tyha]{color:green;}', '.css-1j2tyha:hover,[ data-css-1j2tyha]:hover{color:yellow;}']
+ * @param id the hash value of the style.
+ * @param style 
+ */
 function deconstructedStyleToCSS(id: string, style: DeconstrucedStyles) {
   let css: Array<string> = [];
-
   // plugins here
   let { plain, selects, medias, supports } = style;
   if (plain) {
@@ -84,15 +117,27 @@ function deconstructedStyleToCSS(id: string, style: DeconstrucedStyles) {
     Object.keys(supports).forEach(key =>
       css.push(`${key}{${deconstructedStyleToCSS(id, supports[key]).join('')}}`));
   }
-
   return css;
 }
 
+/**
+ * 
+ * @param param0
+ * 
+ * example 
+ * selector: .css-1j2tyha:hover,[data-css-1j2tyha]:hover'
+ * style: {color: 'blue'}
+ * result:'.css-1j2tyha:hover,[data-css-1j2tyha]:hover{color:blue;}'
+ */
 export function toCSS({ selector, style }: { selector: string; style: CSSProperties }) {
   let result = plugins.transform({ selector, style });
   return `${result.selector}{${createMarkupForStyles(result.style)}}`;
 }
 
+/**
+ * Insert the style rule into the StyleSheet (in other words: insert the rule into the <style> tag)
+ * @param spec 
+ */
 function insert(spec: CSSSpec) {
   if (!inserted.has(spec.id)) {
     inserted.add(spec.id, true);
@@ -102,6 +147,12 @@ function insert(spec: CSSSpec) {
 }
 
 // mutable! modifies dest.
+/**
+ * build a simplified style object by combining between corrospending @media and @support queries
+ * at the end we will get an object that is ready to be destructured   
+ * @param dest 
+ * @param param1 
+ */
 function build(dest: CSSProperties, { selector = '', mq = '', supp = '', src = {} }: { selector?: string; mq?: string; supp?: string; src?: Array<CSSProperties> | CSSProperties }) {
   let source: Array<CSSProperties>;
 
@@ -110,7 +161,6 @@ function build(dest: CSSProperties, { selector = '', mq = '', supp = '', src = {
   } else {
     source = src;
   }
-
   source = flatten(source);
 
   source.forEach(_src => {
@@ -181,7 +231,6 @@ export function generateCss(rules: Array<CleanRule>): StyleAttribute {
   // hard to type because before build() label is a string, after
   let style: any = { label: [] };
   build(style, { src: rules }); // mutative! but worth it.
-
   let spec: CSSSpec = {
     id: hashify(style),
     style,
@@ -191,7 +240,11 @@ export function generateCss(rules: Array<CleanRule>): StyleAttribute {
 
   return toRule(spec);
 }
-
+/**
+ * get the actual output for the css function, the result will look similer to: 
+ * {data-css-1j2tyha: ''}
+ * @param spec 
+ */
 function toRule(spec: CSSSpec): StyleAttribute {
   registered.add(spec.id, spec);
   insert(spec);
@@ -206,7 +259,6 @@ function toRule(spec: CSSSpec): StyleAttribute {
   });
 
   ruleCache.add(spec.id, ret);
-
   return ret;
 }
 

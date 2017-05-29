@@ -47,8 +47,12 @@ function cleanArray<T>(rules: Array<T>): Array<T> {
     hasFalsy ? filtered : rules;
 }
 
-// Takes style array or object provided by user and clears all the falsy data
-// If there is no styles left after filtration returns null
+/**
+ * Takes style array or object provided by user and clears all the falsy data.
+ * 
+ *  If there is no styles left after filtration returns null
+ * @param input 
+ */
 export function clean<T>(input: T | Array<T>): T | Array<T> {
   return Array.isArray(input) ? cleanArray(input) : cleanObject(input);
 }

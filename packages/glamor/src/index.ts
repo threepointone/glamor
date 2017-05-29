@@ -1,7 +1,7 @@
 import { PluginSet } from './plugins/PluginSet';
 import { prefix } from './plugins/prefix';
 import { fallbacks } from './plugins/fallbacks';
-import { StyleSheet } from './StyleSheet';
+import { StyleSheet } from './sheet';
 import { clean } from './utils/clean';
 import { hashify, nullRule } from './utils';
 import { generateCss, CSSSpec, RawSpec, Rule, StyleAttribute, CleanRule, toCSS, CSSProperties, KeyframesSpec, insertKeyframe, FontFaceSpec, insertFontFace } from './css';

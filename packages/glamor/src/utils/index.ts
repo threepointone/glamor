@@ -19,7 +19,11 @@ export function cssLabels(bool: boolean) {
   hasLabels = !!bool;
 }
 
-// of shape { 'data-css-<id>': '' }
+/**
+ * Check if the passed value is a css rule.
+ * CSS rule object must contain the key 'data-css-<id>' 
+ * @param rule 
+ */
 export function isLikeRule(rule: StyleAttribute) {
   let keys = Object.keys(rule).filter(x => x !== 'toString');
   if (keys.length !== 1) {
@@ -29,6 +33,10 @@ export function isLikeRule(rule: StyleAttribute) {
 }
 
 // extracts id from a { 'data-css-<id>': ''} like object
+/**
+ * Get the id from a rule, the rule looks like { 'data-css-<id>': ''}
+ * @param rule 
+ */
 export function idFor(rule: StyleAttribute) {
   let keys = Object.keys(rule).filter(x => x !== 'toString');
 
@@ -53,6 +61,11 @@ Object.defineProperty(nullRule, 'toString', {
   enumerable: false, value() { return 'css-nil'; }
 });
 
+/**
+ * Create a selector string. Selector string looks like '.css-1j2tyha,[data-css-1j2tyha]'
+ * @param id 
+ * @param path 
+ */
 export function selector(id?: string, path?: string) {
   if (id == null) {
     return path.replace(/\&/g, '');
@@ -75,12 +88,23 @@ export function selector(id?: string, path?: string) {
   return x;
 }
 
-
+/**
+ * Remove every charachter that is not a letter or a number and turn the capital-case to lowercase.
+ * 
+ * Ex: simple('abc$%#12 3abc') => return 'abc123abc'
+ * @param str 
+ */
 export function simple(str: string) {
   return str.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
 // flatten a nested array
+/**
+ * Flatten a nasted array, destructure an array of arrays into a single simple array
+ * Example: input is arr1[arr2[val1, val2, val3], val4, val5 ,arr3[val6, val7] ] =>
+ * Output is : arr [val1, val2, val3, val4, val5, val6, val7]
+ * @param inArr 
+ */
 export function flatten<T>(inArr: Array<Array<T>> | Array<T>): Array<T> {
   let arr: Array<T> = [];
 

@@ -28,11 +28,11 @@ export function simulate(...pseudos: Array<string>): {[key: string]: string} {
 
   if (!canSimulate) {
     if (!warned1) {
-      console.warn('can\'t simulate without once calling simulations(true)'); // eslint-disable-line no-console
+      console.warn(`can't simulate without once calling simulations(true)`); // eslint-disable-line no-console
       warned1 = true;
     }
     if (!isDev && !isTest && !warned2) {
-      console.warn('don\'t use simulation outside dev'); // eslint-disable-line no-console
+      console.warn(`don't use simulation outside dev`); // eslint-disable-line no-console
       warned2 = true;
     }
     return {};

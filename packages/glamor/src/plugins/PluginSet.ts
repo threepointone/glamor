@@ -10,6 +10,12 @@ export class PluginSet {
     this.fns = initial;
   }
 
+  /**
+     * Takes a list of functions(plugins) as an input parameters and add them to the plugin set if they do not exist.
+     * 
+     * Can be called like: add(func1, func2, ...)
+     * @param functionsList an array of different functions to add it to 
+     */
   add(...fns: Array<Plugin>) {
     fns.forEach(fn => {
       if (this.fns.indexOf(fn) >= 0) {
