@@ -1,54 +1,73 @@
-// import { nullRule } from '../utils/index';
+import { nullRule } from '../utils/index';
+import { isDev } from '../utils/index';
+import { registered } from './index'
 
-// export function multiIndexCache<T>(fn: T): T {
-//   let inputCaches = typeof WeakMap !== 'undefined' ?
-//     [nullRule, new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap()] :
-//     [nullRule];
+/**
+ * Optimization: Cache the results of calling a function with multiple parameters, in order to prevent re-excuting the function when it has been called 
+ * with the same parameters more than one time.
+ * more explenation can be found here: 
+ * https://github.com/threepointone/glamor/blob/master/docs/weakmaps.md
+ *   
+ * @param fn the dunction which we want to cache its results 
+ * @param check : optional function that returns boolean, when it's not needed do not send anything
+ * 
+ * example: if we have a function fn(...args) which sum numbers and return the result
+ * 1- calling fn(1,2,3): the function will be excuted normally and the result will be cached
+ * 2- calling fn(1,3) : the function also will be excuted normally and the result will be cached.
+ * 3- calling fn(1,2,3): the function will not be excuted because we called it one timebefore with the same parameters (in the same order!), 
+ * a cached result will be returned in this case 
+ */
+export function multiIndexCache<Y>(fn : (...arg)=> Y , check = (spec:any)=> true ):(...arg)=> Y{
+  let inputCaches = typeof WeakMap !== 'undefined' ?
+    [new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap()] :
+    [] ;
+    
 
-//   let warnedWeakMapError = false;
+  let warnedWeakMapError = false;
+  return ( function (...args: Array<any>) {
 
-//   return function (...args: Array<any>) {
-//     if (inputCaches[args.length]) {
-//       let coi = inputCaches[args.length];
-//       let ctr = 0;
+    if (inputCaches[args.length - 1]) {
+      let coi = inputCaches[args.length - 1] ;
+      let ctr = 0;
+      while (ctr < args.length -1 ) {
+        if (coi.has(args[ctr]) === false) {
+          coi.set(args[ctr], new WeakMap());
+        }
+        coi = coi.get(args[ctr]);
+        ctr++;
+      }
 
-//       while (ctr < args.length - 1) {
-//         if (!coi.has(args[ctr])) {
-//           coi.set(args[ctr], new WeakMap());
-//         }
-//         coi = coi.get(args[ctr]);
-//         ctr++;
-//       }
+      if (coi.has(args[args.length - 1])) {
+        let ret = coi.get(args[ctr]);
 
-//       if (coi.has(args[args.length - 1])) {
-//         let ret = coi.get(args[ctr]);
 
-//         if (registered[ret.toString().substring(4)]) { // make sure it hasn't been flushed
-//           return ret;
-//         }
-//       }
-//     }
+        // This if statement is not really important if we want to reuse the MultiIndexCache somewhere else, 
+        // But in our case we need some kind of checking, therefore we send this check function as parameter
+        if (check(ret) ) {
+            return ret 
+        }
+      }
+    }
 
-//     let value = fn(args);
-//     if (inputCaches[args.length]) {
-//       let ctr = 0, coi = inputCaches[args.length];
+    let value = fn(args);
+    if (inputCaches[args.length -1]) {
+      let ctr = 0, coi = inputCaches[args.length -1];
+      while (ctr < args.length -1 ) {
+        coi = coi.get(args[ctr]);
+        ctr++;
+      }
 
-//       while (ctr < args.length - 1) {
-//         coi = coi.get(args[ctr]);
-//         ctr++;
-//       }
+      try {
+        coi.set(args[ctr], value);
+      } catch (err) {
+        if (isDev && !warnedWeakMapError) {
+          warnedWeakMapError = true;
+          console.warn('failed setting the WeakMap cache for args:', ...args); // eslint-disable-line no-console
+          console.warn('this should NOT happen, please file a bug on the github repo.'); // eslint-disable-line no-console
+        }
+      }
+    }
 
-//       try {
-//         coi.set(args[ctr], value);
-//       } catch (err) {
-//         if (isDev && !warnedWeakMapError) {
-//           warnedWeakMapError = true;
-//           console.warn('failed setting the WeakMap cache for args:', ...args); // eslint-disable-line no-console
-//           console.warn('this should NOT happen, please file a bug on the github repo.'); // eslint-disable-line no-console
-//         }
-//       }
-//     }
-
-//     return value;
-//   };
-// }
+    return value;
+  }) ;
+}

@@ -6,8 +6,9 @@ import { clean } from './utils/clean';
 import { hashify, nullRule } from './utils';
 import { generateCss, CSSSpec, RawSpec, Rule, StyleAttribute, CleanRule, toCSS, CSSProperties, KeyframesSpec, insertKeyframe, FontFaceSpec, insertFontFace } from './css';
 import { registered, ruleCache, inserted } from './cache';
+import { multiIndexCache } from './cache/MultiIndexCache';
 
-// let cachedCss = (typeof WeakMap !== 'undefined') ? multiIndexCache(generateCss) : generateCss
+let cachedCss = (typeof WeakMap !== 'undefined') ? multiIndexCache(generateCss, (spec : StyleAttribute)=>  registered.has(spec.toString().substring(4) )) : generateCss
 
 export const styleSheet = new StyleSheet();
 styleSheet.inject();
@@ -30,7 +31,7 @@ function css(...rules: Array<Rule>): StyleAttribute {
     return nullRule;
   }
 
-  return generateCss(cleanedRules);
+  return cachedCss(cleanedRules);
 }
 
 namespace css {
@@ -102,12 +103,9 @@ export { css };
 // rehydrate the insertion cache with ids sent from
 // renderStatic / renderStaticOptimized
 export function rehydrate(ids: Array<string>) {
-  // load up ids
-  // inserted = {
-  //   ...inserted,
-  //   ...ids.reduce((o, i) => (o[i] = true, o), {})
-  // };
-  // assume css loaded separately
+  for(let id of ids){
+    inserted.add(id, true);
+  }
 }
 
 export function flush() {
@@ -117,3 +115,5 @@ export function flush() {
   styleSheet.flush();
   styleSheet.inject();
 }
+
+export { simulate } from './Simulations';
