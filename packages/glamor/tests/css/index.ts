@@ -14,9 +14,6 @@ describe('css/index', ()=>{
     let red = css({ color: 'red' }),
       blue = css({ ':hover': { color: 'blue' } }),
       merged = css(red, blue); 
-      console.log("red: ", red)
-      console.log("blue: ", blue)
-      console.log('merged: ', merged)
 
     expect(cssFor(red, merged))
       .toEqual('.css-1ezp9xe,[data-css-1ezp9xe]{color:red;}.css-11t3bx0,[data-css-11t3bx0]{color:red;}.css-11t3bx0:hover,[data-css-11t3bx0]:hover{color:blue;}');

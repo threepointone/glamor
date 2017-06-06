@@ -46,26 +46,6 @@ describe('glamor', () => {
     });
   });
 
-  it('accepts nested media queries', () => {
-    css({
-      color: 'red',
-      ':hover': {
-        color: 'blue'
-      },
-      '@media(min-width: 300px)': {
-        color: 'green',
-        ':hover': {
-          color: 'yellow'
-        },
-        '.a & .c': { color: 'wheat' },
-        '&&': { color: 'ivory' }
-      }
-    });
-
-    expect(styleSheet.rules().map(x => x.cssText).join('\n')).toEqual(
-      `.css-1j2tyha, [data-css-1j2tyha] { color: red; }\n.css-1j2tyha:hover, [data-css-1j2tyha]:hover { color: blue; }\n@media (min-width: 300px) { \n  .css-1j2tyha, [data-css-1j2tyha] { color: green; }\n  .css-1j2tyha:hover, [data-css-1j2tyha]:hover { color: yellow; }\n  .a .css-1j2tyha .c, .a [data-css-1j2tyha] .c { color: rgb(245, 222, 179); }\n  .css-1j2tyha.css-1j2tyha, [data-css-1j2tyha][data-css-1j2tyha] { color: rgb(255, 255, 240); }\n}`
-    );
-  });
 
   it('only adds a data attribute to the node', () => {
     let el = <div {...css({ backgroundColor: '#0f0' }) } />;
@@ -149,7 +129,19 @@ describe('glamor', () => {
     });
   });
 
-  it(':not() selector works for multiple selectors');
+  it(':not() selector works for multiple selectors', ()=>{
+    css.global(':not(p)', {backgroundColor:'red'});
+    render(<div>
+            <h1 id='head'> this is heading </h1>
+            <p id='paragraph'>paragraph</p>
+            <span id='span'>span </span>
+          </div>, node, ()=>{
+            console.log(document.head)
+            expect(window.getComputedStyle(document.querySelector('#head')).backgroundColor).toEqual('rgb(255, 0, 0)');
+            expect(window.getComputedStyle(document.querySelector('#paragraph')).backgroundColor).toEqual('rgba(0, 0, 0, 0)');
+          })
+  });
+
   it('can use a parent selector to target itself', () => {
     let x = css({ '.foo &': { color: 'red' } });
     render(<div>
@@ -361,10 +353,10 @@ describe('glamor', () => {
   });
 
 
-  // plain rules
-  // merged rules
-  // media query wrap / override?
-  it('uses WeakMaps to cache input objects');
+  // // plain rules
+  // // merged rules
+  // // media query wrap / override?
+  // it('uses WeakMaps to cache input objects');
 
   if (isPhantom) {
     it('adds vendor prefixes', () => {
@@ -375,67 +367,43 @@ describe('glamor', () => {
     });
 
 
-    // it('should be able to add fonts', () => {
-    //   // todo - doesn't look like unicode-range works
-    //   const latin = {
-    //     fontFamily: 'Open Sans',
-    //     fontStyle: 'normal',
-    //     fontWeight: 400,
-    //     src: 'local(\'Open Sans\'), local(\'OpenSans\'), url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format(\'woff2\')'
-    //   };
+    it('should be able to add fonts', () => {
+      // todo - doesn't look like unicode-range works
+      const latin = {
+        fontFamily: 'Open Sans',
+        fontStyle: 'normal',
+        fontWeight: 400,
+        src: 'local(\'Open Sans\'), local(\'OpenSans\'), url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format(\'woff2\')'
+      };
 
-    //   let f = css.fontFace(latin);
-    //   expect(styleSheet.rules()[0].cssText.replace(/\s/g, ''))
-    //     .toEqual('@font-face { font-family: \'Open Sans\'; font-style: normal; font-weight: 400; src: local(Open Sans), local(OpenSans), url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format(woff2); }'.replace(/\s/g, ''));
-    //   expect(f).toEqual('Open Sans');
+      let f = css.fontFace(latin);
+      expect(styleSheet.rules()[0].cssText.replace(/\s/g, ''))
+        .toEqual('@font-face { font-family: \'Open Sans\'; font-style: normal; font-weight: 400; src: local(Open Sans), local(OpenSans), url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format(woff2); }'.replace(/\s/g, ''));
+      expect(f).toEqual('Open Sans');
 
-    // });
+    });
 
-    // it('can add animation keyframes', () => {
-    //   let animate = css.keyframes('bounce', {
-    //     '0%': {
-    //       transform: 'scale(0.1)',
-    //       opacity: 0
-    //     },
-    //     '60%': {
-    //       transform: 'scale(1.2)',
-    //       opacity: 1
-    //     },
-    //     '100%': {
-    //       transform: 'scale(1)'
-    //     }
-    //   });
-    //   expect(styleSheet.rules()[0].cssText.replace(/\s/g, ''))
-    //     .toEqual('@-webkit-keyframesbounce_zhy6v5{0%{-webkit-transform:scale(0.1);opacity:0;}60%{-webkit-transform:scale(1.2);opacity:1;}100%{-webkit-transform:scale(1);}}');
-    //   expect(animate).toEqual('bounce_zhy6v5');
+    it('can add animation keyframes', () => {
+      let animate = css.keyframes('bounce', {
+        '0%': {
+          transform: 'scale(0.1)',
+          opacity: 0
+        },
+        '60%': {
+          transform: 'scale(1.2)',
+          opacity: 1
+        },
+        '100%': {
+          transform: 'scale(1)'
+        }
+      });
+      expect(styleSheet.rules()[0].cssText.replace(/\s/g, ''))
+        .toEqual('@-webkit-keyframesbounce_zhy6v5{0%{opacity:0;-webkit-transform:scale(0.1);}60%{opacity:1;-webkit-transform:scale(1.2);}100%{-webkit-transform:scale(1);}}');
+        //'@-webkit-keyframesbounce_zhy6v5{0%{-webkit-transform:scale(0.1);opacity:0;}60%{-webkit-transform:scale(1.2);opacity:1;}100%{-webkit-transform:scale(1);}}'
+      expect(animate).toEqual('bounce_zhy6v5');
 
-    // });
+    });
   }
-
-  // it('can generate css from rules', () => {
-  //   let red = css({ color: 'red' }),
-  //     blue = css({ ':hover': { color: 'blue' } }),
-  //     merged = css(red, blue);
-
-  //   expect(cssFor(red, merged))
-  //     .toEqual('.css-1ezp9xe,[data-css-1ezp9xe]{color:red;}.css-11t3bx0,[data-css-11t3bx0]{color:red;}.css-11t3bx0:hover,[data-css-11t3bx0]:hover{color:blue;}');
-  // });
-
-  // it('can generate html attributes from rules', () => {
-  //   cssLabels(false);
-  //   let red = css({ color: 'red' }),
-  //     blue = css({ ':hover': { color: 'blue' } }),
-  //     merged = css(red, blue);
-
-  //   expect(attribsFor(red, merged)).toEqual('data-css-1ezp9xe="" data-css-11t3bx0=""');
-  //   cssLabels(true);
-  // });
-
-  // it('can extract an id from a rule', () => {
-  //   let red = css({ color: 'red' });
-
-  //   expect(idFor(red)).toEqual('1ezp9xe');
-  // });
 
   it('checks for a cache miss', () => {
     const myObscureStyle = { 'data-css-obscureclass': '"*"' };

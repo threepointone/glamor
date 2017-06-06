@@ -41,6 +41,4 @@ describe('hash', ()=>{
         expect(doHash(JSON.stringify(x))).toBe('1ysasfp')
     })
 
-    // To Do 
-    // Try to import css function apply it and then try to hash the returnd value
 })
