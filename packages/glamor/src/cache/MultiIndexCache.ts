@@ -17,7 +17,10 @@ import { registered } from './index'
  * 3- calling fn(1,2,3): the function will not be excuted because we called it one timebefore with the same parameters (in the same order!), 
  * a cached result will be returned in this case 
  */
-export function multiIndexCache<Y>(fn : (...arg)=> Y , check = (spec:any)=> true ):(...arg)=> Y{
+
+// For future aspects and in order to write better typing, looking regularly at this link to implement it when it's finished
+// https://github.com/Microsoft/TypeScript/issues/5453
+export function multiIndexCache<Y extends Function>(fn :  Y , check = (spec:any)=> true ): Y{
   let inputCaches = typeof WeakMap !== 'undefined' ?
     [new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap(), new WeakMap()] :
     [] ;
@@ -69,5 +72,5 @@ export function multiIndexCache<Y>(fn : (...arg)=> Y , check = (spec:any)=> true
     }
 
     return value;
-  }) ;
+  }) as any as Y ; 
 }

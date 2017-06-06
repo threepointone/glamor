@@ -130,15 +130,17 @@ describe('glamor', () => {
   });
 
   it(':not() selector works for multiple selectors', ()=>{
-    css.global(':not(p)', {backgroundColor:'red'});
-    render(<div>
+    //css({'div > :not(h1)': {backgroundColor:'red'}});
+    render(<div {...css({'> :not(#paragraph):not(h1)':{color:'red'}})}>
             <h1 id='head'> this is heading </h1>
-            <p id='paragraph'>paragraph</p>
+            <p id='paragraph' {...css({color:'blue'})}>paragraph</p>
+            <p id='paragraph1'>paragraph</p>
             <span id='span'>span </span>
           </div>, node, ()=>{
-            console.log(document.head)
-            expect(window.getComputedStyle(document.querySelector('#head')).backgroundColor).toEqual('rgb(255, 0, 0)');
-            expect(window.getComputedStyle(document.querySelector('#paragraph')).backgroundColor).toEqual('rgba(0, 0, 0, 0)');
+            expect(window.getComputedStyle(document.querySelector('#paragraph')).color).toEqual('rgb(0, 0, 255)');
+            expect(window.getComputedStyle(document.querySelector('#paragraph1')).color).toEqual('rgb(255, 0, 0)');
+            expect(window.getComputedStyle(document.querySelector('#span')).color).toEqual('rgb(255, 0, 0)');
+            expect(window.getComputedStyle(document.querySelector('#head')).color).toEqual('rgb(0, 0, 0)');
           })
   });
 
