@@ -33,23 +33,49 @@ const oldIE = (() => {
   }
 })();
 
+class ServerSheet {
+  private cssRules: Array<CSSRule> //{cssText:string}[]
+  constructor(){
+    this.cssRules = [];
+  }
+
+  public insertRule(rule:string, index:number){
+    this.cssRules.splice(index,0,{cssText:rule} as CSSRule)
+  }
+
+  public getCSSRules(){
+    return this.cssRules
+  }
+
+  public emptyCssRules(){
+    this.cssRules = []
+  }
+}
+
 export class StyleSheet {
-  private isSpeedy: boolean;
-  private sheet: any = null;
-  private tags: Array<HTMLStyleElement> = [];
-  private ruleCounter = 0;
-  private maxRules: number;
-  private injected = false;
+  private isSpeedy : boolean
+  private sheet :ServerSheet // for non-browser environment we add just a list of css rules in our object
+  private tags :Array<HTMLStyleElement> = [] // all the <style> tags inside our dom
+  private maxRules : number //maximum number of rules inside a <style> tag
+  private ruleCounter : number // counter to count the number of rules inside one <style> tag
+  private injected : boolean = false; // determine if the <Style> tags are already injected inside the head of the do
 
   constructor(speedy = !isDev, maxRules = (isBrowser && oldIE) ? 4000 : 65000) {
-    this.isSpeedy = speedy;
+    this.isSpeedy = speedy // the big drawback here is that the css won't be editable in devtools
+    this.sheet = undefined;
+    this.tags = [];
     this.maxRules = maxRules;
+    this.ruleCounter = 0;
   }
 
   getSheet() {
     return sheetForTag(last(this.tags));
   }
 
+  /**
+   * create <style> tag and inject it in the dom if it's browser einvironment 
+   * otherwise it will create an array of cssRules within the StyleSheet object  
+   */
   inject() {
     if (this.injected) {
       throw new Error('already injected stylesheet!');
@@ -59,14 +85,7 @@ export class StyleSheet {
       this.tags[0] = makeStyleTag();
     } else {
       // server side 'polyfill'. just enough behavior to be useful.
-      this.sheet = {
-        cssRules: [],
-        insertRule: (rule: string) => {
-          // enough 'spec compliance' to be able to extract the rules later
-          // in other words, just the cssText field
-          this.sheet.cssRules.push({ cssText: rule });
-        }
-      };
+      this.sheet = new ServerSheet()
     }
 
     this.injected = true;
@@ -80,11 +99,15 @@ export class StyleSheet {
     this.isSpeedy = !!speedy;
   }
 
+  /**
+   * Insert a new css rule into the <style> tag when it's in the browser environment 
+   * @param rule 
+   */
   insert(rule: string) {
     if (isBrowser) {
       // this is the ultrafast version, works across browsers
       if (this.isSpeedy && this.getSheet().insertRule) {
-        this._insert(rule);
+        this.browInsert(rule);
       } else {
         if (rule.indexOf('@import') !== -1) {
           const tag = last(this.tags);
@@ -95,7 +118,7 @@ export class StyleSheet {
       }
     } else {
       // server side is pretty simple
-      this.sheet.insertRule(rule, rule.indexOf('@import') !== -1 ? 0 : this.sheet.cssRules.length);
+      this.sheet.insertRule(rule, rule.indexOf('@import') !== -1 ? 0 : this.sheet.getCSSRules().length -1);
     }
 
     this.ruleCounter++;
@@ -122,13 +145,15 @@ export class StyleSheet {
       // todo - look for remnants in document.styleSheets
     } else {
       // simpler on server
-      this.sheet.cssRules = [];
+      //this.sheet.emptyCssRules();
+      this.sheet.emptyCssRules();
     }
   }
 
   rules() {
     if (!isBrowser) {
-      return this.sheet.cssRules as Array<CSSRule>;
+      //return this.sheet.getCSSRules() as Array<CSSRule>;
+      return this.sheet.getCSSRules();
     }
 
     let arr: Array<CSSRule> = [];
@@ -140,7 +165,11 @@ export class StyleSheet {
     return arr;
   }
 
-  private _insert(rule: string) {
+  /**
+   * Insert a new css rule into the <style> tag when it's in the browser environment 
+   * @param rule 
+   */
+  private  browInsert(rule:string) {
     // this weirdness for perf, and chrome's weird bug
     // https://stackoverflow.com/questions/20007992/chrome-suddenly-stopped-accepting-insertrule
     try {

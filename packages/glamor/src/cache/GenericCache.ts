@@ -19,10 +19,6 @@ export class GenericCache<T> {
     this.inserted = {};
   }
 
-  isEmpty(){
-    return Object.keys(this.inserted).length >0 ? false : true
-  }
-
   counts(){
     return Object.keys(this.inserted).length
   }
