@@ -89,5 +89,15 @@ describe('cahce.ts', ()=>{
         expect(spy.calls.length).toEqual(2);
     });
 
+    it('Multi Index Cache works well with anynomys function', ()=>{
+      let spy = expect.createSpy((arg1: any, arg2: any) => `${arg1.color} + ${arg2.backgrounedColor}`).andCallThrough()  ;
+        let myfn = multiIndexCache(spy);
+        let x = {color:'red'};
+        let y = { backgrounedColor: 'white'};
+        expect(myfn(x, y)).toEqual('red + white');
+        expect(myfn(x, y)).toEqual('red + white');
+        expect(spy.calls.length).toEqual(1);
+    });
+
 
 });

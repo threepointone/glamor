@@ -52,7 +52,7 @@ export function multiIndexCache<Y extends Function>(fn :  Y , check = (spec:any)
       }
     }
 
-    let value = fn(args);
+    let value = fn(...args);
     if (inputCaches[args.length -1]) {
       let ctr = 0, coi = inputCaches[args.length -1];
       while (ctr < args.length -1 ) {
