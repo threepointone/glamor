@@ -1,9 +1,9 @@
 import React from 'react'
 import { StyleSheet, css } from 'glamor-aphrodite' //eslint-disable-line no-unused-vars
 
-import { keyframes } from 'glamor'
+import { css as _css } from 'glamor'
 
-let kfs = keyframes({
+let kfs = _css.keyframes({
   'from': {
     marginLeft: 0
   },

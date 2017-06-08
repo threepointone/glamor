@@ -1,4 +1,4 @@
-import { styleSheet } from 'glamor'
+import { caches, styleSheet } from 'glamor'
 
 
 /**** serverside stuff ****/
@@ -9,26 +9,26 @@ import { styleSheet } from 'glamor'
 // use renderStaticOptimized
 export function renderStatic(fn) {
   let html = fn()
-  if(html === undefined) {
+  if (html === undefined) {
     throw new Error('did you forget to return from renderToString?')
   }
-  
+
   let rules = styleSheet.rules(), css = rules.map(r => r.cssText).join('')
-  return { html, ids: Object.keys(styleSheet.inserted), css, rules }
+  return { html, ids: caches.inserted.keys(), css, rules }
 }
 
 export function renderStaticOptimized(fn) {
   // parse out ids from html
   // reconstruct css/rules/cache to pass
   let html = fn()
-  if(html === undefined) {
+  if (html === undefined) {
     throw new Error('did you forget to return from renderToString?')
   }
   let o = { html, ids: [], css: '', rules: [] }
   let regex = /css\-([a-zA-Z0-9]+)/gm
-  let match, ids = {} 
-  while((match = regex.exec(html)) !== null) {
-    if(!ids[match[1] + '']) {        
+  let match, ids = {}
+  while ((match = regex.exec(html)) !== null) {
+    if (!ids[match[1] + '']) {
       ids[match[1] + ''] = true
     }
   }
@@ -36,17 +36,17 @@ export function renderStaticOptimized(fn) {
   o.rules = styleSheet.rules().filter(x => {
     let regex = /css\-([a-zA-Z0-9]+)/gm
     let match = regex.exec(x.cssText)
-    if(match && ids[match[1] + '']) {
+    if (match && ids[match[1] + '']) {
       return true
     }
-    if(!match) {
+    if (!match) {
       return true
     }
     return false
   })
-  o.ids = Object.keys(styleSheet.inserted).filter(id => !!ids[id + ''] || styleSheet.registered[id].type === 'raw')
+  o.ids = caches.inserted.keys().filter(id => !!ids[id + ''] || caches.registered.get(id).type === 'raw')
   o.css = o.rules.map(x => x.cssText).join('')
-  
+
   return o
 }
 
