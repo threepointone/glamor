@@ -1,6 +1,6 @@
 import assign from 'object-assign'
 import { parse } from './spec.js'
-import { merge } from 'glamor'
+import { css as __css } from 'glamor'
 
 function log(x) {
 
@@ -105,7 +105,7 @@ export const conversions = {
 }
 
 export function css(strings, ...values) {
-  return merge(_css(strings, ...values))
+  return __css(_css(strings, ...values))
 }
 
 export function _css(strings, ...values) {

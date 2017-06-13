@@ -4,9 +4,9 @@
 // - hd breakpoint 
 // - sticky footers
 
-import { after, merge, select } from 'glamor'
+import { css } from 'glamor'
 
-export function aspectRatio(width = 16, height = 9) {  
+export function aspectRatio(width = 16, height = 9) {
   return {
     position: 'relative',
     display: 'block',
@@ -19,7 +19,7 @@ export function aspectRatio(width = 16, height = 9) {
 
 // border-radius
 
-export function borderBottomRadius(r) {  
+export function borderBottomRadius(r) {
   return {
     borderBottomLeftRadius: r,
     borderBottomRightRadius: r
@@ -41,7 +41,7 @@ export function borderLeftRadius(r) {
 }
 
 export function borderRightRadius(r) {
-  
+
   return {
     borderTopRightRadius: r,
     borderBottomRightRadius: r
@@ -49,18 +49,18 @@ export function borderRightRadius(r) {
 }
 
 
-function styleKeyed(prefix, key, { top, right, bottom, left }) {  
+function styleKeyed(prefix, key, { top, right, bottom, left }) {
   let o = {}
-  if(top != undefined ) {
+  if (top != undefined) {
     o[prefix + 'Top' + key] = top
   }
-  if(right != undefined) {
+  if (right != undefined) {
     o[prefix + 'Right' + key] = right
   }
-  if(bottom != undefined) {
+  if (bottom != undefined) {
     o[prefix + 'Bottom' + key] = bottom
   }
-  if(left != undefined) {
+  if (left != undefined) {
     o[prefix + 'Left' + key] = left
   }
   return o
@@ -68,15 +68,15 @@ function styleKeyed(prefix, key, { top, right, bottom, left }) {
 
 
 export function borderColor(x) {
-  return styleKeyed('border', 'Color', x)  
+  return styleKeyed('border', 'Color', x)
 }
 
 export function borderStyle(x) {
-  return styleKeyed('border', 'Style', x)  
+  return styleKeyed('border', 'Style', x)
 }
 
 export function borderWidth(x) {
-  return styleKeyed('border', 'Width', x)  
+  return styleKeyed('border', 'Width', x)
 }
 
 export function center() {
@@ -99,9 +99,9 @@ export function centerBlock() {
 export function circle(radius, color = 'transparent') {
   return {
     height: radius,
-    width: radius, 
+    width: radius,
     borderRadius: '50%',
-    backgroundColor: color    
+    backgroundColor: color
   }
 }
 
@@ -118,7 +118,7 @@ export function hideVisually() {
   }
 }
 
-export function hr(color ='#ccc', verticalMargin = '1em') {
+export function hr(color = '#ccc', verticalMargin = '1em') {
   return {
     height: 1,
     border: 0,
@@ -140,16 +140,16 @@ export function position(type, { top, left, bottom, right }) {
   let o = {
     position: type
   }
-  if(top != undefined ) {
+  if (top != undefined) {
     o.top = top
   }
-  if(right != undefined) {
+  if (right != undefined) {
     o.right = right
   }
-  if(bottom != undefined) {
+  if (bottom != undefined) {
     o.bottom = bottom
   }
-  if(left != undefined) {
+  if (left != undefined) {
     o.left = left
   }
   return o
@@ -163,7 +163,7 @@ export function resetText() {
     letterSpacing: 'normal',
     lineBreak: 'auto',
     lineHeight: '1.5',
-    textAlign: [ 'left', 'start' ],
+    textAlign: ['left', 'start'],
     textDecoration: 'none',
     textShadow: 'none',
     textTransform: 'none',
@@ -174,7 +174,7 @@ export function resetText() {
   }
 }
 
-export function size(width, height = width) {  
+export function size(width, height = width) {
   return {
     width,
     height
@@ -205,7 +205,7 @@ export function size(width, height = width) {
 // }
 
 export function textHide(alternative = false) {
-  if(!alternative) {
+  if (!alternative) {
     return {
       font: '"0/0" a',
       color: 'transparent',
@@ -225,24 +225,24 @@ export function textHide(alternative = false) {
 export function triangle(size = 12, color = '#ccc', orientation = 'down') {
   // let border 
   let border = (dir => {
-    switch(dir) {
-      case 'down': return [ true, 't', false, 't' ]
-      case 'up': return [ false, 't', true, 't' ]
-      case 'left': return [ 't', true, 't', false ]
-      case 'right': return [ 't', false, 't', true ]
-      case 'up-right': return [ true, false, false, 't' ]
-      case 'up-left': return [ true, 't', false, false ]
-      case 'down-right': return [ false, false, true, 't' ]
-      case 'down-left': return [ false, 't', true, false ]
-      default: throw new Error('Circle orientation is not valid.')  
+    switch (dir) {
+      case 'down': return [true, 't', false, 't']
+      case 'up': return [false, 't', true, 't']
+      case 'left': return ['t', true, 't', false]
+      case 'right': return ['t', false, 't', true]
+      case 'up-right': return [true, false, false, 't']
+      case 'up-left': return [true, 't', false, false]
+      case 'down-right': return [false, false, true, 't']
+      case 'down-left': return [false, 't', true, false]
+      default: throw new Error('Circle orientation is not valid.')
     }
   })(orientation)
-  
+
   let o = {
     height: 0,
     width: 0
   }
-  if(border[0] === true) {
+  if (border[0] === true) {
     o.borderTop = size + ' solid ' + color
   }
   if (border[1] === true) { // right
@@ -254,7 +254,7 @@ export function triangle(size = 12, color = '#ccc', orientation = 'down') {
   }
 
   if (border[3] === true) { // left
-    o.borderLeft = size + ' solid ' + color      
+    o.borderLeft = size + ' solid ' + color
   }
   if (border[0] === 't') { // top
     o.borderTop = size + ' solid transparent'
@@ -262,11 +262,11 @@ export function triangle(size = 12, color = '#ccc', orientation = 'down') {
 
   if (border[1] === 't') { // right
     o.borderRight = size + ' solid transparent'
-          
+
   }
 
   if (border[2] === 't') { // bottom
-    o.borderBottom = size + ' solid transparent'          
+    o.borderBottom = size + ' solid transparent'
   }
 
   if (border[3] === 't') { // left
@@ -277,7 +277,7 @@ export function triangle(size = 12, color = '#ccc', orientation = 'down') {
 }
 
 export function truncate(lines = 0, lineHeight = 1, textOverflow = 'ellipsis') {
-  if(!lines) {
+  if (!lines) {
     return {
       whiteSpace: 'nowrap',
       overflow: 'hidden',
@@ -288,7 +288,7 @@ export function truncate(lines = 0, lineHeight = 1, textOverflow = 'ellipsis') {
   let height = Math.round(lineHeight * lines * 100) / 100
 
   return {
-    display: [ 'block', '-webkit-box' ],
+    display: ['block', '-webkit-box'],
     height: height + 'em',
     lineHeight,
     WebkitLineClamp: lines,
@@ -296,7 +296,7 @@ export function truncate(lines = 0, lineHeight = 1, textOverflow = 'ellipsis') {
     overflow: 'hidden',
     textOverflow
   }
-  
+
 }
 
 export function wordWrap(wrap = 'break-word', wordBreak = wrap !== 'break-word' ? wrap : 'break-all') {
@@ -310,28 +310,32 @@ export function wordWrap(wrap = 'break-word', wordBreak = wrap !== 'break-word' 
 // these return rules
 
 export function clearfix() {
-  return after({
-    content: '""',
-    display: 'block',
-    clear: 'both'
+  return css({
+    ':after': {
+      content: '""',
+      display: 'block',
+      clear: 'both'
+    }
   })
 }
 
 
 export function resetList() {
-  return merge({
+  return css({
     marginTop: 0,
     marginBottom: 0,
-    paddingLeft: 0
-  }, select( 'li', {
-    listStyle: 'none'
-  }))
+    paddingLeft: 0,
+    ' li': {
+      listStyle: 'none'
+    }
+  })
 }
 
-export function noJs(childSelector, style) {
-  return parent(childSelector, '.no-js', style)
-}
+// TODO fix it!
+// export function noJs(childSelector, style) {
+//   return parent(childSelector, '.no-js', style)
+// }
 
-export function noHover(childSelector, style) {
-  return parent(childSelector, '.no-hover', style)
-}
+// export function noHover(childSelector, style) {
+//   return parent(childSelector, '.no-hover', style)
+// }

@@ -1,25 +1,29 @@
 export class GenericCache<T> {
-  private inserted: { [key: string]: T } = {};
-  
+  private cache: { [key: string]: T } = {};
+
   add(key: string, val: T) {
     if (!this.has(key)) {
-      this.inserted[key] = val;
+      this.cache[key] = val;
     }
   }
 
   has(key: string) {
-    return this.inserted[key] != null;
+    return this.cache[key] != null;
   }
 
   get(key: string) {
-    return this.inserted[key];
+    return this.cache[key];
   }
 
   flush() {
-    this.inserted = {};
+    this.cache = {};
   }
 
-  counts(){
-    return Object.keys(this.inserted).length
+  counts() {
+    return Object.keys(this.cache).length
+  }
+
+  keys() {
+    return Object.keys(this.cache);
   }
 }

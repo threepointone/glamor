@@ -2,6 +2,8 @@ import { nullRule, isDev, isLikeRule, idFor } from '../utils';
 import { GenericCache } from './GenericCache';
 import { StyleAttribute, Spec } from '../css';
 
+export { GenericCache };
+
 /**
  * This variable will be used to store each created style object using the hash value of this object (id) as a key
  */

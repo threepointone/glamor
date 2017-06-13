@@ -6,3 +6,4 @@ coverage/
 examples/bundle.js
 *.log
 .DS_Store
+dist-tests/

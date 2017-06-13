@@ -1,4 +1,4 @@
-import { insertRule } from 'glamor'
+import { css } from 'glamor'
 
 /*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
 
@@ -12,7 +12,7 @@ import { insertRule } from 'glamor'
 /* Document
    ========================================================================== */
 
-insertRule(`html {
+css.insert(`html {
   font-family: sans-serif; /* 1 */
   line-height: 1.15; /* 2 */
   -ms-text-size-adjust: 100%; /* 3 */
@@ -26,7 +26,7 @@ insertRule(`html {
  * Remove the margin in all browsers (opinionated).
  */
 
-insertRule(`body {
+css.insert(`body {
   margin: 0;
 }`)
 
@@ -34,7 +34,7 @@ insertRule(`body {
  * Add the correct display in IE 9-.
  */
 
-insertRule(`article,
+css.insert(`article,
 aside,
 footer,
 header,
@@ -48,7 +48,7 @@ section {
  * `article` contexts in Chrome, Firefox, and Safari.
  */
 
-insertRule(`h1 {
+css.insert(`h1 {
   font-size: 2em;
   margin: 0.67em 0;
 }`)
@@ -61,7 +61,7 @@ insertRule(`h1 {
  * 1. Add the correct display in IE.
  */
 
-insertRule(`figcaption,
+css.insert(`figcaption,
 figure,
 main { /* 1 */
   display: block;
@@ -71,7 +71,7 @@ main { /* 1 */
  * Add the correct margin in IE 8.
  */
 
-insertRule(`figure {
+css.insert(`figure {
   margin: 1em 40px;
 }`)
 
@@ -80,7 +80,7 @@ insertRule(`figure {
  * 2. Show the overflow in Edge and IE.
  */
 
-insertRule(`hr {
+css.insert(`hr {
   box-sizing: content-box; /* 1 */
   height: 0; /* 1 */
   overflow: visible; /* 2 */
@@ -91,7 +91,7 @@ insertRule(`hr {
  * 2. Correct the odd `em` font sizing in all browsers.
  */
 
-insertRule(`pre {
+css.insert(`pre {
   font-family: monospace, monospace; /* 1 */
   font-size: 1em; /* 2 */
 }`)
@@ -104,7 +104,7 @@ insertRule(`pre {
  * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.
  */
 
-insertRule(`a {
+css.insert(`a {
   background-color: transparent; /* 1 */
   -webkit-text-decoration-skip: objects; /* 2 */
 }`)
@@ -114,7 +114,7 @@ insertRule(`a {
  * in all browsers (opinionated).
  */
 
-insertRule(`a:active,
+css.insert(`a:active,
 a:hover {
   outline-width: 0;
 }`)
@@ -124,7 +124,7 @@ a:hover {
  * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
  */
 
-insertRule(`abbr[title] {
+css.insert(`abbr[title] {
   border-bottom: none; /* 1 */
   text-decoration: underline; /* 2 */
   text-decoration: underline dotted; /* 2 */
@@ -134,7 +134,7 @@ insertRule(`abbr[title] {
  * Prevent the duplicate application of `bolder` by the next rule in Safari 6.
  */
 
-insertRule(`b,
+css.insert(`b,
 strong {
   font-weight: inherit;
 }`)
@@ -143,7 +143,7 @@ strong {
  * Add the correct font weight in Chrome, Edge, and Safari.
  */
 
-insertRule(`b,
+css.insert(`b,
 strong {
   font-weight: bolder;
 }`)
@@ -153,7 +153,7 @@ strong {
  * 2. Correct the odd `em` font sizing in all browsers.
  */
 
-insertRule(`code,
+css.insert(`code,
 kbd,
 samp {
   font-family: monospace, monospace; /* 1 */
@@ -164,7 +164,7 @@ samp {
  * Add the correct font style in Android 4.3-.
  */
 
-insertRule(`dfn {
+css.insert(`dfn {
   font-style: italic;
 }`)
 
@@ -172,7 +172,7 @@ insertRule(`dfn {
  * Add the correct background and color in IE 9-.
  */
 
-insertRule(`mark {
+css.insert(`mark {
   background-color: #ff0;
   color: #000;
 }`)
@@ -181,7 +181,7 @@ insertRule(`mark {
  * Add the correct font size in all browsers.
  */
 
-insertRule(`small {
+css.insert(`small {
   font-size: 80%;
 }`)
 
@@ -190,7 +190,7 @@ insertRule(`small {
  * all browsers.
  */
 
-insertRule(`sub,
+css.insert(`sub,
 sup {
   font-size: 75%;
   line-height: 0;
@@ -198,11 +198,11 @@ sup {
   vertical-align: baseline;
 }`)
 
-insertRule(`sub {
+css.insert(`sub {
   bottom: -0.25em;
 }`)
 
-insertRule(`sup {
+css.insert(`sup {
   top: -0.5em;
 }`)
 
@@ -213,7 +213,7 @@ insertRule(`sup {
  * Add the correct display in IE 9-.
  */
 
-insertRule(`audio,
+css.insert(`audio,
 video {
   display: inline-block;
 }`)
@@ -222,7 +222,7 @@ video {
  * Add the correct display in iOS 4-7.
  */
 
-insertRule(`audio:not([controls]) {
+css.insert(`audio:not([controls]) {
   display: none;
   height: 0;
 }`)
@@ -231,7 +231,7 @@ insertRule(`audio:not([controls]) {
  * Remove the border on images inside links in IE 10-.
  */
 
-insertRule(`img {
+css.insert(`img {
   border-style: none;
 }`)
 
@@ -239,7 +239,7 @@ insertRule(`img {
  * Hide the overflow in IE.
  */
 
-insertRule(`svg:not(:root) {
+css.insert(`svg:not(:root) {
   overflow: hidden;
 }`)
 
@@ -251,7 +251,7 @@ insertRule(`svg:not(:root) {
  * 2. Remove the margin in Firefox and Safari.
  */
 
-insertRule(`button,
+css.insert(`button,
 input,
 optgroup,
 select,
@@ -267,7 +267,7 @@ textarea {
  * 1. Show the overflow in Edge.
  */
 
-insertRule(`button,
+css.insert(`button,
 input { /* 1 */
   overflow: visible;
 }`)
@@ -277,7 +277,7 @@ input { /* 1 */
  * 1. Remove the inheritance of text transform in Firefox.
  */
 
-insertRule(`button,
+css.insert(`button,
 select { /* 1 */
   text-transform: none;
 }`)
@@ -288,7 +288,7 @@ select { /* 1 */
  * 2. Correct the inability to style clickable types in iOS and Safari.
  */
 
-insertRule(`button,
+css.insert(`button,
 html [type="button"], /* 1 */
 [type="reset"],
 [type="submit"] {
@@ -299,7 +299,7 @@ html [type="button"], /* 1 */
  * Remove the inner border and padding in Firefox.
  */
 
-insertRule(`button::-moz-focus-inner,
+css.insert(`button::-moz-focus-inner,
 [type="button"]::-moz-focus-inner,
 [type="reset"]::-moz-focus-inner,
 [type="submit"]::-moz-focus-inner {
@@ -311,7 +311,7 @@ insertRule(`button::-moz-focus-inner,
  * Restore the focus styles unset by the previous rule.
  */
 
-insertRule(`button:-moz-focusring,
+css.insert(`button:-moz-focusring,
 [type="button"]:-moz-focusring,
 [type="reset"]:-moz-focusring,
 [type="submit"]:-moz-focusring {
@@ -322,7 +322,7 @@ insertRule(`button:-moz-focusring,
  * Change the border, margin, and padding in all browsers (opinionated).
  */
 
-insertRule(`fieldset {
+css.insert(`fieldset {
   border: 1px solid #c0c0c0;
   margin: 0 2px;
   padding: 0.35em 0.625em 0.75em;
@@ -335,7 +335,7 @@ insertRule(`fieldset {
  *    `fieldset` elements in all browsers.
  */
 
-insertRule(`legend {
+css.insert(`legend {
   box-sizing: border-box; /* 1 */
   color: inherit; /* 2 */
   display: table; /* 1 */
@@ -349,7 +349,7 @@ insertRule(`legend {
  * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.
  */
 
-insertRule(`progress {
+css.insert(`progress {
   display: inline-block; /* 1 */
   vertical-align: baseline; /* 2 */
 }`)
@@ -358,7 +358,7 @@ insertRule(`progress {
  * Remove the default vertical scrollbar in IE.
  */
 
-insertRule(`textarea {
+css.insert(`textarea {
   overflow: auto;
 }`)
 
@@ -367,7 +367,7 @@ insertRule(`textarea {
  * 2. Remove the padding in IE 10-.
  */
 
-insertRule(`[type="checkbox"],
+css.insert(`[type="checkbox"],
 [type="radio"] {
   box-sizing: border-box; /* 1 */
   padding: 0; /* 2 */
@@ -377,7 +377,7 @@ insertRule(`[type="checkbox"],
  * Correct the cursor style of increment and decrement buttons in Chrome.
  */
 
-insertRule(`[type="number"]::-webkit-inner-spin-button,
+css.insert(`[type="number"]::-webkit-inner-spin-button,
 [type="number"]::-webkit-outer-spin-button {
   height: auto;
 }`)
@@ -387,7 +387,7 @@ insertRule(`[type="number"]::-webkit-inner-spin-button,
  * 2. Correct the outline style in Safari.
  */
 
-insertRule(`[type="search"] {
+css.insert(`[type="search"] {
   -webkit-appearance: textfield; /* 1 */
   outline-offset: -2px; /* 2 */
 }`)
@@ -396,7 +396,7 @@ insertRule(`[type="search"] {
  * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.
  */
 
-insertRule(`[type="search"]::-webkit-search-cancel-button,
+css.insert(`[type="search"]::-webkit-search-cancel-button,
 [type="search"]::-webkit-search-decoration {
   -webkit-appearance: none;
 }`)
@@ -406,7 +406,7 @@ insertRule(`[type="search"]::-webkit-search-cancel-button,
  * 2. Change font properties to `inherit` in Safari.
  */
 
-insertRule(`::-webkit-file-upload-button {
+css.insert(`::-webkit-file-upload-button {
   -webkit-appearance: button; /* 1 */
   font: inherit; /* 2 */
 }`)
@@ -419,7 +419,7 @@ insertRule(`::-webkit-file-upload-button {
  * 1. Add the correct display in Edge, IE, and Firefox.
  */
 
-insertRule(`details, /* 1 */
+css.insert(`details, /* 1 */
 menu {
   display: block;
 }`)
@@ -428,7 +428,7 @@ menu {
  * Add the correct display in all browsers.
  */
 
-insertRule(`summary {
+css.insert(`summary {
   display: list-item;
 }`)
 
@@ -439,7 +439,7 @@ insertRule(`summary {
  * Add the correct display in IE 9-.
  */
 
-insertRule(`canvas {
+css.insert(`canvas {
   display: inline-block;
 }`)
 
@@ -447,7 +447,7 @@ insertRule(`canvas {
  * Add the correct display in IE.
  */
 
-insertRule(`template {
+css.insert(`template {
   display: none;
 }`)
 
@@ -458,6 +458,6 @@ insertRule(`template {
  * Add the correct display in IE 10-.
  */
 
-insertRule(`[hidden] {
+css.insert(`[hidden] {
   display: none;
 }`)

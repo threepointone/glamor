@@ -6,14 +6,13 @@
   "files": [],
   "scripts": {
     "example": "lerna exec --scope glamor-example-app npm run start",
-    "test": "lerna run --concurrency 1 test",
+    "test": "lerna run --ignore glamor-example --ignore glamor-*-example --ignore glamor-example-app --concurrency 1 test",
     "test:updated": "npm run test -- $(lerna updated | grep ^- | grep -v private | sed 's/^- /--scope /g')",
-    "build": "lerna run build",
+    "build": "lerna run --ignore glamor-example --ignore glamor-*-example --ignore glamor-example-app build",
     "bootstrap": "lerna bootstrap",
     "postinstall": "npm run bootstrap"
   },
   "devDependencies": {
-    
     "lerna": "^2.0.0-rc.5"
   },
   "author": "Sunil Pai <threepointone@gmail.com>",

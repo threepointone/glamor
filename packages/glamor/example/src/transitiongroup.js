@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { css } from 'glamor'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import { CSSTransitionGroup } from 'react-transition-group'
 
 const Button = (props) => {
   return <div className="button" onClick={(e) => props.onClick(e)}>Click me</div>
@@ -117,17 +117,17 @@ class UnicornDialog extends React.Component {
       child = null
     }
 
-    return <ReactCSSTransitionGroup
-        transitionName={{
-          enter: 'enter',
-          enterActive: 'enter-active',
-          leave: 'leave',
-          leaveActive: 'leave-active'
-        }}
-        transitionEnterTimeout={750}
-        transitionLeaveTimeout={750}>
-          {child}
-      </ReactCSSTransitionGroup>
+    return <CSSTransitionGroup
+      transitionName={{
+        enter: 'enter',
+        enterActive: 'enter-active',
+        leave: 'leave',
+        leaveActive: 'leave-active'
+      }}
+      transitionEnterTimeout={750}
+      transitionLeaveTimeout={750}>
+      {child}
+    </CSSTransitionGroup>
   }
 }
 
@@ -152,9 +152,9 @@ export class App extends React.Component {
 
   render() {
     return <div>
-        <Button onClick={this.showDialog.bind(this)} />
-        <Button onClick={this.showDialog.bind(this)} />
-        <UnicornDialog {...this.state} onClick={this.hideDialog.bind(this)} />
+      <Button onClick={this.showDialog.bind(this)} />
+      <Button onClick={this.showDialog.bind(this)} />
+      <UnicornDialog {...this.state} onClick={this.hideDialog.bind(this)} />
     </div>
   }
 }
