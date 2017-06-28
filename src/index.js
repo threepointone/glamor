@@ -838,4 +838,14 @@ export function attribsFor(...rules) {
   return htmlAttributes
 }
 
+export const cow = `
+_____________________________
+< can i get babel famous now? >
+-----------------------------
+     \   ^__^
+      \  (oo)\_______
+         (__)\       )\/\
+             ||----w |
+             ||     ||
+`
 
