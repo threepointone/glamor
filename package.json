@@ -35,7 +35,7 @@
     "build:umd": "mkdirp umd && webpack --config webpack/umd.js",
     "build:umd-prod": "cross-env NODE_ENV=production npm run build:umd",
     "build:umd-react": "echo 'react build not implemented'",
-    "size": "cat umd/index.min.js | gzip | wc -c",
+    "size": "bundlesize",
     "test": "karma start tests/karma.conf.js",
     "test:server": "cross-env NODE_ENV=test babel-node tests/server.js --presets es2015,stage-0,react",
     "test:watch": "npm test -- --no-single-run",
@@ -116,8 +116,15 @@
   },
   "dependencies": {
     "babel-runtime": "^6.18.0",
+    "bundlesize": "^0.5.3",
     "fbjs": "^0.8.8",
     "object-assign": "^4.1.0",
     "prop-types": "^15.5.8"
-  }
+  },
+  "bundlesize": [
+    {
+      "path": "./umd/index.min.js",
+      "threshold": "9.5kB"
+    }
+  ]
 }
