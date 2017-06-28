@@ -103,7 +103,7 @@ namespace css {
     }
 }
 
-export { css };
+export { css, Rule, CSSProperties, StyleAttribute };
 
 // rehydrate the insertion cache with ids sent from
 // renderStatic / renderStaticOptimized
