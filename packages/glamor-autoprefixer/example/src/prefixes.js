@@ -1,13 +1,12 @@
 import React from 'react'
-import { placeholder, css } from 'glamor'
+import { css } from 'glamor'
 
 
 export class App extends React.Component {
-  render() {
-    return <input 
-      {...placeholder({ color: 'red' })}
-      {...css({ display: 'flex' })} 
-      placeholder="some text" 
-    />
-  }  
+    render() {
+        return <input
+            {...css({ display: 'flex', '::placeholder': { color: 'red' } }) }
+            placeholder="some text"
+        />
+    }
 }

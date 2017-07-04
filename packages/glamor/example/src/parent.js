@@ -1,5 +1,5 @@
 import React from 'react'
-import { css, parent } from 'glamor'
+import { css } from 'glamor'
 
 const styles = {
   root: css({
@@ -10,9 +10,9 @@ const styles = {
   }),
   child: css(
     {
-      color: '#000'
-    },
-    parent(':hover >', { color: '#fff' })
+      color: '#000',
+      [`:hover > &`]: { color: '#fff' }
+    }
   )
 }
 

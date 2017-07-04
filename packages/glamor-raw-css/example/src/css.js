@@ -22,7 +22,7 @@ let rule = css`
   color: yellow;
   :hover {
     /* with interpolations */
-    color: ${ Math.random() > 0.5 ? 'red' : 'blue' };
+    color: ${ Math.random() > 0.5 ? 'red' : 'blue'};
   }
 
   & > h1 { color: purple }
@@ -30,9 +30,9 @@ let rule = css`
 
   /* and composition  */
   ${css`color: greenish`}
-  --custom: --xyz;
+  
   background-color: var(--main-bg-color, something);
-  @media (min-width: 300px) {
+  @media (min-width: 600px) {
     color: orange;
     height:100vh;
     width: 300;
@@ -41,7 +41,7 @@ let rule = css`
     ${{ color: 'brown' }}
     && {
       color: blue;
-      ${{ color: 'browner' }}
+      ${{ color: 'green' }}
     }
   }
   margin: 0

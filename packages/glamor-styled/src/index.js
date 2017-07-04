@@ -1,20 +1,20 @@
 import React from 'react'
-import { merge, style } from 'glamor'
+import { css as _css } from 'glamor'
 import { parser, convert } from 'glamor-raw-css';
 let __val__ = (x, props) => typeof x === 'function' ? x(props) : x
 
 export function styled(Component, obj) { // todo - read style off Component if it exists 
-  if(obj) {
+  if (obj) {
     // for when transpiled, and / or by hand 
     return class StyledComponent extends React.Component {
 
       render() {
         let { css, ...props } = this.props
         let orig_css = typeof obj === 'function' ? obj(__val__, this.props) : obj
-        
-        return <Component {...props} {...this.props.css ? merge(orig_css, css) : style(orig_css)}/> // todo - isLikeRule 
+
+        return <Component {...props} {...this.props.css ? _css(orig_css, css) : _css(orig_css) } /> // todo - isLikeRule 
       }
-    }  
+    }
   }
   return function (strings, ...values) {
     // in-browser parsing
@@ -22,7 +22,7 @@ export function styled(Component, obj) { // todo - read style off Component if i
     return class StyledComponent extends React.Component {
       render() {
         let { className = '', css, ...props } = this.props
-        return <Component className={className + ' ' + merge(convert(parsed, { stubs, args: [ this.props ] }), css || {})} {...props} />
+        return <Component className={className + ' ' + _css(convert(parsed, { stubs, args: [this.props] }), css || {})} {...props} />
       }
     }
   }

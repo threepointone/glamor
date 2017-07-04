@@ -69,7 +69,7 @@ let pseudos = withKeys(
 )
 
 let parameterizedPseudos = withKeys(
- 'dir', 'lang', 'not', 'nthChild', 'nthLastChild', 'nthLastOfType', 'nthOfType'
+  'dir', 'lang', 'not', 'nthChild', 'nthLastChild', 'nthLastOfType', 'nthOfType'
 )
 
 // const STYLE_PROP_NAMES = propNames.reduce((styles, key) => {
@@ -80,11 +80,11 @@ let parameterizedPseudos = withKeys(
 // /^(webkit|moz|ms)([A-Za-z]+)/
 let prefixCache = {}
 function prefixed(key) {
-  if(prefixCache.hasOwnProperty(key)) {
+  if (prefixCache.hasOwnProperty(key)) {
     return prefixCache[key]
   }
   let m = /^(webkit|moz|ms|o){1}([A-Z][A-Za-z]+)/.exec(key), subKey
-  if(m) {
+  if (m) {
     subKey = m[2]
     subKey = subKey.charAt(0).toLowerCase() + subKey.slice(1)
   }
@@ -103,10 +103,10 @@ const splitStyles = (combinedProps) => {
     if (propNames[key]) {
       style[key] = combinedProps[key]
     }
-    else if(prefixed(key) && propNames[prefixed(key)]) {
+    else if (prefixed(key) && propNames[prefixed(key)]) {
       style[key] = combinedProps[key]
     }
-    else if(key === 'css') {
+    else if (key === 'css') {
       assign(style, combinedProps[key])
     }
     else if (pseudos[key] >= 0) {
@@ -115,21 +115,21 @@ const splitStyles = (combinedProps) => {
     else if (parameterizedPseudos[key] || (key === 'media') || (key === 'select')) {
       gStyle.push(glamor[key](...combinedProps[key]))
     }
-    else if((key === 'merge') || (key === 'compose')) {
-      if(Array.isArray(combinedProps[key])) {
+    else if ((key === 'merge') || (key === 'compose')) {
+      if (Array.isArray(combinedProps[key])) {
         gStyle.splice(gStyle.length, 0, ...combinedProps[key])
       }
       else {
         gStyle.splice(gStyle.length, 0, combinedProps[key])
       }
     }
-    else if(isHandler(key)) {
+    else if (isHandler(key)) {
       props[key] = combinedProps[key]
     }
     else if (key === 'props') {
       assign(props, combinedProps[key])
     }
-    else if(key === 'style' || key === 'className' || key === 'children') {
+    else if (key === 'style' || key === 'className' || key === 'children') {
       props[key] = combinedProps[key]
     }
     else {
@@ -137,12 +137,14 @@ const splitStyles = (combinedProps) => {
       props[key] = combinedProps[key]
     }
   })
-  return { ...gStyle.length > 0 ?
-    glamor.merge(style, ...gStyle) :
-    Object.keys(style).length > 0 ?
-      glamor.style(style) :
-      {},
-    ...props }
+  return {
+    ...gStyle.length > 0 ?
+      glamor.merge(style, ...gStyle) :
+      Object.keys(style).length > 0 ?
+        glamor.style(style) :
+        {},
+    ...props
+  }
 }
 
 export class View extends React.Component {
@@ -152,7 +154,7 @@ export class View extends React.Component {
 
   render() {
     const { component: Component, ...props } = this.props
-    return <Component {...splitStyles(props)} />
+    return <Component {...splitStyles(props) } />
   }
 }
 
