@@ -7,9 +7,9 @@ import { isSelector, joinSelectors, isMediaQuery, joinMediaQueries, joinSupports
 
 export interface DeconstrucedStyles {
   plain?: CSSProperties;
-  selects?: { [key: string]: CSSProperties };
-  medias?: { [key: string]: CSSProperties };
-  supports?: { [key: string]: CSSProperties };
+  selects?: { [key: string]: DeconstrucedStyles };
+  medias?: { [key: string]: DeconstrucedStyles };
+  supports?: { [key: string]: DeconstrucedStyles };
 }
 
 export interface CSSProperties {
