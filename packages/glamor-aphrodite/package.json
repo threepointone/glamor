@@ -1,6 +1,6 @@
 {
   "name": "glamor-aphrodite",
-  "version": "3.0.0-1",
+  "version": "3.0.0-2",
   "description": "inline css for component systems",
   "main": "lib/index.js",
   "typings": "index.d.ts",
@@ -33,7 +33,7 @@
     "inline"
   ],
   "dependencies": {
-    "glamor": "^3.0.0-1"
+    "glamor": "^3.0.0-2"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
