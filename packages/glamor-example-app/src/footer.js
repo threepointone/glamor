@@ -5,11 +5,11 @@ import React, { Component, PropTypes } from 'react' // eslint-disable-line no-un
 
 import { reply, retweet, like, more } from './svgs'
 
-import { keyframes, style } from 'glamor'
+import { css } from 'glamor'
 import { vars } from 'glamor-react'
 
 
-let liked = keyframes({
+let liked = css.keyframes({
   '50%': {
     transform: 'scale(1.2)'
   },
@@ -68,7 +68,7 @@ export class Footer extends Component {
       flexGrow: 1,
       justifyContent: 'center',
       textAlign: 'center',
-      
+
       background: 'none',
       border: 'none',
       color: 'inherit',
@@ -81,7 +81,7 @@ export class Footer extends Component {
       color: this.props.vars.animation
     }
   }
-  
+
   handleClick = () => {
     this.setState({
       liked: !this.state.liked
@@ -91,7 +91,7 @@ export class Footer extends Component {
   render() {
     const { createdAt, favoriteCount, retweetCount } = this.props
     const { liked } = this.state
-    let { styles } = this 
+    let { styles } = this
 
     return (
       <div>
@@ -116,7 +116,7 @@ export class Footer extends Component {
             {retweet}
           </div>
           <button css={styles.button} onClick={this.handleClick}>
-            {like(liked && style(styles.liked))}          
+            {like(liked && css(styles.liked))}
           </button>
           <div css={styles.icon}>
             {more}

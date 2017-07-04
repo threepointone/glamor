@@ -8,16 +8,16 @@ module.exports = {
     filename: 'bundle.js'
   },
   module: {
-    rules: [ {
+    rules: [{
       test: /\.js$/,
       exclude: /node_modules/,
-      loader: 'babel',
+      loader: 'babel-loader',
       query: {
-        plugins: [ 
+        plugins: [
           path.join(process.cwd(), 'node_modules', 'glamor-raw-css', 'babel')
         ]
       }
-    } ]  
+    }]
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -28,7 +28,7 @@ module.exports = {
     stats: 'errors-only',
     contentBase: 'src/',
     historyApiFallback: true,
-    compress: true, 
+    compress: true,
     inline: true
   }
 }

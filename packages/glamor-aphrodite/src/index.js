@@ -1,4 +1,4 @@
-import { style } from 'glamor'
+import { css as _css } from 'glamor'
 
 // todo 
 // - animations 
@@ -7,11 +7,11 @@ import { style } from 'glamor'
 export const StyleSheet = {
   create(spec) {
     return Object.keys(spec)
-      .reduce((o, name) => 
-        (o[name] = style(spec[name]), o), {})
+      .reduce((o, name) =>
+        (o[name] = _css(spec[name]), o), {})
   }
 }
 
 export function css(...rules) {
-  return style(...rules.filter(x => !!x)) // aphrodite compat https://github.com/threepointone/glamor/issues/170
+  return _css(...rules.filter(x => !!x)) // aphrodite compat https://github.com/threepointone/glamor/issues/170
 }

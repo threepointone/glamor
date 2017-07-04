@@ -4,7 +4,7 @@ import { createElement } from 'glamor-react' // eslint-disable-line no-unused-va
 import React from 'react'
 
 import 'glamor-reset'
-import { insertRule, merge, media } from 'glamor'
+import { css } from 'glamor'
 
 import { vars } from 'glamor-react'
 
@@ -21,12 +21,12 @@ import data from './data.js'
 })
 export class App extends React.Component {
   styles = {
-    throwaways: [ `html {
+    throwaways: [`html {
       color: ${this.props.vars.primary};
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 1.3125;
-    }`,`a {
+    }`, `a {
       text-decoration: none;
     }`, `svg {
       fill: currentColor;
@@ -39,19 +39,21 @@ export class App extends React.Component {
       html {
         font-size: 16px;
       }
-    }` ].forEach(x => insertRule(x)),
-    container:  merge({
+    }` ].forEach(x => css.insert(x)),
+    container: css({
       margin: '0 auto',
-      width: '100%'
-    }, media('screen and (min-width: 360px)', {
-      maxWidth: '400px'
-    }), media('screen and (min-width: 600px)', {
-      maxWidth: '600px'
-    }))
+      width: '100%',
+      '@media screen and (min-width: 360px)': {
+        maxWidth: '400px'
+      },
+      '@media screen and (min-width: 600px)': {
+        maxWidth: '600px'
+      }
+    })
   }
   render() {
     return <div css={this.styles.container}>
       <Tweet data={data} />
-    </div>  
+    </div>
   }
 }
