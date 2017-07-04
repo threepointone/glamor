@@ -105,6 +105,15 @@ namespace css {
 
 export { css, Rule, CSSProperties, StyleAttribute };
 
+const {
+  insert: insertRule,
+  global: insertGlobal,
+  keyframes,
+  fontFace
+} = css;
+
+export { insertRule, insertGlobal, keyframes, fontFace };
+
 // rehydrate the insertion cache with ids sent from
 // renderStatic / renderStaticOptimized
 export function rehydrate(ids: Array<string>) {
