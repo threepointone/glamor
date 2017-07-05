@@ -320,14 +320,16 @@ animations
 css 
 ```css
 @keyframes bounce { 
-  0%': { transform: scale(0.1); opacity: 0; }
-  60%: { transform: scale(1.2), opacity: 1 }
-  100%: { transform: scale(1) }
+  0%: { transform: scale(0.1); opacity: 0; }
+  60%: { transform: scale(1.2); opacity: 1; }
+  100%: { transform: scale(1); }
 }
+
 .box {
   animation: bounce 2s;
-  width: 50, height: 50,
-  backgroundColor: 'red'
+  width: 50px;
+  height: 50px;
+  backgroundColor: 'red';
 }
 ```
 
@@ -341,7 +343,8 @@ let bounce = css.keyframes({
 
 let box = css({
   animation: `${bounce} 2s`,
-  width: 50, height: 50,
+  width: 50,
+  height: 50,
   backgroundColor: 'red'
 }) 
 ```
