@@ -10,15 +10,13 @@ const customLaunchers = {
     browser: 'chrome',
     browser_version: '47.0'
   },
-  // seems to handle spaces differently (adds more spaces than other browsers)
-  // doesn't convert "wheat" to "rgb(245, 222, 179)"
-  // BS_Firefox: {
-  //   base: 'BrowserStack',
-  //   os: 'Windows',
-  //   os_version: '10',
-  //   browser: 'firefox',
-  //   browser_version: '43.0'
-  // },
+  BS_Firefox: {
+    base: 'BrowserStack',
+    os: 'Windows',
+    os_version: '10',
+    browser: 'firefox',
+    browser_version: '43.0'
+  },
   BS_Safari: {
     base: 'BrowserStack',
     os: 'OS X',
