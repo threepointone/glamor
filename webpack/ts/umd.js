@@ -1,5 +1,6 @@
 let webpack = require('webpack');
 let path = require('path');
+let FixDefaultImportPlugin = require('webpack-fix-default-import-plugin');
 
 const umdDefaults = {
   entry: './src/index.ts',
@@ -24,7 +25,8 @@ const umdDefaults = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'test')
-    })
+    }),
+    new FixDefaultImportPlugin()
   ]
 };
 
@@ -48,7 +50,8 @@ module.exports = [
           compress: {
             warnings: false
           }
-        })
+        }),
+        new FixDefaultImportPlugin()
       ]
     })
 ];

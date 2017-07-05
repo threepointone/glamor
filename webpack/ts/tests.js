@@ -1,5 +1,6 @@
 let webpack = require('webpack');
 let path = require('path');
+let FixDefaultImportPlugin = require('webpack-fix-default-import-plugin');
 
 module.exports = {
   entry: './tests/index.ts',
@@ -22,6 +23,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'test')
-    })
+    }),
+    new FixDefaultImportPlugin()
   ]
 };

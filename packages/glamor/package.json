@@ -65,6 +65,7 @@
     "ts-loader": "^2.0.3",
     "typescript": "^2.3.2",
     "webpack": "^2.5.1",
-    "webpack-dev-server": "^2.4.5"
+    "webpack-dev-server": "^2.4.5",
+    "webpack-fix-default-import-plugin": "^1.0.3"
   }
 }
