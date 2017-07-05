@@ -1,3 +1,6 @@
+// this will generate the prefixer data used by inline-style-prefixer
+// prefixer data is placed inside `./src/plugins/prefixer-data.ts`
+// run this script manually when you change your browser support
 const generateData = require('inline-style-prefixer/generator');
 const { join } = require('path');
 
@@ -17,5 +20,5 @@ const browserList = {
 }
 
 generateData(browserList, {
-  staticPath: join(__dirname, '..', 'src', 'plugins', 'prefixer-data.js')
+  staticPath: join(__dirname, '..', 'src', 'plugins', 'prefixer-data.ts')
 });
