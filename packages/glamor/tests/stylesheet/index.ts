@@ -3,14 +3,14 @@ import { css, styleSheet, flush } from '../../src/index'
 import * as React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { registered, ruleCache, inserted } from '../../src/cache';
-
+import { normalizeCssText } from '../helper';
 
 describe('stylesheet', ()=>{
 
     afterEach(()=>{
         flush();
     });
-   
+
     it('can add nasted styles', ()=>{
         css({
             color: 'red',
@@ -22,22 +22,22 @@ describe('stylesheet', ()=>{
                 ':hover': {
                 color: 'yellow'
                 },
-                '.a & .c': { color: 'wheat' },
-                '&&': { color: 'ivory' }
+                '.a & .c': { color: 'rgb(245, 222, 179)' },
+                '&&': { color: 'rgb(255, 255, 240)' }
             },
             '@media(max-width: 600px)': {
                 color: 'green',
                 ':hover': {
                 color: 'yellow'
                 },
-                '.a & .c': { color: 'wheat' },
+                '.a & .c': { color: 'rgb(245, 222, 179)' },
                 '&&': { color: 'gray' }
             }
         },{'backgroundColor':'gray',':checked':{color:'white'}
                 });
-        
-       expect(styleSheet.rules().map(x => x.cssText).join('\n')).toEqual(
-      `.css-1ezp9xe, [data-css-1ezp9xe] { color: red; }\n.css-o6qtyr:hover, [data-css-o6qtyr]:hover { color: blue; }\n.css-11t3bx0, [data-css-11t3bx0] { color: red; }\n.css-11t3bx0:hover, [data-css-11t3bx0]:hover { color: blue; }\n.css-18vhb03, [data-css-18vhb03] { color: red; background-color: gray; }\n.css-18vhb03:hover, [data-css-18vhb03]:hover { color: blue; }\n.css-18vhb03:checked, [data-css-18vhb03]:checked { color: white; }\n@media (min-width: 300px) { \n  .css-18vhb03, [data-css-18vhb03] { color: green; }\n  .css-18vhb03:hover, [data-css-18vhb03]:hover { color: yellow; }\n  .a .css-18vhb03 .c, .a [data-css-18vhb03] .c { color: rgb(245, 222, 179); }\n  .css-18vhb03.css-18vhb03, [data-css-18vhb03][data-css-18vhb03] { color: rgb(255, 255, 240); }\n}\n@media (max-width: 600px) { \n  .css-18vhb03, [data-css-18vhb03] { color: green; }\n  .css-18vhb03:hover, [data-css-18vhb03]:hover { color: yellow; }\n  .a .css-18vhb03 .c, .a [data-css-18vhb03] .c { color: rgb(245, 222, 179); }\n  .css-18vhb03.css-18vhb03, [data-css-18vhb03][data-css-18vhb03] { color: gray; }\n}`
+
+       expect(normalizeCssText(styleSheet.rules().map(x => x.cssText).join('\n'))).toEqual(
+      `.css-1ezp9xe, [data-css-1ezp9xe] { color: red; }\n.css-o6qtyr:hover, [data-css-o6qtyr]:hover { color: blue; }\n.css-11t3bx0, [data-css-11t3bx0] { color: red; }\n.css-11t3bx0:hover, [data-css-11t3bx0]:hover { color: blue; }\n.css-4t5i7w, [data-css-4t5i7w] { color: red; background-color: gray; }\n.css-4t5i7w:hover, [data-css-4t5i7w]:hover { color: blue; }\n.css-4t5i7w:checked, [data-css-4t5i7w]:checked { color: white; }\n@media (min-width: 300px) {\n  .css-4t5i7w, [data-css-4t5i7w] { color: green; }\n  .css-4t5i7w:hover, [data-css-4t5i7w]:hover { color: yellow; }\n  .a .css-4t5i7w .c, .a [data-css-4t5i7w] .c { color: rgb(245, 222, 179); }\n  .css-4t5i7w.css-4t5i7w, [data-css-4t5i7w][data-css-4t5i7w] { color: rgb(255, 255, 240); }\n}\n@media (max-width: 600px) {\n  .css-4t5i7w, [data-css-4t5i7w] { color: green; }\n  .css-4t5i7w:hover, [data-css-4t5i7w]:hover { color: yellow; }\n  .a .css-4t5i7w .c, .a [data-css-4t5i7w] .c { color: rgb(245, 222, 179); }\n  .css-4t5i7w.css-4t5i7w, [data-css-4t5i7w][data-css-4t5i7w] { color: gray; }\n}`
         );
     });
 
@@ -79,6 +79,6 @@ describe('stylesheet', ()=>{
         css({':hover':{color:'red'}});
         expect((function(){ styleSheet.speedy(true)})).toThrow(/cannot change speedy mode */)
     });
-    
-    
+
+
 });

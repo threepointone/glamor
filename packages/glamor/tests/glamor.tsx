@@ -7,6 +7,7 @@ import { idFor, cssLabels } from '../src/utils';
 import { simulations, simulate } from '../src/Simulations';
 import { inserted } from '../src/cache';
 import { cssFor, attribsFor } from '../src/css';
+import { normalizeCssText } from './helper';
 
 expect.extend(expectJSX);
 
@@ -234,7 +235,7 @@ describe('glamor', () => {
 
   it('css.global should handle falsy values', () => {
     css.global('a', {});
-    expect(styleSheet.rules()[0].cssText).toEqual('a { }');
+    expect(normalizeCssText(styleSheet.rules()[0].cssText)).toEqual('a { }');
 
     const backgroundColor = null;
     css.global('a', { backgroundColor });
