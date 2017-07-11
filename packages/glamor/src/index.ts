@@ -105,14 +105,10 @@ namespace css {
 
 export { css, Rule, CSSProperties, StyleAttribute };
 
-const {
-  insert: insertRule,
-  global: insertGlobal,
-  keyframes,
-  fontFace
-} = css;
-
-export { insertRule, insertGlobal, keyframes, fontFace };
+export const insertRule = css.insert;
+export const insertGlobal = css.global;
+export const keyframes = css.keyframes;
+export const fontFace = css.fontFace;
 
 // rehydrate the insertion cache with ids sent from
 // renderStatic / renderStaticOptimized
