@@ -1,6 +1,6 @@
 {
   "name": "glamor-styled",
-  "version": "3.0.0-2",
+  "version": "3.0.0-3",
   "description": "inline css for component systems",
   "main": "lib/index.js",
   "module": "es6/index.js",
@@ -24,8 +24,8 @@
     "inline"
   ],
   "dependencies": {
-    "glamor": "^3.0.0-2",
-    "glamor-raw-css": "^3.0.0-2",
+    "glamor": "^3.0.0-3",
+    "glamor-raw-css": "^3.0.0-3",
     "object-assign": "^4.1.0"
   },
   "devDependencies": {

@@ -1,7 +1,7 @@
 {
   "name": "glamor-ous-example",
   "private": true,
-  "version": "3.0.0-2",
+  "version": "3.0.0-3",
   "description": "",
   "scripts": {
     "start": "webpack-dev-server --config ../../../webpack/example.js"
@@ -15,9 +15,9 @@
     "inline"
   ],
   "dependencies": {
-    "glamor": "^3.0.0-2",
-    "glamor-ous": "^3.0.0-2",
-    "glamor-reset": "^3.0.0-2",
+    "glamor": "^3.0.0-3",
+    "glamor-ous": "^3.0.0-3",
+    "glamor-reset": "^3.0.0-3",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
   },
