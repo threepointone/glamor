@@ -4,8 +4,6 @@
 
 ![build status](https://travis-ci.org/threepointone/glamor.svg)
 
-> :bulb: Dear users and contributors. This is the documentation for `v2`. We started working on `v3` on the [`v3` branch](https://github.com/threepointone/glamor/tree/v3). If you want to follow discussions around `v3` look into [#83](https://github.com/threepointone/glamor/issues/83). If you want to know how to migrate from `v2` to `v3` read this [migration guide](./docs/migration.md). Please don't make bigger pull request against `v2` anymore.
-
 css in your javascript
 
 `npm install glamor --save`
