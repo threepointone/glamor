@@ -3,9 +3,6 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { isLikeRule, style, merge } from './index.js'
 
-if(process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
-  console.warn('[Deprecation] In glamor v3 this file will be published as a standalone package: "glamor-react". See https://github.com/threepointone/glamor/issues/204 for more information.') // eslint-disable-line no-console
-}
 
 export * from './index.js' // convenience
 

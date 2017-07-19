@@ -6,9 +6,6 @@
 
 import { after, merge, select } from './index.js'
 
-if(process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
-  console.warn('[Deprecation] In glamor v3 this file will be published as a standalone package: "glamor-utils". See https://github.com/threepointone/glamor/issues/204 for more information.')
-}
 
 export function aspectRatio(width = 16, height = 9) {
   return {

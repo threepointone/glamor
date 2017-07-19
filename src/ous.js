@@ -1,8 +1,5 @@
 import { style, media, merge, firstChild, after, select, hover, idFor, insertRule } from './index.js'
 
-if(process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
-  console.warn('[Deprecation] In glamor v3 this file will be published as a standalone package: "glamor-ous". See https://github.com/threepointone/glamor/issues/204 for more information.')
-}
 
 function log() {
   console.log(this) // eslint-disable-line

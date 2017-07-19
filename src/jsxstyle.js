@@ -2,9 +2,6 @@ import assign from 'object-assign'
 import React from 'react'
 import * as glamor from './index'
 
-if(process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
-  console.warn('[Deprecation] In glamor v3 this file will be published as a standalone package: "glamor-jsxstyle". See https://github.com/threepointone/glamor/issues/204 for more information.')
-}
 
 // import shallowCompare from 'react-addons-shallow-compare'
 let withKeys = (...keys) => keys.reduce((o, k) => (o[k] = true, o), {})

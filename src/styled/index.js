@@ -3,9 +3,6 @@ import { merge, style } from '../'
 
 import { parser, convert } from '../css/raw'
 
-if(process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
-  console.warn('[Deprecation] In glamor v3 this file will be published as a standalone package: "glamor-styled". See https://github.com/threepointone/glamor/issues/204 for more information.')
-}
 
 let __val__ = (x, props) => typeof x === 'function' ? x(props) : x
 

@@ -1,10 +1,6 @@
 // forked from https://www.npmjs.com/package/auto-prefixer
 import assign from 'object-assign'
 
-if(process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
-  console.warn('[Deprecation] In glamor v3 this file will be published as a standalone package: "glamor-autoprefixer". See https://github.com/threepointone/glamor/issues/204 for more information.')
-}
-
 function capitalize(str) {
   return str && str.charAt(0).toUpperCase() + str.substring(1)
 }
