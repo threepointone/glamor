@@ -12,11 +12,15 @@ module.exports = {
       exclude: /node_modules/,
       loader: 'babel',
       query: {
-        plugins: [ 
+        plugins: [
           path.join(__dirname, '../src/css/babel.js')
         ]
       }
-    } ]  
+    },
+    {
+      test: /\.json$/,
+      use: 'json-loader'
+    } ]
   },
   resolve: {
     alias: {
@@ -32,7 +36,7 @@ module.exports = {
     stats: 'errors-only',
     contentBase: 'examples/',
     historyApiFallback: true,
-    compress: true, 
+    compress: true,
     inline: true
   }
 }

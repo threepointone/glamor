@@ -82,16 +82,7 @@ function simple(str) {
 
 // hashes a string to something 'unique'
 // we use this to generate ids for styles
-import hash from './hash'
-
-function hashify(...objs) {
-  let str =''
-  for(let i=0;i<objs.length;i++) {
-    str += JSON.stringify(objs[i])    
-  }
-  return hash(str).toString(36)  
-}
-
+import hashify from './hash'
 
 // of shape { 'data-css-<id>': '' }
 export function isLikeRule(rule) {

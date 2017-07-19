@@ -7,3 +7,4 @@ umd/*
 es6/*
 tests/coverage
 .DS_Store
+.idea

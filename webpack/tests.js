@@ -9,7 +9,11 @@ module.exports = {
       options: {
         plugins: process.env.COVERAGE ? [ 'istanbul' ] : []
       }
-    } ]  
+    },
+    {
+      test: /\.json$/,
+      use: 'json-loader'
+    } ]
   },
   plugins: [
     new webpack.DefinePlugin({
