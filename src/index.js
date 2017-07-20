@@ -298,6 +298,11 @@ function flatten(inArr) {
 }
 
 
+const prefixedPseudoSelectors = {
+  '::placeholder': ['::-webkit-input-placeholder', '::-moz-placeholder', '::-ms-input-placeholder'],
+  ':fullscreen': [':-webkit-full-screen', ':-moz-full-screen', ':-ms-fullscreen']
+}
+
 // mutable! modifies dest.
 function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
 
@@ -319,10 +324,9 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
     Object.keys(_src || {}).forEach(key => {
       if(isSelector(key)) {
 
-        if (key === '::placeholder') {
-          build(dest, { selector: joinSelectors(selector, '::-webkit-input-placeholder'), mq, supp, src: _src[key] })
-          build(dest, { selector: joinSelectors(selector, '::-moz-placeholder'), mq, supp, src: _src[key] })
-          build(dest, { selector: joinSelectors(selector, '::-ms-input-placeholder'), mq, supp, src: _src[key] })
+        if(prefixedPseudoSelectors[key]){
+          prefixedPseudoSelectors[key].forEach(p => 
+            build(dest, { selector: joinSelectors(selector, p), mq, supp, src: _src[key] }))
         }
 
         build(dest, { selector: joinSelectors(selector, key), mq, supp, src: _src[key] })

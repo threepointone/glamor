@@ -61,7 +61,6 @@ features
 ---
 
 - fast / efficient, with a fluent api
-- ~8k gz, including the [prefixer](https://github.com/rofrischmann/inline-style-prefixer/)
 - framework independent
 - adds vendor prefixes / fallback values
 - supports all the pseudo :classes/::elements
@@ -126,7 +125,6 @@ todo
 - redo all the docs
 - [planned enhancements](https://github.com/threepointone/glamor/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement)
 - notes on composition
-- ie8 compat
 
 profit, profit
 ---

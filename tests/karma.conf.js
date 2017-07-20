@@ -64,7 +64,7 @@ const customLaunchers = {
 module.exports = function (config) {
   config.set({
     frameworks: [ 'mocha' ],
-    browsers: allBrowsers ? [ 'PhantomJS', 'Firefox', 'Chrome', 'Safari' ] : [ 'PhantomJS' ],
+    browsers: allBrowsers ? [ 'Firefox', 'Chrome', 'Safari' ] : [ 'Chrome' ],
     reporters: process.env.COVERAGE ? [ 'mocha', 'coverage' ] : [ 'mocha' ],
     preprocessors: {
       'index.js': [ 'webpack' ]
