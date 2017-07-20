@@ -1,5 +1,3 @@
-// how to install the createElement shim
-
 a drop-in replacement for React.createElement, allowing you to pass a `css` prop to elements. The props is converted to a className and added to the element.
 
 usage 

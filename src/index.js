@@ -361,10 +361,13 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
           }          
         }  
         else if(key === 'content'){
-          if(!(
+          if((_src[key].indexOf('url(') === -1) &&  !(
               (_src[key].charAt(0) === _src[key].charAt(key.length -1)) && 
               ( _src[key].charAt(0) === '"' || _src[key].charAt(0) === "'"  ))){
             _dest[key] = '"' + _src[key] + '"'
+          }
+          else {
+            _dest[key] = _src[key]  
           }        
         }
         else {
