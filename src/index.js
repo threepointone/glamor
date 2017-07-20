@@ -21,7 +21,7 @@ import { PluginSet, prefixes, fallbacks } from './plugins' // we include these b
 export const plugins = styleSheet.plugins = new PluginSet([ prefixes, fallbacks ])
 plugins.media = new PluginSet() // neat! media, font-face, keyframes
 plugins.fontFace = new PluginSet()
-plugins.keyframes = new PluginSet([ prefixes ])
+plugins.keyframes = new PluginSet([ prefixes, fallbacks ])
 
 // define some constants
 
