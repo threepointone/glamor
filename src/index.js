@@ -360,13 +360,13 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
             dest.label = dest.label.concat(_src.label)  
           }          
         }  
-        // else if(key === 'content'){
-        //   if(!(
-        //       (_src[key].charAt(0) === _src[key].charAt(key.length -1)) && 
-        //       ( _src[key].charAt(0) === '"' || _src[key].charAt(0) === "'"  ))){
-        //     _dest[key] = '"' + _src[key] + '"'
-        //   }        
-        // }
+        else if(key === 'content'){
+          if(!(
+              (_src[key].charAt(0) === _src[key].charAt(key.length -1)) && 
+              ( _src[key].charAt(0) === '"' || _src[key].charAt(0) === "'"  ))){
+            _dest[key] = '"' + _src[key] + '"'
+          }        
+        }
         else {
           _dest[key] = _src[key]
         }
