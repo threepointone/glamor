@@ -43,3 +43,8 @@ plugins: [
   })
 ]
 ```
+
+typescript
+---
+
+If you're looking to make this work with typescript, [follow these instructions](https://github.com/threepointone/glamor/issues/283)
