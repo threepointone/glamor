@@ -99,14 +99,14 @@ export function isLikeRule(rule) {
   if(keys.length !== 1) {
     return false
   }
-  return !!/data\-css\-([a-zA-Z0-9]+)/.exec(keys[0])
+  return !!/data\-css\-([a-zA-Z0-9\-_]+)/.exec(keys[0])
 }
 
 // extracts id from a { 'data-css-<id>': ''} like object
 export function idFor(rule) {
   let keys = Object.keys(rule).filter(x => x !== 'toString')
   if(keys.length !== 1) throw new Error('not a rule')
-  let regex = /data\-css\-([a-zA-Z0-9]+)/
+  let regex = /data\-css\-([a-zA-Z0-9\-_]+)/
   let match = regex.exec(keys[0])
   if(!match) throw new Error('not a rule')
   return match[1]
@@ -358,9 +358,15 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
         if(key === 'label') {
           if(hasLabels) {
             dest.label = dest.label.concat(_src.label)  
-          }
-          
-        }        
+          }          
+        }  
+        // else if(key === 'content'){
+        //   if(!(
+        //       (_src[key].charAt(0) === _src[key].charAt(key.length -1)) && 
+        //       ( _src[key].charAt(0) === '"' || _src[key].charAt(0) === "'"  ))){
+        //     _dest[key] = '"' + _src[key] + '"'
+        //   }        
+        // }
         else {
           _dest[key] = _src[key]
         }

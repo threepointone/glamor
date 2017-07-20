@@ -112,7 +112,7 @@ function toStyle(s) {
 // propMerge will take an arbitrary object "props", filter out glamor data-css-* styles and merge it with "mergeStyle"
 // use it for react components composing
 export function propMerge(mergeStyle, props) {
-  const glamorStyleKeys = Object.keys(props).filter(x => !!/data\-css\-([a-zA-Z0-9]+)/.exec(x))
+  const glamorStyleKeys = Object.keys(props).filter(x => !!/data\-css\-([a-zA-Z0-9\-_]+)/.exec(x))
 
   // no glamor styles in obj
   if (glamorStyleKeys.length === 0) {
