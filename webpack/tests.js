@@ -5,7 +5,7 @@ module.exports = {
     rules: [ {
       test: /\.js$/,
       exclude: /node_modules/,
-      loader: 'babel',
+      loader: 'babel-loader',
       options: {
         plugins: process.env.COVERAGE ? [ 'istanbul' ] : []
       }

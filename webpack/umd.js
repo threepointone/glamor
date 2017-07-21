@@ -1,4 +1,5 @@
 let webpack = require('webpack')
+let path = require('path')
 
 module.exports = {  
   devtool: 'source-map',  
@@ -6,14 +7,14 @@ module.exports = {
   output: {
     library: 'Glamor',
     libraryTarget: 'umd',
-    path: './umd',
+    path: path.resolve('./umd'),
     filename: 'index.js'
   },
   module: {
     rules: [ {
       test: /\.js$/,
       exclude: /node_modules/,
-      loader: 'babel'
+      loader: 'babel-loader'
     } ]
   },
 
