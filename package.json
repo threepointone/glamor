@@ -111,6 +111,7 @@
   "dependencies": {
     "babel-runtime": "^6.23.0",
     "fbjs": "^0.8.12",
+    "inline-style-prefixer": "^3.0.6",
     "object-assign": "^4.1.1",
     "prop-types": "^15.5.10"
   }
