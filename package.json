@@ -11,6 +11,7 @@
     "jsxstyle.js",
     "babel.js",
     "babel-hoist.js",
+    "inline.js",
     "styled.js",
     "ous.js",
     "react.js",

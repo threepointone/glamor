@@ -57,3 +57,17 @@ use `renderStaticOptimized` instead of `renderStatic`. This will parse the gener
 html and include only the relevant used css / ids.
 
 WARNING: if you're bundling your *server side* code with webpack/browserify/etc (as opposed to just browser code), be warned of a subtle issue with excluding node_modules from the module. More details in [this twitter thread](https://twitter.com/andrewingram/status/771370174587043840), and [this issue](https://github.com/threepointone/glamor/issues/37). tldr - be certain to exclude *all* glamor modules, not just the root.
+
+
+inline (experimental)
+---
+
+instead of the dance and song of the above, you could also consider just inlining the critical css into the html.
+
+``jsx
+// on the server
+import inline from 'glamor/inline'
+let html = inline(ReactDOMServer.renderToString(<App/>)) 
+```
+
+there is no step 2!
