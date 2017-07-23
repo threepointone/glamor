@@ -116,11 +116,11 @@ if (process.env.NODE_ENV !== 'production') {
    */
 
 export function createMarkupForStyles(styles, component) {
-  let serialized = '';
+  let serialized = ''
 
   for (let styleName in styles) {
     if (!styles.hasOwnProperty(styleName)) {
-      continue;
+      continue
     }
 
     const isCustomProp = (styleName.indexOf('--') === 0)
@@ -134,7 +134,7 @@ export function createMarkupForStyles(styles, component) {
       if (isCustomProp) {
         serialized += `${styleName}:${styleValue};`
       } else {
-        const processedName = processStyleName(styleName);
+        const processedName = processStyleName(styleName)
 
         serialized = processedName[0] === '-' ?
           `${processedName}:${dangerousStyleValue(styleName, styleValue, component)};${serialized}` :
