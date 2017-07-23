@@ -2,9 +2,10 @@ import React from 'react'
 
 import { css } from 'glamor'
 
+let cls = css({ color: 'red', '& :matches(h1, h2, h3)': { color: 'green'} })
 
 export class App extends React.Component {
   render() {
-    return <div className={css({ display: 'flex', flexGrow: 1, flexShrink:1 })}>what now</div>
+    return <div className={cls}>what now</div>
   }
 }
