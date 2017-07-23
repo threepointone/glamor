@@ -62,12 +62,14 @@ WARNING: if you're bundling your *server side* code with webpack/browserify/etc 
 inline (experimental)
 ---
 
-instead of the dance and song of the above, you could also consider just inlining the critical css into the html.
+you can just inline critical css into your html
 
 ```jsx
 // on the server
 import inline from 'glamor/inline'
-let html = inline(ReactDOMServer.renderToString(<App/>)) 
+let html = inline(
+  ReactDOMServer.renderToString(<App/>)
+) 
 ```
 
 there is no step 2!
