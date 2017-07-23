@@ -40,16 +40,3 @@ css({ color: 'wheat' })
 }
 
 flush()
-
-
-// jade
-{
-  let { html, css } = renderStatic(() => {
-    return jade.render(`
-div&attributes(style({ color: 'blue' }))
-  | yay!
-`, { style })
-  })
-  expect(html).toEqual('<div data-css-icjsl7="">yay!</div>')
-  expect(css).toEqual('.css-icjsl7,[data-css-icjsl7]{color:blue;}')
-}

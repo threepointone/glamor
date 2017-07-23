@@ -49,6 +49,3 @@ let rule = css`
 export const App = () => <div className={rule}>
   ...
 </div>
-
-import beautify from 'cssbeautify'
-beautify(cssFor(rule))::log()
