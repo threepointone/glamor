@@ -130,18 +130,16 @@ export function createMarkupForStyles(styles, component) {
       warnValidStyle(styleName, styleValue, component)
     }
 
-    if (styleValue == null) {
-      continue;
-    }
+    if (styleValue != null) {
+      if (isCustomProp) {
+        serialized += `${styleName}:${styleValue};`
+      } else {
+        const processedName = processStyleName(styleName);
 
-    if (isCustomProp) {
-      serialized += `${styleName}:${styleValue};`
-    } else {
-      const processedName = processStyleName(styleName);
-
-      serialized = processedName[0] === '-' ?
-        `${processedName}:${dangerousStyleValue(styleName, styleValue, component)};${serialized}` :
-        `${serialized}${processedName}:${dangerousStyleValue(styleName, styleValue, component)};`
+        serialized = processedName[0] === '-' ?
+          `${processedName}:${dangerousStyleValue(styleName, styleValue, component)};${serialized}` :
+          `${serialized}${processedName}:${dangerousStyleValue(styleName, styleValue, component)};`
+      }
     }
   }
 
