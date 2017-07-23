@@ -64,7 +64,7 @@ inline (experimental)
 
 instead of the dance and song of the above, you could also consider just inlining the critical css into the html.
 
-``jsx
+```jsx
 // on the server
 import inline from 'glamor/inline'
 let html = inline(ReactDOMServer.renderToString(<App/>)) 
