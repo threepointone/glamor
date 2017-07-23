@@ -87,7 +87,7 @@ import hash from './hash'
 function hashify(obj) {
   let str = JSON.stringify(obj)
   let toRet = hash(str).toString(36)  
-  if(obj.label && isDev){
+  if(obj.label && (obj.label.length > 0) && isDev){
     return simple(obj.label.join('.'), '-') + '-' + toRet
   }
   return toRet
