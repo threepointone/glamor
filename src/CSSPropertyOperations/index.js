@@ -116,25 +116,34 @@ if (process.env.NODE_ENV !== 'production') {
    */
 
 export function createMarkupForStyles(styles, component) {
-  const serialized = Object.keys(styles)
-    .sort((a, b) => {
-      return (b.indexOf('--') === 0) ? b : b[0] === b[0].toUpperCase() ? 1 : 0;
-    })
-    .reduce((styleString, styleName) => {
-      const isCustomProp = (styleName.indexOf('--') === 0)
-      const styleValue = styles[styleName]
+  let serialized = '';
 
-      if (process.env.NODE_ENV !== 'production' && !isCustomProp) {
-        warnValidStyle(styleName, styleValue, component)
-      }
+  for (let styleName in styles) {
+    if (!styles.hasOwnProperty(styleName)) {
+      continue;
+    }
 
-      if (styleValue == null) {
-        return styleString;
-      }
+    const isCustomProp = (styleName.indexOf('--') === 0)
+    const styleValue = styles[styleName]
 
-      return isCustomProp ? `${styleString}${styleName}:${styleValue};` :
-        `${styleString}${processStyleName(styleName)}:${dangerousStyleValue(styleName, styleValue, component)};`
-    }, '')
+    if (process.env.NODE_ENV !== 'production' && !isCustomProp) {
+      warnValidStyle(styleName, styleValue, component)
+    }
+
+    if (styleValue == null) {
+      continue;
+    }
+
+    if (isCustomProp) {
+      serialized += `${styleName}:${styleValue};`
+    } else {
+      const processedName = processStyleName(styleName);
+
+      serialized = processedName[0] === '-' ?
+        `${processedName}:${dangerousStyleValue(styleName, styleValue, component)};${serialized}` :
+        `${serialized}${processedName}:${dangerousStyleValue(styleName, styleValue, component)};`
+    }
+  }
 
   return serialized || null
 }
