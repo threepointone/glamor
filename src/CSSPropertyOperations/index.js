@@ -116,25 +116,25 @@ if (process.env.NODE_ENV !== 'production') {
    */
 
 export function createMarkupForStyles(styles, component) {
-  let serialized = ''
-  for (let styleName in styles) {
-    const isCustomProp = (styleName.indexOf('--') === 0)
-    if (!styles.hasOwnProperty(styleName)) {
-      continue
-    }
-    let styleValue = styles[styleName]
-    if (process.env.NODE_ENV !== 'production' && !isCustomProp) {
-      warnValidStyle(styleName, styleValue, component)
-    }
-    if (styleValue != null) {
-      if (isCustomProp) {
-        serialized += `${styleName}:${styleValue};`
-      } else {
-        serialized += processStyleName(styleName) + ':'
-        serialized += dangerousStyleValue(styleName, styleValue, component) + ';'
+  const serialized = Object.keys(styles)
+    .sort((a, b) => {
+      return (b.indexOf('--') === 0) ? b : b[0] === b[0].toUpperCase() ? 1 : 0;
+    })
+    .reduce((styleString, styleName) => {
+      const isCustomProp = (styleName.indexOf('--') === 0)
+      const styleValue = styles[styleName]
+
+      if (process.env.NODE_ENV !== 'production' && !isCustomProp) {
+        warnValidStyle(styleName, styleValue, component)
       }
-    }
-  }
+
+      if (styleValue == null) {
+        return styleString;
+      }
+
+      return isCustomProp ? `${styleString}${styleName}:${styleValue};` :
+        `${styleString}${processStyleName(styleName)}:${dangerousStyleValue(styleName, styleValue, component)};`
+    }, '')
+
   return serialized || null
 }
-
