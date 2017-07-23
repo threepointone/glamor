@@ -76,20 +76,21 @@ export function cssLabels(bool) {
 }
 
 // takes a string, converts to lowercase, strips out nonalphanumeric.
-function simple(str) {
-  return str.toLowerCase().replace(/[^a-z0-9]/g, '')
+function simple(str, char='') {
+  return str.toLowerCase().replace(/[^a-z0-9]/g, char)
 }
 
 // hashes a string to something 'unique'
 // we use this to generate ids for styles
 import hash from './hash'
 
-function hashify(...objs) {
-  let str =''
-  for(let i=0;i<objs.length;i++) {
-    str += JSON.stringify(objs[i])    
+function hashify(obj) {
+  let str = JSON.stringify(obj)
+  let toRet = hash(str).toString(36)  
+  if(obj.label && isDev){
+    return simple(obj.label.join('.'), '-') + '-' + toRet
   }
-  return hash(str).toString(36)  
+  return toRet
 }
 
 
@@ -112,8 +113,7 @@ export function idFor(rule) {
   return match[1]
 }
 
-function selector(id, path) {
-  
+function selector(id, path) {  
   if(!id) {
     return path.replace(/\&/g, '')
   }
@@ -510,7 +510,7 @@ css.keyframes = (name, kfs) => {
   // do not ignore empty keyframe definitions for now.
   kfs = clean(kfs) || {}
   let spec = {
-    id: hashify(name, kfs),
+    id: hashify({name, kfs}),
     type: 'keyframes',
     name,
     keyframes: kfs
