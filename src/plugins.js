@@ -46,9 +46,9 @@ export function fallbacks(node) {
   return node   
 }
 
-import prefixAll from 'inline-style-prefixer/static'
+import prefixer from './prefixer'
 
 
 export function prefixes(node) {
-  return assign({}, node, { style: prefixAll(node.style) })
+  return assign({}, node, { style: prefixer({...node.style}) })
 }
