@@ -3,7 +3,7 @@ import { styleSheet } from './index'
 function toTag(ids){  
   let idhash = ids.reduce((o, x) => (o[x + ''] = true, o), {})
   let rules = styleSheet.rules().filter(x => {
-    let regex = /css\-([a-zA-Z0-9]+)/gm
+    let regex = /css\-([a-zA-Z0-9\_\-]+)/gm
     let match = regex.exec(x.cssText)
     if(match && idhash[match[1] + '']) {
       return true
@@ -18,7 +18,7 @@ export default function inline(html){
 
   let match, lastBackIndex = 0, idBuffer = [], result = [], insed = {}
 
-  let plain = styleSheet.rules().filter(x => !(/css\-([a-zA-Z0-9]+)/gm.exec(x.cssText)));
+  let plain = styleSheet.rules().filter(x => !(/css\-([a-zA-Z0-9\_\-]+)/gm.exec(x.cssText)));
   (plain.length > 0) && result.push(`<style>${plain.map(x => x.cssText).join('')}</style>`)
 
   while((match = regex.exec(html)) !== null){
