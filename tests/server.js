@@ -1,7 +1,6 @@
 import { style, css, hover, flush, styleSheet,
   cssLabels, simulations } from '../src'
 import { renderStatic, renderStaticOptimized } from '../src/server'
-import jade from 'pug'
 
 import expect from 'expect'
 import React from 'react' // eslint-disable-line
