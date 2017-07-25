@@ -2,7 +2,7 @@ import React from 'react'
 
 import { css } from 'glamor'
 
-let cls = css({ color: 'red', '& :matches(h1, h2, h3)': { color: 'green'} })
+let cls = css({ color: 'red', ':after': { content: '" " url(something.jpg)'} })
 
 export class App extends React.Component {
   render() {

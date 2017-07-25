@@ -17,8 +17,8 @@ export function speedy(bool) {
 }
 
 // plugins
-import { PluginSet, prefixes, fallbacks } from './plugins' // we include these by default
-export const plugins = styleSheet.plugins = new PluginSet([ prefixes, fallbacks ])
+import { PluginSet, prefixes, fallbacks, contentWrap } from './plugins' // we include these by default
+export const plugins = styleSheet.plugins = new PluginSet([ prefixes, contentWrap, fallbacks ])
 plugins.media = new PluginSet() // neat! media, font-face, keyframes
 plugins.fontFace = new PluginSet()
 plugins.keyframes = new PluginSet([ prefixes, fallbacks ])
@@ -402,17 +402,7 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
           if(hasLabels) {
             dest.label = dest.label.concat(_src.label)  
           }          
-        }  
-        else if(key === 'content'){
-          if((_src[key].indexOf('url(') === -1) &&  !(
-              (_src[key].charAt(0) === _src[key].charAt(key.length -1)) && 
-              ( _src[key].charAt(0) === '"' || _src[key].charAt(0) === "'"  ))){
-            _dest[key] = '"' + _src[key] + '"'
-          }
-          else {
-            _dest[key] = _src[key]  
-          }        
-        }
+        }          
         else {
           _dest[key] = _src[key]
         }

@@ -46,6 +46,28 @@ export function fallbacks(node) {
   return node   
 }
 
+let contentValues = ['normal', 'none', 'counter','open-quote','close-quote','no-open-quote','no-close-quote','initial','inherit']
+
+export function contentWrap(node){
+  console.log(node)
+  if(node.style.content){
+    let cont = node.style.content
+    if(contentValues.indexOf(cont) >=0){
+      return node
+    }  
+    if(cont.indexOf('url(') >= 0){
+      return node
+    }
+    if((cont.charAt(0) === cont.charAt(cont.length -1)) && 
+        (cont.charAt(0) === '"' || cont.charAt(0) === "'"  )){
+      return node
+    }
+    return {...node, style: {...node.style, content: '"' + cont + '"'}}
+  }
+  return node  
+  
+}
+
 import prefixer from './prefixer'
 
 
