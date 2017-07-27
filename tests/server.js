@@ -1,7 +1,6 @@
 import { style, css, hover, flush, styleSheet,
   cssLabels, simulations } from '../src'
 import { renderStatic, renderStaticOptimized } from '../src/server'
-import jade from 'pug'
 
 import expect from 'expect'
 import React from 'react' // eslint-disable-line
@@ -40,16 +39,3 @@ css({ color: 'wheat' })
 }
 
 flush()
-
-
-// jade
-{
-  let { html, css } = renderStatic(() => {
-    return jade.render(`
-div&attributes(style({ color: 'blue' }))
-  | yay!
-`, { style })
-  })
-  expect(html).toEqual('<div data-css-icjsl7="">yay!</div>')
-  expect(css).toEqual('.css-icjsl7,[data-css-icjsl7]{color:blue;}')
-}

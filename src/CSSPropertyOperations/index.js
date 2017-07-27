@@ -122,10 +122,11 @@ export function createMarkupForStyles(styles, component) {
     if (!styles.hasOwnProperty(styleName)) {
       continue
     }
-
+    if(styleName === 'label'){
+      continue
+    }
     const isCustomProp = (styleName.indexOf('--') === 0)
     const styleValue = styles[styleName]
-
     if (process.env.NODE_ENV !== 'production' && !isCustomProp) {
       warnValidStyle(styleName, styleValue, component)
     }
