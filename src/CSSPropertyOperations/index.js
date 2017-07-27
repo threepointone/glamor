@@ -119,14 +119,13 @@ export function createMarkupForStyles(styles, component) {
   let serialized = ''
 
   for (let styleName in styles) {
-    if (!styles.hasOwnProperty(styleName)) {
+    if (!styles.hasOwnProperty(styleName) || styleName === 'label'){
       continue
     }
-    if(styleName === 'label'){
-      continue
-    }
+    
     const isCustomProp = (styleName.indexOf('--') === 0)
     const styleValue = styles[styleName]
+    
     if (process.env.NODE_ENV !== 'production' && !isCustomProp) {
       warnValidStyle(styleName, styleValue, component)
     }
