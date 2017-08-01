@@ -43,7 +43,7 @@ export function renderStaticOptimized(fn) {
     }
     return false
   })
-  o.ids = Object.keys(styleSheet.inserted).filter(id => !!ids[id + ''] || styleSheet.registered[id].type === 'raw')
+  o.ids = Object.keys(styleSheet.inserted).filter(id => !!ids[id + ''] || styleSheet.registered[id].type === 'raw' ||  styleSheet.registered[id].type === 'keyframes' || styleSheet.registered[id].type === 'font-face')
   o.css = o.rules.map(x => x.cssText).join('')
 
   return o
