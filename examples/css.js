@@ -1,7 +1,7 @@
 // inline css prop
 
 import React from 'react'
-import { cssFor, css } from 'glamor'
+import { css } from '../src/macro'
 
 function log(x) {
   console.log((x || ''), this) // eslint-disable-line no-console
@@ -35,7 +35,7 @@ let rule = css`
     color: orange;
     height:100vh;
     width: 300;
-    
+
     border: ${1}px ${'solid'} blue;
     ${{ color: 'brown' }}
     && {
@@ -46,6 +46,6 @@ let rule = css`
   margin: 0
 `
 
-export const App = () => <div className={rule}>
+export const App = () => <div className={css`${rule}; font-size: 10em`}>
   ...
 </div>

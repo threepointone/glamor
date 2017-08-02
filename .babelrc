@@ -1,4 +1,4 @@
 {
   "presets": [ [ "env", { "modules": false } ], "stage-0", "react" ],
-  "plugins": [ "transform-decorators-legacy" ]
+  "plugins": [ "transform-decorators-legacy" , "babel-macros" ]
 }

@@ -11,12 +11,12 @@ module.exports = {
       test: /\.js$/,
       exclude: /node_modules/,
       loader: 'babel-loader',
-      query: {
-        plugins: [ 
-          path.join(__dirname, '../src/css/babel.js')
-        ]
-      }
-    } ]  
+      // query: {
+      //   plugins: [
+      //     path.join(__dirname, '../src/css/babel.js')
+      //   ]
+      // }
+    } ]
   },
   resolve: {
     alias: {
@@ -32,7 +32,7 @@ module.exports = {
     stats: 'errors-only',
     contentBase: 'examples/',
     historyApiFallback: true,
-    compress: true, 
+    compress: true,
     inline: true
   }
 }
