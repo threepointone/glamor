@@ -35,33 +35,33 @@ module.exports = ({ types: t }) => {
             return
           }
 
-          path.traverse(hoistVisitor(t))
+          path.traverse({
+            JSXIdentifier(path) {
+              if (path.node.name !== 'css') return
+              if (!t.isJSXAttribute(path.parent)) return // avoid elements named `css`
+
+              const expr = path.parentPath.get('value.expression')
+              if (!expr.isObjectExpression) return
+
+              if (expr.isPure()) {
+                expr.hoist()
+              }
+            },
+            CallExpression(path) {
+              let { node } = path
+              if(node.callee.name === 'css' && node.callee.type === 'Identifier') {
+                hoistCallExpression(path);
+              }
+            }
+          })
         }
       }
     }
   }
 }
 
-function hoistVisitor(t) {
-  return {
-    JSXIdentifier(path) {
-      if (path.node.name !== 'css') return
-      if (!t.isJSXAttribute(path.parent)) return // avoid elements named `css`
-
-      const expr = path.parentPath.get('value.expression')
-      if (!expr.isObjectExpression) return
-
-      if (expr.isPure()) {
-        expr.hoist()
-      }
-    },
-    CallExpression(path) {
-      let { node } = path
-      if(node.callee.name === 'css' && node.callee.type === 'Identifier') {
-        path.get('arguments').forEach(x => x.isPure() && x.hoist())
-      }
-    }
-  }
+function hoistCallExpression(path) {
+  path.get('arguments').forEach(x => x.isPure() && x.hoist())
 }
 
-module.exports.hoistVisitor = hoistVisitor;
+module.exports.hoistCallExpression = hoistCallExpression;

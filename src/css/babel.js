@@ -33,7 +33,7 @@ let conversions = {
   },
   MediaQuery(node, ctx) {
     if(node.prefix) {
-      return `${node.prefix} ${node.type} ${node.exprs.map(x => convert(x, ctx, true)).join(' ')}` 
+      return `${node.prefix} ${node.type} ${node.exprs.map(x => convert(x, ctx, true)).join(' ')}`
     }
     else {
       return node.exprs.map(x => convert(x, ctx, true)).join(' ')
@@ -55,7 +55,7 @@ let conversions = {
     else {
       selector = `'${selector}'`
     }
-    let x = `{ ${selector}: ${declStr} }` // todo - more nesting, accept rules, etc 
+    let x = `{ ${selector}: ${declStr} }` // todo - more nesting, accept rules, etc
 
     return x
   },
@@ -88,14 +88,14 @@ let conversions = {
     // todo - fallbacks
     let val = convert(node.value, ctx, true)
     let icky = false;
-    [ '${', '\'', '"' ].forEach(x => {      
+    [ '${', '\'', '"' ].forEach(x => {
       icky = icky || ((val + '').indexOf(x) >= 0)
     })
     val = icky ? `\`${val}\`` : `'${val}'`
     if(node.value.type === 'Stub') {
       val = convert(node.value, ctx)
     }
-    return `{ '${node.name.indexOf('--') === 0 ? node.name : toCamel(node.name)}': ${val} }` // todo - numbers 
+    return `{ '${node.name.indexOf('--') === 0 ? node.name : toCamel(node.name)}': ${val} }` // todo - numbers
   },
   Quantity(node, ctx) {
     return (node.value.type === 'Stub' ? convert(node.value, ctx) : node.value)  + node.unit
@@ -117,10 +117,10 @@ let conversions = {
   },
   Stub(node, ctx) {
     if(ctx.withProps) {
-      return 'val(' + ctx.stubs[node.id] + ', props)'  
+      return 'val(' + ctx.stubs[node.id] + ', props)'
     }
     return ctx.stubs[node.id]
-    
+
   },
   Stubs(node, ctx) {
     return node.stubs.map(x => convert(x, ctx))
@@ -129,7 +129,7 @@ let conversions = {
 
 function parser(path) {
   let code = path.hub.file.code
-  let stubs = path.node.quasi.expressions.map(x => code.substring(x.start, x.end))          
+  let stubs = path.node.quasi.expressions.map(x => code.substring(x.start, x.end))
   let stubCtx = stubs.reduce((o, stub, i) => (o['spur-' + i] = stub, o), {})
   let ctr = 0
   let strs = path.node.quasi.quasis.map(x => x.value.cooked)
@@ -144,14 +144,21 @@ function parser(path) {
   return { parsed, stubs: stubCtx }
 }
 
+function convertCSSTaggedTemplateExpression(path, cssIdentifierName) {
+  let { parsed, stubs } = parser(path)
+  let newSrc = cssIdentifierName + '(' + convert(parsed, { stubs }) + ')'
+  path.replaceWithSourceString(newSrc)
+}
+
 module.exports = {
+  convertCSSTaggedTemplateExpression,
   visitor: {
     TaggedTemplateExpression(path) {
-      let { tag } = path.node            
+      let { tag } = path.node
       let code = path.hub.file.code
 
       if(tag.name === 'css') {
-        let { parsed, stubs } = parser(path)        
+        let { parsed, stubs } = parser(path)
         let newSrc = 'css(' + convert(parsed, { stubs }) + ')'
         path.replaceWithSourceString(newSrc)
       }
@@ -163,7 +170,7 @@ module.exports = {
       else if(tag.type === 'MemberExpression' && tag.object.name === 'styled') {
         let { parsed, stubs } = parser(path)
         let newSrc = 'styled(\'' + tag.property.name +'\', (val, props) => (' + convert(parsed, { stubs, withProps: true }) + '))'
-        path.replaceWithSourceString(newSrc) 
+        path.replaceWithSourceString(newSrc)
       }
     }
   }
