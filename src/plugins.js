@@ -54,7 +54,7 @@ export function contentWrap(node){
     if(contentValues.indexOf(cont) >=0){
       return node
     }  
-    if(cont.indexOf('url(') >= 0){
+    if(/^(attr|calc|counters?|url)\(/.test(cont)){
       return node
     }
     if((cont.charAt(0) === cont.charAt(cont.length -1)) && 
