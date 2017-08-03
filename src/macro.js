@@ -1,5 +1,5 @@
 const { convertCSSTaggedTemplateExpression } = require('./css/babel');
-const { hoistCallExpression } = require('./babel-hoist');
+const { hoistCallExpressionArguments } = require('./babel-hoist');
 
 module.exports = function macro({ references, babel }) {
   const firstReference = references.css[0];
@@ -23,7 +23,7 @@ module.exports = function macro({ references, babel }) {
     });
 
     if (parentPath.type === 'CallExpression') {
-      hoistCallExpression(parentPath);
+      hoistCallExpressionArguments(parentPath);
     }
   });
 }

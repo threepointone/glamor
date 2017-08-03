@@ -50,7 +50,7 @@ module.exports = ({ types: t }) => {
             CallExpression(path) {
               let { node } = path
               if(node.callee.name === 'css' && node.callee.type === 'Identifier') {
-                hoistCallExpression(path);
+                hoistCallExpressionArguments(path);
               }
             }
           })
@@ -60,8 +60,8 @@ module.exports = ({ types: t }) => {
   }
 }
 
-function hoistCallExpression(path) {
+function hoistCallExpressionArguments(path) {
   path.get('arguments').forEach(x => x.isPure() && x.hoist())
 }
 
-module.exports.hoistCallExpression = hoistCallExpression;
+module.exports.hoistCallExpressionArguments = hoistCallExpressionArguments;
