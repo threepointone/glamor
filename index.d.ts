@@ -317,3 +317,8 @@ export function cssFor(...rules: Array<StyleAttribute>): string;
  * constructing an element's html.
  */
 export function attribsFor(...rules: Array<StyleAttribute>): string;
+
+/**
+ * Rehydrate with server-side rendered rule IDs
+ */
+export function rehydrate(ids: string[]): void;
