@@ -1,7 +1,7 @@
-// inline css prop
+// macros
 
 import React from 'react'
-import { cssFor, css } from 'glamor'
+import { css as cssFoo } from '../src/macro'
 
 function log(x) {
   console.log((x || ''), this) // eslint-disable-line no-console
@@ -11,9 +11,9 @@ function log(x) {
 
 let someTag = '.xyz:hover'
 
-css`opacity: 0.5`
+cssFoo`opacity: 0.5`
 
-let rule = css`
+let rule = cssFoo`
   /* real css! */
   + h1 { backgroundColor: black }
   h1.title & { color: blue }
@@ -28,7 +28,7 @@ let rule = css`
   html.ie9 & ${someTag} { padding: 300px }
 
   /* and composition  */
-  ${css`color: greenish`}
+  ${cssFoo`color: greenish`}
   --custom: --xyz;
   background-color: var(--main-bg-color, something);
   @media (min-width: 300px) {
@@ -46,6 +46,7 @@ let rule = css`
   margin: 0
 `
 
-export const App = () => <div className={rule}>
-  ...
+export const App = () =>
+  <div className={cssFoo`${rule}; font-size: 5em`}>
+  Itsa me... <span className={cssFoo({ color: 'orange' })}>Macro!</span>
 </div>

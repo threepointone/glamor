@@ -23,7 +23,16 @@ module.exports = function macro({ references, babel }) {
     });
 
     if (parentPath.type === 'CallExpression') {
+      if (parentPath.parentPath.parentPath.type === 'VariableDeclaration') {
+        addLabel(t, parentPath, parentPath.parentPath.get('id').node.name);
+      }
       hoistCallExpressionArguments(parentPath);
     }
   });
+}
+
+function addLabel(t, path, labelName) {
+  path.node.arguments.unshift(t.objectExpression([
+    t.objectProperty(t.identifier('label'), t.stringLiteral(labelName))
+  ]));
 }
