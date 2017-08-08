@@ -158,9 +158,7 @@ module.exports = {
       let code = path.hub.file.code
 
       if(tag.name === 'css') {
-        let { parsed, stubs } = parser(path)
-        let newSrc = 'css(' + convert(parsed, { stubs }) + ')'
-        path.replaceWithSourceString(newSrc)
+        convertCSSTaggedTemplateExpression(path, 'css')
       }
       else if(tag.type === 'CallExpression' && tag.callee.name === 'styled') {
         let { parsed, stubs } = parser(path)
