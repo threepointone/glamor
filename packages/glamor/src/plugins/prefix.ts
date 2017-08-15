@@ -1,4 +1,4 @@
-import * as createPrefixer from 'inline-style-prefixer/static/createPrefixer';
+import createPrefixer from 'inline-style-prefixer/static/createPrefixer';
 import { Node } from './PluginSet';
 import staticData from './prefixer-data';
 
