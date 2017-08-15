@@ -8,7 +8,7 @@
 
 ## Demo Development Server
 
-* `npm start` will run a development server with the component's demo app at [http://localhost:8080](http://localhost:8080)
+* `npm run example` will run a development server with the component's demo app at [http://localhost:8080](http://localhost:8080)
 
 ## Running Tests
 
