@@ -245,6 +245,24 @@ export function compose(...rules: Array<Rule>): StyleAttribute;
 export function merge(...rules: Array<Rule>): StyleAttribute;
 
 /**
+ * Loads the given font-face at most once into the document, returns the font family name.
+ */
+export interface FontProperties {
+  [propertyName: string]: any;
+}
+
+export function fontFace(font: FontProperties): string;
+
+/**
+ * Adds animation keyframes into the document, with an optional name.
+ */
+export function keyframes(timeline: TimeLine): string;
+/**
+ * Adds animation keyframes into the document, with an optional name.
+ */
+export function keyframes(name: string, timeline: TimeLine): string;
+
+/**
  * In glamor, css rules are treated as values. The css function lets you define these values.
  */
 export function css(...rules: Array<Rule>): StyleAttribute;
@@ -252,7 +270,45 @@ export function css(...rules: Array<Rule>): StyleAttribute;
 export namespace css {
   export function insert(css: string): void;
   export function global(selector: string, style: CSSProperties): void;
+  
+  // Aliasing keyframes
+  export function keyframes(timeline: TimeLine): string;
+  export function keyframes(name: string, timeline: TimeLine): string;
+
+  // Aliasing fontFace
+  export function fontFace(font: FontProperties): string;
 }
+
+/**
+ * Define plugins
+ */
+type PluginProperties = {
+  selector: string,
+  style: CSSProperties
+}
+
+type PluginFn = (arg: PluginProperties) => PluginProperties
+
+export interface PluginSet {
+  fns: PluginFn[]
+  add(...fns: PluginFn[]): void
+  remove(fn: PluginFn): void
+  clear(): void
+  transform(arg: PluginProperties): PluginProperties
+}
+
+export namespace plugins {
+  export const keyframes: PluginSet
+  export const fontFace: PluginSet
+  export const media: PluginSet
+
+  export const fns: PluginFn[]
+  export function add(...fns: PluginFn[]): void
+  export function remove(fn: PluginFn): void
+  export function clear(): void
+  export function transform(arg: PluginProperties): PluginProperties
+}
+
 
 /**
  * Media queries!
@@ -275,27 +331,10 @@ export const presets: {
  */
 export function simulate(...pseudoclasses: Array<string>): StyleAttribute;
 
-export interface FontProperties {
-  [propertyName: string]: any;
-}
-
-/**
- * Loads the given font-face at most once into the document, returns the font family name.
- */
-export function fontFace(font: FontProperties): string;
 
 export interface TimeLine {
   [timelineValue: string]: CSSProperties;
 }
-
-/**
- * Adds animation keyframes into the document, with an optional name.
- */
-export function keyframes(timeline: TimeLine): string;
-/**
- * Adds animation keyframes into the document, with an optional name.
- */
-export function keyframes(name: string, timeline: TimeLine): string;
 
 /**
  * Append a raw css rule at most once to the stylesheet. The ultimate escape hatch.
@@ -322,3 +361,13 @@ export function attribsFor(...rules: Array<StyleAttribute>): string;
  * Rehydrate with server-side rendered rule IDs
  */
 export function rehydrate(ids: string[]): void;
+
+/**
+ * Toggle speedy mode
+ */
+export function speedy(mode: boolean): void;
+
+/**
+ * Clears out the cache and empties the stylesheet
+ */
+export function flush(): void;
