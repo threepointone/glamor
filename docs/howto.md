@@ -129,6 +129,31 @@ let box = css(
 
 ```
 
+It's also possible to use Glamor's generated `classNames` for nested styles:
+
+glamor 
+```jsx
+import { css } from 'glamor'
+
+const child = css({
+  // Child styles ...
+});
+const parent = css({
+  // Parent styles ...
+
+  [`& .${child}`]: {
+    // Nested child styles
+  }
+});
+
+// ...
+
+<div className={parent}>
+  <div className={child}>...</div>
+</div>
+
+```
+
 your components could also accept props to be merged into the component 
 
 ```jsx
