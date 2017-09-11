@@ -23,6 +23,7 @@
     "jsxstyle.d.ts",
     "react.d.ts",
     "ous.d.ts",
+    "server.d.ts",
     "utils.d.ts"
   ],
   "scripts": {
