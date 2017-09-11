@@ -57,7 +57,7 @@ Objects can be nested infinitely
 ```jsx
 css({
   ':hover': {
-    color: 'blue'
+    color: 'blue',
     ':active': {
       color: 'red'
     }
