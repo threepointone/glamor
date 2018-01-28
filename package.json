@@ -8,6 +8,7 @@
     "lib",
     "umd",
     "aphrodite.js",
+    "box.js",
     "jsxstyle.js",
     "babel.js",
     "babel-hoist.js",
