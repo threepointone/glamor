@@ -156,20 +156,20 @@ function splitSelector(selector) {
   return res
 }
 
-function selector(id, path) {
-  if(!id) {
+function selector(class_, path) {
+  if(!class_) {
     return path.replace(/\&/g, '')
   }
-  if(!path) return `.css-${id},[data-css-${id}]`
+  if(!path) return `.${class_},[data-${class_}]`
 
   let x = splitSelector(path)
     .map(x => x.indexOf('&') >= 0 ?
-      [ x.replace(/\&/mg, `.css-${id}`), x.replace(/\&/mg, `[data-css-${id}]`) ].join(',') // todo - make sure each sub selector has an &
-      : `.css-${id}${x},[data-css-${id}]${x}`)
+      [ x.replace(/\&/mg, `.${class_}`), x.replace(/\&/mg, `[data-${class_}]`) ].join(',') // todo - make sure each sub selector has an &
+      : `.${class_}${x},[data-${class_}]${x}`)
     .join(',')
 
   if(canSimulate && /^\&\:/.exec(path) && !/\s/.exec(path)) {
-    x += `,.css-${id}[data-simulate-${simple(path)}],[data-css-${id}][data-simulate-${simple(path)}]`
+    x += `,.${class_}[data-simulate-${simple(path)}],[data-${class_}][data-simulate-${simple(path)}]`
   }
   return x
 
@@ -214,27 +214,31 @@ function deconstruct(style) {
   return { plain, selects, medias, supports }
 }
 
-function deconstructedStyleToCSS(id, style) {
+function _deconstructedStyleToCSS(class_, style) {
   let css = []
 
   // plugins here
   let { plain, selects, medias, supports } = style
   if(plain) {
-    css.push(toCSS({ style: plain, selector: selector(id) }))
+    css.push(toCSS({ style: plain, selector: selector(class_) }))
   }
   if(selects) {
     Object.keys(selects).forEach(key =>
-      css.push(toCSS({ style: selects[key], selector: selector(id, key) })))
+      css.push(toCSS({ style: selects[key], selector: selector(class_, key) })))
   }
   if(medias) {
     Object.keys(medias).forEach(key =>
-      css.push(`${key}{${ deconstructedStyleToCSS(id, medias[key]).join('')}}`))
+      css.push(`${key}{${ _deconstructedStyleToCSS(class_, medias[key]).join('')}}`))
   }
   if(supports) {
     Object.keys(supports).forEach(key =>
-      css.push(`${key}{${ deconstructedStyleToCSS(id, supports[key]).join('')}}`))
+      css.push(`${key}{${ _deconstructedStyleToCSS(class_, supports[key]).join('')}}`))
   }
   return css
+}
+
+function deconstructedStyleToCSS(id, style) {
+  return _deconstructedStyleToCSS(id && id != '' ? `css-${id}` : null, style)
 }
 
 // this cache to track which rules have
@@ -513,10 +517,12 @@ css.insert = (css) => {
 
 export const insertRule = css.insert
 
-css.global = (selector, style) => {
+css.global = (class_, style, selector='') => {
   style = clean(style)
   if(style){
-    return css.insert(toCSS({ selector, style }))
+    let style_ = { label: [] }
+    build(style_, { selector, src: style }) // mutative! but worth it.
+    _deconstructedStyleToCSS(class_, deconstruct(style_)).forEach(rule => css.insert(rule))
   }
 
 }

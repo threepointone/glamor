@@ -18,6 +18,7 @@ import { render, unmountComponentAtNode } from 'react-dom'
 import { style, hover, nthChild, firstLetter, media, merge, compose,  select, visited, 
   parent,
   // fontFace, keyframes,
+  insertGlobal,
   cssLabels,
   simulations, simulate,
   cssFor, attribsFor, idFor,
@@ -456,6 +457,31 @@ describe('glamor', () => {
     let red = style({ color: 'red' })
 
     expect(idFor(red)).toEqual('1ezp9xe')      
+  })
+
+  it('checks global', () => {
+    simulations(true)
+    insertGlobal('test-global', {
+      color: 'red',
+      ':hover': {
+        color: 'blue'
+      }
+    })
+    insertGlobal('test-global-selector', {
+      color: 'red',
+      ':hover': {
+        color: 'blue'
+      }
+    }, 'body &')
+    expect(styleSheet.rules().map(x => x.cssText).join('\n')).toEqual(
+`.test-global, [data-test-global] { color: red; }
+.test-global:hover, [data-test-global]:hover, .test-global[data-simulate-hover], [data-test-global][data-simulate-hover] { color: blue; }
+body .test-global-selector, body [data-test-global-selector] { color: red; }
+body .test-global-selector:hover, body [data-test-global-selector]:hover { color: blue; }`)
+    render(<div className="test-global" {...simulate('hover')} />, node, () => {
+      simulations(false)
+      expect(childStyle(node).color).toEqual('rgb(0, 0, 255)')
+    })
   })
 
   it('checks for a cache miss', () => {
