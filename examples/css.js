@@ -1,7 +1,7 @@
 // inline css prop
 
 import React from 'react'
-import { cssFor, css } from 'glamor'
+import { css } from 'glamor'
 
 function log(x) {
   console.log((x || ''), this) // eslint-disable-line no-console
