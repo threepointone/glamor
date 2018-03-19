@@ -1,4 +1,6 @@
-export interface CSSProperties {
+import { CSSProperties } from 'react'
+
+export interface CSSProperties extends CSSProperties {
   /**
    * In dev mode, adding a `label` string prop will reflect its value in devtools. Useful
    * when debugging, and a good alternative to 'semantic' classnames.
