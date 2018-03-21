@@ -826,29 +826,31 @@ describe('css', () => {
     document.body.removeChild(node)
     flush()
   })
+
+
   it('can parse some css and return a rule', () => {
     // css` color: red `
     let red = 'red'
-    let rule = _css`       
+    let rule = _css`
       color: yellow; /* 'real' css syntax */
       font-weight: bold;
-      /* pseudo classes */  
+      /* pseudo classes */
       :hover {
         /* just javascript */
         color: ${ red };
       }
-      
+
       /* contextual selectors */
-      & > h1 { color: purple }  
+      & > h1 { color: purple }
       html.ie9 & span { padding: 300px }
       & [type='checked'] { border: 1px dashed black }
-      
+
       /* compose with objects */
       ${{ color: 'red' }}
-      
+
       /* or more rules */
       ${ _css`color: greenish` }
-      
+
       /* media queries */
       @media (min-width: 300px) {
         color: orange;
