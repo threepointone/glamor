@@ -358,7 +358,7 @@ function build(dest, { selector = '', mq = '', supp = '', src = {} }) {
   src = flatten(src)
 
   src.forEach(_src => {
-    if(isLikeRule(_src)) {
+    if(isLikeRule(_src) && idFor(_src) !== 'nil') {
       let reg = _getRegistered(_src)
       if(reg.type !== 'css') { throw new Error('cannot merge this rule') }
       _src = reg.style
