@@ -877,7 +877,14 @@ describe('css', () => {
         { '&&': { 'color': 'browner' } } 
       ] }
     ])
-    
+
+  })
+
+  it('can handle data-css-nil nullrule', () => {
+    let rule = css({'data-css-nil': ''})
+    expect(rule).toEqual({
+      'data-css-1268me8': ''
+    })
   })
 })
 
