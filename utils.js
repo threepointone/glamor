@@ -1,2 +1,1 @@
-module.exports = require('./lib/utils.js'
-  )
+module.exports = require('./lib/utils.js')
