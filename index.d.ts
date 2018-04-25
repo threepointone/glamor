@@ -1,11 +1,11 @@
-export interface CSSProperties {
+import * as CSS from 'csstype';
+
+export interface CSSProperties extends CSS.Properties<number | string> {
   /**
    * In dev mode, adding a `label` string prop will reflect its value in devtools. Useful
    * when debugging, and a good alternative to 'semantic' classnames.
    */
   label?: string;
-  // for now just allow everything
-  [propertyName: string]: any;
 }
 
 export interface StyleAttribute {

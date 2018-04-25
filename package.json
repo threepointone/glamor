@@ -104,6 +104,7 @@
     }
   },
   "dependencies": {
+    "csstype": "^2.4.0",
     "fbjs": "^0.8.12",
     "inline-style-prefixer": "^3.0.6",
     "object-assign": "^4.1.1",
