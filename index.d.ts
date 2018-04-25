@@ -6,8 +6,6 @@ export interface CSSProperties extends CSS.Properties<number | string> {
    * when debugging, and a good alternative to 'semantic' classnames.
    */
   label?: string;
-  // for now just allow everything as a fallback
-  [propertyName: string]: any;
 }
 
 export interface StyleAttribute {
