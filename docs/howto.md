@@ -443,5 +443,5 @@ const f1Red = style({
 });
 
 // ...but you still have to use all three selectors
-<div class={`${f1} ${red} ${f1red}`}></div>
+<div class={`${f1} ${red} ${f1Red}`}></div>
 ```
