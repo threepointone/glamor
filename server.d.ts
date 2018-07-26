@@ -1,13 +1,17 @@
+export type HTMLType = string | NodeJS.ReadableStream;
+
 export interface ServerRule {
-    cssText: string;
+  cssText: string;
 }
 
-export interface ServerResult {
-    html: string;
-    css: string;
-    ids: string[];
-    rules: ServerRule[];
+export interface ServerResult<T extends HTMLType> {
+  html: T;
+  css: string;
+  ids: string[];
+  rules: ServerRule[];
 }
 
-export function renderStatic(fn: () => string): ServerResult;
-export function renderStaticOptimized(fn: () => string): ServerResult;
+export function renderStatic<T extends HTMLType>(fn: () => T): ServerResult<T>;
+export function renderStaticOptimized<T extends HTMLType>(
+  fn: () => string
+): ServerResult<T>;
