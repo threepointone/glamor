@@ -424,7 +424,7 @@ const rule = style({
   '&.f1.red' : { fontSize: '2rem' }
  })
 
-<div class={`${rule} f1 red`}></div>
+<div className={`${rule} f1 red`}></div>
 
 
 // Or use merge to output a single css selector
@@ -432,7 +432,7 @@ const f1 = ({ fontSize: '1rem' });
 const red = ({ background: 'red' });
 const f1Red = merge(f1, red, { fontSize: '2rem' });
 
-<div class={rule}></div>
+<div className={rule}></div>
 
 
 // Or for a more traditional css approach...
@@ -443,5 +443,5 @@ const f1Red = style({
 });
 
 // ...but you still have to use all three selectors
-<div class={`${f1} ${red} ${f1red}`}></div>
+<div className={`${f1} ${red} ${f1red}`}></div>
 ```
