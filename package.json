@@ -105,7 +105,7 @@
   },
   "dependencies": {
     "fbjs": "^0.8.12",
-    "inline-style-prefixer": "^3.0.6",
+    "inline-style-prefixer": "^6.0.0",
     "object-assign": "^4.1.1",
     "prop-types": "^15.5.10",
     "through": "^2.3.8"

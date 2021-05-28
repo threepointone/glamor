@@ -1,21 +1,21 @@
 // custom facade for inline-style-prefixer
 
-import staticData from 'inline-style-prefixer/static/staticData'
+import staticData from 'inline-style-prefixer/lib/data'
 
-import prefixProperty from 'inline-style-prefixer/utils/prefixProperty'
-import prefixValue from 'inline-style-prefixer/utils/prefixValue'
+import prefixProperty from 'inline-style-prefixer/lib/utils/prefixProperty'
+import prefixValue from 'inline-style-prefixer/lib/utils/prefixValue'
 
 
-import cursor from 'inline-style-prefixer/static/plugins/cursor'
-import crossFade from 'inline-style-prefixer/static/plugins/crossFade'
-import filter from 'inline-style-prefixer/static/plugins/filter'
-import flex from 'inline-style-prefixer/static/plugins/flex'
-import flexboxOld from 'inline-style-prefixer/static/plugins/flexboxOld'
-import gradient from 'inline-style-prefixer/static/plugins/gradient'
-import imageSet from 'inline-style-prefixer/static/plugins/imageSet'
-import position from 'inline-style-prefixer/static/plugins/position'
-import sizing from 'inline-style-prefixer/static/plugins/sizing'
-import transition from 'inline-style-prefixer/static/plugins/transition'
+import cursor from 'inline-style-prefixer/lib/plugins/cursor'
+import crossFade from 'inline-style-prefixer/lib/plugins/crossFade'
+import filter from 'inline-style-prefixer/lib/plugins/filter'
+import flex from 'inline-style-prefixer/lib/plugins/flex'
+import flexboxOld from 'inline-style-prefixer/lib/plugins/flexboxOld'
+import gradient from 'inline-style-prefixer/lib/plugins/gradient'
+import imageSet from 'inline-style-prefixer/lib/plugins/imageSet'
+import position from 'inline-style-prefixer/lib/plugins/position'
+import sizing from 'inline-style-prefixer/lib/plugins/sizing'
+import transition from 'inline-style-prefixer/lib/plugins/transition'
 
 const plugins = [
   crossFade,
