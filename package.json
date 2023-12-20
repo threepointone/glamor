@@ -10,32 +10,25 @@
     "index.d.ts"
   ],
   "scripts": {
-    "start": "webpack-dev-server --config webpack/dev.js",
-    "parser": "pegjs src/css/spec.pegjs",
     "clean": "rimraf lib umd",
-    "build": "npm-run-all -s clean -s parser -p build:** -s size",
+    "build": "npm-run-all -s clean -p build:**",
     "build:lib": "babel src -d lib --presets env,stage-0",
     "build:umd": "mkdirp umd && webpack --config webpack/umd.js",
     "build:umd-prod": "cross-env NODE_ENV=production npm run build:umd",
-    "size": "cat umd/index.min.js | gzip | wc -c",
     "prepublish": "npm run build"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
-    "babel-eslint": "^7.2.3",
     "babel-loader": "^7.1.1",
     "babel-preset-env": "^1.6.0",
     "babel-preset-stage-0": "^6.24.1",
-    "classnames": "^2.2.5",
     "cross-env": "^5.0.1",
     "mkdirp": "^0.5.1",
     "mocha": "^3.4.2",
     "npm-run-all": "^4.0.2",
-    "pegjs": "^0.10.0",
     "rimraf": "^2.6.1",
-    "webpack": "^3.3.0",
-    "webpack-dev-server": "^2.5.1"
+    "webpack": "^3.3.0"
   },
   "author": "Sunil Pai <threepointone@gmail.com>",
   "homepage": "https://github.com/threepointone/glamor",
