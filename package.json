@@ -7,38 +7,17 @@
   "files": [
     "lib",
     "umd",
-    "aphrodite.js",
-    "jsxstyle.js",
-    "babel.js",
-    "babel-hoist.js",
-    "inline.js",
-    "styled.js",
-    "ous.js",
-    "react.js",
-    "reset.js",
-    "server.js",
-    "utils.js",
-    "index.d.ts",
-    "aphrodite.d.ts",
-    "jsxstyle.d.ts",
-    "react.d.ts",
-    "ous.d.ts",
-    "server.d.ts",
-    "utils.d.ts"
+    "index.d.ts"
   ],
   "scripts": {
     "start": "webpack-dev-server --config webpack/dev.js",
     "parser": "pegjs src/css/spec.pegjs",
     "clean": "rimraf lib umd",
     "build": "npm-run-all -s clean -s parser -p build:** -s size",
-    "build:lib": "babel src -d lib --presets env,stage-0,react",
+    "build:lib": "babel src -d lib --presets env,stage-0",
     "build:umd": "mkdirp umd && webpack --config webpack/umd.js",
     "build:umd-prod": "cross-env NODE_ENV=production npm run build:umd",
     "size": "cat umd/index.min.js | gzip | wc -c",
-    "test": "karma start tests/karma.conf.js",
-    "test:server": "cross-env NODE_ENV=test babel-node tests/server.js --presets env,stage-0,react",
-    "test:watch": "npm test -- --no-single-run",
-    "coverage": "rm -rf tests/coverage && COVERAGE=1 npm test && open tests/coverage/*/index.html",
     "prepublish": "npm run build"
   },
   "devDependencies": {
@@ -46,68 +25,19 @@
     "babel-core": "^6.25.0",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^7.1.1",
-    "babel-plugin-istanbul": "^4.1.4",
-    "babel-plugin-react-require": "^3.0.0",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-preset-env": "^1.6.0",
-    "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "classnames": "^2.2.5",
     "cross-env": "^5.0.1",
-    "eslint": "^4.2.0",
-    "eslint-config-rackt": "^1.1.1",
-    "eslint-plugin-react": "^7.1.0",
-    "expect": "^1.20.2",
-    "expect-jsx": "^3.0.0",
-    "karma": "^1.7.0",
-    "karma-browserstack-launcher": "^1.3.0",
-    "karma-chrome-launcher": "^2.2.0",
-    "karma-coverage": "^1.1.1",
-    "karma-firefox-launcher": "^1.0.1",
-    "karma-mocha": "^1.3.0",
-    "karma-mocha-reporter": "^2.2.3",
-    "karma-safari-launcher": "^1.0.0",
-    "karma-webpack": "^2.0.4",
     "mkdirp": "^0.5.1",
     "mocha": "^3.4.2",
     "npm-run-all": "^4.0.2",
     "pegjs": "^0.10.0",
-    "react": "^16.0.0-beta.1",
-    "react-addons-css-transition-group": "^15.6.0",
-    "react-dom": "^16.0.0-beta.1",
     "rimraf": "^2.6.1",
-    "stylelint": "^8.0.0",
-    "stylelint-config-standard": "^17.0.0",
-    "stylelint-processor-styled-components": "^0.2.1",
     "webpack": "^3.3.0",
     "webpack-dev-server": "^2.5.1"
   },
   "author": "Sunil Pai <threepointone@gmail.com>",
   "homepage": "https://github.com/threepointone/glamor",
-  "license": "MIT",
-  "repository": "https://github.com/threepointone/glamor",
-  "keywords": [
-    "css",
-    "inline"
-  ],
-  "eslintConfig": {
-    "extends": [
-      "rackt"
-    ],
-    "plugins": [
-      "react"
-    ],
-    "rules": {
-      "react/jsx-uses-vars": "error",
-      "react/jsx-uses-react": "error",
-      "jsx-quotes": 0
-    }
-  },
-  "dependencies": {
-    "fbjs": "^0.8.12",
-    "inline-style-prefixer": "^3.0.6",
-    "object-assign": "^4.1.1",
-    "prop-types": "^15.5.10",
-    "through": "^2.3.8"
-  }
+  "license": "MIT"
 }
